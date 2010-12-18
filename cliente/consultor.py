@@ -3,8 +3,6 @@
 import sys, time, os, sqlite3
 
 from clases import *
-from funciones import *
-
 
 # Constantes de self.debug
 DEBUG_EXTENSIONES=False
@@ -14,9 +12,9 @@ DEBUG_DOM_PUB_PERM=False
 DEBUG_DOM_PUB_DENG=False
 DEBUG_CACHEADA_PERM=False
 DEBUG_CACHEADA_DENG=False
-DEBUG_VALIDA_REM=False
-DEBUG_NO_VALIDA_REM=False
-DEBUG_TIEMPO_REMOTO=False
+DEBUG_VALIDA_REM=True
+DEBUG_NO_VALIDA_REM=True
+DEBUG_TIEMPO_REMOTO=True
 DEBUG_IS_ADMIN=False
 
 

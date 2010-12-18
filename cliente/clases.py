@@ -1,5 +1,4 @@
 import re, SOAPpy, sqlite3, time, random, hashlib
-from funciones import *
 
 PATH_DB='/var/cache/securedfamily/securedfamily.db'
 MAX_CACHE_URLS_ACEPTADAS=100
