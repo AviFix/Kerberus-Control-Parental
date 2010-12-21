@@ -37,13 +37,16 @@ from consultor import *
 
 DEFAULT_LOG_FILENAME = "proxy.log"
 
+consultor=Consultor()
+
 class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
     __base = BaseHTTPServer.BaseHTTPRequestHandler
     __base_handle = __base.handle
     
     server_version = "TinyHTTPProxy/" + __version__
     rbufsize = 0                        # self.rfile Be unbuffered
-    consultor=Consultor()
+    global consultor
+    
     
     def handle(self):
         # Paso 1: autenticacion de ip origen
@@ -51,7 +54,8 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         self.server.logger.log (logging.INFO, "Request from '%s'", ip)
         if hasattr(self, 'allowed_clients') and ip not in self.allowed_clients:
             self.raw_requestline = self.rfile.readline()
-            if self.parse_request(): self.send_error(403)
+            if self.parse_request(): 
+                self.send_error(403)
         else:
             self.__base_handle()
     
@@ -62,7 +66,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         self.end_headers()    
 
     def denegar(self, motivo):
-        msg="<html><h1>Sitio no permitido</h1><br><h2>Motivo: %s</h2></html>\r\n" % "ss"
+        msg="<html><h1>Sitio no permitido</h1><br><h2>Familia Segura</h2><br><h3>Motivo: %s</h3></html>\r\n" % motivo
         self.wfile.write(self.protocol_version + " 200 Connection established\r\n")
         self.wfile.write("Proxy-agent: %s\r\n" % self.version_string())
         self.wfile.write("\r\n")
@@ -86,16 +90,20 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
             self.pedirUsuario("Se requiere un usuario")
             return 1
         else:
-            permitido, motivo=self.consultor.validarUrl(usuario, password, self.path)
+            permitido, motivo=consultor.validarUrl(usuario, password, self.path)
             if not permitido:
                 self.denegar(motivo)
+                return 1
 
         self.server.logger.log (logging.INFO, "connect to %s:%d", host_port[0], host_port[1])
-        try: soc.connect(host_port)
+        try: 
+            soc.connect(host_port)
         except socket.error, arg:
-            try: msg = arg[1]
-            except: msg = arg
-            self.send_error(404, msg)
+            try: 
+                msg = arg[1]
+            except: 
+                msg = arg
+                self.send_error(404, msg)
             return 0
         return 1
 
@@ -195,7 +203,7 @@ class ThreadingHTTPServer (SocketServer.ThreadingMixIn,
         BaseHTTPServer.HTTPServer.__init__ (self, server_address,
                                             RequestHandlerClass)
         self.logger = logger
-
+        
 def logSetup (filename, log_size, daemon):
     logger = logging.getLogger ("TinyHTTPProxy")
     #logger.setLevel (logging.INFO)
@@ -281,7 +289,8 @@ def main ():
     run_event = threading.Event ()
     local_hostname = socket.gethostname ()
     
-    try: opts, args = getopt.getopt (sys.argv[1:], "l:dhp:", [])
+    try: 
+        opts, args = getopt.getopt (sys.argv[1:], "l:dhp:", [])
     except getopt.GetoptError, e:
         usage (str (e))
         return 1
