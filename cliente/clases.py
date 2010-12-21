@@ -1,8 +1,8 @@
 import re, SOAPpy, sqlite3, time, random, hashlib
 
 PATH_DB='/var/cache/securedfamily/securedfamily.db'
-MAX_CACHE_URLS_ACEPTADAS=100
-MAX_CACHE_URLS_DENEGADAS=10
+MAX_CACHE_URLS_ACEPTADAS=1000
+MAX_CACHE_URLS_DENEGADAS=30
 DEBUG_TIEMPOS=True
 
 def obtenerTiempoParcial(inicio):
