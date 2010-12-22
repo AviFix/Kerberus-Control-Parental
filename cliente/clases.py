@@ -1,9 +1,14 @@
-import re, SOAPpy, sqlite3, time, random, hashlib
+import re, SOAPpy, sqlite3, time, random, hashlib, platform
 
-PATH_DB='/var/cache/securedfamily/securedfamily.db'
 MAX_CACHE_URLS_ACEPTADAS=1000
 MAX_CACHE_URLS_DENEGADAS=30
 DEBUG_TIEMPOS=True
+
+if  platform.uname()[0] == 'Linux':
+    PATH_DB='/var/cache/securedfamily/securedfamily.db'
+else:
+    PATH_DB='C:\securedfamily.db'
+
 
 def obtenerTiempoParcial(inicio):
     fin=time.time()

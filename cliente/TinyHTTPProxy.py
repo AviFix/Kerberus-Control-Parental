@@ -282,7 +282,7 @@ def daemonize (logger):
     
 def main ():
     logfile = None
-    daemon  = False
+    daemon  = True 
     max_log_size = 20
     port = 3128
     allowed = []
