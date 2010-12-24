@@ -1,4 +1,6 @@
-import re, sqlite3, time, random, hashlib, platform, xmlrpclib
+import re, sqlite3, time, random, hashlib, platform, xmlrpclib, os
+
+from funciones import *
 
 MAX_CACHE_URLS_ACEPTADAS=1000
 MAX_CACHE_URLS_DENEGADAS=30
@@ -9,6 +11,8 @@ if  platform.uname()[0] == 'Linux':
 else:
     PATH_DB='C:\securedfamily.db'
 
+if not os.path.exists(PATH_DB):
+    crearDBCliente(PATH_DB)
 
 def obtenerTiempoParcial(inicio):
     fin=time.time()
@@ -153,7 +157,6 @@ class Usuario:
             self.buffer_denegadas=[]
 
     def validarRemotamente(self, url):
-        #server = SOAPpy.SOAPProxy("http://securedfamily.no-ip.org:8081/")
         server = xmlrpclib.ServerProxy('http://securedfamily.no-ip.org:8081/')
         if server.urlHabilitada(url):        
             self.cache_urls_aceptadas.append(url)
