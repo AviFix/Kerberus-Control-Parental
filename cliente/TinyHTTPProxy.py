@@ -133,13 +133,17 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
             if scm == 'http':
                 if self._connect_to(netloc, soc):
                     self.log_request()
-                    soc.send("%s %s %s\r\n" % (self.command, urlparse.urlunparse(('', '', path, params, query,'')),self.request_version))
-                    self.headers['Connection'] = 'close'
-                    del self.headers['Proxy-Connection']
-                    for key_val in self.headers.items():
-                        soc.send("%s: %s\r\n" % key_val)
-                    soc.send("\r\n")
-                    self._read_write(soc)
+                    try:
+                        soc.send("%s %s %s\r\n" % (self.command, urlparse.urlunparse(('', '', path, params, query,'')),self.request_version))
+                        self.headers['Connection'] = 'close'
+                        del self.headers['Proxy-Connection']
+                        for key_val in self.headers.items():
+                            soc.send("%s: %s\r\n" % key_val)
+                        soc.send("\r\n")
+                        self._read_write(soc)
+                    except:
+                        print "Hubo un error en el metodo do_GET"
+                    
             elif scm == 'ftp':
                 # fish out user and password information
                 i = netloc.find ('@')

@@ -162,24 +162,28 @@ class Usuario:
             self.buffer_denegadas=[]
 
     def validarRemotamente(self, url):
+        if url[0:7] <> "http://" :
+            url="https://"+url
+            print "convertiendo la url a https"
         request=urllib2.Request(url)
         request.add_header('UserID', '1')
         try:
             respuesta=urllib2.urlopen(request)
+            return True
         except urllib2.HTTPError , salida:
             if salida.code==204:
                 return True
             else:
                 return False
-        
-        if server.urlHabilitada(url):        
-            self.cache_urls_aceptadas.append(url)
-            self.persistirACacheAceptadas(url)
-            return True
-        else:
-            self.cache_urls_denegadas.append(url)
-            self.persistirACacheDenegadas(url)
-            return False
+#        
+#        if server.urlHabilitada(url):        
+#            self.cache_urls_aceptadas.append(url)
+#            self.persistirACacheAceptadas(url)
+#            return True
+#        else:
+#            self.cache_urls_denegadas.append(url)
+#            self.persistirACacheDenegadas(url)
+#            return False
           
 class AdministradorDeUsuarios:
         def __init__(self):
