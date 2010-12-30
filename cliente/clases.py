@@ -1,4 +1,4 @@
-import re, sqlite3, time, random, hashlib, platform, xmlrpclib, os
+import re, sqlite3, time, random, hashlib, platform, xmlrpclib, os, urllib2
 
 from funciones import *
 
@@ -33,6 +33,11 @@ class Usuario:
         self.recargarCacheAceptadas()
         self.recargarCacheDenegadas()
         conexion.close()
+        securedfamily_server={'http': 'http://127.0.0.1:8081', 'https': 'http://127.0.0.1:8081'}
+        proxy_handler=urllib2.ProxyHandler(securedfamily_server)
+        opener=urllib2.build_opener(proxy_handler)
+        urllib2.install_opener(opener)
+        
         del(self.cursor)
         self.buffer_denegadas=[]
         self.buffer_aceptadas=[]   
@@ -157,7 +162,16 @@ class Usuario:
             self.buffer_denegadas=[]
 
     def validarRemotamente(self, url):
-        server = xmlrpclib.ServerProxy('http://securedfamily.no-ip.org:8081/')
+        request=urllib2.Request(url)
+        request.add_header('UserID', '1')
+        try:
+            respuesta=urllib2.urlopen(request)
+        except urllib2.HTTPError , salida:
+            if salida.code==204:
+                return True
+            else:
+                return False
+        
         if server.urlHabilitada(url):        
             self.cache_urls_aceptadas.append(url)
             self.persistirACacheAceptadas(url)
