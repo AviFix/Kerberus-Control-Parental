@@ -1,4 +1,4 @@
-import re, sqlite3, time, random, hashlib, platform, xmlrpclib, os, urllib2
+import re, sqlite3, time, random, hashlib, platform, xmlrpclib, os, httplib
 
 from funciones import *
 
@@ -33,10 +33,10 @@ class Usuario:
         self.recargarCacheAceptadas()
         self.recargarCacheDenegadas()
         conexion.close()
-        securedfamily_server={'http': 'http://127.0.0.1:8081', 'https': 'http://127.0.0.1:8081'}
-        proxy_handler=urllib2.ProxyHandler(securedfamily_server)
-        opener=urllib2.build_opener(proxy_handler)
-        urllib2.install_opener(opener)
+#        securedfamily_server={'http': 'http://127.0.0.1:8081', 'https': 'http://127.0.0.1:8081'}
+#        proxy_handler=urllib2.ProxyHandler(securedfamily_server)
+#        opener=urllib2.build_opener(proxy_handler)
+#        urllib2.install_opener(opener)
         
         del(self.cursor)
         self.buffer_denegadas=[]
@@ -164,17 +164,19 @@ class Usuario:
     def validarRemotamente(self, url):
         if url[0:7] <> "http://" :
             url="https://"+url
-            print "convertiendo la url a https"
-        request=urllib2.Request(url)
-        request.add_header('UserID', '1')
-        try:
-            respuesta=urllib2.urlopen(request)
-            return True
-        except urllib2.HTTPError , salida:
-            if salida.code==204:
-                return True
-            else:
-                return False
+            print "convertiendo la url a https, url convertida: %s" % url
+        headers = {"UserID": "1","URL":url}
+        conn = httplib.HTTPConnection("localhost:8081")
+        conn.request("HEAD", "/", "", headers)
+        response = conn.getresponse()
+        respuesta = str(response.status)+" "+str(response.reason)
+        print respuesta
+        conn.close()     
+        if response.status == 204 or response.status == 200:
+            return True, respuesta
+        else:
+            return False, respuesta
+                    
 #        
 #        if server.urlHabilitada(url):        
 #            self.cache_urls_aceptadas.append(url)

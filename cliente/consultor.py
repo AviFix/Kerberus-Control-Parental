@@ -73,10 +73,11 @@ class Consultor:
             self.debug("CACHEADA, Denegada: " + url+"\n", DEBUG_CACHEADA_PERM)
             return False, "CACHEADA, Denegada"
             
-        elif usuario.validarRemotamente(url):
-            self.debug("Url validada remotamente : " + url+"\n", DEBUG_VALIDA_REM)
-            return True,  "Url validada remotamente"
-            
         else:
-            self.debug("Url denegada remotamente : " + url+"\n", DEBUG_NO_VALIDA_REM)
-            return False, "Url denegada remotamente"
+            valido, mensaje= usuario.validarRemotamente(url)
+            if valido:
+                self.debug("Url validada remotamente : " + url+"\n"+"Motivo: "+mensaje, DEBUG_VALIDA_REM)
+                return True,  "Url validada remotamente"
+            else:
+                self.debug("Url denegada remotamente : " + url+"\n"+"Motivo: "+mensaje, DEBUG_NO_VALIDA_REM)
+                return False, "Url denegada remotamente"
