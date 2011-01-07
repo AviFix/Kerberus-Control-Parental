@@ -29,7 +29,7 @@ class Consultor:
             fin=time.time()
             tiempototal=fin-self.inicio
             print  texto
-            print "Tiempo: %s segs." % tiempototal
+            print "Tiempo: %s segs.\n" % tiempototal
             
     def extensionValida(self, url):
         url=url.lower()
@@ -46,38 +46,38 @@ class Consultor:
             self.debug("Usuario Administrador\n", DEBUG_IS_ADMIN)
             
         elif usuario.dominioDenegado(url):
-            self.debug("Dominio denegado: " + url+"\n", DEBUG_DOM_DENG)
+            self.debug("Dominio denegado: " + url, DEBUG_DOM_DENG)
             return False, "Dominio Denegado"
             
         elif usuario.dominioPermitido(url):
-            self.debug("Dominio permitido: " + url+"\n", DEBUG_DOM_PERM)
+            self.debug("Dominio permitido: " + url, DEBUG_DOM_PERM)
             return True,  "Dominio permitido"
             
         elif usuario.dominioPublicamentePermitido(url):
-            self.debug("Dominio publicamente permitido: " + url+"\n", DEBUG_DOM_PUB_DENG)
+            self.debug("Dominio publicamente permitido: " + url, DEBUG_DOM_PUB_DENG)
             return True, "Dominio publicamente permitido"
             
         elif usuario.dominioPublicamenteDenegado(url):
-            self.debug("Dominio publicamente denegado: " + url+"\n", DEBUG_DOM_PUB_PERM)
+            self.debug("Dominio publicamente denegado: " + url, DEBUG_DOM_PUB_PERM)
             return False, "Dominio publicamente denegado"
             
         elif self.extensionValida(url):
-            self.debug("Exension valida: " + url +"\n", DEBUG_EXTENSIONES)
+            self.debug("Exension valida: " + url , DEBUG_EXTENSIONES)
             return True, "Exension valida"
             
         elif usuario.cacheAceptadas(url):
-            self.debug("CACHEADA, Autorizada: " + url+"\n", DEBUG_CACHEADA_PERM)
+            self.debug("CACHEADA, Autorizada: " + url, DEBUG_CACHEADA_PERM)
             return True, "CACHEADA, Autorizada"
             
         elif usuario.cacheDenegadas(url):
-            self.debug("CACHEADA, Denegada: " + url+"\n", DEBUG_CACHEADA_PERM)
+            self.debug("CACHEADA, Denegada: " + url, DEBUG_CACHEADA_PERM)
             return False, "CACHEADA, Denegada"
             
         else:
             valido, mensaje= usuario.validarRemotamente(url)
             if valido:
-                self.debug("Url validada remotamente : " + url+"\n"+"Motivo: "+mensaje, DEBUG_VALIDA_REM)
-                return True,  "Url validada remotamente"
+                self.debug("Url validada remotamente : " + url, DEBUG_VALIDA_REM)
+                return True,  ""
             else:
                 self.debug("Url denegada remotamente : " + url+"\n"+"Motivo: "+mensaje, DEBUG_NO_VALIDA_REM)
                 return False, "Url denegada remotamente"

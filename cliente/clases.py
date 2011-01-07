@@ -6,6 +6,7 @@ MAX_CACHE_URLS_ACEPTADAS=1000
 MAX_CACHE_URLS_DENEGADAS=30
 DEBUG_TIEMPOS=True
 SECUREDFAMILYSERVER="securedfamily.no-ip.org:8081"
+
 if  platform.uname()[0] == 'Linux':
     PATH_DB='/var/cache/securedfamily/securedfamily.db'
 else:
@@ -33,7 +34,6 @@ class Usuario:
         self.recargarCacheAceptadas()
         self.recargarCacheDenegadas()
         conexion.close()
-        
         del(self.cursor)
         self.buffer_denegadas=[]
         self.buffer_aceptadas=[]   
@@ -158,9 +158,6 @@ class Usuario:
             self.buffer_denegadas=[]
 
     def validarRemotamente(self, url):
-        if url[0:7] <> "http://" :
-            url="https://"+url
-            print "convertiendo la url a https, url convertida: %s" % url
         headers = {"UserID": "1","URL":url}
         conn = httplib.HTTPConnection(SECUREDFAMILYSERVER)
         conn.request("HEAD", "/", "", headers)
@@ -170,7 +167,7 @@ class Usuario:
         if response.status == 403:
             return False, respuesta
         else:
-            return True, respuesta
+            return True, ""
           
 class AdministradorDeUsuarios:
         def __init__(self):
