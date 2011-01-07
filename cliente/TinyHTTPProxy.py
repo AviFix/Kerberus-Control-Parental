@@ -73,7 +73,6 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         self.wfile.write(msg)
         
     def _connect_to(self, netloc, soc):
-        # Paso 2: conexion al dominio
         i = netloc.find(':')
         if i >= 0:
             host_port = netloc[:i], int(netloc[i+1:])
@@ -85,15 +84,15 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
             usuario, password=base64.b64decode(proxy_user.split(' ')[1]).split(':')
         else:
             self.pedirUsuario("Se requiere un usuario")
-            return 1
+            return False
         if not usuario:
             self.pedirUsuario("Se requiere un usuario")
-            return 1
+            return False
         else:
             permitido, motivo=consultor.validarUrl(usuario, password, self.path)
             if not permitido:
                 self.denegar(motivo)
-                return 1
+                return False
 
         self.server.logger.log (logging.INFO, "connect to %s:%d", host_port[0], host_port[1])
         try: 
@@ -104,8 +103,8 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
             except: 
                 msg = arg
                 self.send_error(404, msg)
-            return 0
-        return 1
+            return False
+        return True
 
     def do_CONNECT(self):
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -143,7 +142,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                         self._read_write(soc)
                     except:
                         print "Hubo un error en el metodo do_GET"
-                    
+                                             
             elif scm == 'ftp':
                 # fish out user and password information
                 i = netloc.find ('@')

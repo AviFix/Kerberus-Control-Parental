@@ -165,23 +165,12 @@ class Usuario:
         conn = httplib.HTTPConnection(SECUREDFAMILYSERVER)
         conn.request("HEAD", "/", "", headers)
         response = conn.getresponse()
-        respuesta = str(response.status)+" "+str(response.reason)
-        print respuesta
+        respuesta = str(response.reason)
         conn.close()     
-        if response.status == 204 or response.status == 200:
-            return True, respuesta
-        else:
+        if response.status == 403:
             return False, respuesta
-                    
-#        
-#        if server.urlHabilitada(url):        
-#            self.cache_urls_aceptadas.append(url)
-#            self.persistirACacheAceptadas(url)
-#            return True
-#        else:
-#            self.cache_urls_denegadas.append(url)
-#            self.persistirACacheDenegadas(url)
-#            return False
+        else:
+            return True, respuesta
           
 class AdministradorDeUsuarios:
         def __init__(self):
