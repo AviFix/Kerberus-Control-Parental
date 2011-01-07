@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import time, sqlite3
-#from pysqlite2 import dbapi2 as sqlite3
 
 from clases import *
 
@@ -42,42 +41,51 @@ class Consultor:
         usuario=self.usuarios.obtenerUsuario(username)
         self.inicio=time.time()
         if usuario.es_admin:
-            return True,  "Usuario administrador"
-            self.debug("Usuario Administrador\n", DEBUG_IS_ADMIN)
+            mensaje= "Usuario administrador"
+            return True, mensaje
+            self.debug(mensaje, DEBUG_IS_ADMIN)
             
         elif usuario.dominioDenegado(url):
-            self.debug("Dominio denegado: " + url, DEBUG_DOM_DENG)
-            return False, "Dominio Denegado"
+            mensaje="Dominio denegado: " + url
+            self.debug(mensaje, DEBUG_DOM_DENG)
+            return False, mensaje
             
         elif usuario.dominioPermitido(url):
-            self.debug("Dominio permitido: " + url, DEBUG_DOM_PERM)
-            return True,  "Dominio permitido"
+            mensaje = "Dominio permitido: " + url
+            self.debug(mensaje, DEBUG_DOM_PERM)
+            return True,  mensaje
             
         elif usuario.dominioPublicamentePermitido(url):
-            self.debug("Dominio publicamente permitido: " + url, DEBUG_DOM_PUB_DENG)
-            return True, "Dominio publicamente permitido"
+            mensaje = "Dominio publicamente permitido: " + url
+            self.debug(mensaje, DEBUG_DOM_PUB_PERM)
+            return True, mensaje
             
         elif usuario.dominioPublicamenteDenegado(url):
-            self.debug("Dominio publicamente denegado: " + url, DEBUG_DOM_PUB_PERM)
-            return False, "Dominio publicamente denegado"
+            mensaje = "Dominio publicamente denegado: " + url
+            self.debug(mensaje, DEBUG_DOM_PUB_DENG)
+            return False, mensaje
             
         elif self.extensionValida(url):
-            self.debug("Exension valida: " + url , DEBUG_EXTENSIONES)
-            return True, "Exension valida"
+            mensaje = "Exension valida: " + url
+            self.debug(mensaje , DEBUG_EXTENSIONES)
+            return True, mensaje
             
         elif usuario.cacheAceptadas(url):
-            self.debug("CACHEADA, Autorizada: " + url, DEBUG_CACHEADA_PERM)
-            return True, "CACHEADA, Autorizada"
+            mensaje = "CACHEADA, Autorizada: " + url
+            self.debug(mensaje, DEBUG_CACHEADA_PERM)
+            return True, mensaje
             
         elif usuario.cacheDenegadas(url):
-            self.debug("CACHEADA, Denegada: " + url, DEBUG_CACHEADA_PERM)
-            return False, "CACHEADA, Denegada"
-            
+            mensaje = "CACHEADA, Denegada: " + url
+            self.debug(mensaje, DEBUG_CACHEADA_PERM)
+            return False, mensaje
         else:
-            valido, mensaje= usuario.validarRemotamente(url)
+            valido, razon= usuario.validarRemotamente(url)
             if valido:
-                self.debug("Url validada remotamente : " + url, DEBUG_VALIDA_REM)
+                mensaje = "Url validada remotamente : " + url
+                self.debug(mensaje, DEBUG_VALIDA_REM)
                 return True,  ""
             else:
-                self.debug("Url denegada remotamente : " + url+"\n"+"Motivo: "+mensaje, DEBUG_NO_VALIDA_REM)
-                return False, "Url denegada remotamente"
+                mensaje = "Url denegada remotamente : " + url+"\n"+"Motivo: "+razon
+                self.debug(mensaje, DEBUG_NO_VALIDA_REM)
+                return False, mensaje
