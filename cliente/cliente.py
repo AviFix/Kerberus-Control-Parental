@@ -36,7 +36,8 @@ sys.path.append('../consultor')
 from consultor import *
 
 DEFAULT_LOG_FILENAME = "proxy.log"
-
+BIND_ADDRESS = "0.0.0.0"
+BIND_PORT = 3128
 consultor=Consultor()
 
 class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
@@ -323,7 +324,8 @@ def main ():
     else:
         logger.log (logging.INFO, "Any clients will be served...")
 
-    server_address = (socket.gethostbyname (local_hostname), port)
+    #server_address = (socket.gethostbyname (local_hostname), port)
+    server_address = (BIND_ADDRESS, BIND_PORT)
     ProxyHandler.protocol = "HTTP/1.1"
     httpd = ThreadingHTTPServer (server_address, ProxyHandler, logger)
     sa = httpd.socket.getsockname ()
