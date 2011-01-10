@@ -3,4 +3,4 @@ import py2exe, sys
 
 sys.path.append('../')
 
-setup(console=['../TinyHTTPProxy.py'])
+setup(console=['../cliente.py'])
