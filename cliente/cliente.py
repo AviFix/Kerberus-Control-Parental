@@ -35,16 +35,19 @@ sys.path.append('../consultor')
 
 from consultor import *
 
-DEFAULT_LOG_FILENAME = "proxy.log"
 BIND_ADDRESS = "0.0.0.0"
 BIND_PORT = 3128
+LOG_FILENAME ="/var/log/securedfamily-cliente.log"
+LOG_SIZE_MB =20
+LOG_CANT_ROTACIONES =5
+
 consultor=Consultor()
 
 class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
     __base = BaseHTTPServer.BaseHTTPRequestHandler
     __base_handle = __base.handle
     
-    server_version = "TinyHTTPProxy/" + __version__
+    server_version = "Familia Segura - Cliente /" + __version__
     rbufsize = 0                        # self.rfile Be unbuffered
     global consultor
     
@@ -208,39 +211,20 @@ class ThreadingHTTPServer (SocketServer.ThreadingMixIn,
                                             RequestHandlerClass)
         self.logger = logger
         
-def logSetup (filename, log_size, daemon):
-    logger = logging.getLogger ("TinyHTTPProxy")
-    #logger.setLevel (logging.INFO)
-    logger.setLevel (logging.ERROR)
-    if not filename:
-        if not daemon:
-            # display to the screen
-            handler = logging.StreamHandler ()
-        else:
-            handler = logging.handlers.RotatingFileHandler (DEFAULT_LOG_FILENAME,
-                                                            maxBytes=(log_size*(1<<20)),
-                                                            backupCount=5)
-    else:
-        handler = logging.handlers.RotatingFileHandler (filename,
-                                                        maxBytes=(log_size*(1<<20)),
-                                                        backupCount=5)
-    fmt = logging.Formatter ("[%(asctime)-12s.%(msecs)03d] "
-                             "%(levelname)-8s {%(name)s %(threadName)s}"
-                             " %(message)s",
-                             "%Y-%m-%d %H:%M:%S")
+def logSetup (logfile, logsize, cant_rotaciones):
+    logger = logging.getLogger ("Cliente")
+    logger.setLevel (logging.INFO)
+    #logger.setLevel (logging.ERROR)
+    handler = logging.handlers.RotatingFileHandler (logfile, maxBytes=(logsize*(1<<20)), backupCount=cant_rotaciones)
+    fmt = logging.Formatter (
+                                "[%(asctime)-12s.%(msecs)03d] "
+                                "%(levelname)-4s {%(name)s %(threadName)s}"
+                                " %(message)s",
+                                "%Y-%m-%d %H:%M:%S")
     handler.setFormatter (fmt)
-        
     logger.addHandler (handler)
     return logger
-
-def usage (msg=None):
-    if msg: print msg
-    print sys.argv[0], "[-p port] [-l logfile] [-dh] [allowed_client_name ...]]"
-    print
-    print "   -p       - Port to bind to"
-    print "   -l       - Path to logfile. If not specified, STDOUT is used"
-    print "   -d       - Run in the background"
-    print
+    
 
 def handler (signo, frame):
     while frame and isinstance (frame, FrameType):
@@ -250,86 +234,16 @@ def handler (signo, frame):
                 return
         frame = frame.f_back
     
-def daemonize (logger):
-    class DevNull (object):
-        def __init__ (self): self.fd = os.open ("/dev/null", os.O_WRONLY)
-        def write (self, *args, **kwargs): return 0
-        def read (self, *args, **kwargs): return 0
-        def fileno (self): return self.fd
-        def close (self): os.close (self.fd)
-    class ErrorLog:
-        def __init__ (self, obj): self.obj = obj
-        def write (self, string): self.obj.log (logging.ERROR, string)
-        def read (self, *args, **kwargs): return 0
-        def close (self): pass
-        
-    if os.fork () != 0:
-        ## allow the child pid to instanciate the server
-        ## class
-        sleep (1)
-        sys.exit (0)
-    os.setsid ()
-    fd = os.open ('/dev/null', os.O_RDONLY)
-    if fd != 0:
-        os.dup2 (fd, 0)
-        os.close (fd)
-    null = DevNull ()
-    log = ErrorLog (logger)
-    sys.stdout = null
-    sys.stderr = log
-    sys.stdin = null
-    fd = os.open ('/dev/null', os.O_WRONLY)
-    #if fd != 1: os.dup2 (fd, 1)
-    os.dup2 (sys.stdout.fileno (), 1)
-    if fd != 2: os.dup2 (fd, 2)
-    if fd not in (1, 2): os.close (fd)
-    
 def main ():
-    logfile = None
-    daemon  = False 
-    max_log_size = 20
-    port = 3128
-    allowed = []
     run_event = threading.Event ()
-    local_hostname = socket.gethostname ()
-    
-    try: 
-        opts, args = getopt.getopt (sys.argv[1:], "l:dhp:", [])
-    except getopt.GetoptError, e:
-        usage (str (e))
-        return 1
-
-    for opt, value in opts:
-        if opt == "-p": port = int (value)
-        if opt == "-l": logfile = value
-        if opt == "-d": daemon = not daemon
-        if opt == "-h":
-            usage ()
-            return 0
-        
     # setup the log file
-    logger = logSetup (logfile, max_log_size, daemon)
-    
-    if daemon:
-        daemonize (logger)
+    logger = logSetup (LOG_FILENAME, LOG_SIZE_MB, LOG_CANT_ROTACIONES)
     signal.signal (signal.SIGINT, handler)
-        
-    if args:
-        allowed = []
-        for name in args:
-            client = socket.gethostbyname(name)
-            allowed.append(client)
-            logger.log (logging.INFO, "Accept: %s (%s)" % (client, name))
-        ProxyHandler.allowed_clients = allowed
-    else:
-        logger.log (logging.INFO, "Any clients will be served...")
-
-    #server_address = (socket.gethostbyname (local_hostname), port)
     server_address = (BIND_ADDRESS, BIND_PORT)
     ProxyHandler.protocol = "HTTP/1.1"
     httpd = ThreadingHTTPServer (server_address, ProxyHandler, logger)
     sa = httpd.socket.getsockname ()
-    print "Servering HTTP on", sa[0], "port", sa[1]
+    print "Familia Segura - Cliente, atendiendo en ", sa[0], "puerto", sa[1]
     req_count = 0
     while not run_event.isSet ():
         try:

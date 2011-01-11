@@ -5,7 +5,8 @@ from funciones import *
 MAX_CACHE_URLS_ACEPTADAS=1000
 MAX_CACHE_URLS_DENEGADAS=30
 DEBUG_TIEMPOS=True
-SECUREDFAMILYSERVER="securedfamily.no-ip.org:8081"
+#SECUREDFAMILYSERVER="securedfamily.no-ip.org:8081"
+SECUREDFAMILYSERVER="rectorado.unl.edu.ar:80"
 
 if  platform.uname()[0] == 'Linux':
     PATH_DB='/var/cache/securedfamily/securedfamily.db'
@@ -16,7 +17,7 @@ if not os.path.exists(PATH_DB):
     crearDBCliente(PATH_DB)
 
 def obtenerTiempoParcial(inicio):
-    fin=time.time()
+    fin=timLOG_FILENAME, LOG_SIZE_MB, LOG_CANT_ROTACIONESe.time()
     return fin-inicio    
 
 #Clases
@@ -160,7 +161,7 @@ class Usuario:
     def validarRemotamente(self, url):
         headers = {"UserID": "1","URL":url}
         conn = httplib.HTTPConnection(SECUREDFAMILYSERVER)
-        conn.request("HEAD", "/", "", headers)
+        conn.request("HEAD", "/balanceoprueba/", "", headers)
         response = conn.getresponse()
         respuesta = str(response.reason)
         conn.close()     
