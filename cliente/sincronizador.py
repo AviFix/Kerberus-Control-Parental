@@ -1,44 +1,76 @@
-import SOAPpy, sys, time,  os,  sqlite3
+import SOAPpy, sys, time,  os,  sqlite3, httplib
 
 from funciones import *
 
 PATH_DB='/var/cache/securedfamily/securedfamily.db'
+SERVER="securedfamily.no-ip.org:8081"
 
-def sincronizarDominiosConServer(tiempo_actual):  
-        cursor.execute('delete from dominios_publicamente_denegados')
+def sincronizarDominiosPermitidos():
         cursor.execute('delete from dominios_publicamente_permitidos')
+        conexion=httplib.HTTPConnection(SERVER)
+        headers = {"UserID": "1","Peticion":"obtenerDominiosPermitidos"}
+        conexion.request("GET", "/", "", headers)
+        respuesta=conexion.getresponse()
+        dominios=respuesta.read()
+        if dominios[-1] != '':
+            array_dominios=dominios.rsplit("\n")  
+        else:
+            array_dominios=dominios.rsplit("\n")[0:-1]
         
-        registro=server.getDominiosPermitidos()
-        i=0
-        while i <len(registro):
-            cursor.execute('insert into dominios_publicamente_permitidos(tipo,url) values(?,?)',(registro[i],registro[i+1]), ) 
-            i=i+2
-            
-        registro=server.getDominiosDenegados()
-        i=0
-        while i <len(registro):
-            cursor.execute('insert into dominios_publicamente_denegados(tipo,url) values(?,?)',(registro[i],registro[i+1]), ) 
-            i=i+2
+        for fila in array_dominios:
+            registro=fila.split(',')
+            cursor.execute('insert into dominios_publicamente_permitidos(tipo,url) values(?,?)',(registro[0],registro[1]), ) 
+        conexion_db.commit()        
 
-        conexion.commit()                      
+def sincronizarDominiosDenegados():
+        cursor.execute('delete from dominios_publicamente_denegados')
+        conexion=httplib.HTTPConnection(SERVER)
+        headers = {"UserID": "1","Peticion":"obtenerDominiosDenegados"}
+        conexion.request("GET", "/", "", headers)
+        respuesta=conexion.getresponse()
+        dominios=respuesta.read()
+        if dominios[-1]=="":
+            array_dominios=dominios.rsplit("\n")[0:-1]
+        else:
+            array_dominios=dominios.rsplit("\n")
+        print array_dominios
+        for fila in array_dominios:
+            registro=fila.split(',')
+            cursor.execute('insert into dominios_publicamente_denegados(tipo,url) values(?,?)',(registro[0],registro[1]), ) 
+            print "se inserto: %s,%s" % (registro[0], registro[1])
+        conexion_db.commit()        
+
+def getPeriodoDeActualizacion():
+        conexion=httplib.HTTPConnection(SERVER)
+        headers = {"UserID": "1","Peticion":"getPeriodoDeActualizacion"}
+        conexion.request("GET", "/", "", headers)
+        respuesta=conexion.getresponse()
+        return respuesta.read()
+        
+def sincronizarDominiosConServer(tiempo_actual):  
+        timestring=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(tiempo_actual))
+        sincronizarDominiosPermitidos()
+        sincronizarDominiosDenegados()
         cursor.execute('update sincronizador set ultima_actualizacion=?', (tiempo_actual, ))
-        conexion.commit()          
+        conexion_db.commit()          
         print "Se ha sincronizado la base de datos de dominios publicamente aceptados/denegados"
 
 def borrarUrlsViejasCache(hora_actual, edad_max):
     tiempo_expiracion=hora_actual-edad_max
+    timestring=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(tiempo_expiracion))
     respuesta=cursor.execute('delete from cache_urls_aceptadas where hora < ? ', (tiempo_expiracion, ))
-    conexion.commit()    
+    conexion_db.commit()    
     respuesta=cursor.execute('delete from cache_urls_denegadas where hora < ? ', (tiempo_expiracion, ))
-    conexion.commit()
+    conexion_db.commit()
     print "Se han borrado las urls viejas de cache"    
 
 
 while True:
-    server = SOAPpy.SOAPProxy("http://securedfamily.no-ip.org:8081/")
-    periodo_expiracion=server.getPeriodoDeActualizacion()
-    conexion = sqlite3.connect(PATH_DB)
-    cursor=conexion.cursor()
+    periodo_expiracion=getPeriodoDeActualizacion()
+    # paso de hora a segundos el periodo de expiracion
+    periodo_expiracion=int(periodo_expiracion)*60*60
+    conexion_db = sqlite3.connect(PATH_DB)
+    cursor=conexion_db.cursor()
     ultima_actualizacion=cursor.execute('select ultima_actualizacion from sincronizador').fetchone()[0]
     tiempo_actual=time.time()
     tiempo_transcurrido=tiempo_actual - ultima_actualizacion
@@ -49,4 +81,4 @@ while True:
         tiempo_restante=ultima_actualizacion + periodo_expiracion - tiempo_actual
         print "Faltan %s hs para que se vuelva a sincronizar" % (tiempo_restante/60/60)
         time.sleep(tiempo_restante)
-    conexion.close()
+    conexion_db.close()
