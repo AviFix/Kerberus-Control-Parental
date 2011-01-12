@@ -12,14 +12,11 @@ def sincronizarDominiosPermitidos():
         conexion.request("GET", "/", "", headers)
         respuesta=conexion.getresponse()
         dominios=respuesta.read()
-        if dominios[-1] != '':
-            array_dominios=dominios.rsplit("\n")  
-        else:
-            array_dominios=dominios.rsplit("\n")[0:-1]
-        
+        array_dominios=dominios.rsplit("\n")
         for fila in array_dominios:
             registro=fila.split(',')
-            cursor.execute('insert into dominios_publicamente_permitidos(tipo,url) values(?,?)',(registro[0],registro[1]), ) 
+            if len(registro)>1 :
+                cursor.execute('insert into dominios_publicamente_permitidos(tipo,url) values(?,?)',(registro[0],registro[1]), ) 
         conexion_db.commit()        
 
 def sincronizarDominiosDenegados():
@@ -29,15 +26,11 @@ def sincronizarDominiosDenegados():
         conexion.request("GET", "/", "", headers)
         respuesta=conexion.getresponse()
         dominios=respuesta.read()
-        if dominios[-1]=="":
-            array_dominios=dominios.rsplit("\n")[0:-1]
-        else:
-            array_dominios=dominios.rsplit("\n")
-        print array_dominios
+        array_dominios=dominios.rsplit("\n")
         for fila in array_dominios:
             registro=fila.split(',')
-            cursor.execute('insert into dominios_publicamente_denegados(tipo,url) values(?,?)',(registro[0],registro[1]), ) 
-            print "se inserto: %s,%s" % (registro[0], registro[1])
+            if len(registro)>1 :        
+                cursor.execute('insert into dominios_publicamente_denegados(tipo,url) values(?,?)',(registro[0],registro[1]), ) 
         conexion_db.commit()        
 
 def getPeriodoDeActualizacion():
