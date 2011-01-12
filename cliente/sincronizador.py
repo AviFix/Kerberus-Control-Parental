@@ -7,7 +7,7 @@ PATH_DB='/var/cache/securedfamily/securedfamily.db'
 def sincronizarDominiosConServer(tiempo_actual):  
         cursor.execute('delete from dominios_publicamente_denegados')
         cursor.execute('delete from dominios_publicamente_permitidos')
-        server = SOAPpy.SOAPProxy("http://securedfamily.no-ip.org:8081/")
+        
         registro=server.getDominiosPermitidos()
         i=0
         while i <len(registro):
