@@ -1,21 +1,6 @@
 #!/usr/bin/python
 
-__doc__ = """Tiny HTTP Proxy.
-
-This module implements GET, HEAD, POST, PUT and DELETE methods
-on BaseHTTPServer, and behaves as an HTTP proxy.  The CONNECT
-method is also implemented experimentally, but has not been
-tested yet.
-
-Any help will be greatly appreciated.		SUZUKI Hisao
-
-2009/11/23 - Modified by Mitko Haralanov
-             * Added very simple FTP file retrieval
-             * Added custom logging methods
-             * Added code to make this a standalone application
-"""
-
-__version__ = "0.3.1"
+__version__ = "0.3"
 
 import BaseHTTPServer, select, socket, SocketServer, urlparse
 import logging
@@ -95,7 +80,8 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         else:
             permitido, motivo=consultor.validarUrl(usuario, password, self.path)
             if not permitido:
-                self.denegar(motivo)
+                self.pedirUsuario("Usuario invalido")
+                #self.denegar(motivo)
                 return False
 
         self.server.logger.log (logging.INFO, "connect to %s:%d", host_port[0], host_port[1])
@@ -213,8 +199,8 @@ class ThreadingHTTPServer (SocketServer.ThreadingMixIn,
         
 def logSetup (logfile, logsize, cant_rotaciones):
     logger = logging.getLogger ("Cliente")
-    logger.setLevel (logging.INFO)
-    #logger.setLevel (logging.ERROR)
+    #logger.setLevel (logging.INFO)
+    logger.setLevel (logging.ERROR)
     handler = logging.handlers.RotatingFileHandler (logfile, maxBytes=(logsize*(1<<20)), backupCount=cant_rotaciones)
     fmt = logging.Formatter (
                                 "[%(asctime)-12s.%(msecs)03d] "

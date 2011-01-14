@@ -3,14 +3,14 @@ import SOAPpy, sys, time,  os,  sqlite3, httplib
 from funciones import *
 
 PATH_DB='/var/cache/securedfamily/securedfamily.db'
-#SERVER="securedfamily.no-ip.org:8081"
-SERVER="190.122.240.73:80"
+SERVER="securedfamily.no-ip.org:8081"
+
 
 def sincronizarDominiosPermitidos():
         cursor.execute('delete from dominios_publicamente_permitidos')
         conexion=httplib.HTTPConnection(SERVER)
         headers = {"UserID": "1","Peticion":"obtenerDominiosPermitidos"}
-        conexion.request("GET", "/pruebabalanceo", "", headers)
+        conexion.request("GET", "/", "", headers)
         respuesta=conexion.getresponse()
         dominios=respuesta.read()
         array_dominios=dominios.rsplit("\n")          
@@ -31,11 +31,10 @@ def sincronizarDominiosDenegados():
             array_dominios=dominios.rsplit("\n")[0:-1]
         else:
             array_dominios=dominios.rsplit("\n")
-        print array_dominios
         for fila in array_dominios:
             registro=fila.split(',')
-            cursor.execute('insert into dominios_publicamente_denegados(tipo,url) values(?,?)',(registro[0],registro[1]), ) 
-            print "se inserto: %s,%s" % (registro[0], registro[1])
+            if len(registro)>1:
+                cursor.execute('insert into dominios_publicamente_denegados(tipo,url) values(?,?)',(registro[0],registro[1]), ) 
         conexion_db.commit()        
 
 def getPeriodoDeActualizacion():
@@ -73,6 +72,7 @@ while True:
     tiempo_actual=time.time()
     tiempo_transcurrido=tiempo_actual - ultima_actualizacion
     if (tiempo_transcurrido > periodo_expiracion)  :
+        print "Sincronizando dominios permitidos/dengados con servidor..."
         sincronizarDominiosConServer(tiempo_actual)
         borrarUrlsViejasCache(tiempo_actual, periodo_expiracion)    
     else:

@@ -15,7 +15,7 @@ DEBUG_VALIDA_REM=True
 DEBUG_NO_VALIDA_REM=True
 DEBUG_TIEMPO_REMOTO=True
 DEBUG_IS_ADMIN=False
-
+LOG_TIEMPOS_MAYORES_A=1
 
 # Codigo central
 
@@ -27,8 +27,9 @@ class Consultor:
         if activo:
             fin=time.time()
             tiempototal=fin-self.inicio
-            print  texto
-            print "Tiempo: %s segs.\n" % tiempototal
+            if tiempototal >=LOG_TIEMPOS_MAYORES_A:
+                print  texto
+                print "Tiempo: %s segs.\n" % tiempototal
             
     def extensionValida(self, url):
         url=url.lower()
