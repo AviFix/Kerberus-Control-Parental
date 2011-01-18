@@ -11,7 +11,7 @@ import os
 import signal
 import threading
 from types import FrameType, CodeType
-from time import sleep
+from time import sleep, time
 import ftplib
 import re
 import base64
@@ -35,7 +35,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
     server_version = "Familia Segura - Cliente /" + __version__
     rbufsize = 0                        # self.rfile Be unbuffered
     global consultor
-    
+    ultimo_acceso={}
     
     def handle(self):
         # Paso 1: autenticacion de ip origen
@@ -68,22 +68,6 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         else:
             host_port = netloc, 80
 
-        proxy_user=self.headers.getheader('Proxy-Authorization')
-        if proxy_user:
-            usuario, password=base64.b64decode(proxy_user.split(' ')[1]).split(':')
-        else:
-            self.pedirUsuario("Se requiere un usuario")
-            return False
-        if not usuario:
-            self.pedirUsuario("Se requiere un usuario")
-            return False
-        else:
-            permitido, motivo=consultor.validarUrl(usuario, password, self.path)
-            if not permitido:
-                self.pedirUsuario("Usuario invalido")
-                #self.denegar(motivo)
-                return False
-
         self.server.logger.log (logging.INFO, "connect to %s:%d", host_port[0], host_port[1])
         try: 
             soc.connect(host_port)
@@ -114,6 +98,26 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         # Paso 3: peticion del recurso
         (scm, netloc, path, params, query, fragment) = urlparse.urlparse(
             self.path, 'http')
+
+        proxy_user=self.headers.getheader('Proxy-Authorization')
+        if proxy_user:
+            usuario, password=base64.b64decode(proxy_user.split(' ')[1]).split(':')
+        else:
+            self.pedirUsuario("Se requiere un usuario")
+            return False
+        if not usuario:
+            self.pedirUsuario("Se requiere un usuario")
+            return False
+        else:
+            permitido, motivo=consultor.validarUrl(usuario, password, self.path)
+            if not permitido:
+                if motivo == "Usuario no valido":
+                    self.pedirUsuario("Usuario invalido")
+                else:
+                    self.denegar(motivo)
+                return False
+
+
         if scm not in ('http', 'ftp') or fragment or not netloc:
             self.send_error(400, "bad url %s" % self.path)
             return
@@ -199,8 +203,8 @@ class ThreadingHTTPServer (SocketServer.ThreadingMixIn,
         
 def logSetup (logfile, logsize, cant_rotaciones):
     logger = logging.getLogger ("Cliente")
-    #logger.setLevel (logging.INFO)
-    logger.setLevel (logging.ERROR)
+    logger.setLevel (logging.INFO)
+    #logger.setLevel (logging.ERROR)
     handler = logging.handlers.RotatingFileHandler (logfile, maxBytes=(logsize*(1<<20)), backupCount=cant_rotaciones)
     fmt = logging.Formatter (
                                 "[%(asctime)-12s.%(msecs)03d] "
