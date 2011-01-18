@@ -38,15 +38,15 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
     ultimo_acceso={}
     
     def handle(self):
-        # Paso 1: autenticacion de ip origen
-        (ip, port) =  self.client_address
-        self.server.logger.log (logging.INFO, "Request from '%s'", ip)
-        if hasattr(self, 'allowed_clients') and ip not in self.allowed_clients:
-            self.raw_requestline = self.rfile.readline()
-            if self.parse_request(): 
-                self.send_error(403)
-        else:
-            self.__base_handle()
+#        # Paso 1: autenticacion de ip origen
+#        (ip, port) =  self.client_address
+#        self.server.logger.log (logging.INFO, "Request from '%s'", ip)
+#        if hasattr(self, 'allowed_clients') and ip not in self.allowed_clients:
+#            self.raw_requestline = self.rfile.readline()
+#            if self.parse_request(): 
+#                self.send_error(403)
+#        else:
+        self.__base_handle()
     
     def pedirUsuario(self, motivo):
         self.send_response(407, motivo)
