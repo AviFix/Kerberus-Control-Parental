@@ -159,16 +159,48 @@ class Usuario:
 
     def validarRemotamente(self, url):
         headers = {"UserID": "1","URL":url}
-        conn = httplib.HTTPConnection(SECUREDFAMILYSERVER)
-        conn.request("HEAD", "/", "", headers)
-        response = conn.getresponse()
-        respuesta = str(response.reason)
-        conn.close()     
+        intento=0
+        while intento < 3:
+            try:
+                    conn = httplib.HTTPConnection(SECUREDFAMILYSERVER)
+                    conn.request("HEAD", "/", "", headers)
+                    response = conn.getresponse()
+                    respuesta = str(response.reason)
+                    conn.close()    
+                    break 
+            except:
+                    intento+=1
+        if intento == 3:
+            return False,  "No hay conexion al servidor"
+            
         if response.status == 403:
             return False, respuesta
         else:
             return True, ""
-          
+
+class ManejadorUrls:
+    def __init__(self):
+        self.buscadores=['Google']
+        
+    def agregarSafeSearch(self, url):
+        agregado_google="&safe=active"
+        if agregado not in url:
+            buscador=self.identificarBuscador(url)
+            if buscador == "Google":
+                url=url+agregado
+                return url
+        return url
+            
+    def soportaSafeSearch(self, url):
+        pagina=self.identificarBuscador(url)
+        return pagina in self.buscadores
+        
+    def identificarBuscador(self, url):
+        if re.match(".*google\..*/(custom|search|images)\?", url):
+            return "Google"
+        else:
+            return ""
+    
 class AdministradorDeUsuarios:
         def __init__(self):
             self.usuarios = []

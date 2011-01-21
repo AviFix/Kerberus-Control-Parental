@@ -63,9 +63,10 @@ def borrarUrlsViejasCache(hora_actual, edad_max):
 
 
 while True:
+    #obtiene el tiempo en minutos
     periodo_expiracion=getPeriodoDeActualizacion()
-    # paso de hora a segundos el periodo de expiracion
-    periodo_expiracion=int(periodo_expiracion)*60*60
+    # paso de minutos a segundos el periodo de expiracion
+    periodo_expiracion=int(periodo_expiracion)*60
     conexion_db = sqlite3.connect(PATH_DB)
     cursor=conexion_db.cursor()
     ultima_actualizacion=cursor.execute('select ultima_actualizacion from sincronizador').fetchone()[0]
@@ -77,6 +78,6 @@ while True:
         borrarUrlsViejasCache(tiempo_actual, periodo_expiracion)    
     else:
         tiempo_restante=ultima_actualizacion + periodo_expiracion - tiempo_actual
-        print "Faltan %s hs para que se vuelva a sincronizar" % (tiempo_restante/60/60)
+        print "Faltan %s minutos para que se vuelva a sincronizar" % (tiempo_restante/60)
         time.sleep(tiempo_restante)
     conexion_db.close()

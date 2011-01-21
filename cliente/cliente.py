@@ -5,15 +5,12 @@ __version__ = "0.3"
 import BaseHTTPServer, select, socket, SocketServer, urlparse
 import logging
 import logging.handlers
-import getopt
 import sys
-import os
 import signal
 import threading
 from types import FrameType, CodeType
-from time import sleep, time
+from time import time
 import ftplib
-import re
 import base64
 
 sys.path.append('../consultor')
@@ -27,6 +24,7 @@ LOG_SIZE_MB =20
 LOG_CANT_ROTACIONES =5
 
 consultor=Consultor()
+urls=ManejadorUrls()
 
 class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
     __base = BaseHTTPServer.BaseHTTPRequestHandler
@@ -35,8 +33,23 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
     server_version = "Familia Segura - Cliente /" + __version__
     rbufsize = 0                        # self.rfile Be unbuffered
     global consultor
-    ultimo_acceso={}
-    
+#    ultimo_acceso={}
+
+# Metodos de securedfamily
+    def pedirUsuario(self, motivo):
+        self.send_response(407, motivo)
+        self.send_header('Proxy-Authenticate', 'Basic realm="Familia Segura"')
+        self.send_header('Conection', 'close')
+        self.end_headers()    
+
+    def denegar(self, motivo):
+        msg="<html><h1>Sitio no permitido</h1><br><h2>Familia Segura</h2><br><h3>%s</h3></html>\r\n" % motivo
+        self.wfile.write(self.protocol_version + " 200 Connection established\r\n")
+        self.wfile.write("Proxy-agent: %s\r\n" % self.version_string())
+        self.wfile.write("\r\n")
+        self.wfile.write(msg)
+#
+
     def handle(self):
 #        # Paso 1: autenticacion de ip origen
 #        (ip, port) =  self.client_address
@@ -47,30 +60,17 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 #                self.send_error(403)
 #        else:
         self.__base_handle()
-    
-    def pedirUsuario(self, motivo):
-        self.send_response(407, motivo)
-        self.send_header('Proxy-Authenticate', 'Basic realm="Familia Segura"')
-        self.send_header('Conection', 'close')
-        self.end_headers()    
-
-    def denegar(self, motivo):
-        msg="<html><h1>Sitio no permitido</h1><br><h2>Familia Segura</h2><br><h3>Motivo: %s</h3></html>\r\n" % motivo
-        self.wfile.write(self.protocol_version + " 200 Connection established\r\n")
-        self.wfile.write("Proxy-agent: %s\r\n" % self.version_string())
-        self.wfile.write("\r\n")
-        self.wfile.write(msg)
-        
+            
     def _connect_to(self, netloc, soc):
+        # paso 2:conexion al sitio remoto
         i = netloc.find(':')
         if i >= 0:
             host_port = netloc[:i], int(netloc[i+1:])
         else:
             host_port = netloc, 80
-
         self.server.logger.log (logging.INFO, "connect to %s:%d", host_port[0], host_port[1])
         try: 
-            soc.connect(host_port)
+             soc.connect(host_port)
         except socket.error, arg:
             try: 
                 msg = arg[1]
@@ -85,8 +85,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         try:
             if self._connect_to(self.path, soc):
                 self.log_request(200)
-                self.wfile.write(self.protocol_version +
-                                 " 200 Connection established\r\n")
+                self.wfile.write(self.protocol_version +" 200 Connection established\r\n")
                 self.wfile.write("Proxy-agent: %s\r\n" % self.version_string())
                 self.wfile.write("\r\n")
                 self._read_write(soc, 300)
@@ -96,9 +95,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 
     def do_GET(self):
         # Paso 3: peticion del recurso
-        (scm, netloc, path, params, query, fragment) = urlparse.urlparse(
-            self.path, 'http')
-
+        # Verificacion del usuario y url
         proxy_user=self.headers.getheader('Proxy-Authorization')
         if proxy_user:
             usuario, password=base64.b64decode(proxy_user.split(' ')[1]).split(':')
@@ -116,11 +113,16 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                 else:
                     self.denegar(motivo)
                 return False
-
-
+        #
+        if urls.soportaSafeSearch(self.path):
+            url=urls.agregarSafeSearch(self.path)
+            print "soportaSafeSearch. Url Nueva: %s" % url
+        else:
+            url=self.path
+        (scm, netloc, path, params, query, fragment) = urlparse.urlparse(url, 'http')        
         if scm not in ('http', 'ftp') or fragment or not netloc:
-            self.send_error(400, "bad url %s" % self.path)
-            return
+            self.send_error(400, "Url erronea: %s" % self.path)
+            return False
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
             if scm == 'http':
@@ -153,8 +155,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                         ftp.retrbinary ("RETR %s"%path, self.connection.send)
                     ftp.quit ()
                 except Exception, e:
-                    self.server.logger.log (logging.WARNING, "FTP Exception: %s",
-                                            e)
+                    self.server.logger.log (logging.WARNING, "FTP Exception: %s", e)
         finally:
             soc.close() 
             self.connection.close()
@@ -167,18 +168,25 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         while 1:
             count += 1
             (ins, _, exs) = select.select(iw, ow, iw, 1)
-            if exs: break
+            if exs: 
+                break
             if ins:
                 for i in ins:
-                    if i is soc: out = self.connection
-                    else: out = soc
+                    if i is soc: 
+                        out = self.connection
+                    else: 
+                        out = soc
                     data = i.recv(8192)
                     if data:
-                        if local: local_data += data
-                        else: out.send(data)
+                        if local: 
+                            local_data += data
+                        else: 
+                            out.send(data)
                         count = 0
-            if count == max_idling: break
-        if local: return local_data
+            if count == max_idling: 
+                break
+        if local: 
+            return local_data
         return None
 
     do_HEAD = do_GET

@@ -87,6 +87,6 @@ class Consultor:
                 self.debug(mensaje, DEBUG_VALIDA_REM)
                 return True,  ""
             else:
-                mensaje = "Url denegada remotamente : " + url+"\n"+"Motivo: "+razon
+                mensaje = "%s : Url denegada remotamente \n Motivo: %s" % (url,  razon)
                 self.debug(mensaje, DEBUG_NO_VALIDA_REM)
                 return False, mensaje
