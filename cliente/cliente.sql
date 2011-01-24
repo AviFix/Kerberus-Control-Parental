@@ -49,6 +49,9 @@ CREATE TABLE sincronizador(
     ultima_actualizacion  real           
 );
 
-insert into usuarios(username,password,admin,safesearch) values ('admin','9b554c12d9d1dcd65e4b6900c1de38ae',1,0);
-insert into usuarios(username,password,admin,safesearch) values ('mboscovich','9b554c12d9d1dcd65e4b6900c1de38ae',0,1);
+insert into usuarios(username,password,admin,safesearch) values ('admin','dfe483413e24a5b1506389d36ebfd05c',1,0);
+insert into usuarios(username,password,admin,safesearch) values ('mboscovich','dfe483413e24a5b1506389d36ebfd05c',0,1);
+insert into usuarios(username,password,admin,safesearch) values ('rtourn','dfe483413e24a5b1506389d36ebfd05c',0,1);
+insert into usuarios(username,password,admin,safesearch) values ('mguedes','dfe483413e24a5b1506389d36ebfd05c',0,1);
+insert into usuarios(username,password,admin,safesearch) values ('','d41d8cd98f00b204e9800998ecf8427e',0,1);
 insert into sincronizador values (0);

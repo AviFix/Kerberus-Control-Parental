@@ -213,8 +213,7 @@ class ManejadorUrls:
         
     def identificarBuscador(self, url):
         if re.match(".*google\..*/(custom|search|images)\?", url):
-#            return "Google"
-            return ""
+            return "Google"
         elif re.match(".*\.yahoo\..*/search", url):
             return "Yahoo"
         elif re.match(".*\.bing\..*/search", url):
