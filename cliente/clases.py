@@ -212,7 +212,7 @@ class ManejadorUrls:
         return pagina in self.buscadores
         
     def identificarBuscador(self, url):
-        if re.match(".*google\..*/(custom|search|images)\?", url):
+        if re.match("(?!^http:\/\/suggestqueries.).*google\..*/(custom|search|images)\?", url):
             return "Google"
         elif re.match(".*\.yahoo\..*/search", url):
             return "Yahoo"
