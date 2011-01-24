@@ -218,7 +218,7 @@ class ManejadorUrls:
             return "Yahoo"
         elif re.match(".*\.bing\..*/search", url):
             return "Bing"
-        elif re.match("^http:\/\/www.youtube.com\/results", url):
+        elif re.match("^http:\/\/www.youtube.com\/results\?", url):
             return "Youtube"            
         else:
             return ""

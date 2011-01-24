@@ -68,7 +68,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
             host_port = netloc[:i], int(netloc[i+1:])
         else:
             host_port = netloc, 80
-        self.server.logger.log (logging.INFO, "connect to %s:%d", host_port[0], host_port[1])
+#        self.server.logger.log (logging.INFO, "connect to %s:%d", host_port[0], host_port[1])
         try: 
              soc.connect(host_port)
         except socket.error, arg:
@@ -84,7 +84,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
             if self._connect_to(self.path, soc):
-                self.log_request(200)
+#                self.log_request(200)
                 self.wfile.write(self.protocol_version +" 200 Connection established\r\n")
                 self.wfile.write("Proxy-agent: %s\r\n" % self.version_string())
                 self.wfile.write("\r\n")
@@ -116,7 +116,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         #
         if urls.soportaSafeSearch(self.path):
             url=urls.agregarSafeSearch(self.path)
-#            print "soportaSafeSearch. Url Nueva: %s" % url
+            print "soportaSafeSearch. Url Nueva: %s" % url
         else:
             url=self.path
         (scm, netloc, path, params, query, fragment) = urlparse.urlparse(url, 'http')        
@@ -144,9 +144,12 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                 i = netloc.find ('@')
                 if i >= 0:
                     login_info, netloc = netloc[:i], netloc[i+1:]
-                    try: user, passwd = login_info.split (':', 1)
-                    except ValueError: user, passwd = "anonymous", None
-                else: user, passwd ="anonymous", None
+                    try: 
+                        user, passwd = login_info.split (':', 1)
+                    except ValueError: 
+                        user, passwd = "anonymous", None
+                else: 
+                    user, passwd ="anonymous", None
                 self.log_request ()
                 try:
                     ftp = ftplib.FTP (netloc)
