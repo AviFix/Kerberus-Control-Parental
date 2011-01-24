@@ -33,7 +33,6 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
     server_version = "Familia Segura - Cliente /" + __version__
     rbufsize = 0                        # self.rfile Be unbuffered
     global consultor
-#    ultimo_acceso={}
 
 # Metodos de securedfamily
     def pedirUsuario(self, motivo):
@@ -102,17 +101,17 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         else:
             self.pedirUsuario("Se requiere un usuario")
             return False
-        if not usuario:
-            self.pedirUsuario("Se requiere un usuario")
+#        if not usuario:
+#            self.pedirUsuario("Se requiere un usuario")
+#            return False
+#        else:
+        permitido, motivo=consultor.validarUrl(usuario, password, self.path)
+        if not permitido:
+            if motivo == "Usuario no valido":
+                self.pedirUsuario("Usuario invalido")
+            else:
+                self.denegar(motivo)
             return False
-        else:
-            permitido, motivo=consultor.validarUrl(usuario, password, self.path)
-            if not permitido:
-                if motivo == "Usuario no valido":
-                    self.pedirUsuario("Usuario invalido")
-                else:
-                    self.denegar(motivo)
-                return False
         #
         if urls.soportaSafeSearch(self.path):
             url=urls.agregarSafeSearch(self.path)
