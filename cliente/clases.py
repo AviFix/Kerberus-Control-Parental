@@ -180,7 +180,7 @@ class Usuario:
 
 class ManejadorUrls:
     def __init__(self):
-        self.buscadores=['Google', 'Yahoo', 'Bing']
+        self.buscadores=['Google', 'Yahoo', 'Bing', 'Youtube']
         
     def agregarSafeSearch(self, url):
             buscador=self.identificarBuscador(url)
@@ -199,6 +199,11 @@ class ManejadorUrls:
                 if agregado not in url:
                     url=url+agregado
                 return url                
+            elif buscador == "Youtube":
+                agregado="&safe=active"
+                if agregado not in url:
+                    url=url+agregado
+                return url                      
             else:                
                 return url
 
@@ -208,11 +213,14 @@ class ManejadorUrls:
         
     def identificarBuscador(self, url):
         if re.match(".*google\..*/(custom|search|images)\?", url):
-            return "Google"
+#            return "Google"
+            return ""
         elif re.match(".*\.yahoo\..*/search", url):
             return "Yahoo"
         elif re.match(".*\.bing\..*/search", url):
             return "Bing"
+        elif re.match("^http:\/\/www.youtube.com\/results", url):
+            return "Youtube"            
         else:
             return ""
     
