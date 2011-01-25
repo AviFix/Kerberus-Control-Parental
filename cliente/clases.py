@@ -5,8 +5,8 @@ from funciones import *
 MAX_CACHE_URLS_ACEPTADAS=1000
 MAX_CACHE_URLS_DENEGADAS=30
 DEBUG_TIEMPOS=True
-#SECUREDFAMILYSERVER="securedfamily.no-ip.org:8081"
-SECUREDFAMILYSERVER="127.0.0.1:8081"
+SECUREDFAMILYSERVER="securedfamily.no-ip.org:8081"
+#SECUREDFAMILYSERVER="127.0.0.1:8081"
 if  platform.uname()[0] == 'Linux':
     PATH_DB='/var/cache/securedfamily/securedfamily.db'
 else:
