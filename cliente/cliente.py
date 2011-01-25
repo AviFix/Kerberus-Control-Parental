@@ -12,6 +12,7 @@ from types import FrameType, CodeType
 from time import time
 import ftplib
 import base64
+import platform
 
 sys.path.append('../consultor')
 
@@ -19,9 +20,14 @@ from consultor import *
 
 BIND_ADDRESS = "0.0.0.0"
 BIND_PORT = 3128
-LOG_FILENAME ="/var/log/securedfamily-cliente.log"
 LOG_SIZE_MB =20
 LOG_CANT_ROTACIONES =5
+
+if  platform.uname()[0] == 'Linux':
+    LOG_FILENAME='/var/log/securedfamily-cliente.log'
+else:
+    LOG_FILENAME='C:\securedfamily-cliente.log'
+
 
 consultor=Consultor()
 urls=ManejadorUrls()
