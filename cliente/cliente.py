@@ -19,7 +19,7 @@ sys.path.append('../consultor')
 from consultor import *
 
 BIND_ADDRESS = "0.0.0.0"
-BIND_PORT = 3128
+BIND_PORT = 8080
 LOG_SIZE_MB =20
 LOG_CANT_ROTACIONES =5
 
