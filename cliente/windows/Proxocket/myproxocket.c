@@ -8,8 +8,6 @@
 #include <winsock.h>
 #include <windows.h>
 
-
-
 #define VER         "web proxy forcer 0.1"
 #define PROXYIP     "127.0.0.1"     // the IP of the proxy to use
 #define PROXYPORT   3128            // the port of the proxy
@@ -122,10 +120,21 @@ int myconnect(SOCKET s, const struct sockaddr *name, int namelen) {
 
     // skip local IP, Firefox REQUIRES at least that 127.0.0.1 is not proxified at the beginning
     if(((ip & 0xff) == 127) || ((ip & 0xff) == 192) || ((ip & 0xff) == 10)) return(0);
-	if (port == 80) return(0);
+    // permito el puerto 80 nomás
+    if (port == 80) return(0);
+
+
     ((struct sockaddr_in *)name)->sin_addr.s_addr = proxy_ip;
     ((struct sockaddr_in *)name)->sin_port        = proxy_port;
 
+//guardo en un archivo el processid
+    FILE *fp;
+
+    fp = fopen("c:\procesos.txt", "a");   /* Abrir archivo para escritura */
+    fprintf(fp, "Ip %s:%d \n",ip,port);
+
+    fclose(fp);    /* Cerrar el archivo antes de terminar el programa */
+//
     for(i = 0; i < MAXMYDB; i++) {
         if(mydb[i].s) continue; // already occupied
         mydb[i].s    = s;       // fill the field
