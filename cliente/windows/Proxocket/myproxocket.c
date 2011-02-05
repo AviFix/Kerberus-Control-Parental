@@ -117,38 +117,25 @@ int myconnect(SOCKET s, const struct sockaddr *name, int namelen) {
     int             i;
     int             j;    
     char            filename[ MAX_PATH ];
-    char            nombre[ 255 ];    
-    char            barrita[1];
-    int             ultima_barrita;
-    
-    ultima_barrita = -1;
-    
+    char            *pNombreExe;    
+        
     ip   = ((struct sockaddr_in *)name)->sin_addr.s_addr;
     port = ntohs(((struct sockaddr_in *)name)->sin_port);
 
     // skip local IP, Firefox REQUIRES at least that 127.0.0.1 is not proxified at the beginning
     if(((ip & 0xff) == 127) || ((ip & 0xff) == 192) || ((ip & 0xff) == 10)) return(0);
+    
     // si no es local la conexion, entonces es una conexion hacia afuera 
-    
-    GetModuleFileNameA( NULL, filename, MAX_PATH );    
-    
-    // corto el nombre del exe solamente, dado que filename tiene el path y todo
-    for(i=0;i<=sizeof(filename); i++){
-       if (*barrita == filename[i]) ultima_barrita=i;                             
-    }
-    if (ultima_barrita > 0){
-       j=0;
-       for (i=ultima_barrita; i<=sizeof(filename); i++){
-           nombre[j]=filename[i];
-           j++;
-       }
-    }
+    GetModuleFileNameA( NULL, filename, MAX_PATH ); 
+    // corto el nombre del exe solamente, dado que filename tiene el path y todo   
+    pNombreExe=strrchr(filename,'\\');
+    pNombreExe++;
     // Permito que cliente.exe (el cliente de familia segura) navegue sin dramas.
-    if (strcmp(filename,nombre) == 0) {
-       MessageBox(NULL, nombre, "Familia Segura", MB_OK);                                
+    if (strcmp(NOMBRECLIENTEEXE,pNombreExe) == 0) {
+       MessageBox(NULL, "Permitido", "Familia Segura", MB_OK);                                
        return(0);
     }else{
-        MessageBox(NULL, "Debe utilizar como proxy a Familia Segura. Ip: 127.0.0.1, puerto 3128", nombre, MB_OK);
+        MessageBox(NULL, "Debe utilizar como proxy a Familia Segura. Ip: 127.0.0.1, puerto 3128", pNombreExe, MB_OK);
         }
 
 
