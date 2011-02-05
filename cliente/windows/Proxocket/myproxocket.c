@@ -12,6 +12,7 @@
 #define PROXYIP     "127.0.0.1"     // the IP of the proxy to use
 #define PROXYPORT   3128            // the port of the proxy
 #define MAXMYDB     64              // don't need to be big, 2 was more than enough
+#define NOMBRECLIENTEEXE         "cliente.exe"
 
 
 
@@ -88,7 +89,7 @@ void init_myproxocket(void) {   // in this example I use this function for loadi
     if(wsock) return;
 
     GetSystemDirectory(winpath, sizeof(winpath));
-    strcat(winpath, "\\ws2_32_orig.dll");
+    strcat(winpath, "\\ws2_32.dll");
 
     wsock = LoadLibrary(winpath);
     if(!wsock) return;
@@ -114,27 +115,49 @@ int myconnect(SOCKET s, const struct sockaddr *name, int namelen) {
     unsigned int    ip;
     unsigned short  port;
     int             i;
-
+    int             j;    
+    char            filename[ MAX_PATH ];
+    char            nombre[ 255 ];    
+    char            barrita[1];
+    int             ultima_barrita;
+    
+    ultima_barrita = -1;
+    
     ip   = ((struct sockaddr_in *)name)->sin_addr.s_addr;
     port = ntohs(((struct sockaddr_in *)name)->sin_port);
 
     // skip local IP, Firefox REQUIRES at least that 127.0.0.1 is not proxified at the beginning
     if(((ip & 0xff) == 127) || ((ip & 0xff) == 192) || ((ip & 0xff) == 10)) return(0);
-    // permito el puerto 80 nomás
-    if (port == 80) return(0);
+    // si no es local la conexion, entonces es una conexion hacia afuera 
+    
+    GetModuleFileNameA( NULL, filename, MAX_PATH );    
+    
+    // corto el nombre del exe solamente, dado que filename tiene el path y todo
+    for(i=0;i<=sizeof(filename); i++){
+       if (*barrita == filename[i]) ultima_barrita=i;                             
+    }
+    if (ultima_barrita > 0){
+       j=0;
+       for (i=ultima_barrita; i<=sizeof(filename); i++){
+           nombre[j]=filename[i];
+           j++;
+       }
+    }
+    // Permito que cliente.exe (el cliente de familia segura) navegue sin dramas.
+    if (strcmp(filename,nombre) == 0) {
+       MessageBox(NULL, nombre, "Familia Segura", MB_OK);                                
+       return(0);
+    }else{
+        MessageBox(NULL, "Debe utilizar como proxy a Familia Segura. Ip: 127.0.0.1, puerto 3128", nombre, MB_OK);
+        }
 
 
     ((struct sockaddr_in *)name)->sin_addr.s_addr = proxy_ip;
     ((struct sockaddr_in *)name)->sin_port        = proxy_port;
 
-//guardo en un archivo el processid
-    FILE *fp;
 
-    fp = fopen("c:\procesos.txt", "a");   /* Abrir archivo para escritura */
-    fprintf(fp, "Ip %s:%d \n",ip,port);
 
-    fclose(fp);    /* Cerrar el archivo antes de terminar el programa */
-//
+  
     for(i = 0; i < MAXMYDB; i++) {
         if(mydb[i].s) continue; // already occupied
         mydb[i].s    = s;       // fill the field
