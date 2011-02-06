@@ -123,12 +123,9 @@ void PrintProtocolInfo (LPWSAPROTOCOL_INFOW prot)
 int _cdecl main( int argc, char** argv)
 {
 	LPWSAPROTOCOL_INFOW bufProtocolInfo = NULL;
-	DWORD
-	dwSize = 0;
-	INT
-	dwError;
-	INT
-	iNumProt;
+	DWORD	dwSize = 0;
+	INT		dwError;
+	INT		iNumProt;
 	
 	/*
 	* Enum Protocols - First, obtain size required
@@ -136,7 +133,7 @@ int _cdecl main( int argc, char** argv)
 	
 	printf("Sample program to enumerate Protocols\n");
 	WSCEnumProtocols(NULL,
-	// lpiProtocols
+	// lpiProtocols 
 	bufProtocolInfo,
 	// lpProtocolBuffer
 	& dwSize,
@@ -151,11 +148,7 @@ int _cdecl main( int argc, char** argv)
 	
 	/* Now, Enum */
 	
-	iNumProt = WSCEnumProtocols(
-	NULL,
-	bufProtocolInfo,
-	&dwSize,
-	&dwError);
+	iNumProt = WSCEnumProtocols(NULL,bufProtocolInfo,&dwSize,&dwError);
 	// lpiProtocols
 	// lpProtocolBuffer
 	// lpdwBufferLength
