@@ -1,3 +1,15 @@
+import re, sqlite3, time, random, hashlib, platform, xmlrpclib, os, httplib
+
+from funciones import *
+
+if  platform.uname()[0] == 'Linux':
+    PATH_DB='/var/cache/securedfamily/securedfamily.db'
+else:
+    PATH_DB='C:\securedfamily.db'
+
+if not os.path.exists(PATH_DB):
+    crearDBCliente(PATH_DB)
+
 class Usuario:
     def __init__(self, usuario):
         self.nombre=usuario

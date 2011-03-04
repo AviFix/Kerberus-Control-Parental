@@ -1,10 +1,9 @@
 #!/usr/bin/env python
-import time, sqlite3
+import time
 
-#from clases import *
-import administradorDeUsuarios
-import manejadorUrls
-import usuariot
+from administradorDeUsuarios import *
+from manejadorUrls import *
+from usuario import *
 
 # Constantes de self.debug
 DEBUG_EXTENSIONES=False
@@ -90,7 +89,7 @@ class Consultor:
                 self.debug(mensaje, DEBUG_VALIDA_REM)
                 return True,  ""
             else:
-                mensaje = "URL: %s <br> <br>El servidor dijo: %s" % (url,  razon)
+                mensaje = "URL: %s <br>Motivo: %s" % (url,  razon)
                 print "El mensaje es:\n%s" % mensaje
                 self.debug(mensaje, DEBUG_NO_VALIDA_REM)
                 return False, mensaje

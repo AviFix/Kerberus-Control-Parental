@@ -1,3 +1,5 @@
+import re
+
 class ManejadorUrls:
     def __init__(self):
         self.buscadores=['Google', 'Yahoo', 'Bing', 'Youtube']

@@ -14,9 +14,10 @@ import ftplib
 import base64
 import platform
 
-sys.path.append('../consultor')
+sys.path.append('clases/')
 
 from consultor import *
+
 
 BIND_ADDRESS = "0.0.0.0"
 BIND_PORT = 8080
