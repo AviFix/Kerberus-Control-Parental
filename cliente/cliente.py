@@ -48,7 +48,8 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         self.end_headers()    
 
     def denegar(self, motivo):
-        msg="<html><h1>Sitio no permitido</h1><br><h2>Familia Segura</h2><br><h3>%s</h3></html>\r\n" % motivo
+        #esto lo deberia levantar de un archivo.
+        msg="<html><head><title>Sitio no permitido</title></head><body><h1>Sitio no permitido</h1><br><h3>%s</h3></body></html>\r\n" % motivo
         self.wfile.write(self.protocol_version + " 200 Connection established\r\n")
         self.wfile.write("Proxy-agent: %s\r\n" % self.version_string())
         self.wfile.write("\r\n")
@@ -121,7 +122,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         #
         if urls.soportaSafeSearch(self.path):
             url=urls.agregarSafeSearch(self.path)
-            print "soportaSafeSearch. Url Nueva: %s" % url
+            print "El buscador soporta SafeSearch se fuerza el uso de safesearch estricto. Url Nueva: %s" % url
         else:
             url=self.path
         (scm, netloc, path, params, query, fragment) = urlparse.urlparse(url, 'http')        

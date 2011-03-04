@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 import time, sqlite3
 
-from clases import *
+#from clases import *
+import administradorDeUsuarios
+import manejadorUrls
+import usuariot
 
 # Constantes de self.debug
 DEBUG_EXTENSIONES=False
@@ -87,6 +90,7 @@ class Consultor:
                 self.debug(mensaje, DEBUG_VALIDA_REM)
                 return True,  ""
             else:
-                mensaje = "%s : Url denegada remotamente \n Motivo: %s" % (url,  razon)
+                mensaje = "URL: %s <br> <br>El servidor dijo: %s" % (url,  razon)
+                print "El mensaje es:\n%s" % mensaje
                 self.debug(mensaje, DEBUG_NO_VALIDA_REM)
                 return False, mensaje
