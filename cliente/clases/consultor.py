@@ -1,35 +1,28 @@
-#!/usr/bin/env python
+"""Modulo encargado de verificar la aptitud de una url"""
+
+#Modulos externos
 import time
 
-from administradorDeUsuarios import *
-from manejadorUrls import *
-from usuario import *
+#Modulos propios
+import administradorDeUsuarios
+import manejadorUrls
+import usuario
+import config
 
-# Constantes de self.debug
-DEBUG_EXTENSIONES=False
-DEBUG_DOM_PERM=True
-DEBUG_DOM_DENG=True
-DEBUG_DOM_PUB_PERM=True
-DEBUG_DOM_PUB_DENG=True
-DEBUG_CACHEADA_PERM=True
-DEBUG_CACHEADA_DENG=True
-DEBUG_VALIDA_REM=True
-DEBUG_NO_VALIDA_REM=True
-DEBUG_TIEMPO_REMOTO=True
-DEBUG_IS_ADMIN=False
-LOG_TIEMPOS_MAYORES_A=1
+#Excepciones
+class ConsultorError(Exception): pass
+#class nombre(ConsultorError): pass
 
-# Codigo central
-
+# Clase
 class Consultor:
     def __init__(self):
-        self.usuarios=AdministradorDeUsuarios()        
+        self.usuarios=administradorDeUsuarios.AdministradorDeUsuarios()        
         
     def debug(self, texto, activo):
         if activo:
             fin=time.time()
             tiempototal=fin-self.inicio
-            if tiempototal >=LOG_TIEMPOS_MAYORES_A:
+            if tiempototal >=config.LOG_TIEMPOS_MAYORES_A:
                 print  texto
                 print "Tiempo: %s segs.\n" % tiempototal
             
@@ -46,50 +39,50 @@ class Consultor:
         if usuario.es_admin:
             mensaje= "Usuario administrador"
             return True, mensaje
-            self.debug(mensaje, DEBUG_IS_ADMIN)
+            self.debug(mensaje, config.DEBUG_IS_ADMIN)
             
         elif usuario.dominioDenegado(url):
             mensaje="Dominio denegado: " + url
-            self.debug(mensaje, DEBUG_DOM_DENG)
+            self.debug(mensaje, config.DEBUG_DOM_DENG)
             return False, mensaje
             
         elif usuario.dominioPermitido(url):
             mensaje = "Dominio permitido: " + url
-            self.debug(mensaje, DEBUG_DOM_PERM)
+            self.debug(mensaje, config.DEBUG_DOM_PERM)
             return True,  mensaje
             
         elif usuario.dominioPublicamentePermitido(url):
             mensaje = "Dominio publicamente permitido: " + url
-            self.debug(mensaje, DEBUG_DOM_PUB_PERM)
+            self.debug(mensaje, config.DEBUG_DOM_PUB_PERM)
             return True, mensaje
             
         elif usuario.dominioPublicamenteDenegado(url):
             mensaje = "Dominio publicamente denegado: " + url
-            self.debug(mensaje, DEBUG_DOM_PUB_DENG)
+            self.debug(mensaje, config.DEBUG_DOM_PUB_DENG)
             return False, mensaje
             
         elif self.extensionValida(url):
             mensaje = "Exension valida: " + url
-            self.debug(mensaje , DEBUG_EXTENSIONES)
+            self.debug(mensaje , config.DEBUG_EXTENSIONES)
             return True, mensaje
             
         elif usuario.cacheAceptadas(url):
             mensaje = "CACHEADA, Autorizada: " + url
-            self.debug(mensaje, DEBUG_CACHEADA_PERM)
+            self.debug(mensaje, config.DEBUG_CACHEADA_PERM)
             return True, mensaje
             
         elif usuario.cacheDenegadas(url):
             mensaje = "CACHEADA, Denegada: " + url
-            self.debug(mensaje, DEBUG_CACHEADA_PERM)
+            self.debug(mensaje, config.DEBUG_CACHEADA_PERM)
             return False, mensaje
         else:
             valido, razon= usuario.validarRemotamente(url)
             if valido:
                 mensaje = "Url validada remotamente : " + url
-                self.debug(mensaje, DEBUG_VALIDA_REM)
+                self.debug(mensaje, config.DEBUG_VALIDA_REM)
                 return True,  ""
             else:
                 mensaje = "URL: %s <br>Motivo: %s" % (url,  razon)
                 print "El mensaje es:\n%s" % mensaje
-                self.debug(mensaje, DEBUG_NO_VALIDA_REM)
+                self.debug(mensaje, config.DEBUG_NO_VALIDA_REM)
                 return False, mensaje

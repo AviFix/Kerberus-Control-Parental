@@ -2,6 +2,7 @@
 
 __version__ = "0.3"
 
+# Modulos externos
 import BaseHTTPServer, select, socket, SocketServer, urlparse
 import logging
 import logging.handlers
@@ -16,13 +17,15 @@ import platform
 
 sys.path.append('clases/')
 
-from consultor import *
+#Modulos propios
+import consultor
+import config
 
+from funciones import *
 
-BIND_ADDRESS = "0.0.0.0"
-BIND_PORT = 8080
-LOG_SIZE_MB =20
-LOG_CANT_ROTACIONES =5
+if not os.path.exists(config.PATH_DB):
+    crearDBCliente(config.PATH_DB)
+    
 
 if  platform.uname()[0] == 'Linux':
     LOG_FILENAME='/var/log/securedfamily-cliente.log'

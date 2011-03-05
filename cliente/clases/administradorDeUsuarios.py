@@ -1,28 +1,21 @@
-import sqlite3, time,  hashlib, platform, os
+"""Modulo encargado de verificar si el usuario ingresado por el cliente es valido"""
 
-from funciones import *
-from usuario import *
+#Modulos externos
+import sqlite3, time,  hashlib,  os
 
-MAX_CACHE_URLS_ACEPTADAS=1000
-MAX_CACHE_URLS_DENEGADAS=30
-DEBUG_TIEMPOS=True
-SECUREDFAMILYSERVER="securedfamily.no-ip.org:8081"
-#SECUREDFAMILYSERVER="127.0.0.1:8081"
-if  platform.uname()[0] == 'Linux':
-    PATH_DB='/var/cache/securedfamily/securedfamily.db'
-else:
-    PATH_DB='C:\securedfamily.db'
+#Modulos propios
+import usuario
+import config
 
-if not os.path.exists(PATH_DB):
-    crearDBCliente(PATH_DB)
+#Excepciones
+class AdministradorDeUsuariosError(Exception): pass
+class DatabaseError(AdministradorDeUsuariosError): pass
 
-def obtenerTiempoParcial(inicio):
-    fin=LOG_FILENAME, LOG_SIZE_MB, LOG_CANT_ROTACIONES, time.time()
-    return fin-inicio    
-
-
+# Clase
 class AdministradorDeUsuarios:
         def __init__(self):
+            if not os.path.exists(config.PATH_DB):
+                raise DatabaseError, "La base de datos no existe, o usted no posee permisos para accederla"
             self.usuarios = []
             self.usuarios_ya_validados = []
             self.usuarios_ya_validados_pass = []
@@ -31,8 +24,9 @@ class AdministradorDeUsuarios:
             return hashlib.md5(t).hexdigest()
     
         def usuario_valido(self, user, pwd):
+            """Verifica si el usuario esta en la base o en cache"""
             if user not in self.usuarios_ya_validados:
-                conexion = sqlite3.connect(PATH_DB)
+                conexion = sqlite3.connect(config.PATH_DB)
                 cursor=conexion.cursor()
                 password=self.md5sum(pwd)
                 cursor.execute('select id from usuarios where username=? and password =?',(user, password ))
@@ -50,11 +44,13 @@ class AdministradorDeUsuarios:
                     return False
                     
         def agregarUsuario(self, nombre):
-            usuario = Usuario(nombre)
+            """Si es valido el usuario y no esta en cache, lo agrega"""
+            usuario = usuario.Usuario(nombre)
             self.usuarios.append(usuario)
             return usuario
         
         def obtenerUsuario(self, nombreusuario):
+            """Busca el usuario en la cache de usuarios"""
             for usuario in self.usuarios:
                 if usuario.nombre == nombreusuario:
                     return usuario
