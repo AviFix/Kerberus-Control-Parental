@@ -1,7 +1,7 @@
 """Modulo encargado de verificar la aptitud de una url"""
 
 #Modulos externos
-import time
+import time, re
 
 #Modulos propios
 import administradorDeUsuarios

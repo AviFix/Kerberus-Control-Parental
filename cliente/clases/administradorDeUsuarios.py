@@ -45,9 +45,9 @@ class AdministradorDeUsuarios:
                     
         def agregarUsuario(self, nombre):
             """Si es valido el usuario y no esta en cache, lo agrega"""
-            usuario = usuario.Usuario(nombre)
-            self.usuarios.append(usuario)
-            return usuario
+            user = usuario.Usuario(nombre)
+            self.usuarios.append(user)
+            return user
         
         def obtenerUsuario(self, nombreusuario):
             """Busca el usuario en la cache de usuarios"""

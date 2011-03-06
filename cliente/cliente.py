@@ -14,11 +14,14 @@ from time import time
 import ftplib
 import base64
 import platform
+import os   
 
-sys.path.append('clases/')
+sys.path.append('clases')
+sys.path.append('conf')
 
 #Modulos propios
 import consultor
+import manejadorUrls
 import config
 
 from funciones import *
@@ -26,15 +29,8 @@ from funciones import *
 if not os.path.exists(config.PATH_DB):
     crearDBCliente(config.PATH_DB)
     
-
-if  platform.uname()[0] == 'Linux':
-    LOG_FILENAME='/var/log/securedfamily-cliente.log'
-else:
-    LOG_FILENAME='C:\securedfamily-cliente.log'
-
-
-consultor=Consultor()
-urls=ManejadorUrls()
+verificador=consultor.Consultor()
+urls=manejadorUrls.ManejadorUrls()
 
 class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
     __base = BaseHTTPServer.BaseHTTPRequestHandler
@@ -42,7 +38,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
     
     server_version = "Familia Segura - Cliente /" + __version__
     rbufsize = 0                        # self.rfile Be unbuffered
-    global consultor
+    global verificador
 
 # Metodos de securedfamily
     def pedirUsuario(self, motivo):
@@ -116,7 +112,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 #            self.pedirUsuario("Se requiere un usuario")
 #            return False
 #        else:
-        permitido, motivo=consultor.validarUrl(usuario, password, self.path)
+        permitido, motivo=verificador.validarUrl(usuario, password, self.path)
         if not permitido:
             if motivo == "Usuario no valido":
                 self.pedirUsuario("Usuario invalido")
@@ -248,9 +244,9 @@ def handler (signo, frame):
 def main ():
     run_event = threading.Event ()
     # setup the log file
-    logger = logSetup (LOG_FILENAME, LOG_SIZE_MB, LOG_CANT_ROTACIONES)
+    logger = logSetup (config.LOG_FILENAME, config.LOG_SIZE_MB, config.LOG_CANT_ROTACIONES)
     signal.signal (signal.SIGINT, handler)
-    server_address = (BIND_ADDRESS, BIND_PORT)
+    server_address = (config.BIND_ADDRESS, config.BIND_PORT)
     ProxyHandler.protocol = "HTTP/1.1"
     httpd = ThreadingHTTPServer (server_address, ProxyHandler, logger)
     sa = httpd.socket.getsockname ()

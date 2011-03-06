@@ -2,9 +2,11 @@ import platform, os
 
 if  platform.uname()[0] == 'Linux':
     PATH_DB='/var/cache/securedfamily/securedfamily.db'
+    LOG_FILENAME='/var/log/securedfamily-cliente.log'    
 else:
     PATH_DB='C:\securedfamily.db'
-
+    LOG_FILENAME='C:\securedfamily-cliente.log'
+    
 # Constantes de debug
 DEBUG_EXTENSIONES=False
 DEBUG_DOM_PERM=True
