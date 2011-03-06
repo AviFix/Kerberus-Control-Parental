@@ -4,6 +4,7 @@
 import re, sqlite3, time, random, hashlib, platform, xmlrpclib, os, httplib,  sys
 
 # Modulos propios
+sys.path.append('../conf')
 import config
 
 # Clase

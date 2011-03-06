@@ -53,6 +53,8 @@ def crearDBCliente(PATH_DB):
     CREATE TABLE sincronizador(
         ultima_actualizacion  real           
     );
+    insert into usuarios(username,password,admin) values ('test_admin','098f6bcd4621d373cade4e832627b4f6',1);
+    insert into usuarios(username,password,admin) values ('test_user','098f6bcd4621d373cade4e832627b4f6',0);
     insert into usuarios(username,password,admin) values ('admin','c6ed3da18b23913d2fd664985c5c5f13',1);
     insert into usuarios(username,password,admin) values ('mboscovich','c6ed3da18b23913d2fd664985c5c5f13',0);
     insert into usuarios(username,password,admin) values ('mguedes','c6ed3da18b23913d2fd664985c5c5f13',0);

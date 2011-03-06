@@ -10,6 +10,7 @@ import config
 #Excepciones
 class AdministradorDeUsuariosError(Exception): pass
 class DatabaseError(AdministradorDeUsuariosError): pass
+class UsuarioNoValido(AdministradorDeUsuariosError): pass
 
 # Clase
 class AdministradorDeUsuarios:
