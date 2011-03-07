@@ -83,6 +83,5 @@ class Consultor:
                 return True,  ""
             else:
                 mensaje = "URL: %s <br>Motivo: %s" % (url,  razon)
-                print "El mensaje es:\n%s" % mensaje
                 self.debug(mensaje, config.DEBUG_NO_VALIDA_REM)
                 return False, mensaje

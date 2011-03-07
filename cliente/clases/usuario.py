@@ -162,19 +162,15 @@ class Usuario:
     def validarRemotamente(self, url):
         """Consulta al servidor por la url, porque no pudo determinar su aptitud"""
         headers = {"UserID": "1","URL":url}
-        intento=0
-        while intento < 3:
-            try:
-                    conn = httplib.HTTPConnection(SECUREDFAMILYSERVER)
-                    conn.request("HEAD", "/", "", headers)
-                    response = conn.getresponse()
-                    respuesta = str(response.reason)
-                    conn.close()    
-                    break 
-            except:
-                    intento+=1
-        if intento == 3:
-            return False,  "No hay conexion al servidor"
+        try:
+                conn = httplib.HTTPConnection(config.SECUREDFAMILYSERVER+":"+config.SECUREDFAMILYSERVER_PORT)
+                conn.request("HEAD", "/", "", headers)
+                response = conn.getresponse()
+                respuesta = str(response.reason)
+                conn.close()    
+        except:
+                return False,  "No hay conexion al servidor. "
+
             
         if response.status == 403:
             return False, respuesta

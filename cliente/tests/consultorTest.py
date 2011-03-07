@@ -1,4 +1,4 @@
-"""Test de unidad para el modulo consultor.py"""
+"""Test de unidad para el modulo manejadorUrls.py"""
 
 # Modulos externos
 import sys,  unittest
@@ -7,20 +7,52 @@ import sys,  unittest
 sys.path.append('../clases')
 import consultor
 
-class Urls(unittest.TestCase):
-    extensiones_exceptuadas=("gif","jpeg","jpg","png","js","css","swf","ico","json","mp3","wav","rss","rar","zip","pdf","xml")      
-    extensiones_no_exceptuadas=("html","htm","txt")  
-    consult=consultor.Consultor()
+class verificadorUrls(unittest.TestCase):
+    extensiones_exceptuadas=(".gif",".jpeg",".jpg",".png",".js",".css",".swf",".ico",".json",".mp3",".wav",".rss",".rar",".zip",".pdf",".xml")
+    extensiones_no_exceptuadas=(".html",".htm",".txt")
+    urls_aceptadas=("http://www.wikipedia.org", "http://www.google.com")
+    urls_denegadas=("http://www.poringa.net","http://www.cuantosexo.com/", "http://www.canalvenus.tv/advancedSearch.php")
+    urls_publicamente_permitidas=("http://www.hotmail.com", "http://www.google.com")
+    urls_publicamente_denegadas=("http://www.poringa.net")
+    verificador=consultor.Consultor()
+    username='test_user'
+    password='test'
+    adminuser='test_admin'
     
-    def verificarExtensionesExceptuadas(self):
+    def testVerificarExtensionesExceptuadas(self):
         """Verificar que se exceptuen las extensiones no analizables por dansguardian"""
         for extension in self.extensiones_exceptuadas:
-            self.assertTrue(consult.extensionValida(url))
-             
-    def verificarExtensionesNoExceptuadas(self):
+            self.assertTrue(self.verificador.extensionValida(extension))
+           
+    def testVerificarExtensionesNoExceptuadas(self):
         """Verificar que NO se exceptuen las extensiones analizables por dansguardian"""
         for extension in self.extensiones_no_exceptuadas:
-            self.assertFalse(consultor.Consultor.extensionValida(url))
+            self.assertFalse(self.verificador.extensionValida(extension))
+        
+    def testChequearUrlsAceptadas(self):
+        """Verifica que se acepten un conjunto de urls que se saben que son aptas"""
+        for url in self.urls_aceptadas:
+            respuesta, mensaje=self.verificador.validarUrl(self.username, self.password, url)
+            self.assertTrue(respuesta)
 
+    def testChequearUrlsDenegadas(self):
+        """Verifica que se rechacen un conjunto de urls con pornografia"""
+        for url in self.urls_denegadas:
+            respuesta, mensaje=self.verificador.validarUrl(self.username, self.password, url)
+            self.assertFalse(respuesta)            
+
+    def testChequearAdmin(self):
+        """Verifica que un usuario admin se reconozca como tal a la hora de validar las urls"""
+        for url in self.urls_denegadas:
+            respuesta, mensaje=self.verificador.validarUrl(self.adminuser, self.password, url)
+            self.assertTrue(respuesta)            
+
+    def testChequearUrlsPublicamenteDenegadas(self):
+        """Verifica que se rechacen y reconozcan como tales los dominios publicamente denegados"""
+        for url in self.urls_publicamente_denegadas:
+            respuesta, mensaje=self.verificador.validarUrl(self.username, self.password, url)
+            self.assertTrue(respuesta)       
+            self.assertEqual(mensaje, "Dominio publicamente permitido: %s" % url)
+            
 if __name__ == '__main__':
     unittest.main()
