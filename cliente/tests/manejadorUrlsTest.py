@@ -5,24 +5,40 @@ import sys,  unittest
 
 # Modulos propios
 sys.path.append('../clases')
-import consultor
+import manejadorUrls
 
-class verificadorUrls(unittest.TestCase):
-    extensiones_exceptuadas=(".gif",".jpeg",".jpg",".png",".js",".css",".swf",".ico",".json",".mp3",".wav",".rss",".rar",".zip",".pdf",".xml")
-    extensiones_no_exceptuadas=(".html",".htm",".txt")
-    verificador=consultor.Consultor()
+class modificadoresUrls(unittest.TestCase):
+    buscadores_con_SafeSearch=(( "Google","http://www.google.com/search?", "&safe=active"), 
+                          ("Yahoo","http://www.yahoo.com/search", "&vm=r"), 
+                          ("Bing","http://www.bing.com/search?q=securedfamily", "&adlt=strict"), 
+                          ("Youtube","http://www.youtube.com/results?", "&safe=active"))
+    buscadores_sin_SafeSearch=(("Exalead", "http://www.exalead.com/search/"), )
+    verificador=manejadorUrls.ManejadorUrls()
     
-    def testVerificarExtensionesExceptuadas(self):
-        """Verificar que se exceptuen las extensiones no analizables por dansguardian"""
-        for extension in self.extensiones_exceptuadas:
-            self.assertTrue(self.verificador.extensionValida(extension))
-           
-    def testVerificarExtensionesNoExceptuadas(self):
-        """Verificar que NO se exceptuen las extensiones analizables por dansguardian"""
-        for extension in self.extensiones_no_exceptuadas:
-            self.assertFalse(self.verificador.extensionValida(extension))
-        
+    def test1DeteccionCorrectaDeBuscador(self):
+        """Verificar que se detecten correctamente los buscadores conocidos y manejados"""
+        for buscador, url, agregado in self.buscadores_con_SafeSearch:
+            self.assertEqual(buscador, self.verificador.identificarBuscador(url))
+    
+    def test2DeteccionCorrectaDeSafeSearch(self):
+        """Verifica que se detecten correctamente los navegadores que soportan SafeSearch"""
+        for buscador, url, agregado in self.buscadores_con_SafeSearch:
+            self.assertTrue(self.verificador.soportaSafeSearch(url))
+    
+    def test3NavegadoresSinSafeSearch(self):
+        """Verifica que no se detecte el safesearch en navegadores que no lo tienen"""
+        for buscadores, url in self.buscadores_sin_SafeSearch:
+            self.assertFalse(self.verificador.soportaSafeSearch(url))
+    
+    def test4ForzadoDeSafeSearch(self):
+        """Verifica que para cada navegador con soporte de safesearch, se le agregue lo correcto para forzarlo"""
+        for buscador, url, agregado in self.buscadores_con_SafeSearch:
+            self.assertEqual(self.verificador.agregarSafeSearch(url), url+agregado)
 
+    def test5NoSeFuerzaSafeSearch(self):
+        """Verifica que para cada navegador que NO soporte de safesearch, No se le agregue safesearch"""
+        for buscador, url in self.buscadores_sin_SafeSearch:
+            self.assertEqual(self.verificador.agregarSafeSearch(url), url)
             
 if __name__ == '__main__':
     unittest.main()
