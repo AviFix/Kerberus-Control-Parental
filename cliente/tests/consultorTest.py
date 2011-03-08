@@ -11,9 +11,9 @@ class verificadorUrls(unittest.TestCase):
     extensiones_exceptuadas=(".gif",".jpeg",".jpg",".png",".js",".css",".swf",".ico",".json",".mp3",".wav",".rss",".rar",".zip",".pdf",".xml")
     extensiones_no_exceptuadas=(".html",".htm",".txt")
     urls_aceptadas=("http://www.wikipedia.org", "http://www.google.com")
-    urls_denegadas=("http://www.poringa.net","http://www.cuantosexo.com/", "http://www.canalvenus.tv/advancedSearch.php")
-    urls_publicamente_permitidas=("http://www.hotmail.com", "http://www.google.com")
-    urls_publicamente_denegadas=("http://www.poringa.net")
+    urls_denegadas=("http://www.cuantosexo.com/", )
+    urls_publicamente_permitidas=("http://www.hotmail.com", "http://www.mercadolibre.com.ar", "http://www.gmail.com")
+    urls_publicamente_denegadas=("http://www.tiava.com/", )
     verificador=consultor.Consultor()
     username='test_user'
     password='test'
@@ -50,6 +50,13 @@ class verificadorUrls(unittest.TestCase):
     def testChequearUrlsPublicamenteDenegadas(self):
         """Verifica que se rechacen y reconozcan como tales los dominios publicamente denegados"""
         for url in self.urls_publicamente_denegadas:
+            respuesta, mensaje=self.verificador.validarUrl(self.username, self.password, url)
+            self.assertFalse(respuesta)       
+            self.assertEqual(mensaje, "Dominio publicamente denegado: %s" % url)
+
+    def testChequearUrlsPublicamenteAceptadas(self):
+        """Verifica que se acepten y reconozcan como tales los dominios publicamente permitidos"""
+        for url in self.urls_publicamente_permitidas:
             respuesta, mensaje=self.verificador.validarUrl(self.username, self.password, url)
             self.assertTrue(respuesta)       
             self.assertEqual(mensaje, "Dominio publicamente permitido: %s" % url)
