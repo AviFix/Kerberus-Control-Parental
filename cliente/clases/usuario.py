@@ -20,8 +20,8 @@ class Usuario:
         self.recargarDominiosPublicamenteDenegados()
         self.recargarCacheAceptadas()
         self.recargarCacheDenegadas()
-        conexion.close()
-        del(self.cursor)
+#        conexion.close()
+        #del(self.cursor)
         self.buffer_denegadas=[]
         self.buffer_aceptadas=[]   
 
@@ -36,9 +36,9 @@ class Usuario:
     def __getattribute__(self, attr):
         return object.__getattribute__(self, attr)
 
-    def __del__(self):
-        self.conexion.commit()
-        self.conexion.close()
+#    def __del__(self):
+#        self.conexion.commit()
+#        self.conexion.close()
 
     def getUserIdAndAdmin(self, usuario):
         """Devuelve el id del usuario, y si este es admin"""
@@ -86,7 +86,10 @@ class Usuario:
         respuesta=self.cursor.execute('select url from dominios_publicamente_denegados').fetchall()
         for fila in respuesta:
             self.dominios_publicamente_denegados.append(fila[0])
-            
+#####################################################     
+#####################################################     
+# seguir desde aca los tests!!!!!
+#####################################################     
     def dominioPermitido(self, url):
         """Verifica si el dominio esta en la lista de dominios permitidos"""
         for dominio in self.dominios_permitidos:
