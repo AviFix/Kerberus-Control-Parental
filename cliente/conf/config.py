@@ -6,7 +6,7 @@ if  platform.uname()[0] == 'Linux':
 else:
     PATH_DB='C:\securedfamily.db'
     LOG_FILENAME='C:\securedfamily-cliente.log'
-    
+   
 # Constantes de debug
 DEBUG_EXTENSIONES=False
 DEBUG_DOM_PERM=True
@@ -28,3 +28,5 @@ LOG_SIZE_MB =20
 LOG_CANT_ROTACIONES =5
 SECUREDFAMILYSERVER="securedfamily.no-ip.org"
 SECUREDFAMILYSERVER_PORT="8081"
+MAX_CACHE_URLS_ACEPTADAS=10
+MAX_CACHE_URLS_DENEGADAS=10

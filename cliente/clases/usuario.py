@@ -86,10 +86,7 @@ class Usuario:
         respuesta=self.cursor.execute('select url from dominios_publicamente_denegados').fetchall()
         for fila in respuesta:
             self.dominios_publicamente_denegados.append(fila[0])
-#####################################################     
-#####################################################     
-# seguir desde aca los tests!!!!!
-#####################################################     
+
     def dominioPermitido(self, url):
         """Verifica si el dominio esta en la lista de dominios permitidos"""
         for dominio in self.dominios_permitidos:

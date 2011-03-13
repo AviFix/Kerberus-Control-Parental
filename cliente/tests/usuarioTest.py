@@ -10,6 +10,9 @@ sys.path.append('../config')
 import usuario
 import config
 
+# Sobreescribo la variable global de la base para que use la de prueba 
+config.PATH_DB='securedfamily-test.db'
+
 class verificadorUsuarios(unittest.TestCase):
     username='test_user'
     password='test'
@@ -59,7 +62,6 @@ class verificadorUsuarios(unittest.TestCase):
         """Prueba la recarga de los dominios permitidos"""
         conexion = sqlite3.connect(config.PATH_DB)
         cursor=conexion.cursor()
-        hora_url=time.time()
         usuarioPrueba=usuario.Usuario(self.username)        
         url="http://urldeprueba.com/prueba"
         cursor.execute('insert into dominios_permitidos(url,usuario) values (?,?)',(url,usuarioPrueba.id, ))
@@ -74,7 +76,6 @@ class verificadorUsuarios(unittest.TestCase):
         """Prueba la recarga de los dominios denegados"""
         conexion = sqlite3.connect(config.PATH_DB)
         cursor=conexion.cursor()
-        hora_url=time.time()
         usuarioPrueba=usuario.Usuario(self.username)        
         url="http://urldeprueba.com/prueba"
         cursor.execute('insert into dominios_denegados(url,usuario) values (?,?)',(url,usuarioPrueba.id, ))
@@ -115,5 +116,168 @@ class verificadorUsuarios(unittest.TestCase):
         conexion.close()
         self.assertTrue(url in usuarioPrueba.dominios_publicamente_permitidos)
 
+    def testVerificarDominioPublicamentePermitido(self):
+        """Se reconocen los dominios publicamente permitidos"""
+        conexion = sqlite3.connect(config.PATH_DB)
+        cursor=conexion.cursor()
+        hora_url=time.time()
+        usuarioPrueba=usuario.Usuario(self.username)        
+        url="http://urldeprueba.com/prueba"
+        cursor.execute('insert into dominios_publicamente_permitidos(url,tipo) values (?,?)',(url,1, ))
+        conexion.commit()
+        usuarioPrueba.recargarDominiosPublicamentePermitidos()
+        self.assertTrue(usuarioPrueba.dominioPublicamentePermitido(url))
+        cursor.execute('delete from dominios_publicamente_permitidos where url=? and tipo=?',(url,1, ))
+        conexion.commit()
+        conexion.close()
+
+    def testVerificarDominioPublicamenteDenegado(self):
+        """Se reconocen los dominios publicamente denegados"""
+        conexion = sqlite3.connect(config.PATH_DB)
+        cursor=conexion.cursor()
+        hora_url=time.time()
+        usuarioPrueba=usuario.Usuario(self.username)        
+        url="http://urldeprueba.com/prueba"
+        cursor.execute('insert into dominios_publicamente_denegados(url,tipo) values (?,?)',(url,1, ))
+        conexion.commit()
+        usuarioPrueba.recargarDominiosPublicamenteDenegados()
+        self.assertTrue(usuarioPrueba.dominioPublicamenteDenegado(url))
+        cursor.execute('delete from dominios_publicamente_denegados where url=? and tipo=?',(url,1, ))
+        conexion.commit()
+        conexion.close()
+
+    def testVerificarDominioDenegado(self):
+        """Se reconocen los dominios denegados locales"""
+        conexion = sqlite3.connect(config.PATH_DB)
+        cursor=conexion.cursor()
+        usuarioPrueba=usuario.Usuario(self.username)        
+        url="http://urldeprueba.com/prueba"
+        cursor.execute('insert into dominios_denegados(url,usuario) values (?,?)',(url,usuarioPrueba.id, ))
+        conexion.commit()
+        usuarioPrueba.recargarDominiosDenegados()
+        self.assertTrue(usuarioPrueba.dominioDenegado(url))
+        cursor.execute('delete from dominios_denegados where url=? and usuario=?',(url,usuarioPrueba.id, ))
+        conexion.commit()
+        conexion.close()
+
+    def testVerificarDominioPermitidos(self):
+        """Se reconocen los dominios permitidos locales"""
+        conexion = sqlite3.connect(config.PATH_DB)
+        cursor=conexion.cursor()
+        usuarioPrueba=usuario.Usuario(self.username)        
+        url="http://urldeprueba.com/prueba"
+        cursor.execute('insert into dominios_permitidos(url,usuario) values (?,?)',(url,usuarioPrueba.id, ))
+        conexion.commit()
+        usuarioPrueba.recargarDominiosPermitidos()
+        self.assertTrue(usuarioPrueba.dominioPermitido(url))
+        cursor.execute('delete from dominios_permitidos where url=? and usuario=?',(url,usuarioPrueba.id, ))
+        conexion.commit()
+        conexion.close()
+ 
+    def testCacheAceptadas(self):
+        """Se reconoce la cache de aceptadas"""
+        conexion = sqlite3.connect(config.PATH_DB)
+        cursor=conexion.cursor()
+        hora_url=time.time()
+        url="http://urldeprueba.com/prueba"
+        cursor.execute('insert into cache_urls_aceptadas(url,hora) values (?,?)',(url,hora_url, ))
+        conexion.commit()
+        usuarioPrueba=usuario.Usuario(self.username)
+        usuarioPrueba.recargarCacheAceptadas()
+        cursor.execute('delete from cache_urls_aceptadas where url=? and hora=?',(url,hora_url, ))
+        conexion.commit()
+        conexion.close()
+        self.assertTrue(usuarioPrueba.cacheAceptadas(url))
+
+    def testCacheDenegadas(self):
+        """Se reconoce la cache de denegadas"""
+        conexion = sqlite3.connect(config.PATH_DB)
+        cursor=conexion.cursor()
+        hora_url=time.time()
+        url="http://urldeprueba.com/prueba"
+        cursor.execute('insert into cache_urls_denegadas(url,hora) values (?,?)',(url,hora_url, ))
+        conexion.commit()
+        usuarioPrueba=usuario.Usuario(self.username)
+        usuarioPrueba.recargarCacheDenegadas()
+        cursor.execute('delete from cache_urls_denegadas where url=? and hora=?',(url,hora_url, ))
+        conexion.commit()
+        conexion.close()
+        self.assertTrue(usuarioPrueba.cacheDenegadas(url))
+  
+    def testPersistirCacheAceptadas(self):
+        """Se puede persistir en la db la cache de acpetadas"""
+        conexion = sqlite3.connect(config.PATH_DB)
+        cursor=conexion.cursor()
+        hora_url=time.time()
+        url="http://urldepruebaapersisitir.com/persistir/url"
+        usuarioPrueba=usuario.Usuario(self.username)
+
+        for i in range(0, config.MAX_CACHE_URLS_ACEPTADAS+1):
+            usuarioPrueba.persistirACacheAceptadas(url+str(i))
+        
+        usuarioPrueba.recargarCacheAceptadas()
+        
+        for i in range(0, config.MAX_CACHE_URLS_ACEPTADAS+1):
+            self.assertTrue(usuarioPrueba.cacheAceptadas(url+str(i)))
+            
+        cursor.executemany('delete from cache_urls_aceptadas where url like ?',(url+"%"))
+        conexion.commit()
+        conexion.close()
+
+    def testPersistirCacheDenegadas(self):
+        """Se puede persistir en la db la cache de denegadas"""
+        conexion = sqlite3.connect(config.PATH_DB)
+        cursor=conexion.cursor()
+        hora_url=time.time()
+        url="http://urldepruebaapersisitir.com/persistir/url"
+        usuarioPrueba=usuario.Usuario(self.username)
+
+        for i in range(0, config.MAX_CACHE_URLS_DENEGADAS+1):
+            usuarioPrueba.persistirACacheDenegadas(url+str(i))
+        
+        usuarioPrueba.recargarCacheDenegadas()
+        
+        for i in range(0, config.MAX_CACHE_URLS_DENEGADAS+1):
+            self.assertTrue(usuarioPrueba.cacheDenegadas(url+str(i)))
+            
+        cursor.executemany('delete from cache_urls_denegadas where url like ?',(url+"%"))
+        conexion.commit()
+        conexion.close()
+       
+    def testConexionAlServidor(self): 
+        """Se puede conectar al servidor"""
+        usuarioPrueba=usuario.Usuario(self.username)
+        url="http://www.google.com"
+        respuesta, mensaje=usuarioPrueba.validarRemotamente(url)
+        self.assertTrue(respuesta)
+
+    def testFallaDeConexionAlServidor(self): 
+        """Identifica cuando no se puede conectar al servidor"""
+        usuarioPrueba=usuario.Usuario(self.username)
+        url="http://www.google.com"
+        #cambio el puerto del server, asi patea
+        puerto_aux=config.SECUREDFAMILYSERVER_PORT
+        config.SECUREDFAMILYSERVER_PORT="1000"
+        respuesta, mensaje=usuarioPrueba.validarRemotamente(url)
+        self.assertFalse(respuesta)
+        self.assertEqual(mensaje, "No hay conexion al servidor. ")
+        # vuelvo el puerto como estaba
+        config.SECUREDFAMILYSERVER_PORT=puerto_aux
+
+    def testValidacionRemota(self): 
+        """El servidor valida correctamente las urls permitidas"""
+        usuarioPrueba=usuario.Usuario(self.username)
+        url="http://www.google.com"
+        respuesta, mensaje=usuarioPrueba.validarRemotamente(url)
+        self.assertTrue(respuesta)
+        self.assertEqual(mensaje, "")
+
+    def testRechazoRemota(self): 
+        """El servidor rechaza correctamente las urls denegadas"""
+        usuarioPrueba=usuario.Usuario(self.username)
+        url="http://www.poringa.net"
+        respuesta, mensaje=usuarioPrueba.validarRemotamente(url)
+        self.assertFalse(respuesta)
+        
 if __name__ == '__main__':
     unittest.main()
