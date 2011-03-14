@@ -1,5 +1,5 @@
 #!/usr/bin/python
-
+# -*- coding: utf-8 -*-
 __version__ = "0.3"
 
 # Modulos externos
@@ -49,7 +49,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 
     def denegar(self, motivo):
         #esto lo deberia levantar de un archivo.
-        msg="á<html><head><title>Sitio no permitido</title></head><body><h1>Sitio no permitido</h1><br><h3>%s</h3></body></html>\r\n" % motivo
+        msg="<html><head><title>Sitio no permitido</title></head><body><h1>Sitio no permitido</h1><br><h3>%s</h3></body></html>\r\n" % motivo
         self.wfile.write(self.protocol_version + " 200 Connection established\r\n")
         self.wfile.write("Proxy-agent: %s\r\n" % self.version_string())
         self.wfile.write("\r\n")
