@@ -5,7 +5,12 @@ import sys,  unittest
 
 # Modulos propios
 sys.path.append('../clases')
-import administradorDeUsuarios
+sys.path.append('../conf')
+
+import administradorDeUsuarios,  config
+
+# Sobreescribo la variable global de la base para que use la de prueba 
+config.PATH_DB='securedfamily-test.db'
 
 class loginDeUsuarios(unittest.TestCase):   
         admDeUsuarios=administradorDeUsuarios.AdministradorDeUsuarios()
@@ -22,9 +27,25 @@ class loginDeUsuarios(unittest.TestCase):
             """No debe permitir usuarios que no esten registrados"""
             self.assertFalse(self.admDeUsuarios.usuario_valido('NoUser', ''))
 
-        def   test4LoginSinPassword(self):
+        def   test4LoginSinUsuarioNiPassword(self):
             """El login sin password debe permitirse"""
-            self.assertTrue(self.admDeUsuarios.usuario_valido('usuario', ''))
+            admDeUsuarios=administradorDeUsuarios.AdministradorDeUsuarios()
+            # Sobreescribo la variable global de la base para que use la de prueba sin usuarios 
+            config.PATH_DB='securedfamily-test-sin-usuarios.db'
+            self.assertTrue(admDeUsuarios.usuario_valido('', ''))
+            config.PATH_DB='securedfamily-test.db'
+            
+        def test5CantidadDeUsuarios(self):
+            """La cantidad de usuarios tiene que ser mayor o igual a cero"""
+            self.assertTrue(self.admDeUsuarios.cantidadDeUsuarios() >= 0)
+            
+        def test6ExisteAdmin(self):
+            """El usuario admin debe existir en la base de datos"""
+            self.assertTrue(self.admDeUsuarios.usuario_valido('admin', 'perico'))
+        
+        def test7PermitirNoLogin(self):
+            """Solo se debe permitir no ingresar ni usuario y password si no hay creados usuarios en la bd"""
+            self.assertTrue(self.admDeUsuarios.usuario_valido('', ''))
             
 if __name__ == '__main__':
     unittest.main()

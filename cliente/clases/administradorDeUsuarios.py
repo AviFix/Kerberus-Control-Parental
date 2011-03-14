@@ -27,6 +27,12 @@ class AdministradorDeUsuarios:
         def usuario_valido(self, user, pwd):
             """Verifica si el usuario esta en la base o en cache"""
             if user not in self.usuarios_ya_validados:
+                if user == "":
+                    if self.sePermiteNoLogin():
+                        return False
+                    else:
+                        return True
+                
                 conexion = sqlite3.connect(config.PATH_DB)
                 cursor=conexion.cursor()
                 password=self.md5sum(pwd)
@@ -58,3 +64,17 @@ class AdministradorDeUsuarios:
             # Si no devolvio nada, entonces lo agrego
             usuario=self.agregarUsuario(nombreusuario)
             return usuario
+        
+        def cantidadDeUsuarios(self):
+            """Devuelve la cantidad de usuarios creados en la base de datos, sin contar el usuario admin"""
+            conexion = sqlite3.connect(config.PATH_DB)
+            cursor=conexion.cursor()
+            salida=cursor.execute('select count(id) from usuarios where username <> ? ',('admin', )).fetchone()
+            conexion.close()
+            return salida
+
+        def sePermiteNoLogin(self):
+            """Solo se permite el no ingreso de usuario y contrasena si no hay usuarios creados"""
+            cant=self.cantidadDeUsuarios()
+            return (cant == 0)
+                
