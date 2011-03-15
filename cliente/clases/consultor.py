@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """Modulo encargado de verificar la aptitud de una url"""
 
 #Modulos externos

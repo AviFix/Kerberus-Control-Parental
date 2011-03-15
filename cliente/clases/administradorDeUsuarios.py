@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """Modulo encargado de verificar si el usuario ingresado por el cliente es valido"""
 
 #Modulos externos

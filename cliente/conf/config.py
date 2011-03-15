@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import platform, os
 
 if  platform.uname()[0] == 'Linux':

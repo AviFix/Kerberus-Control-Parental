@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """Test de unidad para administradorDeUsuarios.py"""
 
 # Modulos externos

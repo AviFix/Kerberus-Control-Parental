@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import SOAPpy, sys, time,  os,  sqlite3, httplib
  
 from funciones import *

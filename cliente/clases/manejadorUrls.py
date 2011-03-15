@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """Modulo encargado de la modificacion de urls (safeSearch por ejemplo)"""
 #Modulos externos
 import re
