@@ -122,7 +122,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         #
         if urls.soportaSafeSearch(self.path):
             url=urls.agregarSafeSearch(self.path)
-            print "El buscador soporta SafeSearch se fuerza el uso de safesearch estricto. Url Nueva: %s" % url
+#            print "El buscador soporta SafeSearch se fuerza el uso de safesearch estricto. Url Nueva: %s" % url
         else:
             url=self.path
         (scm, netloc, path, params, query, fragment) = urlparse.urlparse(url, 'http')        
