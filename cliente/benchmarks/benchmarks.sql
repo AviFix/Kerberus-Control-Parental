@@ -16,6 +16,7 @@ CREATE TABLE benchmark_result(
     url                  TEXT,
     tiempo            float,
     tiempo_con_cache  float,
+    apto              boolean,
     FOREIGN KEY(id_ejecucion) REFERENCES benchmark_ejecucion(id)
 );
 insert into benchmark(id,name,descripcion) values (1,'benchmark1','Lee el ranking obtenido de alexa.com del millon de sitios mas visitados, y va uno por uno probando cuando demora en revisarse, y cuanto demora una vez cacheado');

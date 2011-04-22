@@ -25,24 +25,27 @@ class benchmark1():
         cursor.execute('insert into benchmark_ejecucion(fecha,id_benchmark ) values (?,?)',(str(datetime.datetime.now()),1))
         id_ejecucion=cursor.execute('select last_insert_rowid();').fetchone()[0]
         conexion.commit()
-        i = 0
+        cant_sitios=20.0
+        i = 1
         for id_url, url in self.ranking:
-            if i > 10:
-                break
-            i=i+1;
+            url="http://"+url
             inicio=time.time()
-            respuesta, mensaje=verificador.validarUrl(self.username, self.password, "http://"+url)
+            respuesta, mensaje=verificador.validarUrl(self.username, self.password, url)
             fin=time.time()
             tiempo=fin-inicio
             # ahora con cache en el server
             inicio_con_cache=time.time()
-            respuesta, mensaje=verificador.validarUrl(self.username, self.password, "http://"+url)
+            respuesta, mensaje=verificador.validarUrl(self.username, self.password, url)
             fin_con_cache=time.time()
             tiempo_con_cache=fin_con_cache-inicio_con_cache            
             print "Dominio: %s - tiempo: %s - tiempo cacheado: %s" % (url, tiempo, tiempo_con_cache)
-            cursor.execute('insert into benchmark_result(id_ejecucion,id_url,url,tiempo,tiempo_con_cache) values (?,?,?,?,?)',(id_ejecucion, id_url, url, tiempo, tiempo_con_cache )) 
+            cursor.execute('insert into benchmark_result(id_ejecucion,id_url,url,tiempo,tiempo_con_cache,apto) values (?,?,?,?,?,?)',(id_ejecucion, id_url, url, tiempo, tiempo_con_cache, respuesta )) 
             conexion.commit()   
-            
+            if i > cant_sitios:
+                break
+            if i/cant_sitios:
+                print "Progreso "+str(i/cant_sitios*100)+"%"            
+            i=i+1;
         conexion.close()
             
 if __name__ == '__main__':
