@@ -41,7 +41,7 @@ class benchmark1():
             print "Dominio: %s - tiempo: %s - tiempo cacheado: %s" % (url, tiempo, tiempo_con_cache)
             cursor.execute('insert into benchmark_result(id_ejecucion,id_url,url,tiempo,tiempo_con_cache,apto) values (?,?,?,?,?,?)',(id_ejecucion, id_url, url, tiempo, tiempo_con_cache, respuesta )) 
             conexion.commit()   
-            if i > cant_sitios:
+            if i >= cant_sitios:
                 break
             if i/cant_sitios:
                 print "Progreso "+str(i/cant_sitios*100)+"%"            
