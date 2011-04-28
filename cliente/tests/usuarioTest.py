@@ -279,7 +279,6 @@ class verificadorUsuarios(unittest.TestCase):
         usuarioPrueba=usuario.Usuario(self.username)
         url="http://www.redtube.net"
         respuesta, mensaje=usuarioPrueba.validarRemotamente(url)
-        print mensaje
         self.assertFalse(respuesta)
 
         
