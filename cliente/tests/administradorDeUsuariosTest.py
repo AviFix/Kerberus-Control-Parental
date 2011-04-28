@@ -33,9 +33,9 @@ class loginDeUsuarios(unittest.TestCase):
             """El login sin password debe permitirse"""
             admDeUsuarios=administradorDeUsuarios.AdministradorDeUsuarios()
             # Sobreescribo la variable global de la base para que use la de prueba sin usuarios 
-            config.PATH_DB='securedfamily-test-sin-usuarios.db'
+            config.PATH_DB='kerberus-test-sin-usuarios.db'
             self.assertTrue(admDeUsuarios.usuario_valido('', ''))
-            config.PATH_DB='securedfamily-test.db'
+            config.PATH_DB='kerberus-test.db'
             
         def test5CantidadDeUsuarios(self):
             """La cantidad de usuarios tiene que ser mayor o igual a cero"""

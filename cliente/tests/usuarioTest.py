@@ -13,7 +13,7 @@ import usuario
 import config
 
 # Sobreescribo la variable global de la base para que use la de prueba 
-config.PATH_DB='securedfamily-test.db'
+config.PATH_DB='kerberus-test.db'
 
 class verificadorUsuarios(unittest.TestCase):
     username='test_user'
@@ -258,13 +258,13 @@ class verificadorUsuarios(unittest.TestCase):
         usuarioPrueba=usuario.Usuario(self.username)
         url="http://www.google.com"
         #cambio el puerto del server, asi patea
-        puerto_aux=config.SECUREDFAMILYSERVER_PORT
-        config.SECUREDFAMILYSERVER_PORT="1000"
+        puerto_aux=config.SERVER_PORT
+        config.SERVER_PORT="1000"
         respuesta, mensaje=usuarioPrueba.validarRemotamente(url)
         self.assertFalse(respuesta)
         self.assertEqual(mensaje, "No hay conexion al servidor. ")
         # vuelvo el puerto como estaba
-        config.SECUREDFAMILYSERVER_PORT=puerto_aux
+        config.SERVER_PORT=puerto_aux
 
     def testValidacionRemota(self): 
         """El servidor valida correctamente las urls permitidas"""

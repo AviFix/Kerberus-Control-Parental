@@ -165,7 +165,7 @@ class Usuario:
         """Consulta al servidor por la url, porque no pudo determinar su aptitud"""
         headers = {"UserID": "1","URL":url}
         try:
-                conn = httplib.HTTPConnection(config.SECUREDFAMILYSERVER+":"+config.SECUREDFAMILYSERVER_PORT)
+                conn = httplib.HTTPConnection(config.SERVER_IP+":"+config.SERVER_PORT)
                 conn.request("HEAD", "/", "", headers)
                 response = conn.getresponse()
                 respuesta = str(response.reason)

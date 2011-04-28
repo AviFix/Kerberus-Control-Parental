@@ -3,11 +3,11 @@
 import platform, os
 
 if  platform.uname()[0] == 'Linux':
-    PATH_DB='/var/cache/securedfamily/securedfamily.db'
-    LOG_FILENAME='/var/log/securedfamily-cliente.log'    
+    PATH_DB='/var/cache/kerberus/kerberus.db'
+    LOG_FILENAME='/var/log/kerberus-cliente.log'    
 else:
-    PATH_DB='C:\securedfamily.db'
-    LOG_FILENAME='C:\securedfamily-cliente.log'
+    PATH_DB='C:\kerberus.db'
+    LOG_FILENAME='C:\kerberus-cliente.log'
    
 # Constantes de debug
 DEBUG_EXTENSIONES=False
@@ -28,7 +28,7 @@ BIND_ADDRESS = "0.0.0.0"
 BIND_PORT = 8080
 LOG_SIZE_MB =20
 LOG_CANT_ROTACIONES =5
-SECUREDFAMILYSERVER="securedfamily.no-ip.org"
-SECUREDFAMILYSERVER_PORT="8081"
+SERVER_IP="securedfamily.no-ip.org"
+SERVER_PORT="8081"
 MAX_CACHE_URLS_ACEPTADAS=10
 MAX_CACHE_URLS_DENEGADAS=10
