@@ -277,9 +277,11 @@ class verificadorUsuarios(unittest.TestCase):
     def testRechazoRemota(self): 
         """El servidor rechaza correctamente las urls denegadas"""
         usuarioPrueba=usuario.Usuario(self.username)
-        url="http://www.poringa.net"
+        url="http://www.redtube.net"
         respuesta, mensaje=usuarioPrueba.validarRemotamente(url)
+        print mensaje
         self.assertFalse(respuesta)
+
         
 if __name__ == '__main__':
     unittest.main()
