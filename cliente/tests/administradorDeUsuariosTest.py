@@ -12,7 +12,7 @@ sys.path.append('../conf')
 import administradorDeUsuarios,  config
 
 # Sobreescribo la variable global de la base para que use la de prueba 
-config.PATH_DB='securedfamily-test.db'
+config.PATH_DB='kerberus-test.db'
 
 class loginDeUsuarios(unittest.TestCase):   
         admDeUsuarios=administradorDeUsuarios.AdministradorDeUsuarios()
