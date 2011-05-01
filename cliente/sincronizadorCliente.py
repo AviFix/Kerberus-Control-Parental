@@ -4,8 +4,9 @@ import SOAPpy, sys, time,  os,  sqlite3, httplib
  
 from funciones import *
 
-PATH_DB='/var/cache/securedfamily/securedfamily.db'
-SERVER="securedfamily.no-ip.org:8081"
+PATH_DB='/var/cache/kerberus/kerberus.db'
+#SERVER="kerberus.com.ar:8083"
+SERVER="localhost:8083"
 
 
 def sincronizarDominiosPermitidos():
