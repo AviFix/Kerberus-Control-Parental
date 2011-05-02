@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import SOAPpy, sys, time,  os,  sqlite3, httplib
+import sys, time, os, sqlite3, httplib
  
 from funciones import *
 
@@ -20,6 +20,7 @@ def sincronizarDominiosPermitidos():
         for fila in array_dominios:
             registro=fila.split(',')
             if len(registro)>1:
+#                print "Se agrego el dominio permitido: %s" % registro[1]
                 cursor.execute('insert into dominios_publicamente_permitidos(tipo,url) values(?,?)',(registro[0],registro[1]), ) 
         conexion_db.commit()        
 
@@ -30,15 +31,19 @@ def sincronizarDominiosDenegados():
         conexion.request("GET", "/", "", headers)
         respuesta=conexion.getresponse()
         dominios=respuesta.read()
-        if dominios[-1]=="":
-            array_dominios=dominios.rsplit("\n")[0:-1]
+        if len(dominios):
+            if dominios[-1]=="":
+                array_dominios=dominios.rsplit("\n")[0:-1]
+            else:
+                array_dominios=dominios.rsplit("\n")
+            for fila in array_dominios:
+                registro=fila.split(',')
+                if len(registro)>1:
+#                    print "Se agrego el dominio denegado: %s" % registro[1]
+                    cursor.execute('insert into dominios_publicamente_denegados(tipo,url) values(?,?)',(registro[0],registro[1]), ) 
+                conexion_db.commit()        
         else:
-            array_dominios=dominios.rsplit("\n")
-        for fila in array_dominios:
-            registro=fila.split(',')
-            if len(registro)>1:
-                cursor.execute('insert into dominios_publicamente_denegados(tipo,url) values(?,?)',(registro[0],registro[1]), ) 
-        conexion_db.commit()        
+            print "No hay dominios para actualizar"
 
 def getPeriodoDeActualizacion():
         conexion=httplib.HTTPConnection(SERVER)
@@ -69,6 +74,12 @@ while True:
     #obtiene el tiempo en minutos
     periodo_expiracion=getPeriodoDeActualizacion()
     # paso de minutos a segundos el periodo de expiracion
+    if periodo_expiracion:
+        print "Se obtuvo como periodo de actualizacion %s minuto/s" % periodo_expiracion
+    else:
+        periodo_expiracion=1
+        print "No se obtuvo el periodo de actualizacion, por lo que se setea en 1minuto"
+
     periodo_expiracion=int(periodo_expiracion)*60
     conexion_db = sqlite3.connect(PATH_DB)
     cursor=conexion_db.cursor()
