@@ -36,20 +36,20 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
     __base = BaseHTTPServer.BaseHTTPRequestHandler
     __base_handle = __base.handle
     
-    server_version = "Familia Segura - Cliente /" + __version__
+    server_version = "Kerberus - Cliente /" + __version__
     rbufsize = 0                        # self.rfile Be unbuffered
     global verificador
 
 # Metodos de securedfamily
     def pedirUsuario(self, motivo):
         self.send_response(407, motivo)
-        self.send_header('Proxy-Authenticate', 'Basic realm="Familia Segura"')
+        self.send_header('Proxy-Authenticate', 'Basic realm="Kerberus"')
         self.send_header('Conection', 'close')
         self.end_headers()    
 
     def denegar(self, motivo):
         #esto lo deberia levantar de un archivo.
-        msg="<html><head><title>Sitio no permitido</title></head><body><h1>Sitio no permitido</h1><br><h3>%s</h3></body></html>\r\n" % motivo
+        msg="<html><head><title>Sitio no permitido</title></head><body><h1>Sitio no permitido</h1><br><h2><a href='javascript:history.back()'> Volver </a></h2><br><h3>%s</h3></body></html>\r\n" % motivo
         self.wfile.write(self.protocol_version + " 200 Connection established\r\n")
         self.wfile.write("Proxy-agent: %s\r\n" % self.version_string())
         self.wfile.write("\r\n")
