@@ -49,7 +49,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 
     def denegar(self, motivo):
         #esto lo deberia levantar de un archivo.
-        msg="<html><head><title>Sitio no permitido</title></head><body><h1>Sitio no permitido</h1><br><h2><a href='javascript:history.back()'> Volver </a></h2><br><h3>%s</h3></body></html>\r\n" % motivo
+        msg="<html><head><title>Sitio no permitido</title></head><body><h1>Sitio no permitido</h1><br><h2><a href='javascript:history.back()'> Volver </a></h2><br><h3>%s</h3><br><h3><a href="">Deshabilitar filtrado</a></h3></body></html>\r\n" % motivo
         self.wfile.write(self.protocol_version + " 200 Connection established\r\n")
         self.wfile.write("Proxy-agent: %s\r\n" % self.version_string())
         self.wfile.write("\r\n")
@@ -68,7 +68,6 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         self.__base_handle()
             
     def _connect_to(self, netloc, soc):
-        # paso 2:conexion al sitio remoto
         i = netloc.find(':')
         if i >= 0:
             host_port = netloc[:i], int(netloc[i+1:])
