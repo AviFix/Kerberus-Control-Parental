@@ -5,8 +5,8 @@ import sys, time, os, sqlite3, httplib
 from funciones import *
 
 PATH_DB='/var/cache/kerberus/kerberus.db'
-SERVER="kerberus.com.ar:8083"
-#SERVER="localhost:8083"
+#SERVER="kerberus.com.ar:8083"
+SERVER="localhost:8083"
 
 
 def sincronizarDominiosPermitidos():
@@ -20,7 +20,7 @@ def sincronizarDominiosPermitidos():
         for fila in array_dominios:
             registro=fila.split(',')
             if len(registro)>1:
-#                print "Se agrego el dominio permitido: %s" % registro[1]
+                #print "Se agrego el dominio permitido: %s" % registro[1]
                 cursor.execute('insert into dominios_publicamente_permitidos(tipo,url) values(?,?)',(registro[0],registro[1]), ) 
         conexion_db.commit()        
 
@@ -39,12 +39,12 @@ def sincronizarDominiosDenegados():
             for fila in array_dominios:
                 registro=fila.split(',')
                 if len(registro)>1:
-#                    print "Se agrego el dominio denegado: %s" % registro[1]
+                    #print "Se agrego el dominio denegado: %s" % registro[1]
                     cursor.execute('insert into dominios_publicamente_denegados(tipo,url) values(?,?)',(registro[0],registro[1]), ) 
                 conexion_db.commit()        
         else:
             print "No hay dominios para actualizar"
-
+       
 def getPeriodoDeActualizacion():
         conexion=httplib.HTTPConnection(SERVER)
         headers = {"UserID": "1","Peticion":"getPeriodoDeActualizacion"}
@@ -60,14 +60,14 @@ def sincronizarDominiosConServer(tiempo_actual):
         conexion_db.commit()          
         print "Se ha sincronizado la base de datos de dominios publicamente aceptados/denegados"
 
-def borrarUrlsViejasCache(hora_actual, edad_max):
-    tiempo_expiracion=hora_actual-edad_max
-    timestring=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(tiempo_expiracion))
-    respuesta=cursor.execute('delete from cache_urls_aceptadas where hora < ? ', (tiempo_expiracion, ))
-    conexion_db.commit()    
-    respuesta=cursor.execute('delete from cache_urls_denegadas where hora < ? ', (tiempo_expiracion, ))
-    conexion_db.commit()
-    print "Se han borrado las urls viejas de cache"    
+#def borrarUrlsViejasCache(hora_actual, edad_max):
+#    tiempo_expiracion=hora_actual-edad_max
+#    timestring=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(tiempo_expiracion))
+#    respuesta=cursor.execute('delete from cache_urls_aceptadas where hora < ? ', (tiempo_expiracion, ))
+#    conexion_db.commit()    
+#    respuesta=cursor.execute('delete from cache_urls_denegadas where hora < ? ', (tiempo_expiracion, ))
+#    conexion_db.commit()
+#    print "Se han borrado las urls viejas de cache"    
 
 
 while True:
@@ -89,7 +89,7 @@ while True:
     if (tiempo_transcurrido > periodo_expiracion)  :
         print "Sincronizando dominios permitidos/dengados con servidor..."
         sincronizarDominiosConServer(tiempo_actual)
-        borrarUrlsViejasCache(tiempo_actual, periodo_expiracion)    
+        #borrarUrlsViejasCache(tiempo_actual, periodo_expiracion)    
     else:
         tiempo_restante=ultima_actualizacion + periodo_expiracion - tiempo_actual
         print "Faltan %s minutos para que se vuelva a sincronizar" % (tiempo_restante/60)
