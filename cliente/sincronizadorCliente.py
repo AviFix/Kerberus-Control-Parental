@@ -5,8 +5,8 @@ import sys, time, os, sqlite3, httplib
 from funciones import *
 
 PATH_DB='/var/cache/kerberus/kerberus.db'
-#SERVER="kerberus.com.ar:8083"
-SERVER="localhost:8083"
+SERVER="kerberus.com.ar:8083"
+#SERVER="localhost:8083"
 
 
 def sincronizarDominiosPermitidos():
