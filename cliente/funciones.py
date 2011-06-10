@@ -61,6 +61,8 @@ def crearDBCliente(PATH_DB):
     insert into usuarios(username,password,admin) values ('mboscovich','c6ed3da18b23913d2fd664985c5c5f13',0);
     insert into usuarios(username,password,admin) values ('mguedes','c6ed3da18b23913d2fd664985c5c5f13',0);
     insert into usuarios(username,password,admin) values ('rtourn','c6ed3da18b23913d2fd664985c5c5f13',0);
+    insert into usuarios(username,password,admin) values ('usuario','f8032d5cae3de20fcec887f395ec9a6a',0);
+    insert into usuarios(username,password,admin) values ('','d41d8cd98f00b204e9800998ecf8427e',0);
     insert into sincronizador values (0);
     """)
     conn.commit()
