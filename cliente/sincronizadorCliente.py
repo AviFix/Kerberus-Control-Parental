@@ -1,10 +1,16 @@
 # -*- coding: utf-8 -*-
 
-import sys, time, os, sqlite3, httplib
+import sys, time, os, sqlite3, httplib, platform
  
 from funciones import *
 
-PATH_DB='/var/cache/kerberus/kerberus.db'
+if  platform.uname()[0] == 'Linux':
+    PATH_DB='/var/cache/kerberus/kerberus.db'
+    LOG_FILENAME='/var/log/kerberus-cliente.log'    
+else:
+    PATH_DB='C:\kerberus.db'
+    LOG_FILENAME='C:\kerberus-cliente.log'
+
 SERVER="kerberus.com.ar:8083"
 #SERVER="localhost:8083"
 
