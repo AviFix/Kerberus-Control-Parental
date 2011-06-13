@@ -6,4 +6,4 @@ sys.path.append('../../clases')
 sys.path.append('../../conf')
 
 
-setup(console=['../../cliente.py'])
+setup(windows=['../../cliente.py'],)
