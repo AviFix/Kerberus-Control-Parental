@@ -6,4 +6,4 @@ sys.path.append('../../clases')
 sys.path.append('../../conf')
 
 
-setup(console=['../../sincronizadorCliente.py'])
+setup(windows=['../../sincronizadorCliente.py'],)
