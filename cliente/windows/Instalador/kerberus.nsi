@@ -58,7 +58,6 @@ CRCCheck on
 ;Estilos visuales del XP activados
 XPStyle on
 
-Var PATH
 ;Indicamos cual será el directorio por defecto donde instalaremos nuestra
 ;aplicación, el usuario puede cambiar este valor en tiempo de ejecución.
 InstallDir "$PROGRAMFILES\kerberus"
@@ -87,29 +86,29 @@ UninstallText "Desinstalador de kerberus."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 Section "Programa"
-;;;StrCpy $PATH "Kerberus-client"
 ;Incluimos todos los ficheros que componen nuestra aplicación
-SetOutPath $INSTDIR\$PATH\client
+SetOutPath $INSTDIR\Kerberus\client
 File   C:\kerberus\SVN\cliente\windows\Kerberus-cliented\dist\*.*
 
-SetOutPath $INSTDIR\$PATH\sync
+SetOutPath $INSTDIR\Kerberus\sync
 File   C:\kerberus\SVN\cliente\windows\Kerberus-cliente-sync\dist\*.*
 
 ;Hacemos que la instalación se realice para todos los usuarios del sistema
 SetShellVarContext all
 
 WriteRegStr HKLM \
-            SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$PATH \
+            SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus \
             "DisplayName" "Kerbers-client-${VERSION}"
+
 WriteRegStr HKLM \
-            SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$PATH \
+            SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus \
             "UninstallString" '"$INSTDIR\uninstall.exe"'
 
 WriteUninstaller "uninstall.exe"
 
-WriteRegStr HKLM SOFTWARE\$PATH "InstallDir" $INSTDIR
+WriteRegStr HKLM SOFTWARE\Kerberus "InstallDir" $INSTDIR
        
-WriteRegStr HKLM SOFTWARE\$PATH "Version" "${VERSION}"
+WriteRegStr HKLM SOFTWARE\Kerberus "Version" "${VERSION}"
 
 WriteRegStr HKLM \
             SOFTWARE\Microsoft\Windows\CurrentVersion\Run \
@@ -128,11 +127,14 @@ SectionEnd
 ;;;;;;;;;;;;;;;;;;;;;;
 
 Section "Uninstall"
-;;;        StrCpy $PATH "Kerberus-client"
         SetShellVarContext all
-        RMDir /r $INSTDIR\$PATH
+        RMDir /r $INSTDIR\Kerberus
         RMDir /r $INSTDIR
-        DeleteRegKey HKLM SOFTWARE\$PATH
+        DeleteRegKey HKLM SOFTWARE\Kerberus
         DeleteRegKey HKLM \
-            Software\Microsoft\Windows\CurrentVersion\Uninstall\$PATH
+            Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus
+        DeleteRegKey HKLM \
+	    Software\Microsoft\Windows\CurrentVersion\Run\Kerberus-client
+        DeleteRegKey HKLM \
+            SOFTWARE\Microsoft\Windows\CurrentVersion\Run\Kerberus-sync
 SectionEnd
