@@ -49,7 +49,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 
     def denegar(self, motivo):
         #esto lo deberia levantar de un archivo.
-        msg="<html><head><title>Sitio no permitido</title></head><body><h1>Sitio no permitido</h1><br><h2><a href='javascript:history.back()'> Volver </a></h2><br><h3>%s</h3><br><h3><a href="">Deshabilitar filtrado</a></h3></body></html>\r\n" % motivo
+        msg="<html><head><title>Sitio no permitido</title></head><body><h1>Sitio no permitido</h1><br><h2><a href='javascript:history.back()'> Volver </a></h2><br><h3>%s</h3><br><h3><a href='<pedirUsuarioKerberus>'>Deshabilitar filtrado</a></h3></body></html>\r\n" % motivo
         self.wfile.write(self.protocol_version + " 200 Connection established\r\n")
         self.wfile.write("Proxy-agent: %s\r\n" % self.version_string())
         self.wfile.write("\r\n")
@@ -101,6 +101,14 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
     def do_GET(self):
         # Paso 3: peticion del recurso
         # Verificacion del usuario y url
+        relogin="!pedirUsuarioKerberus!"
+        print self.path
+        if relogin in self.path:
+            self.path=self.path[:-22]
+            self.pedirUsuario("Se requiere un usuario")
+            print self.path 
+            return False
+
         proxy_user=self.headers.getheader('Proxy-Authorization')
         if proxy_user:
             usuario, password=base64.b64decode(proxy_user.split(' ')[1]).split(':')
