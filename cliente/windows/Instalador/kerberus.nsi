@@ -13,7 +13,7 @@ SetCompressor lzma
 
 ;Definimos el valor de la variable VERSION, en caso de no definirse en el script
 ;podria ser definida en el compilador
-!define VERSION "0.1"
+!define VERSION "0.2"
 
 ;--------------------------------
 ;Pages
@@ -88,13 +88,12 @@ UninstallText "Desinstalador de kerberus."
 
 Section "Programa"
 ;;;StrCpy $PATH "Kerberus-client"
-SetOutPath $INSTDIR\$PATH\client
-
 ;Incluimos todos los ficheros que componen nuestra aplicación
-File   c:\Kerberus-client\*.*
+SetOutPath $INSTDIR\$PATH\client
+File   C:\kerberus\SVN\cliente\windows\Kerberus-cliented\dist\*.*
 
 SetOutPath $INSTDIR\$PATH\sync
-File   c:\Kerberus-sync\*.*
+File   C:\kerberus\SVN\cliente\windows\Kerberus-cliente-sync\dist\*.*
 
 ;Hacemos que la instalación se realice para todos los usuarios del sistema
 SetShellVarContext all
