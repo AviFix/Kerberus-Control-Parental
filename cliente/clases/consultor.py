@@ -34,7 +34,7 @@ class Consultor:
         
     def validarUrl(self, username, password, url):
         if not self.usuarios.usuario_valido(username, password):
-            return False, "Usuario no valido"
+            return False, "Usuario no valido %s : %s" %(username, password, )
             
         usuario=self.usuarios.obtenerUsuario(username)
         self.inicio=time.time()

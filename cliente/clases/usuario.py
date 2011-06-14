@@ -44,6 +44,10 @@ class Usuario:
 
     def getUserIdAndAdmin(self, usuario):
         """Devuelve el id del usuario, y si este es admin"""
+        if usuario == "NoBody":
+            id=1
+            es_admin=0
+            return id,  es_admin
         respuesta=self.cursor.execute('select id,admin from usuarios where username=? ', (usuario, ))
         return respuesta.fetchone()
         

@@ -49,7 +49,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 
     def denegar(self, motivo):
         #esto lo deberia levantar de un archivo.
-        msg="<html><head><title>Sitio no permitido</title></head><body><h1>Sitio no permitido</h1><br><h2><a href='javascript:history.back()'> Volver </a></h2><br><h3>%s</h3><br><h3><a href='<pedirUsuarioKerberus>'>Deshabilitar filtrado</a></h3></body></html>\r\n" % motivo
+        msg="<html><head><title>Sitio no permitido</title></head><body><h1>Sitio no permitido</h1><br><h2><a href='javascript:history.back()'> Volver </a></h2><br><h3>%s</h3><br><h3><a href='!DeshabilitarFiltrado!'>Deshabilitar filtrado</a></h3></body></html>\r\n" % motivo
         self.wfile.write(self.protocol_version + " 200 Connection established\r\n")
         self.wfile.write("Proxy-agent: %s\r\n" % self.version_string())
         self.wfile.write("\r\n")
@@ -101,40 +101,31 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
     def do_GET(self):
         # Paso 3: peticion del recurso
         # Verificacion del usuario y url
-        relogin="!pedirUsuarioKerberus!"
-        print self.path
-        if relogin in self.path:
-            self.path=self.path[:-22]
-            self.pedirUsuario("Se requiere un usuario")
-            print self.path 
-            return False
-
+        url=self.path
         proxy_user=self.headers.getheader('Proxy-Authorization')
         if proxy_user:
             usuario, password=base64.b64decode(proxy_user.split(' ')[1]).split(':')
         else:
-            self.pedirUsuario("Se requiere un usuario")
-            return False
-#        if not usuario:
-#            self.pedirUsuario("Se requiere un usuario")
-#            return False
-#        else:
-        permitido, motivo=verificador.validarUrl(usuario, password, self.path)
+            usuario, password="NoBody", "NoBody"
+            
+        permitido, motivo=verificador.validarUrl(usuario, password,url)
         if not permitido:
-            if motivo == "Usuario no valido":
-                self.pedirUsuario("Usuario invalido")
+            if "!DeshabilitarFiltrado!" in url:
+                self.pedirUsuario("Acceso para usuarios adultos")
             else:
                 self.denegar(motivo)
             return False
         #
-        if urls.soportaSafeSearch(self.path):
-            url=urls.agregarSafeSearch(self.path)
+        if "!DeshabilitarFiltrado!" in url:
+            url=url[:-22]
+        
+        if urls.soportaSafeSearch(url):
+            url=urls.agregarSafeSearch(url)
 #            print "El buscador soporta SafeSearch se fuerza el uso de safesearch estricto. Url Nueva: %s" % url
-        else:
-            url=self.path
-        (scm, netloc, path, params, query, fragment) = urlparse.urlparse(url, 'http')        
+
+        (scm, netloc, path, params, query, fragment) = urlparse.urlparse(url,  'http')        
         if scm not in ('http', 'ftp') or fragment or not netloc:
-            self.send_error(400, "Url erronea: %s" % self.path)
+            self.send_error(400, "Url erronea: %s" % url)
             return False
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:

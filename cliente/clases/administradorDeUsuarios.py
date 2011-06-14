@@ -29,22 +29,17 @@ class AdministradorDeUsuarios:
         def usuario_valido(self, user, pwd):
             """Verifica si el usuario esta en la base o en cache"""
             if user not in self.usuarios_ya_validados:
-                if user == "":
-                    if self.sePermiteNoLogin():
-                        return False
-                    else:
-                        return True
-                
-                conexion = sqlite3.connect(config.PATH_DB)
-                cursor=conexion.cursor()
-                password=self.md5sum(pwd)
-                cursor.execute('select id from usuarios where username=? and password =?',(user, password ))
-                salida=len(cursor.fetchall())
-                conexion.close()
-                if (salida < 1):
-                   return False
+                pwd=self.md5sum(pwd)                
+                if user <> "NoBody":               
+                    conexion = sqlite3.connect(config.PATH_DB)
+                    cursor=conexion.cursor()
+                    cursor.execute('select id from usuarios where username=? and password =?',(user, pwd ))
+                    salida=len(cursor.fetchall())
+                    conexion.close()
+                    if (salida < 1):
+                       return False
                 self.usuarios_ya_validados.append(user)
-                self.usuarios_ya_validados_pass.append(password)
+                self.usuarios_ya_validados_pass.append(pwd)
                 return True
             else:
                 if (self.md5sum(pwd) == self.usuarios_ya_validados_pass[self.usuarios_ya_validados.index(user)]):
