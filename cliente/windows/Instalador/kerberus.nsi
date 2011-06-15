@@ -42,7 +42,7 @@ SetCompressor lzma
 ; Configuración General ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Nombre del instalador
-OutFile Kerberus-client-${VERSION}.exe
+OutFile Kerberus-${VERSION}.exe
 
 ;Aquí comprobamos que en la versión Inglesa se muestra correctamente el mensaje:
 ;Welcome to the $Name Setup Wizard
@@ -60,7 +60,7 @@ XPStyle on
 
 ;Indicamos cual será el directorio por defecto donde instalaremos nuestra
 ;aplicación, el usuario puede cambiar este valor en tiempo de ejecución.
-InstallDir "$PROGRAMFILES\kerberus"
+InstallDir "$PROGRAMFILES\Kerberus"
 ; check if the program has already been installed, if so, take this dir
 ; as install dir
 InstallDirRegKey HKLM SOFTWARE\KERBERUS "Install_Dir"
@@ -87,36 +87,31 @@ UninstallText "Desinstalador de kerberus."
 
 Section "Programa"
 ;Incluimos todos los ficheros que componen nuestra aplicación
-SetOutPath $INSTDIR\Kerberus\client
+SetOutPath $INSTDIR\client
 File   C:\kerberus\SVN\cliente\windows\Kerberus-cliented\dist\*.*
 
-SetOutPath $INSTDIR\Kerberus\sync
+SetOutPath $INSTDIR\sync
 File   C:\kerberus\SVN\cliente\windows\Kerberus-cliente-sync\dist\*.*
 
 ;Hacemos que la instalación se realice para todos los usuarios del sistema
 SetShellVarContext all
 
-WriteRegStr HKLM \
-            SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus \
-            "DisplayName" "Kerbers-client-${VERSION}"
+WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus" \
+"DisplayName" "Kerbers-client-${VERSION}"
 
-WriteRegStr HKLM \
-            SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus \
-            "UninstallString" '"$INSTDIR\uninstall.exe"'
+WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus" \
+"UninstallString" '"$INSTDIR\uninstall.exe"'
 
 WriteUninstaller "uninstall.exe"
 
-WriteRegStr HKLM SOFTWARE\Kerberus "InstallDir" $INSTDIR
+WriteRegStr HKLM "Software\Kerberus" "InstallDir" $INSTDIR
        
-WriteRegStr HKLM SOFTWARE\Kerberus "Version" "${VERSION}"
+WriteRegStr HKLM "Software\Kerberus" "Version" "${VERSION}"
 
-WriteRegStr HKLM \
-            SOFTWARE\Microsoft\Windows\CurrentVersion\Run \
-            "Kerberus-client" "$INSTDIR\client\cliente.exe"
-
-WriteRegStr HKLM \
-            SOFTWARE\Microsoft\Windows\CurrentVersion\Run \
-            "Kerberus-sync" "$INSTDIR\sync\sincronizadorCliente.exe"
+WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" \
+"Kerberus-client" "$INSTDIR\client\cliente.exe"
+WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" \
+"Kerberus-sync" "$INSTDIR\sync\sincronizadorCliente.exe"
 
 SectionEnd
 
@@ -130,11 +125,8 @@ Section "Uninstall"
         SetShellVarContext all
         RMDir /r $INSTDIR\Kerberus
         RMDir /r $INSTDIR
-        DeleteRegKey HKLM SOFTWARE\Kerberus
-        DeleteRegKey HKLM \
-            Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus
-        DeleteRegKey HKLM \
-	    Software\Microsoft\Windows\CurrentVersion\Run\Kerberus-client
-        DeleteRegKey HKLM \
-            SOFTWARE\Microsoft\Windows\CurrentVersion\Run\Kerberus-sync
+        DeleteRegKey HKLM "SOFTWARE\Kerberus"
+        DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus"
+        DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Run\Kerberus-client"
+        DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Run\Kerberus-sync"
 SectionEnd
