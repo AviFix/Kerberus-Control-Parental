@@ -88,10 +88,10 @@ UninstallText "Desinstalador de kerberus."
 Section "Programa"
 ;Incluimos todos los ficheros que componen nuestra aplicación
 SetOutPath $INSTDIR\client
-File   C:\kerberus\SVN\cliente\windows\Kerberus-cliented\dist\*.*
+File   kerberus-daemon\dist\*.*
 
 SetOutPath $INSTDIR\sync
-File   C:\kerberus\SVN\cliente\windows\Kerberus-cliente-sync\dist\*.*
+File   kerberus-sync\dist\*.*
 
 ;Hacemos que la instalación se realice para todos los usuarios del sistema
 SetShellVarContext all
