@@ -138,10 +138,8 @@ writeRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
 writeRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
 "ProxyOverride" "<local>"
 
-MessageBox MB_YESNO|MB_ICONQUESTION "Do you wish to reboot the system?" IDNO +2
-ShutDown::LogOff
-;  Reboot
-
+MessageBox MB_YESNO|MB_ICONQUESTION "Se debe reiniciar para completar la instalación. Desea reiniciar ahora?" IDNO +2
+	reboot
 
 SectionEnd
 
@@ -164,5 +162,8 @@ Section "Uninstall"
         DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyHttp1.1"
         DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyServer"
         DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyOverride"
+
+MessageBox MB_YESNO|MB_ICONQUESTION "Se debe reiniciar para completar la desinstalación. Desea reiniciar ahora?" IDNO +2
+	reboot
 SectionEnd
 
