@@ -8,8 +8,8 @@ if  platform.uname()[0] == 'Linux':
     PATH_DB='/var/cache/kerberus/kerberus.db'
     LOG_FILENAME='/var/log/kerberus-cliente.log'    
 else:
-    PATH_DB='C:\kerberus.db'
-    LOG_FILENAME='C:\kerberus-cliente.log'
+    PATH_DB='..\kerberus.db'
+    LOG_FILENAME='..\kerberus-sync.log'
 
 SERVER="kerberus.com.ar:8083"
 #SERVER="localhost:8083"
