@@ -117,6 +117,8 @@ WriteRegStr HKLM "Software\Kerberus" "InstallDir" $INSTDIR
        
 WriteRegStr HKLM "Software\Kerberus" "Version" "${VERSION}"
 
+WriteRegStr HKLM "Software\Kerberus" "kerberus-common" "$COMMONFILES\kerberus"
+
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" \
 "Kerberus-client" "$INSTDIR\client\cliente.exe"
 
@@ -138,6 +140,8 @@ writeRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
 writeRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
 "ProxyOverride" "<local>"
 
+CreateDirectory $COMMONFILES\kerberus
+
 MessageBox MB_YESNO|MB_ICONQUESTION "Se debe reiniciar para completar la instalación. Desea reiniciar ahora?" IDNO +2
 	reboot
 
@@ -151,8 +155,8 @@ SectionEnd
 
 Section "Uninstall"
         SetShellVarContext all
-        RMDir /r $INSTDIR\Kerberus
         RMDir /r $INSTDIR
+	RMDir /r $COMMONFILES\kerberus
         DeleteRegKey HKLM "SOFTWARE\Kerberus"
         DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus"
         DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Run" "Kerberus-client"

@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
-import platform, os
+import platform, os, _winreg
 
 if  platform.uname()[0] == 'Linux':
     PATH_DB='/var/cache/kerberus/kerberus.db'
     LOG_FILENAME='/var/log/kerberus-cliente.log'    
 else:
-    PATH_DB='..\kerberus.db'
-    LOG_FILENAME='..\kerberus-cliente.log'
+    key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\kerberus')
+    PATH_DB=_winreg.QueryValueEx(key,'kerberus-common')[0]+'\kerberus.db' 
+    LOG_FILENAME=_winreg.QueryValueEx(key,'kerberus-common')[0]+'\kerberus-cliente.log'
    
 # Constantes de debug
 DEBUG_EXTENSIONES=False
