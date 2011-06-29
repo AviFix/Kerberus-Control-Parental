@@ -159,8 +159,8 @@ SectionEnd
 
 Section "Uninstall"
         SetShellVarContext all
-        RMDir /r $INSTDIR
-	RMDir /r $COMMONFILES\kerberus
+        RMDir /r /REBOOTOK $INSTDIR
+	RMDir /r /REBOOTOK $COMMONFILES\kerberus
         DeleteRegKey HKLM "SOFTWARE\Kerberus"
         DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus"
         DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Run" "Kerberus-client"
