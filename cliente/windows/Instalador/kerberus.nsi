@@ -125,7 +125,7 @@ WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" \
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" \
 "Kerberus-sync" "$INSTDIR\sync\sincronizadorCliente.exe"
 
-writeRegDword HKLM "SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings"
+writeRegDword HKLM "SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" \
 "ProxySettingsPerUser" 0
 
 ;writeRegDWord HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
@@ -188,8 +188,7 @@ Section "Uninstall"
         DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyHttp1.1"
         DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyServer"
         DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyOverride"
-	writeRegDword HKLM "SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" \
-	"ProxySettingsPerUser" 1
+	writeRegDword HKLM "SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxySettingsPerUser" 1
 
        ; DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "MigrateProxy"
        ; DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyEnable"
