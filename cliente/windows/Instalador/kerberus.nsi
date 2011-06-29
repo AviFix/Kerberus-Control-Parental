@@ -125,19 +125,37 @@ WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" \
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" \
 "Kerberus-sync" "$INSTDIR\sync\sincronizadorCliente.exe"
 
-writeRegDWord HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
+writeRegDword HKLM "SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings"
+"ProxySettingsPerUser" 0
+
+;writeRegDWord HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
+;"MigrateProxy" 1
+
+writeRegDWord HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
 "MigrateProxy" 1
 
-writeRegDWord HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
+;writeRegDWord HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
+;"ProxyEnable" 1
+
+writeRegDWord HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
 "ProxyEnable" 1
 
-writeRegDWord HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
+;writeRegDWord HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
+;"ProxyHttp1.1" 1
+
+writeRegDWord HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
 "ProxyHttp1.1" 1
 
-writeRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
+;writeRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
+;"ProxyServer" "http://127.0.0.1:8080"
+
+writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
 "ProxyServer" "http://127.0.0.1:8080"
 
-writeRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
+;writeRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
+;"ProxyOverride" "<local>"
+
+writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
 "ProxyOverride" "<local>"
 
 CreateDirectory $COMMONFILES\kerberus
@@ -165,11 +183,19 @@ Section "Uninstall"
         DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus"
         DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Run" "Kerberus-client"
         DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Run" "Kerberus-sync"
-        DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "MigrateProxy"
-        DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyEnable"
-        DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyHttp1.1"
-        DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyServer"
-        DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyOverride"
+        DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "MigrateProxy"
+        DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyEnable"
+        DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyHttp1.1"
+        DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyServer"
+        DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyOverride"
+	writeRegDword HKLM "SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" \
+	"ProxySettingsPerUser" 1
+
+       ; DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "MigrateProxy"
+       ; DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyEnable"
+       ; DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyHttp1.1"
+       ; DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyServer"
+       ; DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyOverride"
 
 MessageBox MB_YESNO|MB_ICONQUESTION "Se debe reiniciar para completar la desinstalación. Desea reiniciar ahora?" IDNO +2
 	reboot
