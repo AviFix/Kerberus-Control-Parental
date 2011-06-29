@@ -142,6 +142,10 @@ writeRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
 
 CreateDirectory $COMMONFILES\kerberus
 
+# Make the directory "$INSTDIR\database" read write accessible by all users
+AccessControl::GrantOnFile \
+"$COMMONFILES\kerberus" "(BU)" "GenericRead + GenericWrite + AddFile"
+
 MessageBox MB_YESNO|MB_ICONQUESTION "Se debe reiniciar para completar la instalación. Desea reiniciar ahora?" IDNO +2
 	reboot
 
