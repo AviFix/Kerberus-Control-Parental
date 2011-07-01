@@ -80,18 +80,50 @@ SetCompress auto
 ;Personalizamos el mensaje de desinstalación
 UninstallText "Desinstalador de kerberus."
 
+
+# default section start
+section
+ 
+    # call userInfo plugin to get user info.  The plugin puts the result in the stack
+    userInfo::getAccountType
+   
+    # pop the result from the stack into $0
+    pop $0
+ 
+    # compare the result with the string "Admin" to see if the user is admin.
+    # If match, jump 3 lines down.
+    strCmp $0 "Admin" +3
+ 
+    # if there is not a match, print message and return
+    messageBox MB_OK "Debe tener Permisos de Administrador para instalar Kerberus: $0"
+    return
+  
+# default section end
+sectionEnd
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Install settings                                                    ;
 ; En esta sección añadimos los ficheros que forman nuestra aplicación ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 Section "Programa"
+
+CreateDirectory $COMMONFILES\kerberus
+
+SetOutPath $COMMONFILES\kerberus
+File ArchivosDefault\*.*
+
 ;Incluimos todos los ficheros que componen nuestra aplicación
 SetOutPath $INSTDIR\client
 File   kerberus-daemon\dist\*.*
 
 SetOutPath $INSTDIR\sync
 File   kerberus-sync\dist\*.*
+
+; Doy permisos
+AccessControl::GrantOnFile \
+"$COMMONFILES\kerberus" "(BU)" "GenericRead + GenericWrite + AddFile"
 
 ;Hacemos que la instalación se realice para todos los usuarios del sistema
 SetShellVarContext all
@@ -158,7 +190,6 @@ writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
 writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
 "ProxyOverride" "<local>"
 
-CreateDirectory $COMMONFILES\kerberus
 
 # Make the directory "$INSTDIR\database" read write accessible by all users
 AccessControl::GrantOnFile \
