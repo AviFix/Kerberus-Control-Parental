@@ -117,11 +117,15 @@ File ArchivosDefault\*.*
 ;Incluimos todos los ficheros que componen nuestra aplicación
 SetOutPath $INSTDIR\client
 File   kerberus-daemon\dist\*.*
-File   libs\*.*
 
 SetOutPath $INSTDIR\sync
 File   kerberus-sync\dist\*.*
-File   libs\*.*
+
+SetOutPath $INSTDIR\winlibs
+File   libs\vcredist_x86.exe
+
+; Instalo las librerias de visual estudio 
+ExecWait '"$INSTDIR\winlibs" /q:a /c:"VCREDI~1.EXE /q:a /c:""msiexec /i vcredist.msi /qb!"" "'  
 
 ; Doy permisos
 AccessControl::GrantOnFile \
