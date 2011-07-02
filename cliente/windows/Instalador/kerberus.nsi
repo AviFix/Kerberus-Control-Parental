@@ -117,9 +117,11 @@ File ArchivosDefault\*.*
 ;Incluimos todos los ficheros que componen nuestra aplicación
 SetOutPath $INSTDIR\client
 File   kerberus-daemon\dist\*.*
+File   libs\*.*
 
 SetOutPath $INSTDIR\sync
 File   kerberus-sync\dist\*.*
+File   libs\*.*
 
 ; Doy permisos
 AccessControl::GrantOnFile \
