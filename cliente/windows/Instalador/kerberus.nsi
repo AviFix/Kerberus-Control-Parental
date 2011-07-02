@@ -125,7 +125,7 @@ SetOutPath $INSTDIR\winlibs
 File   libs\vcredist_x86.exe
 
 ; Instalo las librerias de visual estudio 
-ExecWait '"$INSTDIR\winlibs" /q:a /c:"VCREDI~1.EXE /q:a /c:""msiexec /i vcredist.msi /qb!"" "'  
+ExecWait '"$INSTDIR\winlibs\vcredist_x86.exe /q:a"'
 
 ; Doy permisos
 AccessControl::GrantOnFile \
