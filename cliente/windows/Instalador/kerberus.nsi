@@ -118,8 +118,15 @@ File ArchivosDefault\*.*
 SetOutPath $INSTDIR\client
 File   kerberus-daemon\dist\*.*
 
+SetOutPath $INSTDIR\client\Microsoft.VC90.CRT
+File   kerberus-daemon\dist\Microsoft.VC90.CRT\*.*
+
+
 SetOutPath $INSTDIR\sync
 File   kerberus-sync\dist\*.*
+
+SetOutPath $INSTDIR\sync\Microsoft.VC90.CRT
+File   kerberus-sync\dist\Microsoft.VC90.CRT\*.*
 
 ; Doy permisos
 AccessControl::GrantOnFile \
@@ -195,8 +202,8 @@ writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
 AccessControl::GrantOnFile \
 "$COMMONFILES\kerberus" "(BU)" "GenericRead + GenericWrite + AddFile"
 
-;MessageBox MB_YESNO|MB_ICONQUESTION "Se debe reiniciar para completar la instalación. Desea reiniciar ahora?" IDNO +2
-;	reboot
+MessageBox MB_YESNO|MB_ICONQUESTION "Se debe reiniciar para completar la instalación. Desea reiniciar ahora?" IDNO +2
+	reboot
 
 SectionEnd
 
