@@ -113,20 +113,17 @@ CreateDirectory $COMMONFILES\kerberus
 
 SetOutPath $COMMONFILES\kerberus
 File ArchivosDefault\*.*
+File libs\vcredist_x86.exe
 
 ;Incluimos todos los ficheros que componen nuestra aplicación
 SetOutPath $INSTDIR\client
 File   kerberus-daemon\dist\*.*
 
-SetOutPath $INSTDIR\client\Microsoft.VC90.CRT
-File   kerberus-daemon\dist\Microsoft.VC90.CRT\*.*
-
 
 SetOutPath $INSTDIR\sync
 File   kerberus-sync\dist\*.*
 
-SetOutPath $INSTDIR\sync\Microsoft.VC90.CRT
-File   kerberus-sync\dist\Microsoft.VC90.CRT\*.*
+ExecWait '"$COMMONFILES\kerberus\vcredist_x86.exe" /q'
 
 ; Doy permisos
 AccessControl::GrantOnFile \
