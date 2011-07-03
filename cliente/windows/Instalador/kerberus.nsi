@@ -164,32 +164,32 @@ WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" \
 writeRegDword HKLM "SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" \
 "ProxySettingsPerUser" 0
 
-;writeRegDWord HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
-;"MigrateProxy" 1
+writeRegDWord HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
+"MigrateProxy" 1
 
 writeRegDWord HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
 "MigrateProxy" 1
 
-;writeRegDWord HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
-;"ProxyEnable" 1
+writeRegDWord HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
+"ProxyEnable" 1
 
 writeRegDWord HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
 "ProxyEnable" 1
 
-;writeRegDWord HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
-;"ProxyHttp1.1" 1
+writeRegDWord HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
+"ProxyHttp1.1" 1
 
 writeRegDWord HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
 "ProxyHttp1.1" 1
 
-;writeRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
-;"ProxyServer" "http://127.0.0.1:8080"
+writeRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
+"ProxyServer" "http://127.0.0.1:8080"
 
 writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
 "ProxyServer" "http://127.0.0.1:8080"
 
-;writeRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
-;"ProxyOverride" "<local>"
+writeRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
+"ProxyOverride" "<local>"
 
 writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
 "ProxyOverride" "<local>"
@@ -225,11 +225,11 @@ Section "Uninstall"
         DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyOverride"
 	writeRegDword HKLM "SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxySettingsPerUser" 1
 
-       ; DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "MigrateProxy"
-       ; DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyEnable"
-       ; DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyHttp1.1"
-       ; DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyServer"
-       ; DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyOverride"
+        DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "MigrateProxy"
+        DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyEnable"
+        DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyHttp1.1"
+        DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyServer"
+        DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyOverride"
 
 MessageBox MB_YESNO|MB_ICONQUESTION "Se debe reiniciar para completar la desinstalación. Desea reiniciar ahora?" IDNO +2
 	reboot
