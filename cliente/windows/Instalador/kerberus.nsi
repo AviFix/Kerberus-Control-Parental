@@ -121,12 +121,6 @@ File   kerberus-daemon\dist\*.*
 SetOutPath $INSTDIR\sync
 File   kerberus-sync\dist\*.*
 
-SetOutPath $INSTDIR\winlibs
-File   libs\vcredist_x86.exe
-
-; Instalo las librerias de visual estudio 
-ExecWait '"$INSTDIR\winlibs\vcredist_x86.exe /q:a"'
-
 ; Doy permisos
 AccessControl::GrantOnFile \
 "$COMMONFILES\kerberus" "(BU)" "GenericRead + GenericWrite + AddFile"
@@ -201,8 +195,8 @@ writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
 AccessControl::GrantOnFile \
 "$COMMONFILES\kerberus" "(BU)" "GenericRead + GenericWrite + AddFile"
 
-MessageBox MB_YESNO|MB_ICONQUESTION "Se debe reiniciar para completar la instalación. Desea reiniciar ahora?" IDNO +2
-	reboot
+;MessageBox MB_YESNO|MB_ICONQUESTION "Se debe reiniciar para completar la instalación. Desea reiniciar ahora?" IDNO +2
+;	reboot
 
 SectionEnd
 
