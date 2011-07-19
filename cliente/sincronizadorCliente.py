@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import sys, time, os, sqlite3, httplib, platform, _winreg
+import sys, time, os, sqlite3, httplib, platform
  
 from funciones import *
 
@@ -8,6 +8,7 @@ if  platform.uname()[0] == 'Linux':
     PATH_DB='/var/cache/kerberus/kerberus.db'
     LOG_FILENAME='/var/log/kerberus-cliente.log'    
 else:
+    import  _winreg
     key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\kerberus')
     PATH_DB=_winreg.QueryValueEx(key,'kerberus-common')[0]+'\kerberus.db' 
     LOG_FILENAME=_winreg.QueryValueEx(key,'kerberus-common')[0]+'\kerberus-sync.log'
