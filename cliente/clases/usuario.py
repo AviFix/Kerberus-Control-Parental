@@ -82,14 +82,14 @@ class Usuario:
     def recargarDominiosPublicamentePermitidos(self):
         """Carga desde la base de datos a memoria los dominios Publicamente permitidos"""
         self.dominios_publicamente_permitidos=[]
-        respuesta=self.cursor.execute('select url from dominios_publicamente_permitidos').fetchall()
+        respuesta=self.cursor.execute('select url from dominios_publicamente_permitidos  where tipo = 11').fetchall()
         for fila in respuesta:
             self.dominios_publicamente_permitidos.append(fila[0])
 
     def recargarDominiosPublicamenteDenegados(self):
         """Carga desde la base de datos a memoria los dominios Publicamente denegados"""        
         self.dominios_publicamente_denegados=[]
-        respuesta=self.cursor.execute('select url from dominios_publicamente_denegados').fetchall()
+        respuesta=self.cursor.execute('select url from dominios_publicamente_denegados where tipo = 11').fetchall()
         for fila in respuesta:
             self.dominios_publicamente_denegados.append(fila[0])
 
@@ -102,13 +102,10 @@ class Usuario:
 
     def dominioPublicamentePermitido(self, url):
         """Verifica si el dominio esta en la lista de dominios Publicamente permitidos"""
-        for dominio in self.dominios_publicamente_permitidos:
-            try:
-                if re.search(dominio,url):
-                    return True
-            except:
-                print "DOMINIO ROTO:%s " % dominio
-                print "URL:%s " % url
+        dominio=url.split('/')[2] 
+        for dom in self.dominios_publicamente_permitidos:
+           if dom == dominio:
+                return True
         return False
 
     def dominioDenegado(self, url):
@@ -120,8 +117,9 @@ class Usuario:
 
     def dominioPublicamenteDenegado(self, url):
         """Verifica si el dominio esta en la lista de dominios Publicamente denegados"""
-        for dominio in self.dominios_publicamente_denegados:
-            if re.search(str(dominio),url):
+        dominio=url.split('/')[2] 
+        for dom in self.dominios_publicamente_denegados:
+            if dom == dominio:
                 return True
         return False
 

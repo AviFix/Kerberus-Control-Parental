@@ -49,7 +49,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 
     def denegar(self, motivo):
         #esto lo deberia levantar de un archivo.
-        msg="<html><head><title>Sitio no permitido</title></head><body><h1>Sitio no permitido</h1><br><h2><a href='javascript:history.back()'> Volver </a></h2><br><h3>%s</h3><br><h3><a href='!DeshabilitarFiltrado!'>Deshabilitar filtrado</a></h3></body></html>\r\n" % motivo
+        msg="<html><head><title>Sitio no permitido</title></head><body><h1>Sitio no permitido</h1><br><h2><a href='javascript:history.back()'> Volver </a></h2><br><h3>%s</h3><br><h3><a href='!DeshabilitarFiltrado!'>Deshabilitar filtrado temporalmente</a></h3><br><h3><a href=''>Agregar este sitio a dominios permitidos</a></h3></body></html>\r\n" % motivo
         self.wfile.write(self.protocol_version + " 200 Connection established\r\n")
         self.wfile.write("Proxy-agent: %s\r\n" % self.version_string())
         self.wfile.write("\r\n")
@@ -73,7 +73,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
             host_port = netloc[:i], int(netloc[i+1:])
         else:
             host_port = netloc, 80
-#        self.server.logger.log (logging.INFO, "connect to %s:%d", host_port[0], host_port[1])
+        self.server.logger.log (logging.DEBUG, "connect to %s:%d", host_port[0], host_port[1])
         try: 
              soc.connect(host_port)
         except socket.error, arg:
@@ -111,6 +111,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         permitido, motivo=verificador.validarUrl(usuario, password,url)
         if not permitido:
             if "!DeshabilitarFiltrado!" in url:
+                self.server.logger.log (logging.INFO, "Solicitando acceso para usuarios adultos")
                 self.pedirUsuario("Acceso para usuarios adultos")
             else:
                 self.denegar(motivo)
@@ -121,8 +122,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         
         if urls.soportaSafeSearch(url):
             url=urls.agregarSafeSearch(url)
-#            print "El buscador soporta SafeSearch se fuerza el uso de safesearch estricto. Url Nueva: %s" % url
-
+            self.server.logger.log (logging.INFO, "La URL %s  soporta SafeSearch. Forzando su uso", url)
         (scm, netloc, path, params, query, fragment) = urlparse.urlparse(url,  'http')        
         if scm not in ('http', 'ftp') or fragment or not netloc:
             self.send_error(400, "Url erronea: %s" % url)
@@ -141,7 +141,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                         soc.send("\r\n")
                         self._read_write(soc)
                     except:
-                        print "Hubo un error en el metodo do_GET"
+                        self.server.logger.log (logging.ERROR, "Hubo un error en el metodo do_GET. URL: %s", url)
                                              
             elif scm == 'ftp':
                 # fish out user and password information
@@ -202,7 +202,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
     do_DELETE=do_GET
 
     def log_message (self, format, *args):
-        self.server.logger.log (logging.INFO, "%s %s", self.address_string (),
+        self.server.logger.log (logging.DEBUG, "%s %s", self.address_string (),
                                 format % args)
         
     def log_error (self, format, *args):
@@ -218,6 +218,7 @@ class ThreadingHTTPServer (SocketServer.ThreadingMixIn,
         
 def logSetup (logfile, logsize, cant_rotaciones):
     logger = logging.getLogger ("Cliente")
+    #logger.setLevel (logging.DEBUG)
     logger.setLevel (logging.INFO)
     #logger.setLevel (logging.ERROR)
     handler = logging.handlers.RotatingFileHandler (logfile, maxBytes=(logsize*(1<<20)), backupCount=cant_rotaciones)
@@ -247,6 +248,7 @@ def main ():
     server_address = (config.BIND_ADDRESS, config.BIND_PORT)
     ProxyHandler.protocol = "HTTP/1.1"
     httpd = ThreadingHTTPServer (server_address, ProxyHandler, logger)
+    verificador.setLogger(logger)
     sa = httpd.socket.getsockname ()
     print "Kerberus - Cliente, atendiendo en ", sa[0], "puerto", sa[1]
     req_count = 0
