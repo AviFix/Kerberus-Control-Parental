@@ -47,9 +47,11 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         self.send_header('Conection', 'close')
         self.end_headers()    
 
-    def denegar(self, motivo):
+    def denegar(self, motivo, url):
         #esto lo deberia levantar de un archivo.
-        msg="<html><head><title>Sitio no permitido</title></head><body><h1>Sitio no permitido</h1><br><h2><a href='javascript:history.back()'> Volver </a></h2><br><h3>%s</h3><br><h3><a href='!DeshabilitarFiltrado!'>Deshabilitar filtrado temporalmente</a></h3><br><h3><a href=''>Agregar este sitio a dominios permitidos</a></h3></body></html>\r\n" % motivo
+        #msg="<html><head><title>Sitio no permitido</title></head><body><h1>Sitio no permitido</h1><br><h2><a href='javascript:history.back()'> Volver </a></h2><br><h3>%s</h3><br><h3><a href='!DeshabilitarFiltrado!'>Deshabilitar filtrado temporalmente</a></h3><br><h3><a href=''>Agregar este sitio a dominios permitidos</a></h3></body></html>\r\n" % motivo
+        #msg="<html><head><title>Your Page Title</title><meta http-equiv='Refresh' content='5;url=http://www.kerberus.com.ar/denegado.php' /></HEAD><BODY>Optional page text here.</BODY></HTML>"
+        msg="<html><head><title>Sitio no permitido</title></head><body><iframe src='http://www.kerberus.com.ar/denegado.php?motivo=%s&url=%s' frameborder='0' width='100%%' height='100%%' scrolling='no'><h1>Sitio no permitido</h1><br><h2><a href='javascript:history.back()'> Volver </a></h2><br><h3>%s</h3><br><h3><a href='%s!DeshabilitarFiltrado!'>Deshabilitar filtrado temporalmente</a></h3><br><h3><a href=''>Agregar este sitio a dominios permitidos</a></h3></iframe></body></html>\r\n" % (motivo,url,  motivo, url)
         self.wfile.write(self.protocol_version + " 200 Connection established\r\n")
         self.wfile.write("Proxy-agent: %s\r\n" % self.version_string())
         self.wfile.write("\r\n")
@@ -114,7 +116,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                 self.server.logger.log (logging.INFO, "Solicitando acceso para usuarios adultos")
                 self.pedirUsuario("Acceso para usuarios adultos")
             else:
-                self.denegar(motivo)
+                self.denegar(motivo, url)
             return False
         #
         if "!DeshabilitarFiltrado!" in url:
