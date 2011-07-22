@@ -15,7 +15,6 @@ else:
        
 
 SERVER="kerberus.com.ar:8083"
-#SERVER="localhost:8083"
 
 
 def sincronizarDominiosPermitidos():
