@@ -29,8 +29,9 @@ def sincronizarDominiosPermitidos():
                 array_dominios=dominios.rsplit("\n")     
             cursor.execute('delete from dominios_publicamente_permitidos')            
             for fila in array_dominios:
+                if fila <> "":                
                     print "Se agrego el dominio permitido: %s" % fila
-                    cursor.execute('insert into dominios_publicamente_permitidos(url) values(?)',(fila), ) 
+                    cursor.execute('insert into dominios_publicamente_permitidos(url) values(?)', (fila, ) ) 
             conexion_db.commit()        
 
 def sincronizarDominiosDenegados():
@@ -46,8 +47,9 @@ def sincronizarDominiosDenegados():
             else:
                 array_dominios=dominios.rsplit("\n")
             for fila in array_dominios:
-                print "Se agrego el dominio denegado: %s" % fila
-                cursor.execute('insert into dominios_publicamente_denegados(url) values(?)',(fila), ) 
+                if fila <> "":
+                    print "Se agrego el dominio denegado: %s" % fila
+                    cursor.execute('insert into dominios_publicamente_denegados(url) values(?)',(fila, ) ) 
             conexion_db.commit()        
         else:
             print "No hay dominios para actualizar"
