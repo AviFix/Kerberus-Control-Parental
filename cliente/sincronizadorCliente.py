@@ -16,21 +16,22 @@ else:
 
 SERVER="kerberus.com.ar:8083"
 
-
 def sincronizarDominiosPermitidos():
-        cursor.execute('delete from dominios_publicamente_permitidos')
         conexion=httplib.HTTPConnection(SERVER)
         headers = {"UserID": "1","Peticion":"obtenerDominiosPermitidos"}
         conexion.request("GET", "/", "", headers)
         respuesta=conexion.getresponse()
         dominios=respuesta.read()
-        array_dominios=dominios.rsplit("\n")          
-        for fila in array_dominios:
-            registro=fila.split(',')
-            if len(registro)>1:
-                #print "Se agrego el dominio permitido: %s" % registro[1]
-                cursor.execute('insert into dominios_publicamente_permitidos(tipo,url) values(?,?)',(registro[0],registro[1]), ) 
-        conexion_db.commit()        
+        if len(dominios):
+            if dominios[-1]=="":
+                array_dominios=dominios.rsplit("\n")[0:-1]
+            else:
+                array_dominios=dominios.rsplit("\n")     
+            cursor.execute('delete from dominios_publicamente_permitidos')            
+            for fila in array_dominios:
+                    print "Se agrego el dominio permitido: %s" % fila
+                    cursor.execute('insert into dominios_publicamente_permitidos(url) values(?)',(fila), ) 
+            conexion_db.commit()        
 
 def sincronizarDominiosDenegados():
         cursor.execute('delete from dominios_publicamente_denegados')
@@ -45,11 +46,9 @@ def sincronizarDominiosDenegados():
             else:
                 array_dominios=dominios.rsplit("\n")
             for fila in array_dominios:
-                registro=fila.split(',')
-                if len(registro)>1:
-                    #print "Se agrego el dominio denegado: %s" % registro[1]
-                    cursor.execute('insert into dominios_publicamente_denegados(tipo,url) values(?,?)',(registro[0],registro[1]), ) 
-                conexion_db.commit()        
+                print "Se agrego el dominio denegado: %s" % fila
+                cursor.execute('insert into dominios_publicamente_denegados(url) values(?)',(fila), ) 
+            conexion_db.commit()        
         else:
             print "No hay dominios para actualizar"
        
