@@ -24,7 +24,7 @@ class Usuario:
         self.recargarCacheDenegadas()
         self.ultimaRecargaDeDominios=time.time()
         self.recargarPeriodoDeActualizacion()
-#        conexion.close()
+        conexion.close()
         #del(self.cursor)
         self.buffer_denegadas=[]
         self.buffer_aceptadas=[]   
@@ -83,18 +83,24 @@ class Usuario:
 
     def recargarDominiosPublicamentePermitidos(self):
         """Carga desde la base de datos a memoria los dominios Publicamente permitidos"""
+        conexion = sqlite3.connect(config.PATH_DB)
+        cursor=conexion.cursor()
         self.dominios_publicamente_permitidos=[]
-        respuesta=self.cursor.execute('select url from dominios_publicamente_permitidos').fetchall()
+        respuesta=cursor.execute('select url from dominios_publicamente_permitidos').fetchall()
         for fila in respuesta:
             self.dominios_publicamente_permitidos.append(fila[0])
-
+        conexion.close()
+        
     def recargarDominiosPublicamenteDenegados(self):
+        conexion = sqlite3.connect(config.PATH_DB)
+        cursor=conexion.cursor()        
         """Carga desde la base de datos a memoria los dominios Publicamente denegados"""        
         self.dominios_publicamente_denegados=[]
-        respuesta=self.cursor.execute('select url from dominios_publicamente_denegados').fetchall()
+        respuesta=cursor.execute('select url from dominios_publicamente_denegados').fetchall()
         for fila in respuesta:
             self.dominios_publicamente_denegados.append(fila[0])
-
+        conexion.close()
+        
     def dominioPermitido(self, url):
         """Verifica si el dominio esta en la lista de dominios permitidos"""
         for dominio in self.dominios_permitidos:
