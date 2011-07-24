@@ -48,7 +48,7 @@ def sincronizarDominiosDenegados():
                 array_dominios=dominios.rsplit("\n")
             for fila in array_dominios:
                 if fila <> "":
-                    print "Se agrego el dominio denegado: %s" % fila
+                    #print "Se agrego el dominio denegado: %s" % fila
                     cursor.execute('insert into dominios_publicamente_denegados(url) values(?)',(fila, ) ) 
             conexion_db.commit()        
         else:
@@ -67,7 +67,7 @@ def sincronizarDominiosConServer(tiempo_actual):
         sincronizarDominiosDenegados()
         cursor.execute('update sincronizador set ultima_actualizacion=?', (tiempo_actual, ))
         conexion_db.commit()          
-        print "Se ha sincronizado la base de datos de dominios publicamente aceptados/denegados"
+        #print "Se ha sincronizado la base de datos de dominios publicamente aceptados/denegados"
 
 #def borrarUrlsViejasCache(hora_actual, edad_max):
 #    tiempo_expiracion=hora_actual-edad_max
@@ -82,13 +82,10 @@ def sincronizarDominiosConServer(tiempo_actual):
 while True:
     #obtiene el tiempo en minutos
     periodo_expiracion=getPeriodoDeActualizacion()
-    # paso de minutos a segundos el periodo de expiracion
-    if periodo_expiracion:
-        print "Se obtuvo como periodo de actualizacion %s minuto/s" % periodo_expiracion
-    else:
+    if not periodo_expiracion:
         periodo_expiracion=1
-        print "No se obtuvo el periodo de actualizacion, por lo que se setea en 1minuto"
-
+    #print "Periodo de actualizacion %s minuto/s" % periodo_expiracion
+    # paso de minutos a segundos el periodo de expiracion
     periodo_expiracion=int(periodo_expiracion)*60
     conexion_db = sqlite3.connect(PATH_DB)
     cursor=conexion_db.cursor()
@@ -96,11 +93,11 @@ while True:
     tiempo_actual=time.time()
     tiempo_transcurrido=tiempo_actual - ultima_actualizacion
     if (tiempo_transcurrido > periodo_expiracion)  :
-        print "Sincronizando dominios permitidos/dengados con servidor..."
+        #print "Sincronizando dominios permitidos/dengados con servidor..."
         sincronizarDominiosConServer(tiempo_actual)
         #borrarUrlsViejasCache(tiempo_actual, periodo_expiracion)    
     else:
         tiempo_restante=ultima_actualizacion + periodo_expiracion - tiempo_actual
-        print "Faltan %s minutos para que se vuelva a sincronizar" % (tiempo_restante/60)
+        #print "Faltan %s minutos para que se vuelva a sincronizar" % (tiempo_restante/60)
         time.sleep(tiempo_restante)
     conexion_db.close()
