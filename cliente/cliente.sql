@@ -18,21 +18,12 @@ CREATE TABLE dominios_denegados(
     FOREIGN KEY(usuario) REFERENCES usuario(id)
 );
 
-CREATE TABLE tipos_de_dominios(
-    id       INTEGER PRIMARY KEY,
-    tipo    TEXT
-);
-
 CREATE TABLE dominios_publicamente_permitidos(
     url               TEXT,
-    tipo        INTEGER,
-    FOREIGN KEY(tipo) REFERENCES tipos_de_dominios(id)
 );
 
 CREATE TABLE dominios_publicamente_denegados(
     url               TEXT,
-    tipo        INTEGER,
-    FOREIGN KEY(tipo) REFERENCES tipos_de_dominios(id)      
 );
 
 CREATE TABLE cache_urls_aceptadas(

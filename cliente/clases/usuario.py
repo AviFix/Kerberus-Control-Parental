@@ -82,14 +82,14 @@ class Usuario:
     def recargarDominiosPublicamentePermitidos(self):
         """Carga desde la base de datos a memoria los dominios Publicamente permitidos"""
         self.dominios_publicamente_permitidos=[]
-        respuesta=self.cursor.execute('select url from dominios_publicamente_permitidos  where tipo = 11').fetchall()
+        respuesta=self.cursor.execute('select url from dominios_publicamente_permitidos').fetchall()
         for fila in respuesta:
             self.dominios_publicamente_permitidos.append(fila[0])
 
     def recargarDominiosPublicamenteDenegados(self):
         """Carga desde la base de datos a memoria los dominios Publicamente denegados"""        
         self.dominios_publicamente_denegados=[]
-        respuesta=self.cursor.execute('select url from dominios_publicamente_denegados where tipo = 11').fetchall()
+        respuesta=self.cursor.execute('select url from dominios_publicamente_denegados').fetchall()
         for fila in respuesta:
             self.dominios_publicamente_denegados.append(fila[0])
 
@@ -100,14 +100,6 @@ class Usuario:
                 return True
         return False
 
-    def dominioPublicamentePermitido(self, url):
-        """Verifica si el dominio esta en la lista de dominios Publicamente permitidos"""
-        dominio=url.split('/')[2] 
-        for dom in self.dominios_publicamente_permitidos:
-           if dom == dominio:
-                return True
-        return False
-
     def dominioDenegado(self, url):
         """Verifica si el dominio esta en la lista de dominios denegados"""
         for dominio in self.dominios_denegados:
@@ -115,13 +107,15 @@ class Usuario:
                 return True
         return False
 
+    def dominioPublicamentePermitido(self, url):
+        """Verifica si el dominio esta en la lista de dominios Publicamente permitidos"""
+        dominio=url.split('/')[2] 
+        return dominio in self.dominios_publicamente_permitidos
+
     def dominioPublicamenteDenegado(self, url):
         """Verifica si el dominio esta en la lista de dominios Publicamente denegados"""
         dominio=url.split('/')[2] 
-        for dom in self.dominios_publicamente_denegados:
-            if dom == dominio:
-                return True
-        return False
+        return dominio in self.dominios_publicamente_denegados
 
     def cacheAceptadas(self, url):
         """Verifica si la url esta en la cache de aceptadas"""

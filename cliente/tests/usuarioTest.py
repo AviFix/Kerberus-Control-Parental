@@ -125,11 +125,12 @@ class verificadorUsuarios(unittest.TestCase):
         hora_url=time.time()
         usuarioPrueba=usuario.Usuario(self.username)        
         url="http://urldeprueba.com/prueba"
-        cursor.execute('insert into dominios_publicamente_permitidos(url,tipo) values (?,?)',(url,1, ))
+        dominio="urldeprueba.com"
+        cursor.execute('insert into dominios_publicamente_permitidos(url) values (?)',(dominio,))
         conexion.commit()
         usuarioPrueba.recargarDominiosPublicamentePermitidos()
         self.assertTrue(usuarioPrueba.dominioPublicamentePermitido(url))
-        cursor.execute('delete from dominios_publicamente_permitidos where url=? and tipo=?',(url,1, ))
+        cursor.execute('delete from dominios_publicamente_permitidos where url=? ',(dominio, ))
         conexion.commit()
         conexion.close()
 
@@ -140,11 +141,12 @@ class verificadorUsuarios(unittest.TestCase):
         hora_url=time.time()
         usuarioPrueba=usuario.Usuario(self.username)        
         url="http://urldeprueba.com/prueba"
-        cursor.execute('insert into dominios_publicamente_denegados(url,tipo) values (?,?)',(url,1, ))
+        dominio="urldeprueba.com"
+        cursor.execute('insert into dominios_publicamente_denegados(url) values (?)',(dominio, ))
         conexion.commit()
         usuarioPrueba.recargarDominiosPublicamenteDenegados()
         self.assertTrue(usuarioPrueba.dominioPublicamenteDenegado(url))
-        cursor.execute('delete from dominios_publicamente_denegados where url=? and tipo=?',(url,1, ))
+        cursor.execute('delete from dominios_publicamente_denegados where url=? ',(dominio, ))
         conexion.commit()
         conexion.close()
 

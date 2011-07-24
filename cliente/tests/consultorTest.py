@@ -3,7 +3,7 @@
 """Test de unidad para el modulo manejadorUrls.py"""
 
 # Modulos externos
-import sys,  unittest
+import sys,  unittest,  logging
 
 # Modulos propios
 sys.path.append('../clases')
@@ -14,12 +14,14 @@ class verificadorUrls(unittest.TestCase):
     extensiones_no_exceptuadas=(".html",".htm",".txt")
     urls_aceptadas=("http://www.wikipedia.org", "http://www.google.com")
     urls_denegadas=("http://www.cuantosexo.com/", )
-    urls_publicamente_permitidas=("http://www.hotmail.com", "http://www.mercadolibre.com.ar", "http://www.gmail.com")
-    urls_publicamente_denegadas=("http://www.tiava.com/", )
+    urls_publicamente_permitidas=("http://www.hotmail.com", "http://www.mercadolibre.com.ar", "http://www.google.com")
+    urls_publicamente_denegadas=("http://www.tiava.com", )
     verificador=consultor.Consultor()
+    verificador.setLogger(logging)
     username='test_user'
     password='test'
     adminuser='test_admin'
+
     
     def test1VerificarExtensionesExceptuadas(self):
         """Verificar que se exceptuen las extensiones no analizables por dansguardian"""
@@ -54,7 +56,7 @@ class verificadorUrls(unittest.TestCase):
         for url in self.urls_publicamente_denegadas:
             respuesta, mensaje=self.verificador.validarUrl(self.username, self.password, url)
             self.assertFalse(respuesta)       
-            self.assertEqual(mensaje, "Dominio publicamente denegado: %s" % url)
+            self.assertEqual(mensaje, "URL: %s <br>Motivo: Dominio publicamente denegado en el servidor" % url)
 
     def test7ChequearUrlsPublicamenteAceptadas(self):
         """Verifica que se acepten y reconozcan como tales los dominios publicamente permitidos"""
