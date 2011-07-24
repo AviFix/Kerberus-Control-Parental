@@ -22,9 +22,9 @@ class Usuario:
         self.recargarDominiosPublicamenteDenegados()
         self.recargarCacheAceptadas()
         self.recargarCacheDenegadas()
-        self.ultimaRecargaDeDominios=time.time()
+        self.ultimaRecargaDeDominios=0
         self.recargarPeriodoDeActualizacion()
-        conexion.close()
+        #conexion.close()
         #del(self.cursor)
         self.buffer_denegadas=[]
         self.buffer_aceptadas=[]   
@@ -179,8 +179,8 @@ class Usuario:
         tiempo_actual=time.time()
         tiempo_transcurrido=tiempo_actual - self.ultimaRecargaDeDominios
         if (tiempo_transcurrido > self.periodoDeActualizacionDB):
-            self.recargarDominiosPermitidos()
-            self.recargarDominiosDenegados()
+            self.recargarDominiosPublicamentePermitidos()
+            self.recargarDominiosPublicamenteDenegados()
             self.recargarPeriodoDeActualizacion()
             self.ultimaRecargaDeDominios=tiempo_actual
             print "Recargando dominios !!!, se volveran a sincronizar en %s" % self.periodoDeActualizacionDB
