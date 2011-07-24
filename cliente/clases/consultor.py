@@ -35,7 +35,7 @@ class Consultor:
     def extensionValida(self, url):
         url=url.lower()
         return re.match(".*\.(gif|jpeg|jpg|png|js|css|swf|ico|json|mp3|wav|rss|rar|zip|pdf|xml)$",url)   
-        
+    
     def validarUrl(self, username, password, url):
         if not self.usuarios.usuario_valido(username, password):
             return False, "Usuario no valido %s : %s" %(username, password, )

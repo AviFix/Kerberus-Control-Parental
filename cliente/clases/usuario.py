@@ -22,6 +22,8 @@ class Usuario:
         self.recargarDominiosPublicamenteDenegados()
         self.recargarCacheAceptadas()
         self.recargarCacheDenegadas()
+        self.ultimaRecargaDeDominios=time.time()
+        self.recargarPeriodoDeActualizacion()
 #        conexion.close()
         #del(self.cursor)
         self.buffer_denegadas=[]
@@ -157,7 +159,28 @@ class Usuario:
             conexion.close()
             self.buffer_denegadas=[]
 
+    def recargarPeriodoDeActualizacion(self):
+        conexion=httplib.HTTPConnection("%s:%s" % (config.SERVER_IP, config.SERVER_SINC_PORT))
+        headers = {"UserID": "1","Peticion":"getPeriodoDeActualizacion"}
+        conexion.request("GET", "/", "", headers)
+        respuesta=conexion.getresponse()
+        respuesta=respuesta.read()         
+        if not respuesta:
+            respuesta=10
+        self.periodoDeActualizacionDB=int(respuesta)*60
+        
+    def chequearEdadCaches(self):
+        tiempo_actual=time.time()
+        tiempo_transcurrido=tiempo_actual - self.ultimaRecargaDeDominios
+        if (tiempo_transcurrido > self.periodoDeActualizacionDB):
+            self.recargarDominiosPermitidos()
+            self.recargarDominiosDenegados()
+            self.recargarPeriodoDeActualizacion()
+            self.ultimaRecargaDeDominios=tiempo_actual
+            print "Recargando dominios !!!, se volveran a sincronizar en %s" % self.periodoDeActualizacionDB
+
     def validarRemotamente(self, url):
+        self.chequearEdadCaches()
         """Consulta al servidor por la url, porque no pudo determinar su aptitud"""
         headers = {"UserID": "1","URL":url}
         try:
