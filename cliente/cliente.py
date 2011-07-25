@@ -48,9 +48,13 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         self.end_headers()    
 
     def mostrarPublicidad(self, url):
-        msg="<html><head><title>Kerberus</title> <meta http-equiv='Refresh' content='3;url=%s' /></head> \
+        #msg="<html><head><title>Kerberus</title> <meta http-equiv='Refresh' content='3;url=%s' /></head> \
+        #<body> <iframe src='http://www.kerberus.com.ar/publicidad.php' frameborder='0'  width='100%%' height='100%%' \
+        #scrolling='no'></iframe></body></html>" % url
+        msg="<html><head><title>Kerberus</title></head> \
         <body> <iframe src='http://www.kerberus.com.ar/publicidad.php' frameborder='0'  width='100%%' height='100%%' \
-        scrolling='no'></iframe></body></html>" % url
+        scrolling='no'></iframe></body></html>"
+
         self.wfile.write(self.protocol_version + " 200 Connection established\r\n")
         self.wfile.write("Proxy-agent: %s\r\n" % self.version_string())
         self.wfile.write("\r\n")
@@ -117,8 +121,8 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         if verificador.primerURL:
             verificador.primerURL=False
             self.mostrarPublicidad(url)
-        
         proxy_user=self.headers.getheader('Proxy-Authorization')
+            
         if proxy_user:
             usuario, password=base64.b64decode(proxy_user.split(' ')[1]).split(':')
         else:
@@ -139,6 +143,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         if urls.soportaSafeSearch(url):
             url=urls.agregarSafeSearch(url)
             self.server.logger.log (logging.INFO, "La URL %s  soporta SafeSearch. Forzando su uso", url)
+            
         (scm, netloc, path, params, query, fragment) = urlparse.urlparse(url,  'http')        
         if scm not in ('http', 'ftp') or fragment or not netloc:
             self.send_error(400, "Url erronea: %s" % url)
@@ -203,7 +208,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                     if data:
                         if local: 
                             local_data += data
-                        else: 
+                        else:
                             out.send(data)
                         count = 0
             if count == max_idling: 
