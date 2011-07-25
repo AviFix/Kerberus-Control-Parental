@@ -21,7 +21,6 @@ class Consultor:
     def __init__(self):
         self.usuarios=administradorDeUsuarios.AdministradorDeUsuarios()        
         self.primerURL=True
-        self.tiempo_transcurrido=0
         
     def setLogger(self, logger):
         self.logger=logger

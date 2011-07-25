@@ -91,6 +91,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         self.server.logger.log (logging.DEBUG, "connect to %s:%d", host_port[0], host_port[1])
         try: 
              soc.connect(host_port)
+
         except socket.error, arg:
             try: 
                 msg = arg[1]
