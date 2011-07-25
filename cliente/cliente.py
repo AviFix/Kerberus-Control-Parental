@@ -47,6 +47,15 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         self.send_header('Conection', 'close')
         self.end_headers()    
 
+    def mostrarPublicidad(self, url):
+        msg="<html><head><title>Kerberus</title> <meta http-equiv='Refresh' content='3;url=%s' /></head> \
+        <body> <iframe src='http://www.kerberus.com.ar/publicidad.php' frameborder='0'  width='100%%' height='100%%' \
+        scrolling='no'></iframe></body></html>" % url
+        self.wfile.write(self.protocol_version + " 200 Connection established\r\n")
+        self.wfile.write("Proxy-agent: %s\r\n" % self.version_string())
+        self.wfile.write("\r\n")
+        self.wfile.write(msg)
+
     def denegar(self, motivo, url):
         #esto lo deberia levantar de un archivo.
         #msg="<html><head><title>Sitio no permitido</title></head><body><h1>Sitio no permitido</h1><br><h2><a href='javascript:history.back()'> Volver </a></h2><br><h3>%s</h3><br><h3><a href='!DeshabilitarFiltrado!'>Deshabilitar filtrado temporalmente</a></h3><br><h3><a href=''>Agregar este sitio a dominios permitidos</a></h3></body></html>\r\n" % motivo
@@ -104,12 +113,17 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         # Paso 3: peticion del recurso
         # Verificacion del usuario y url
         url=self.path
+
+        if verificador.primerURL:
+            verificador.primerURL=False
+            self.mostrarPublicidad(url)
+        
         proxy_user=self.headers.getheader('Proxy-Authorization')
         if proxy_user:
             usuario, password=base64.b64decode(proxy_user.split(' ')[1]).split(':')
         else:
             usuario, password="NoBody", "NoBody"
-            
+                
         permitido, motivo=verificador.validarUrl(usuario, password,url)
         if not permitido:
             if "!DeshabilitarFiltrado!" in url:
