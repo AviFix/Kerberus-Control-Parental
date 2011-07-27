@@ -11,7 +11,20 @@ class manejadorUrlsError(Exception): pass
 class ManejadorUrls:
     def __init__(self):
         self.buscadores=['Google', 'Yahoo', 'Bing', 'Youtube']
-        
+    
+    def esDominio(self, url):
+        a=url.split('/')
+        if len(a)< 5:
+            if len(a) == 4:
+                if a[3] == "":
+                    return True
+                else:
+                    return False
+            else:
+                return True
+        else:
+            return False
+
     def agregarSafeSearch(self, url):
         """Reescribe la url para que soporte safeSearch"""
         buscador=self.identificarBuscador(url)

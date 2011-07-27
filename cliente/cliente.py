@@ -10,11 +10,11 @@ import sys
 import signal
 import threading
 from types import FrameType, CodeType
-from time import time
 import ftplib
 import base64
 import platform
 import os   
+import time
 
 sys.path.append('clases')
 sys.path.append('conf')
@@ -118,12 +118,15 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         # Paso 3: peticion del recurso
         # Verificacion del usuario y url
         url=self.path
-
-        if verificador.primerURL:
-            verificador.primerURL=False
-            self.mostrarPublicidad(url)
-        proxy_user=self.headers.getheader('Proxy-Authorization')
+        
+        if urls.esDominio(url):
+            hora=time.time()
+            if ((verificador.utlima_publicidad_mostrada - hora)> 60):
+                verificador.utlima_publicidad_mostrada=hora
+                self.mostrarPublicidad(url)
             
+        proxy_user=self.headers.getheader('Proxy-Authorization')
+        del(self.headers['Accept-Encoding'])
         if proxy_user:
             usuario, password=base64.b64decode(proxy_user.split(' ')[1]).split(':')
         else:
