@@ -6,7 +6,7 @@ if  platform.uname()[0] == 'Linux':
     PATH_DB='/var/cache/kerberus/kerberus.db'
     LOG_FILENAME='/var/log/kerberus-cliente.log'    
 else:
-    import _winreg
+    import _winreg, subprocess
     key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\kerberus')
     path_common = _winreg.QueryValueEx(key,'kerberus-common')[0]
     PATH_DB= path_common +'\kerberus.db' 
@@ -20,9 +20,13 @@ else:
         firefox_install_dir= _winreg.QueryValueEx(Firefox_path_reg,'Install Directory')[0]
         filename = "%s\\defaults\\pref\\all-kerberus.js" % firefox_install_dir
         file = open(filename, 'w')
-        configuracion="pref(\"general.config.filename\", \"%s\mozilla.cfg\");" % path_common
+        configuracion="pref(\"general.config.filename\", \"mozilla.cfg\");"
         file.write(configuracion)
         file.close()
+        mozilla_config_file="\"%s\\mozilla.cfg\"" % path_common
+        destino = "\"%s\\.\"" % firefox_install_dir
+        comando = "copy %s %s /y" % (mozilla_config_file, destino)
+        result = subprocess.Popen(comando,stdout=subprocess.PIPE, shell=True)
     except:
         print "No esta firefox instalado"
    
