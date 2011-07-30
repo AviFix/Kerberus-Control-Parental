@@ -20,7 +20,7 @@ class ConsultorError(Exception): pass
 class Consultor:
     def __init__(self):
         self.usuarios=administradorDeUsuarios.AdministradorDeUsuarios()        
-        self.utlima_publicidad_mostrada=0
+        self.primerUrl=True
         
     def setLogger(self, logger):
         self.logger=logger

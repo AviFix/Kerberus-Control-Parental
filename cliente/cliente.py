@@ -48,17 +48,14 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         self.end_headers()    
 
     def mostrarPublicidad(self, url):
-        #msg="<html><head><title>Kerberus</title> <meta http-equiv='Refresh' content='3;url=%s' /></head> \
-        #<body> <iframe src='http://www.kerberus.com.ar/publicidad.php' frameborder='0'  width='100%%' height='100%%' \
-        #scrolling='no'></iframe></body></html>" % url
-        msg="<html><head><title>Kerberus</title></head> \
-        <body> <iframe src='http://www.kerberus.com.ar/publicidad.php' frameborder='0'  width='100%%' height='100%%' \
-        scrolling='no'></iframe></body></html>"
+       msg="<html><head><title>Kerberus</title></head><body>\
+       <iframe src='http://www.kerberus.com.ar/publicidad.php?url=%s' frameborder='0' \
+       width='100%%' height='100%%' scrolling='no'></iframe></body></html>" % url
+       self.wfile.write(self.protocol_version + " 200 Connection established\r\n")
+       self.wfile.write("Proxy-agent: %s\r\n" % self.version_string())       
+       self.wfile.write("\r\n")
+       self.wfile.write(msg)
 
-        self.wfile.write(self.protocol_version + " 200 Connection established\r\n")
-        self.wfile.write("Proxy-agent: %s\r\n" % self.version_string())
-        self.wfile.write("\r\n")
-        self.wfile.write(msg)
 
     def denegar(self, motivo, url):
         #esto lo deberia levantar de un archivo.
@@ -118,32 +115,30 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         # Paso 3: peticion del recurso
         # Verificacion del usuario y url
         url=self.path
-        
-        if urls.esDominio(url):
-            hora=time.time()
-            if ((verificador.utlima_publicidad_mostrada - hora)> 60):
-                verificador.utlima_publicidad_mostrada=hora
-                self.mostrarPublicidad(url)
+        if verificador.primerUrl:
+            verificador.primerUrl=False
+            self.mostrarPublicidad(url)
+            return False
             
         proxy_user=self.headers.getheader('Proxy-Authorization')
-        del(self.headers['Accept-Encoding'])
         if proxy_user:
             usuario, password=base64.b64decode(proxy_user.split(' ')[1]).split(':')
         else:
             usuario, password="NoBody", "NoBody"
-                
-        permitido, motivo=verificador.validarUrl(usuario, password,url)
-        if not permitido:
             if "!DeshabilitarFiltrado!" in url:
                 self.server.logger.log (logging.INFO, "Solicitando acceso para usuarios adultos")
                 self.pedirUsuario("Acceso para usuarios adultos")
-            else:
-                self.denegar(motivo, url)
+                return False
+                                
+        if "!DeshabilitarFiltrado!" in url:
+                url=url[:-22]  
+
+        permitido, motivo=verificador.validarUrl(usuario, password,url)
+        if not permitido:
+            self.denegar(motivo, url)
             return False
         #
-        if "!DeshabilitarFiltrado!" in url:
-            url=url[:-22]
-        
+       
         if urls.soportaSafeSearch(url):
             url=urls.agregarSafeSearch(url)
             self.server.logger.log (logging.INFO, "La URL %s  soporta SafeSearch. Forzando su uso", url)
