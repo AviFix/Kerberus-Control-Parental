@@ -48,9 +48,12 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         self.end_headers()    
 
     def mostrarPublicidad(self, url):
-       msg="<html><head><title>Kerberus</title></head><body>\
-       <iframe src='http://www.kerberus.com.ar/publicidad.php?url=%s' frameborder='0' \
-       width='100%%' height='100%%' scrolling='no'></iframe></body></html>" % url
+       #msg="<html><head><title>Kerberus</title></head><body>\
+       #<iframe src='http://www.kerberus.com.ar/publicidad.php?url=%s' frameborder='0' \
+       #width='100%%' height='100%%' scrolling='no'></iframe></body></html>" % url
+       msg="<html><head><title>Navegación protegida por Kerberus</title>\
+        <meta http-equiv=\"REFRESH\" content=\"0;url=http://www.kerberus.com.ar/publicidad.php?url=%s\" > \
+        </head> <body ></body> </html> " % url
        self.wfile.write(self.protocol_version + " 200 Connection established\r\n")
        self.wfile.write("Proxy-agent: %s\r\n" % self.version_string())       
        self.wfile.write("\r\n")
