@@ -11,25 +11,7 @@ else:
     path_common = _winreg.QueryValueEx(key,'kerberus-common')[0]
     PATH_DB= path_common +'\kerberus.db' 
     LOG_FILENAME= path_common +'\kerberus-cliente.log'
-    # Verifico si esta instalado el firefox y seteo el proxy
-    try:
-        key_path = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\Mozilla\Mozilla Firefox')
-        firefox_version =  _winreg.QueryValueEx(key_path,'CurrentVersion')[0]
-        firefox_key_path=r'Software\Mozilla\Mozilla Firefox\%s\Main' % firefox_version
-        Firefox_path_reg = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, firefox_key_path)
-        firefox_install_dir= _winreg.QueryValueEx(Firefox_path_reg,'Install Directory')[0]
-        filename = "%s\\defaults\\pref\\all-kerberus.js" % firefox_install_dir
-        file = open(filename, 'w')
-        configuracion="pref(\"general.config.filename\", \"mozilla.cfg\");"
-        file.write(configuracion)
-        file.close()
-        mozilla_config_file="\"%s\\mozilla.cfg\"" % path_common
-        destino = "\"%s\\.\"" % firefox_install_dir
-        comando = "copy %s %s /y" % (mozilla_config_file, destino)
-        result = subprocess.Popen(comando,stdout=subprocess.PIPE, shell=True)
-    except:
-        print "No esta firefox instalado"
-   
+
 # Constantes de debug
 DEBUG_EXTENSIONES=False
 DEBUG_DOM_PERM=True
