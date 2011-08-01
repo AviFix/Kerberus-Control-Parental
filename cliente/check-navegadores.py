@@ -50,7 +50,7 @@ class navegadores:
             if not self.estaSeteadoFirefox():
                 self.setearFirefox()
                 
-    def checkIe():
+    def checkIE():
         if not self.estaSeteadoIE():
             self.setearIE()
             
@@ -76,4 +76,4 @@ if __name__ == '__main__':
     sys.exit (main ())
     navs=navegadores()
     navs.checkFirefox()
-    navs.checkIe()
+    navs.checkIE()
