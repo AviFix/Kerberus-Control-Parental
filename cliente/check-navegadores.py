@@ -26,34 +26,41 @@ class navegadores:
         except:
             return False
 
-    def setearFirefox():
-        try:
-            key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\kerberus')
-            _winreg.SetValueEx(key,"firefoxSet",0, REG_SZ, r"True")
-            _winreg.CloseKey(key)
-            filename = "%s\\defaults\\pref\\all-kerberus.js" % self.firefoxInstallDir
-            file = open(filename, 'w')
-            configuracion="pref(\"general.config.filename\", \"mozilla.cfg\");"
-            file.write(configuracion)
-            file.close()
-            key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\kerberus')
-            path_common_kerberus = _winreg.QueryValueEx(key,'kerberus-common')[0]
-            mozilla_config_file="\"%s\\mozilla.cfg\"" % path_common_kerberus
-            destino = "\"%s\\.\"" % self.firefoxInstallDir
-            comando = "copy %s %s /y" % (mozilla_config_file, destino)
-            result = subprocess.Popen(comando,stdout=subprocess.PIPE, shell=True)
-        except:
-            return "No se pudo setear firefox, a pesar de estar instalado"
-
-    def checkFirefox():
+    def setFirefox():
         if self.estaFirefoxInstalado():
             if not self.estaSeteadoFirefox():
                 self.setearFirefox()
-                
-    def checkIE():
-        if not self.estaSeteadoIE():
-            self.setearIE()
-            
+                try:
+                    key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\kerberus')
+                    _winreg.SetValueEx(key,"firefoxSet",0, REG_SZ, r"True")
+                    _winreg.CloseKey(key)
+                    filename = "%s\\defaults\\pref\\all-kerberus.js" % self.firefoxInstallDir
+                    file = open(filename, 'w')
+                    configuracion="pref(\"general.config.filename\", \"mozilla.cfg\");"
+                    file.write(configuracion)
+                    file.close()
+                    key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\kerberus')
+                    path_common_kerberus = _winreg.QueryValueEx(key,'kerberus-common')[0]
+                    mozilla_config_file="\"%s\\mozilla.cfg\"" % path_common_kerberus
+                    destino = "\"%s\\.\"" % self.firefoxInstallDir
+                    comando = "copy %s %s /y" % (mozilla_config_file, destino)
+                    result = subprocess.Popen(comando,stdout=subprocess.PIPE, shell=True)
+                except:
+                    return "No se pudo setear firefox, a pesar de estar instalado"
+
+    def unsetFirefox():
+        if self.estaSeteadoFirefox():
+            try:
+                key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\kerberus')
+                _winreg.deleteValue(key,"firefoxSet")
+                _winreg.CloseKey(key)
+                conf_file = "%s\\defaults\\pref\\all-kerberus.js" % self.firefoxInstallDir
+                moz_conf="%s\\mozilla.cfg" % self.firefoxInstallDir
+                comando = "del %s %s/y" % (filename,  moz_conf)
+                result = subprocess.Popen(comando,stdout=subprocess.PIPE, shell=True)
+            except:
+                return "No se pudo dessetear firefox, a pesar de estar instalado"
+
     def estaSeteadoIE():
         try:
             key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\kerberus')
@@ -61,19 +68,43 @@ class navegadores:
             return ieSeteado
         except:
             return False
-            
-    def setearIE():
+
+    def setIE():
+        if not self.estaSeteadoIE():
+            try:
+                key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\kerberus')
+                _winreg.SetValueEx(key,"IESeteado",0, REG_SZ, r"True")
+                key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'\Software\Microsoft\Internet Explorer\Main')
+                _winreg.SetValueEx(key,"Start Page",0, REG_SZ, r"http://www.kerberus.com.ar/inicio.php")
+                _winreg.CloseKey(key)
+            except:
+                print "Problema seteando IE"
+
+    def unsetIE():
         try:
             key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\kerberus')
-            _winreg.SetValueEx(key,"IESeteado",0, REG_SZ, r"True")
+            _winreg.DeleteValue(key,"IESeteado")
+            _winreg.CloseKey(key)            
             key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'\Software\Microsoft\Internet Explorer\Main')
-            _winreg.SetValueEx(key,"Start Page",0, REG_SZ, r"http://www.kerberus.com.ar/inicio.php")
+            _winreg.SetValueEx(key,"Start Page",0, REG_SZ, r"http://www.google.com.ar")
             _winreg.CloseKey(key)
         except:
-            print "Problema seteando IE"
-
+            print "Problema Desseteando IE"
+            
+            
 if __name__ == '__main__':
-    sys.exit (main ())
     navs=navegadores()
-    navs.checkFirefox()
-    navs.checkIE()
+    try:                                
+        accion=sys.argv[1]
+        if accion== "set":
+            navs.setFirefox()
+            navs.setIE()
+        elif accion == "unset":
+            navs.unsetFirefox()
+            navs.unsetIE()
+        else:
+            "Parametro incorrecto, use set o unset"
+    except getopt.GetoptError: 
+        print "Accion incorrecta, introduzca instalar o desinstalar"
+        sys.exit(2)                     
+    sys.exit(0)
