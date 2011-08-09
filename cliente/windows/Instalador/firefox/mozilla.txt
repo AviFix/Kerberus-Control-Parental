@@ -10,4 +10,3 @@ lockPref("network.proxy.no_proxies_on", "localhost, 127.0.0.1");
 
 lockPref("network.proxy.share_proxy_settings", true);
 
-pref("browser.startup.homepage", "http://www.kerberus.com.ar/publicidad.php?url=http://www.google.com");

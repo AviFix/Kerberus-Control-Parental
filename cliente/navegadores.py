@@ -45,13 +45,13 @@ class navegadores:
                     _winreg.CloseKey(key)
                     filename = "%s\\defaults\\pref\\all-kerberus.js" % self.firefoxInstallDir
                     file = open(filename, 'w')
-                    configuracion="pref(\"general.config.filename\", \"mozilla-k.cfg\");"
+                    configuracion="pref(\"general.config.filename\", \"mozilla.cfg\");"
                     file.write(configuracion)
                     file.close()
                     key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\kerberus')
                     path_common_kerberus = _winreg.QueryValueEx(key,'kerberus-common')[0]
-                    mozilla_config_file="\"%s\\mozilla-k.cfg\"" % path_common_kerberus
-                    destino = "\"%s\\mozilla-k.cfg\"" % self.firefoxInstallDir
+                    mozilla_config_file="\"%s\\mozilla.cfg\"" % path_common_kerberus
+                    destino = "\"%s\\mozilla.cfg\"" % self.firefoxInstallDir
                     comando = "copy %s %s /y" % (mozilla_config_file, destino)
                     result = subprocess.Popen(comando,stdout=subprocess.PIPE, shell=True)
                     print "Se termino de setear firefox"
@@ -64,17 +64,11 @@ class navegadores:
                     key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\kerberus',0,_winreg.KEY_SET_VALUE)
                     _winreg.DeleteValue(key,r'firefoxSeteado')
                     _winreg.CloseKey(key)
-                    moz_conf="%s\\mozilla-k.cfg" % self.firefoxInstallDir
-                    comando = "del \"%s\" /F" % (moz_conf)
-                    #print comando
+                    preference_file = "%s\\defaults\\pref\\all-kerberus.js" % self.firefoxInstallDir
+                    mozilla_cfg = "\"%s\\mozilla.cfg\"" % self.firefoxInstallDir                    
+                    comando = "del \"%s\" %s /F" % (preference_file,mozilla_cfg)
+                    print comando
                     result = subprocess.Popen(comando,stdout=subprocess.PIPE, shell=True)
-                    key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\kerberus')
-                    path_common_kerberus = _winreg.QueryValueEx(key,'kerberus-common')[0]
-                    mozilla_config_file_uninstall="\"%s\\mozilla-uninstall.cfg\"" % path_common_kerberus
-                    destino = "\"%s\\mozilla-k.cfg\"" % self.firefoxInstallDir
-                    comando = "copy %s %s /y" % (mozilla_config_file, destino)
-                    result = subprocess.Popen(comando,stdout=subprocess.PIPE, shell=True)
-                    
                     print "Fin del desseteado de firefox"
                 #except:
                 #    return "No se pudo dessetear firefox, a pesar de estar instalado"
