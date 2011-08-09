@@ -45,31 +45,39 @@ class navegadores:
                     _winreg.CloseKey(key)
                     filename = "%s\\defaults\\pref\\all-kerberus.js" % self.firefoxInstallDir
                     file = open(filename, 'w')
-                    configuracion="pref(\"general.config.filename\", \"mozilla.cfg\");"
+                    configuracion="pref(\"general.config.filename\", \"mozilla-k.cfg\");"
                     file.write(configuracion)
                     file.close()
                     key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\kerberus')
                     path_common_kerberus = _winreg.QueryValueEx(key,'kerberus-common')[0]
-                    mozilla_config_file="\"%s\\mozilla.cfg\"" % path_common_kerberus
-                    destino = "\"%s\\.\"" % self.firefoxInstallDir
+                    mozilla_config_file="\"%s\\mozilla-k.cfg\"" % path_common_kerberus
+                    destino = "\"%s\\mozilla-k.cfg\"" % self.firefoxInstallDir
                     comando = "copy %s %s /y" % (mozilla_config_file, destino)
                     result = subprocess.Popen(comando,stdout=subprocess.PIPE, shell=True)
                     print "Se termino de setear firefox"
 
     def unsetFirefox(self):
-        if self.estaSeteadoFirefox():
-            try:
-                print "Deseteando firefox"
-                key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\kerberus',0,_winreg.KEY_SET_VALUE)
-                _winreg.DeleteValue(key,r'firefoxSeteado')
-                _winreg.CloseKey(key)
-                conf_file = "%s\\defaults\\pref\\all-kerberus.js" % self.firefoxInstallDir
-                moz_conf="%s\\mozilla.cfg" % self.firefoxInstallDir
-                comando = "del %s %s/y" % (filename,  moz_conf)
-                result = subprocess.Popen(comando,stdout=subprocess.PIPE, shell=True)
-                print "Fin del desseteado de firefox"
-            except:
-                return "No se pudo dessetear firefox, a pesar de estar instalado"
+        if self.estaFirefoxInstalado():
+            if self.estaSeteadoFirefox():
+                #try:
+                    print "Deseteando firefox"
+                    key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\kerberus',0,_winreg.KEY_SET_VALUE)
+                    _winreg.DeleteValue(key,r'firefoxSeteado')
+                    _winreg.CloseKey(key)
+                    moz_conf="%s\\mozilla-k.cfg" % self.firefoxInstallDir
+                    comando = "del \"%s\" /F" % (moz_conf)
+                    #print comando
+                    result = subprocess.Popen(comando,stdout=subprocess.PIPE, shell=True)
+                    key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\kerberus')
+                    path_common_kerberus = _winreg.QueryValueEx(key,'kerberus-common')[0]
+                    mozilla_config_file_uninstall="\"%s\\mozilla-uninstall.cfg\"" % path_common_kerberus
+                    destino = "\"%s\\mozilla-k.cfg\"" % self.firefoxInstallDir
+                    comando = "copy %s %s /y" % (mozilla_config_file, destino)
+                    result = subprocess.Popen(comando,stdout=subprocess.PIPE, shell=True)
+                    
+                    print "Fin del desseteado de firefox"
+                #except:
+                #    return "No se pudo dessetear firefox, a pesar de estar instalado"
 
     def estaSeteadoIE(self):
         try:
@@ -101,7 +109,13 @@ class navegadores:
                 key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\Microsoft\Internet Explorer\Main',0,_winreg.KEY_SET_VALUE)
                 _winreg.SetValueEx(key,"Search Page",0,_winreg.REG_SZ, r'http://www.kerberus.com.ar/inicio.php')
                 _winreg.CloseKey(key)
-                
+                key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Internet Explorer\Main',0,_winreg.KEY_SET_VALUE)
+                _winreg.SetValueEx(key,"Start Page",0,_winreg.REG_SZ, r'http://www.kerberus.com.ar/inicio.php')
+                _winreg.CloseKey(key)
+                # Seteando Search Page
+                key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Internet Explorer\Main',0,_winreg.KEY_SET_VALUE)
+                _winreg.SetValueEx(key,"Search Page",0,_winreg.REG_SZ, r'http://www.kerberus.com.ar/inicio.php')
+                _winreg.CloseKey(key)                
                 print "Fin del seteo de IE"
             #except:
             #    print "Problema seteando IE"
@@ -118,7 +132,14 @@ class navegadores:
             _winreg.CloseKey(key)
             key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\Microsoft\Internet Explorer\Main',0,_winreg.KEY_SET_VALUE)
             _winreg.SetValueEx(key,"Search Page",0, _winreg.REG_SZ, r"http://www.google.com.ar")
+            _winreg.CloseKey(key)
+            key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Internet Explorer\Main',0,_winreg.KEY_SET_VALUE)
+            _winreg.SetValueEx(key,"Start Page",0, _winreg.REG_SZ, r"http://www.google.com.ar")
+            _winreg.CloseKey(key)
+            key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Internet Explorer\Main',0,_winreg.KEY_SET_VALUE)
+            _winreg.SetValueEx(key,"Search Page",0, _winreg.REG_SZ, r"http://www.google.com.ar")
             _winreg.CloseKey(key)            
+            
             print "Fin del desseteado de IE"
         #except:
         #    print "Problema Desseteando IE"
