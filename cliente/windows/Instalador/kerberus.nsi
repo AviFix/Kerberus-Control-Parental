@@ -114,17 +114,18 @@ CreateDirectory $COMMONFILES\kerberus
 SetOutPath $COMMONFILES\kerberus
 File ArchivosDefault\*.*
 File libs\vcredist_x86.exe
+File Navegadores\dist\*.*
 
 ;Incluimos todos los ficheros que componen nuestra aplicación
 SetOutPath $INSTDIR\client
 File   kerberus-daemon\dist\*.*
 
-
 SetOutPath $INSTDIR\sync
 File   kerberus-sync\dist\*.*
 
-ExecWait '"$COMMONFILES\kerberus\vcredist_x86.exe" /q'
 
+ExecWait '"$COMMONFILES\kerberus\vcredist_x86.exe" /q'
+ExecWait '"$COMMONFILES\kerberus\navegadores.exe set" /q'
 ; Doy permisos
 AccessControl::GrantOnFile \
 "$COMMONFILES\kerberus" "(BU)" "GenericRead + GenericWrite + AddFile"
@@ -230,6 +231,8 @@ Section "Uninstall"
         DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyHttp1.1"
         DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyServer"
         DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyOverride"
+
+ExecWait '"$COMMONFILES\kerberus\navegadores.exe set" /q'
 
 MessageBox MB_YESNO|MB_ICONQUESTION "Se debe reiniciar para completar la desinstalación. Desea reiniciar ahora?" IDNO +2
 	reboot
