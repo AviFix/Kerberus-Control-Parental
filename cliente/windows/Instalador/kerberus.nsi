@@ -114,6 +114,8 @@ CreateDirectory $COMMONFILES\kerberus
 SetOutPath $COMMONFILES\kerberus
 File ArchivosDefault\*.*
 File libs\vcredist_x86.exe
+
+SetOutPath $COMMONFILES\checkNavs
 File Navegadores\dist\*.*
 
 ;Incluimos todos los ficheros que componen nuestra aplicación
@@ -125,10 +127,12 @@ File   kerberus-sync\dist\*.*
 
 
 ExecWait '"$COMMONFILES\kerberus\vcredist_x86.exe" /q'
-ExecWait '"$COMMONFILES\kerberus\navegadores.exe" set'
+
 ; Doy permisos
 AccessControl::GrantOnFile \
 "$COMMONFILES\kerberus" "(BU)" "GenericRead + GenericWrite + AddFile"
+AccessControl::GrantOnFile \
+"$COMMONFILES\checkNavs" "(BU)" "GenericRead + GenericWrite + AddFile"
 
 ;Hacemos que la instalación se realice para todos los usuarios del sistema
 SetShellVarContext all
@@ -162,43 +166,34 @@ WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" \
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" \
 "Kerberus-sync" "$INSTDIR\sync\sincronizadorCliente.exe"
 
-;writeRegDword HKLM "SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" \
-;"ProxySettingsPerUser" 0
+WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" \
+"checkNavs" "$COMMONFILES\checkNavs\navegadores.exe"
 
-;writeRegDWord HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
-;"MigrateProxy" 1
+writeRegDword HKLM "SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" \
+"ProxySettingsPerUser" 0
 
-;writeRegDWord HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
-;"MigrateProxy" 1
-
-writeRegDWord HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
-"ProxyEnable" 1
+writeRegDWord HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
+"MigrateProxy" 1
 
 writeRegDWord HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
 "ProxyEnable" 1
 
-writeRegDWord HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
-"ProxyHttp1.1" 1
-
 writeRegDWord HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
 "ProxyHttp1.1" 1
-
-writeRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
-"ProxyServer" "http://127.0.0.1:8080"
 
 writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
 "ProxyServer" "http://127.0.0.1:8080"
 
-writeRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
-"ProxyOverride" "<local>"
 
 writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
 "ProxyOverride" "<local>"
 
 
 # Make the directory "$INSTDIR\database" read write accessible by all users
-AccessControl::GrantOnFile \
-"$COMMONFILES\kerberus" "(BU)" "GenericRead + GenericWrite + AddFile"
+#AccessControl::GrantOnFile \
+#"$COMMONFILES\kerberus" "(BU)" "GenericRead + GenericWrite + AddFile"
+
+#ExecWait '"$COMMONFILES\kerberus\navegadores.exe" set'
 
 MessageBox MB_YESNO|MB_ICONQUESTION "Se debe reiniciar para completar la instalación. Desea reiniciar ahora?" IDNO +2
 	reboot
@@ -213,6 +208,7 @@ SectionEnd
 
 Section "Uninstall"
         SetShellVarContext all
+	ExecWait '"$COMMONFILES\kerberus\navegadores.exe" unset'
         RMDir /r /REBOOTOK $INSTDIR
 	RMDir /r /REBOOTOK $COMMONFILES\kerberus
         DeleteRegKey HKLM "SOFTWARE\Kerberus"
@@ -224,15 +220,14 @@ Section "Uninstall"
         DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyHttp1.1"
         DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyServer"
         DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyOverride"
-	; writeRegDword HKLM "SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxySettingsPerUser" 1
+	writeRegDword HKLM "SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxySettingsPerUser" 1
 
-        DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "MigrateProxy"
-        DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyEnable"
-        DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyHttp1.1"
-        DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyServer"
-        DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyOverride"
+        DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "MigrateProxy"
+        DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyEnable"
+        DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyHttp1.1"
+        DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyServer"
+        DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyOverride"
 
-ExecWait '"$COMMONFILES\kerberus\navegadores.exe" unset'
 
 MessageBox MB_YESNO|MB_ICONQUESTION "Se debe reiniciar para completar la desinstalación. Desea reiniciar ahora?" IDNO +2
 	reboot

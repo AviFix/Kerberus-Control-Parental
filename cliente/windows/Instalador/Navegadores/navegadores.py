@@ -8,14 +8,18 @@ class navegadores:
     def estaInstaladoKerberus(self):
         try:
             key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\kerberus')
-            if key:
+            kerberus_version =  _winreg.QueryValueEx(key,'Version')[0]
+            if kerberus_version:
+                print "Kerberus instalado, configurando navegadores"
                 return True
             else:
+                print "Kerberus no instalado, desconfigurando navegadores"
                 return False
         except:
+            print "Kerberus no instalado, desconfigurando navegadores"
             return False    
     
-    def setearNavegadores(self):
+    def setNavegadores(self):
         self.setFirefox()
         self.setIE()
 
@@ -44,24 +48,23 @@ class navegadores:
 
     def estaSeteadoFirefox(self):
         try:
-            key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\kerberus')
-            firefox_seteado = _winreg.QueryValueEx(key,'FirefoxSeteado')[0]
-            if firefox_seteado:
-                print "Estaba seteado Firefox"
+            filename = "%s\\defaults\\pref\\all-kerberus.js" % self.firefoxInstallDir
+            file = open(filename, 'r')
+            if file:
+                print "Esta seteado Firefox"
+                file.close()
+                return True
             else:
-                print "No estaba seteado Firefox"
-            return key      
+                print "No esta seteado Firefox"                
+                return False
         except:
-            print "No estaba seteado Firefox"
+            print "No esta seteado Firefox"
             return False
 
     def setFirefox(self):
         if self.estaFirefoxInstalado():
             if not self.estaSeteadoFirefox():
                     print "seteando firefox"
-                    key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\Kerberus',0,_winreg.KEY_SET_VALUE)
-                    _winreg.SetValueEx(key,"FirefoxSeteado", 0, _winreg.REG_SZ, r"True")
-                    _winreg.CloseKey(key)
                     filename = "%s\\defaults\\pref\\all-kerberus.js" % self.firefoxInstallDir
                     file = open(filename, 'w')
                     configuracion="pref(\"general.config.filename\", \"mozilla.cfg\");"
@@ -80,9 +83,6 @@ class navegadores:
             if self.estaSeteadoFirefox():
                 #try:
                     print "Deseteando firefox"
-                    key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\kerberus',0,_winreg.KEY_SET_VALUE)
-                    _winreg.DeleteValue(key,r'firefoxSeteado')
-                    _winreg.CloseKey(key)
                     preference_file = "%s\\defaults\\pref\\all-kerberus.js" % self.firefoxInstallDir
                     mozilla_cfg = "\"%s\\mozilla.cfg\"" % self.firefoxInstallDir                    
                     comando = "del \"%s\" %s /F" % (preference_file,mozilla_cfg)
@@ -94,42 +94,50 @@ class navegadores:
 
     def estaSeteadoIE(self):
         try:
-            key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\kerberus')
-            ie_seteado = _winreg.QueryValueEx(key,'IESeteado')[0]
-            if ie_seteado:
-                print "Estaba seteado Internet Explorer"
+            key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Internet Explorer\Main')
+            proxy = _winreg.QueryValueEx(key,'ProxyServer')[0]
+            if proxy == "http://127.0.0.1:8080":
+                print "Esta seteado Internet Explorer"
                 return True
             else:
-                print "No estaba seteado Internet Explorer"
+                print "No esta seteado Internet Explorer"
                 return False
         except:
-            "Error verificando si estaba seteado IE"
+            print "no esta seteado IE"
             return False
 
     def setIE(self):
         if not self.estaSeteadoIE():
             #try:
                 print "Seteando IE"
-                # Seteando como seteado a IE
-                key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\kerberus',0,_winreg.KEY_SET_VALUE)
-                _winreg.SetValueEx(key,"IESeteado",0, _winreg.REG_SZ, r"True")
-                _winreg.CloseKey(key)
-                # Seteando Start Page
-                key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\Microsoft\Internet Explorer\Main',0,_winreg.KEY_SET_VALUE)
-                _winreg.SetValueEx(key,"Start Page",0,_winreg.REG_SZ, r'http://www.kerberus.com.ar/inicio.php')
-                _winreg.CloseKey(key)
-                # Seteando Search Page
-                key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\Microsoft\Internet Explorer\Main',0,_winreg.KEY_SET_VALUE)
-                _winreg.SetValueEx(key,"Search Page",0,_winreg.REG_SZ, r'http://www.kerberus.com.ar/inicio.php')
-                _winreg.CloseKey(key)
+                # Seteando pagina de inicio
                 key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Internet Explorer\Main',0,_winreg.KEY_SET_VALUE)
                 _winreg.SetValueEx(key,"Start Page",0,_winreg.REG_SZ, r'http://www.kerberus.com.ar/inicio.php')
                 _winreg.CloseKey(key)
-                # Seteando Search Page
-                key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Internet Explorer\Main',0,_winreg.KEY_SET_VALUE)
-                _winreg.SetValueEx(key,"Search Page",0,_winreg.REG_SZ, r'http://www.kerberus.com.ar/inicio.php')
-                _winreg.CloseKey(key)                
+
+                # Seteando proxy
+                key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Windows\CurrentVersion\Internet Settings',0,_winreg.KEY_SET_VALUE)
+                _winreg.SetValueEx(key,"MigrateProxy",0,_winreg.REG_DWORD, 1)
+                _winreg.CloseKey(key)
+                
+                key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Windows\CurrentVersion\Internet Settings',0,_winreg.KEY_SET_VALUE)
+                _winreg.SetValueEx(key,"ProxyEnable",0,_winreg.REG_DWORD, 1)
+                _winreg.CloseKey(key)
+                
+                key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Windows\CurrentVersion\Internet Settings',0,_winreg.KEY_SET_VALUE)
+                _winreg.SetValueEx(key,"ProxyHttp1.1",0,_winreg.REG_DWORD, 1)
+                _winreg.CloseKey(key)
+                
+                key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Windows\CurrentVersion\Internet Settings',0,_winreg.KEY_SET_VALUE)
+                _winreg.SetValueEx(key,"ProxyServer",0,_winreg.REG_SZ,r'http://127.0.0.1:8080')
+                _winreg.CloseKey(key)
+                
+                key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Windows\CurrentVersion\Internet Settings',0,_winreg.KEY_SET_VALUE)
+                _winreg.SetValueEx(key,"ProxyOverride",0,_winreg.REG_SZ,r'<local>')
+                _winreg.CloseKey(key)
+                
                 print "Fin del seteo de IE"
+                
             #except:
             #    print "Problema seteando IE"
 
@@ -137,22 +145,31 @@ class navegadores:
         if self.estaSeteadoIE():       
         #try:
             print "Desseteando IE"
-            key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\kerberus',0,_winreg.KEY_SET_VALUE)
-            _winreg.DeleteValue(key,r'IESeteado')
-            _winreg.CloseKey(key)            
-            key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\Microsoft\Internet Explorer\Main',0,_winreg.KEY_SET_VALUE)
-            _winreg.SetValueEx(key,"Start Page",0, _winreg.REG_SZ, r"http://www.google.com.ar")
-            _winreg.CloseKey(key)
-            key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\Microsoft\Internet Explorer\Main',0,_winreg.KEY_SET_VALUE)
-            _winreg.SetValueEx(key,"Search Page",0, _winreg.REG_SZ, r"http://www.google.com.ar")
-            _winreg.CloseKey(key)
+            # Saco la pagina de inicio
             key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Internet Explorer\Main',0,_winreg.KEY_SET_VALUE)
-            _winreg.SetValueEx(key,"Start Page",0, _winreg.REG_SZ, r"http://www.google.com.ar")
+            _winreg.SetValueEx(key,"Start Page",0,_winreg.REG_SZ, r'http://www.google.com.ar')
             _winreg.CloseKey(key)
-            key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Internet Explorer\Main',0,_winreg.KEY_SET_VALUE)
-            _winreg.SetValueEx(key,"Search Page",0, _winreg.REG_SZ, r"http://www.google.com.ar")
+
+            key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Windows\CurrentVersion\Internet Settings',0,_winreg.KEY_SET_VALUE)
+            _winreg.DeleteValue(key,r'MigrateProxy')
             _winreg.CloseKey(key)            
+
+            key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Windows\CurrentVersion\Internet Settings',0,_winreg.KEY_SET_VALUE)
+            _winreg.DeleteValue(key,r'ProxyEnable')
+            _winreg.CloseKey(key)
             
+            key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Windows\CurrentVersion\Internet Settings',0,_winreg.KEY_SET_VALUE)
+            _winreg.DeleteValue(key,r'ProxyHttp1.1')
+            _winreg.CloseKey(key)
+
+            key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Windows\CurrentVersion\Internet Settings',0,_winreg.KEY_SET_VALUE)
+            _winreg.DeleteValue(key,r'ProxyServer')
+            _winreg.CloseKey(key)
+            
+            key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Windows\CurrentVersion\Internet Settings',0,_winreg.KEY_SET_VALUE)
+            _winreg.DeleteValue(key,r'ProxyOverride')
+            _winreg.CloseKey(key)                           
+
             print "Fin del desseteado de IE"
         #except:
         #    print "Problema Desseteando IE"
