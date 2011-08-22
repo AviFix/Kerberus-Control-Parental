@@ -4,6 +4,25 @@
 import sys, getopt, _winreg, subprocess
 
 class navegadores:
+    
+    def estaInstaladoKerberus(self):
+        try:
+            key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\kerberus')
+            if key:
+                return True
+            else:
+                return False
+        except:
+            return False    
+    
+    def setearNavegadores(self):
+        self.setFirefox()
+        self.setIE()
+
+    def unsetNavegadores(self):
+        self.unsetFirefox()
+        self.unsetIE()
+
     def estaFirefoxInstalado(self):
         try:
             key_path = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\Mozilla\Mozilla Firefox')
@@ -141,19 +160,8 @@ class navegadores:
             
 if __name__ == '__main__':
     navs=navegadores()
-    try:
-        accion=sys.argv[1]
-    except:
-        print "Parametro incorrecto, use set o unset"
-        sys.exit(2)
-        
-    if accion== "set":
-        navs.setFirefox()
-        navs.setIE()
-    elif accion == "unset":
-        navs.unsetFirefox()
-        navs.unsetIE()
+    if navs.estaInstaladoKerberus():
+        navs.setNavegadores()
     else:
-        print "Parametro incorrecto, use set o unset"
-        sys.exit(2)
+        navs.unsetNavegadores()
     sys.exit(0)
