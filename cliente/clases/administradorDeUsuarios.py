@@ -25,7 +25,16 @@ class AdministradorDeUsuarios:
             
         def md5sum(self, t):
             return hashlib.md5(t).hexdigest()
-    
+
+        def cambiarPassword(self, usuario, password_vieja, password_nueva):
+            password_vieja_md5=self.md5sum(password_vieja)  
+            password_nueva_md5=self.md5sum(password_nueva)  
+            conexion = sqlite3.connect(config.PATH_DB)
+            cursor=conexion.cursor()
+            cursor.execute('update usuarios set password=? where username=? and password =?',(password_nueva, usuario, password_vieja, ))
+            cursor.commit()    
+            conexion.close()
+                
         def usuario_valido(self, user, pwd):
             """Verifica si el usuario esta en la base o en cache"""
             if user not in self.usuarios_ya_validados:
