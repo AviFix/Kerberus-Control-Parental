@@ -31,8 +31,8 @@ class AdministradorDeUsuarios:
             password_nueva_md5=self.md5sum(password_nueva)  
             conexion = sqlite3.connect(config.PATH_DB)
             cursor=conexion.cursor()
-            cursor.execute('update usuarios set password=? where username=? and password =?',(password_nueva, usuario, password_vieja, ))
-            cursor.commit()    
+            cursor.execute('update usuarios set password=? where username=? and password =?',(password_nueva_md5, usuario, password_vieja_md5, ))
+            conexion.commit()    
             conexion.close()
                 
         def usuario_valido(self, user, pwd):

@@ -20,8 +20,8 @@ class StartQT4(QtGui.QMainWindow):
             self.ui.password2.clear()
             self.ui.password1.setFocus()
         else:
-            admUser=AdministradorDeUsuarios()
-            admUser.cambiarPassword('admin', 'p3r1c0', self.ui.password1.text())
+            admUser=administradorDeUsuarios.AdministradorDeUsuarios()
+            admUser.cambiarPassword('admin', 'p3r1c0', str(self.ui.password1.text()))
             QtGui.QMessageBox.question(self, 'Kerberus', 'Password seteada correctamente.', QtGui.QMessageBox.Ok)
             sys.exit(app.exec_())
 
