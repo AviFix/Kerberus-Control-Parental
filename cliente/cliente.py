@@ -52,8 +52,8 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
        #<iframe src='http://www.kerberus.com.ar/publicidad.php?url=%s' frameborder='0' \
        #width='100%%' height='100%%' scrolling='no'></iframe></body></html>" % url
        msg="<html><head><title>Navegación protegida por Kerberus</title>\
-        <meta http-equiv=\"REFRESH\" content=\"0;url=http://www.kerberus.com.ar/publicidad.php?url=%s\" > \
-        </head> <body ></body> </html> " % url
+        <meta http-equiv=\"REFRESH\" content=\"0;url=http://www.kerberus.com.ar/inicio.php?kerberus_activado=1\" > \
+        </head> <body ></body> </html> "
        self.wfile.write(self.protocol_version + " 200 Connection established\r\n")
        self.wfile.write("Proxy-agent: %s\r\n" % self.version_string())       
        self.wfile.write("\r\n")
@@ -135,7 +135,11 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                                 
         if "!DeshabilitarFiltrado!" in url:
                 url=url[:-22]  
-
+        # es para que muestre que kerberus esta activo, asi no lo muestra cuando se accede 
+        # a la pagina desde cualquier lugar
+        if "http://www.kerberus.com.ar/inicio.php"in url:
+            url+="?kerberus_activado=1"
+            
         permitido, motivo=verificador.validarUrl(usuario, password,url)
         if not permitido:
             self.denegar(motivo, url)
