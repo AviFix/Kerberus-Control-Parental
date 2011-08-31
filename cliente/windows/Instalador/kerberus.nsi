@@ -122,11 +122,15 @@ File Navegadores\dist\*.*
 SetOutPath $INSTDIR\client
 File   kerberus-daemon\dist\*.*
 
+SetOutPath $INSTDIR\client\extras
+File   setPassword\dist\*.*
+
 SetOutPath $INSTDIR\sync
 File   kerberus-sync\dist\*.*
 
 
 ExecWait '"$COMMONFILES\kerberus\vcredist_x86.exe" /q'
+ExecWait '"$INSTDIR\client\extras\setPassword.exe"'
 
 ; Doy permisos
 AccessControl::GrantOnFile \
