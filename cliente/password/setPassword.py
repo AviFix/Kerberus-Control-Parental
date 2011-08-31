@@ -12,6 +12,8 @@ class StartQT4(QtGui.QMainWindow):
         self.ui.setupUi(self)
         # Conexiones
         QtCore.QObject.connect(self.ui.boton,QtCore.SIGNAL("clicked()"), self.acentarPassword)
+        self.ui.label_passwordActual.setVisible(False)
+        self.ui.password_actual.setVisible(False)
         
     def acentarPassword(self):
         if (self.ui.password1.text() <> self.ui.password2.text() or (len(self.ui.password1.text()) < 1)):
