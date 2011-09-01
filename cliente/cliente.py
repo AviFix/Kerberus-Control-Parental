@@ -13,11 +13,12 @@ from types import FrameType, CodeType
 import ftplib
 import base64
 import platform
-import os   
+import os
 import time
 
 sys.path.append('clases')
 sys.path.append('conf')
+sys.path.append('password')
 
 #Modulos propios
 import consultor
@@ -28,14 +29,14 @@ from funciones import *
 
 if not os.path.exists(config.PATH_DB):
     crearDBCliente(config.PATH_DB)
-    
+
 verificador=consultor.Consultor()
 urls=manejadorUrls.ManejadorUrls()
 
 class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
     __base = BaseHTTPServer.BaseHTTPRequestHandler
     __base_handle = __base.handle
-    
+
     server_version = "Kerberus - Cliente /" + __version__
     rbufsize = 0                        # self.rfile Be unbuffered
     global verificador
@@ -45,7 +46,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         self.send_response(407, motivo)
         self.send_header('Proxy-Authenticate', 'Basic realm="Kerberus"')
         self.send_header('Conection', 'close')
-        self.end_headers()    
+        self.end_headers()
 
     def mostrarPublicidad(self, url):
        #msg="<html><head><title>Kerberus</title></head><body>\
@@ -55,7 +56,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         <meta http-equiv=\"REFRESH\" content=\"0;url=http://www.kerberus.com.ar/inicio.php?kerberus_activado=1\" > \
         </head> <body ></body> </html> "
        self.wfile.write(self.protocol_version + " 200 Connection established\r\n")
-       self.wfile.write("Proxy-agent: %s\r\n" % self.version_string())       
+       self.wfile.write("Proxy-agent: %s\r\n" % self.version_string())
        self.wfile.write("\r\n")
        self.wfile.write(msg)
 
@@ -77,11 +78,11 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 #        self.server.logger.log (logging.INFO, "Request from '%s'", ip)
 #        if hasattr(self, 'allowed_clients') and ip not in self.allowed_clients:
 #            self.raw_requestline = self.rfile.readline()
-#            if self.parse_request(): 
+#            if self.parse_request():
 #                self.send_error(403)
 #        else:
         self.__base_handle()
-            
+
     def _connect_to(self, netloc, soc):
         i = netloc.find(':')
         if i >= 0:
@@ -89,13 +90,13 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         else:
             host_port = netloc, 80
         self.server.logger.log (logging.DEBUG, "connect to %s:%d", host_port[0], host_port[1])
-        try: 
+        try:
              soc.connect(host_port)
 
         except socket.error, arg:
-            try: 
+            try:
                 msg = arg[1]
-            except: 
+            except:
                 msg = arg
                 self.send_error(404, msg)
             return False
@@ -122,7 +123,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
             verificador.primerUrl=False
             self.mostrarPublicidad(url)
             return False
-            
+
         proxy_user=self.headers.getheader('Proxy-Authorization')
         if proxy_user:
             usuario, password=base64.b64decode(proxy_user.split(' ')[1]).split(':')
@@ -132,25 +133,25 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                 self.server.logger.log (logging.INFO, "Solicitando acceso para usuarios adultos")
                 self.pedirUsuario("Acceso para usuarios adultos")
                 return False
-                                
+
         if "!DeshabilitarFiltrado!" in url:
-                url=url[:-22]  
-        # es para que muestre que kerberus esta activo, asi no lo muestra cuando se accede 
+                url=url[:-22]
+        # es para que muestre que kerberus esta activo, asi no lo muestra cuando se accede
         # a la pagina desde cualquier lugar
         if "http://www.kerberus.com.ar/inicio.php"in url:
             url+="?kerberus_activado=1"
-            
+
         permitido, motivo=verificador.validarUrl(usuario, password,url)
         if not permitido:
             self.denegar(motivo, url)
             return False
         #
-       
+
         if urls.soportaSafeSearch(url):
             url=urls.agregarSafeSearch(url)
             self.server.logger.log (logging.INFO, "La URL %s  soporta SafeSearch. Forzando su uso", url)
-            
-        (scm, netloc, path, params, query, fragment) = urlparse.urlparse(url,  'http')        
+
+        (scm, netloc, path, params, query, fragment) = urlparse.urlparse(url,  'http')
         if scm not in ('http', 'ftp') or fragment or not netloc:
             self.send_error(400, "Url erronea: %s" % url)
             return False
@@ -169,17 +170,17 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                         self._read_write(soc)
                     except:
                         self.server.logger.log (logging.ERROR, "Hubo un error en el metodo do_GET. URL: %s", url)
-                                             
+
             elif scm == 'ftp':
                 # fish out user and password information
                 i = netloc.find ('@')
                 if i >= 0:
                     login_info, netloc = netloc[:i], netloc[i+1:]
-                    try: 
+                    try:
                         user, passwd = login_info.split (':', 1)
-                    except ValueError: 
+                    except ValueError:
                         user, passwd = "anonymous", None
-                else: 
+                else:
                     user, passwd ="anonymous", None
                 self.log_request ()
                 try:
@@ -191,7 +192,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                 except Exception, e:
                     self.server.logger.log (logging.WARNING, "FTP Exception: %s", e)
         finally:
-            soc.close() 
+            soc.close()
             self.connection.close()
 
     def _read_write(self, soc, max_idling=20, local=False):
@@ -202,24 +203,24 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         while 1:
             count += 1
             (ins, _, exs) = select.select(iw, ow, iw, 1)
-            if exs: 
+            if exs:
                 break
             if ins:
                 for i in ins:
-                    if i is soc: 
+                    if i is soc:
                         out = self.connection
-                    else: 
+                    else:
                         out = soc
                     data = i.recv(8192)
                     if data:
-                        if local: 
+                        if local:
                             local_data += data
                         else:
                             out.send(data)
                         count = 0
-            if count == max_idling: 
+            if count == max_idling:
                 break
-        if local: 
+        if local:
             return local_data
         return None
 
@@ -231,7 +232,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
     def log_message (self, format, *args):
         self.server.logger.log (logging.DEBUG, "%s %s", self.address_string (),
                                 format % args)
-        
+
     def log_error (self, format, *args):
         self.server.logger.log (logging.ERROR, "%s %s", self.address_string (),
                                 format % args)
@@ -242,7 +243,7 @@ class ThreadingHTTPServer (SocketServer.ThreadingMixIn,
         BaseHTTPServer.HTTPServer.__init__ (self, server_address,
                                             RequestHandlerClass)
         self.logger = logger
-        
+
 def logSetup (logfile, logsize, cant_rotaciones):
     logger = logging.getLogger ("Cliente")
     #logger.setLevel (logging.DEBUG)
@@ -257,7 +258,7 @@ def logSetup (logfile, logsize, cant_rotaciones):
     handler.setFormatter (fmt)
     logger.addHandler (handler)
     return logger
-    
+
 
 def handler (signo, frame):
     while frame and isinstance (frame, FrameType):
@@ -266,7 +267,7 @@ def handler (signo, frame):
                 frame.f_locals["run_event"].set ()
                 return
         frame = frame.f_back
-    
+
 def main ():
     run_event = threading.Event ()
     # setup the log file

@@ -5,7 +5,7 @@ sys.path.append('../clases')
 sys.path.append('../conf')
 import administradorDeUsuarios
 
-class StartQT4(QtGui.QMainWindow):
+class formularioPassword(QtGui.QMainWindow):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
         self.ui = Ui_Form()
@@ -23,12 +23,13 @@ class StartQT4(QtGui.QMainWindow):
             self.ui.password1.setFocus()
         else:
             admUser=administradorDeUsuarios.AdministradorDeUsuarios()
-            admUser.cambiarPassword('admin', 'p3r1c0', str(self.ui.password1.text()))
+            admUser.cambiarPassword('admin', 'perico', str(self.ui.password1.text()))
             QtGui.QMessageBox.question(self, 'Kerberus', 'Password seteada correctamente.', QtGui.QMessageBox.Ok)
-            sys.exit(app.exec_())
+            self.close()
 
-if __name__ == "__main__":
-    app = QtGui.QApplication(sys.argv)
-    myapp = StartQT4()
-    myapp.show()
-    sys.exit(app.exec_())
+                   
+#if __name__ == "__main__":
+#    app = QtGui.QApplication(sys.argv)
+#    myapp = formularioPassword()
+#    myapp.show()
+#    sys.exit(app.exec_())

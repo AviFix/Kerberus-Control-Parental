@@ -3,7 +3,9 @@
 """Modulo encargado de verificar la aptitud de una url"""
 
 #Modulos externos
-import time, re
+import time, re, sys
+
+
 
 #Modulos propios
 import administradorDeUsuarios
@@ -21,7 +23,18 @@ class Consultor:
     def __init__(self):
         self.usuarios=administradorDeUsuarios.AdministradorDeUsuarios()        
         self.primerUrl=True
-        
+        self.checkAdminPasswordSet()
+
+    def checkAdminPasswordSet(self):
+        if not self.usuarios.passwordSeteada('admin'):
+            from PyQt4 import QtCore, QtGui
+            import setPassword
+            app = QtGui.QApplication(sys.argv)
+            myapp = setPassword.formularioPassword()
+            myapp.show()
+            app.exec_()
+
+                        
     def setLogger(self, logger):
         self.logger=logger
         

@@ -22,16 +22,23 @@ class AdministradorDeUsuarios:
             self.usuarios = []
             self.usuarios_ya_validados = []
             self.usuarios_ya_validados_pass = []
-            
+        
         def md5sum(self, t):
             return hashlib.md5(t).hexdigest()
 
+        def passwordSeteada(self,usuario):
+            conexion = sqlite3.connect(config.PATH_DB)
+            cursor=conexion.cursor()
+            cursor.execute('select passwordseteada from usuarios where username = ?',(usuario,))
+            password_seteada=cursor.fetchone()[0]
+            return password_seteada
+        
         def cambiarPassword(self, usuario, password_vieja, password_nueva):
             password_vieja_md5=self.md5sum(password_vieja)  
             password_nueva_md5=self.md5sum(password_nueva)  
             conexion = sqlite3.connect(config.PATH_DB)
             cursor=conexion.cursor()
-            cursor.execute('update usuarios set password=? where username=? and password =?',(password_nueva_md5, usuario, password_vieja_md5, ))
+            cursor.execute('update usuarios set password=? ,passwordseteada=1 where username=? and password =?',(password_nueva_md5, usuario, password_vieja_md5, ))
             conexion.commit()    
             conexion.close()
                 
