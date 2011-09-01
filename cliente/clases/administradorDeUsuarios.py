@@ -3,9 +3,9 @@
 """Modulo encargado de verificar si el usuario ingresado por el cliente es valido"""
 
 #Modulos externos
-import sqlite3, time,  hashlib,  os
-
+import sqlite3, time,  hashlib,  os, sys
 #Modulos propios
+sys.path.append('../conf')
 import usuario
 import config
 
@@ -28,6 +28,7 @@ class AdministradorDeUsuarios:
 
         def passwordSeteada(self,usuario):
             conexion = sqlite3.connect(config.PATH_DB)
+            print config.PATH_DB
             cursor=conexion.cursor()
             cursor.execute('select passwordseteada from usuarios where username = ?',(usuario,))
             password_seteada=cursor.fetchone()[0]

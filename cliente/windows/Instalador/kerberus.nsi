@@ -13,7 +13,7 @@ SetCompressor lzma
 
 ;Definimos el valor de la variable VERSION, en caso de no definirse en el script
 ;podria ser definida en el compilador
-!define VERSION "0.4"
+!define VERSION "0.5"
 
 ;--------------------------------
 ;Pages
@@ -122,15 +122,12 @@ File Navegadores\dist\*.*
 SetOutPath $INSTDIR\client
 File   kerberus-daemon\dist\*.*
 
-SetOutPath $INSTDIR\client\extras
-File   setPassword\dist\*.*
-
 SetOutPath $INSTDIR\sync
 File   kerberus-sync\dist\*.*
 
 
 ExecWait '"$COMMONFILES\kerberus\vcredist_x86.exe" /q'
-ExecWait '"$INSTDIR\client\extras\setPassword.exe"'
+
 
 ; Doy permisos
 AccessControl::GrantOnFile \
@@ -197,7 +194,8 @@ writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
 #AccessControl::GrantOnFile \
 #"$COMMONFILES\kerberus" "(BU)" "GenericRead + GenericWrite + AddFile"
 
-#ExecWait '"$COMMONFILES\kerberus\navegadores.exe" set'
+
+ExecWait '"$INSTDIR\client\cliente.exe"'
 
 MessageBox MB_YESNO|MB_ICONQUESTION "Se debe reiniciar para completar la instalación. Desea reiniciar ahora?" IDNO +2
 	reboot

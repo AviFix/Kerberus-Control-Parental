@@ -7,3 +7,4 @@ sys.path.append('../../../clases')
 sys.path.append('../../../conf')
 
 setup(windows=['../../../definirPassword/setPassword.py'],)
+

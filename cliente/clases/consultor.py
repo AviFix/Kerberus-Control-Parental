@@ -32,7 +32,7 @@ class Consultor:
             app = QtGui.QApplication(sys.argv)
             myapp = setPassword.formularioPassword()
             myapp.show()
-            app.exec_()
+            sys.exit(app.exec_())
 
                         
     def setLogger(self, logger):
