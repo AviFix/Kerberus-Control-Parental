@@ -4,12 +4,12 @@ import platform, os
 
 if  platform.uname()[0] == 'Linux':
     PATH_DB='/var/cache/kerberus/kerberus.db'
-    LOG_FILENAME='/var/log/kerberus-cliente.log'    
+    LOG_FILENAME='/var/log/kerberus-cliente.log'
 else:
     import _winreg, subprocess
     key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\kerberus')
     path_common = _winreg.QueryValueEx(key,'kerberus-common')[0]
-    PATH_DB= path_common +'\kerberus.db' 
+    PATH_DB= path_common +'\kerberus.db'
     LOG_FILENAME= path_common +'\kerberus-cliente.log'
 
 # Constantes de debug
@@ -36,3 +36,6 @@ SERVER_PORT="8081"
 SERVER_SINC_PORT="8083"
 MAX_CACHE_URLS_ACEPTADAS=10
 MAX_CACHE_URLS_DENEGADAS=10
+USAR_PROXY=False
+PROXY_IP="127.0.0.1"
+PROXY_PORT="8888"
