@@ -16,8 +16,9 @@ else:
 sys.path.append('conf')
 import config, urllib2
 
-def sincronizarDominiosPermitidos():
-        server_sync="http://%s:%s" % (config.SERVER_IP,config.SERVER_SINC_PORT)
+def obtenerRespuesta(headers):
+        server_sync="%s:%s" % (config.SERVER_IP,config.SERVER_SINC_PORT)
+        print server_sync
         if config.USAR_PROXY:
             url_proxy="http://%s:%s" % (config.PROXY_IP,config.PROXY_PORT)
             print "Utilizando el proxy %s" % url_proxy
@@ -25,9 +26,17 @@ def sincronizarDominiosPermitidos():
             proxy_handler=urllib2.ProxyHandler(proxy)
             opener=urllib2.build_opener(proxy_handler)
             urllib2.install_opener(opener)
-        heads = {"UserID": "1","Peticion":"obtenerDominiosPermitidos"}
-        req = urllib2.Request(server_sync, headers=heads)
-        respuesta = urllib2.urlopen(req)
+            req = urllib2.Request("http://"+server_sync, headers=headers)
+            respuesta = urllib2.urlopen(req)
+        else:
+            conexion=httplib.HTTPConnection(server_sync)
+            conexion.request("GET", "/", "", headers)
+            respuesta=conexion.getresponse()
+        return respuesta
+
+def sincronizarDominiosPermitidos():
+        headers = {"UserID": "1","Peticion":"obtenerDominiosPermitidos"}
+        respuesta = obtenerRespuesta(headers)
         dominios=respuesta.read()
         if len(dominios):
             if dominios[-1]=="":
@@ -42,17 +51,8 @@ def sincronizarDominiosPermitidos():
             conexion_db.commit()
 
 def sincronizarDominiosDenegados():
-        server_sync="http://%s:%s" % (config.SERVER_IP,config.SERVER_SINC_PORT)
-        if config.USAR_PROXY:
-            url_proxy="http://%s:%s" % (config.PROXY_IP,config.PROXY_PORT)
-            print "Utilizando el proxy %s" % url_proxy
-            proxy={'http':url_proxy, 'https': url_proxy}
-            proxy_handler=urllib2.ProxyHandler(proxy)
-            opener=urllib2.build_opener(proxy_handler)
-            urllib2.install_opener(opener)
-        heads = {"UserID": "1","Peticion":"obtenerDominiosDenegados"}
-        req = urllib2.Request(server_sync, headers=heads)
-        respuesta = urllib2.urlopen(req)
+        headers = {"UserID": "1","Peticion":"obtenerDominiosDenegados"}
+        respuesta = obtenerRespuesta(headers)
         dominios=respuesta.read()
         if len(dominios):
             if dominios[-1]=="":
@@ -69,17 +69,8 @@ def sincronizarDominiosDenegados():
             print "No hay dominios para actualizar"
 
 def getPeriodoDeActualizacion():
-        server_sync="http://%s:%s" % (config.SERVER_IP,config.SERVER_SINC_PORT)
-        if config.USAR_PROXY:
-            url_proxy="http://%s:%s" % (config.PROXY_IP,config.PROXY_PORT)
-            print "Utilizando el proxy %s" % url_proxy
-            proxy={'http':url_proxy, 'https': url_proxy}
-            proxy_handler=urllib2.ProxyHandler(proxy)
-            opener=urllib2.build_opener(proxy_handler)
-            urllib2.install_opener(opener)
-        heads = {"UserID": "1","Peticion":"getPeriodoDeActualizacion"}
-        req = urllib2.Request(server_sync, headers=heads)
-        respuesta = urllib2.urlopen(req)
+        headers = {"UserID": "1","Peticion":"getPeriodoDeActualizacion"}
+        respuesta = obtenerRespuesta(headers)
         return respuesta.read()
 
 def sincronizarDominiosConServer(tiempo_actual):
