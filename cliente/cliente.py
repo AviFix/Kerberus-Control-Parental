@@ -273,8 +273,10 @@ def main ():
     # setup the log file
     logger = logSetup (config.LOG_FILENAME, config.LOG_SIZE_MB, config.LOG_CANT_ROTACIONES)
     signal.signal (signal.SIGINT, handler)
-    server_address = (config.BIND_ADDRESS, config.BIND_PORT)
+    server_address = (config.BIND_ADDRESS, int(config.BIND_PORT))
     ProxyHandler.protocol = "HTTP/1.1"
+    if config.USAR_PROXY == "True":
+        print "Usando kerberus a traves de proxy %s:%s" % (config.PROXY_IP,config.PROXY_PORT)
     httpd = ThreadingHTTPServer (server_address, ProxyHandler, logger)
     verificador.setLogger(logger)
     sa = httpd.socket.getsockname ()
