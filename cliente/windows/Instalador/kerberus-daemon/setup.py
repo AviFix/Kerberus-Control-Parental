@@ -10,7 +10,7 @@ setup(windows=['../../../cliente.py'],
       options = {
         "py2exe": {
             "dll_excludes": ["MSVCP90.dll"],
-            "includes":["sip"]
+            "includes":["sip","configobj",]
         }
     },
 )
