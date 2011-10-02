@@ -14,7 +14,7 @@ class formularioPassword(QtGui.QMainWindow):
         QtCore.QObject.connect(self.ui.boton,QtCore.SIGNAL("clicked()"), self.acentarPassword)
         self.ui.label_passwordActual.setVisible(False)
         self.ui.password_actual.setVisible(False)
-        
+
     def acentarPassword(self):
         if (self.ui.password1.text() <> self.ui.password2.text() or (len(self.ui.password1.text()) < 1)):
             QtGui.QMessageBox.critical(self, 'Kerberus', 'Las password no coinciden, reescribalas.', QtGui.QMessageBox.Ok)
@@ -27,7 +27,7 @@ class formularioPassword(QtGui.QMainWindow):
             QtGui.QMessageBox.question(self, 'Kerberus', 'Password seteada correctamente.', QtGui.QMessageBox.Ok)
             self.close()
 
-                   
+
 #if __name__ == "__main__":
 #    app = QtGui.QApplication(sys.argv)
 #    myapp = formularioPassword()

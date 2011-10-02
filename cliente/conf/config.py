@@ -17,7 +17,7 @@ else:
     LOG_FILENAME= path_common +'\kerberus-cliente.log'
     archivo_de_configuracion= path_common +'\cliente.conf'
 
-config = ConfigObj(archivo_de_configuracion)
+config = ConfigObj(archivo_de_configuracion, unrepr=True)
 
 # Constantes de debug
 DEBUG_EXTENSIONES=config['debug']['debug_extensiones']
@@ -50,5 +50,3 @@ SERVER_PORT=config['server']['port']
 SERVER_SINC_PORT=config['server']['sinc_port']
 MAX_CACHE_URLS_ACEPTADAS=config['server']['max_urls_aceptadas_cacheadas']
 MAX_CACHE_URLS_DENEGADAS=config['server']['max_urls_denegadas_cacheadas']
-
-

@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-__version__ = "0.3"
+__version__ = "0.5"
 
 # Modulos externos
 import BaseHTTPServer, select, socket, SocketServer, urlparse
@@ -21,6 +21,7 @@ sys.path.append('conf')
 sys.path.append('password')
 
 #Modulos propios
+
 import consultor
 import manejadorUrls
 import config
@@ -41,7 +42,6 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
     rbufsize = 0                        # self.rfile Be unbuffered
     global verificador
 
-# Metodos de securedfamily
     def pedirUsuario(self, motivo):
         self.send_response(407, motivo)
         self.send_header('Proxy-Authenticate', 'Basic realm="Kerberus"')
@@ -49,9 +49,6 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         self.end_headers()
 
     def mostrarPublicidad(self, url):
-       #msg="<html><head><title>Kerberus</title></head><body>\
-       #<iframe src='http://www.kerberus.com.ar/publicidad.php?url=%s' frameborder='0' \
-       #width='100%%' height='100%%' scrolling='no'></iframe></body></html>" % url
        msg="<html><head><title>Navegación protegida por Kerberus</title>\
         <meta http-equiv=\"REFRESH\" content=\"0;url=http://www.kerberus.com.ar/inicio.php?kerberus_activado=1\" > \
         </head> <body ></body> </html> "
@@ -62,9 +59,6 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 
 
     def denegar(self, motivo, url):
-        #esto lo deberia levantar de un archivo.
-        #msg="<html><head><title>Sitio no permitido</title></head><body><h1>Sitio no permitido</h1><br><h2><a href='javascript:history.back()'> Volver </a></h2><br><h3>%s</h3><br><h3><a href='!DeshabilitarFiltrado!'>Deshabilitar filtrado temporalmente</a></h3><br><h3><a href=''>Agregar este sitio a dominios permitidos</a></h3></body></html>\r\n" % motivo
-        #msg="<html><head><title>Your Page Title</title><meta http-equiv='Refresh' content='5;url=http://www.kerberus.com.ar/denegado.php' /></HEAD><BODY>Optional page text here.</BODY></HTML>"
         msg="<html><head><title>Sitio no permitido</title></head><body><iframe src='http://www.kerberus.com.ar/denegado.php?motivo=%s&url=%s' frameborder='0' width='100%%' height='100%%' scrolling='no'><h1>Sitio no permitido</h1><br><h2><a href='javascript:history.back()'> Volver </a></h2><br><h3>%s</h3><br><h3><a href='%s!DeshabilitarFiltrado!'>Deshabilitar filtrado temporalmente</a></h3><br><h3><a href=''>Agregar este sitio a dominios permitidos</a></h3></iframe></body></html>\r\n" % (motivo,url,  motivo, url)
         self.wfile.write(self.protocol_version + " 200 Connection established\r\n")
         self.wfile.write("Proxy-agent: %s\r\n" % self.version_string())
@@ -145,7 +139,6 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         if not permitido:
             self.denegar(motivo, url)
             return False
-        #
 
         if urls.soportaSafeSearch(url):
             url=urls.agregarSafeSearch(url)
@@ -259,7 +252,6 @@ def logSetup (logfile, logsize, cant_rotaciones):
     logger.addHandler (handler)
     return logger
 
-
 def handler (signo, frame):
     while frame and isinstance (frame, FrameType):
         if frame.f_code and isinstance (frame.f_code, CodeType):
@@ -273,9 +265,9 @@ def main ():
     # setup the log file
     logger = logSetup (config.LOG_FILENAME, config.LOG_SIZE_MB, config.LOG_CANT_ROTACIONES)
     signal.signal (signal.SIGINT, handler)
-    server_address = (config.BIND_ADDRESS, int(config.BIND_PORT))
+    server_address = (config.BIND_ADDRESS, config.BIND_PORT)
     ProxyHandler.protocol = "HTTP/1.1"
-    if config.USAR_PROXY == "True":
+    if config.USAR_PROXY:
         print "Usando kerberus a traves de proxy %s:%s" % (config.PROXY_IP,config.PROXY_PORT)
     httpd = ThreadingHTTPServer (server_address, ProxyHandler, logger)
     verificador.setLogger(logger)

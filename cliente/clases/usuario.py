@@ -189,6 +189,7 @@ class Usuario:
         """Consulta al servidor por la url, porque no pudo determinar su aptitud"""
         self.chequearEdadCaches()
         if config.USAR_PROXY:
+            print "se esta seteando el proxy"
             server="http://%s:%s" % (config.PROXY_IP,config.PROXY_PORT)
             proxy={'http':server, 'https': server}
             proxy_handler=urllib2.ProxyHandler(proxy)
@@ -196,7 +197,7 @@ class Usuario:
             urllib2.install_opener(opener)
 
         heads = {"UserID": "1","URL":url,"Peticion":"consulta"}
-        req = urllib2.Request("http://"+config.SERVER_IP+":"+config.SERVER_PORT,headers=heads)
+        req = urllib2.Request("http://%s:%s" %(config.SERVER_IP, config.SERVER_PORT),headers=heads)
         try:
             respuesta = urllib2.urlopen(req)
             if respuesta.getcode() == 204:
