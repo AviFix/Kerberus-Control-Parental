@@ -166,7 +166,7 @@ class Usuario:
             self.buffer_denegadas=[]
 
     def recargarPeriodoDeActualizacion(self):
-        conexion=httplib.HTTPConnection("%s:%s" % (config.SERVER_IP, config.SERVER_SINC_PORT))
+        conexion=httplib.HTTPConnection("%s:%s" % (config.SYNC_SERVER_IP, config.SYNC_SERVER_PORT))
         headers = {"UserID": "1","Peticion":"getPeriodoDeActualizacion"}
         conexion.request("GET", "/", "", headers)
         respuesta=conexion.getresponse()
@@ -189,7 +189,6 @@ class Usuario:
         """Consulta al servidor por la url, porque no pudo determinar su aptitud"""
         self.chequearEdadCaches()
         if config.USAR_PROXY:
-            print "se esta seteando el proxy"
             server="http://%s:%s" % (config.PROXY_IP,config.PROXY_PORT)
             proxy={'http':server, 'https': server}
             proxy_handler=urllib2.ProxyHandler(proxy)

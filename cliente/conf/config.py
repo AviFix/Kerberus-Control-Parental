@@ -30,7 +30,7 @@ if result != True:
         else:
             print 'No se encontro la sección:%s ' % ', '.join(section_list)
 else:
-    print "Se leyo la configuración del cliente correctamente"
+    #print "Se leyo la configuración del cliente correctamente"
 
     if  platform.uname()[0] == 'Linux':
         # Si estan vacio estos campos pongo default para linux
@@ -91,6 +91,8 @@ else:
     USAR_PROXY=config['client']['usar_proxy']
     PROXY_IP=config['client']['proxy_ip']
     PROXY_PORT=config['client']['proxy_port']
+    LOG_SIZE_MB = config['client']['log_size_mb']
+    LOG_CANT_ROTACIONES = config['client']['log_cantidad_de_rotaciones']
 
     # Server
     SERVER_IP=config['server']['ip']
