@@ -42,9 +42,6 @@ CREATE TABLE sincronizador(
 );
 
 insert into usuarios(username,password,admin,safesearch,passwordseteada) values ('admin','dfe483413e24a5b1506389d36ebfd05c',1,0,0);
-insert into usuarios(username,password,admin,safesearch,passwordseteada) values ('mboscovich','dfe483413e24a5b1506389d36ebfd05c',0,1,1);
-insert into usuarios(username,password,admin,safesearch,passwordseteada) values ('rtourn','dfe483413e24a5b1506389d36ebfd05c',0,1,1);
-insert into usuarios(username,password,admin,safesearch,passwordseteada) values ('mguedes','dfe483413e24a5b1506389d36ebfd05c',0,1,1);
 insert into usuarios(username,password,admin,safesearch,passwordseteada) values ('usuario','f8032d5cae3de20fcec887f395ec9a6a',0,1,1);
 insert into usuarios(username,password,admin,safesearch,passwordseteada) values ('','d41d8cd98f00b204e9800998ecf8427e',0,1,1);
 insert into sincronizador values (0);
