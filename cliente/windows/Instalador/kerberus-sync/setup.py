@@ -6,4 +6,11 @@ sys.path.append('../../../')
 sys.path.append('../../../clases')
 sys.path.append('../../../conf')
 
-setup(windows=['../../../sincronizadorCliente.py'],)
+setup(windows=['../../../sincronizadorCliente.py'],
+        options = {
+        "py2exe": {
+            "includes":["configobj",],
+        }
+    },
+)
+

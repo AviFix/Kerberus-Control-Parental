@@ -13,7 +13,7 @@ SetCompressor lzma
 
 ;Definimos el valor de la variable VERSION, en caso de no definirse en el script
 ;podria ser definida en el compilador
-!define VERSION "0.5"
+!define VERSION "0.6"
 
 ;--------------------------------
 ;Pages
@@ -161,10 +161,10 @@ WriteRegStr HKLM "Software\Kerberus" "Version" "${VERSION}"
 
 WriteRegStr HKLM "Software\Kerberus" "kerberus-common" "$COMMONFILES\kerberus"
 
-WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" \
+writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" \
 "Kerberus-client" "$INSTDIR\client\cliente.exe"
 
-WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" \
+writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" \
 "Kerberus-sync" "$INSTDIR\sync\sincronizadorCliente.exe"
 
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" \
@@ -190,9 +190,12 @@ writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
 "ProxyOverride" "<local>"
 
 
-# Make the directory "$INSTDIR\database" read write accessible by all users
-#AccessControl::GrantOnFile \
-#"$COMMONFILES\kerberus" "(BU)" "GenericRead + GenericWrite + AddFile"
+; Make the directory "$INSTDIR\database" read write accessible by all users
+;AccessControl::GrantOnFile \
+;"$COMMONFILES\kerberus" "(BU)" "GenericRead + GenericWrite + AddFile"
+
+;SimpleSC::InstallService "kerberus-daemon" "kerberus Daemon Service" "16" "2" "$INSTDIR\client\cliente.exe" "" "" ""
+;SimpleSC::InstallService "kerberus-sync" "kerberus sync Service" "16" "2" "$INSTDIR\sync\sincronizadorCliente.exe" "" "" ""
 
 
 ExecWait '"$INSTDIR\client\cliente.exe"'
@@ -230,6 +233,8 @@ Section "Uninstall"
         DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyServer"
         DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyOverride"
 
+;SimpleSC::RemoveService "kerberus-daemon"
+;SimpleSC::RemoveService "kerberus-sync"
 
 MessageBox MB_YESNO|MB_ICONQUESTION "Se debe reiniciar para completar la desinstalación. Desea reiniciar ahora?" IDNO +2
 	reboot
