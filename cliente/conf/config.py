@@ -13,7 +13,7 @@ if  platform.uname()[0] == 'Linux':
     archivo_de_spec= '/home/mboscovich/proyectos/control_parental/cliente/conf/confspec.ini'
 else:
     import _winreg, subprocess
-    key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\kerberus')
+    key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\kerberus')
     path_common = _winreg.QueryValueEx(key,'kerberus-common')[0]
     archivo_de_configuracion= path_common +'\cliente.conf'
     archivo_de_spec= path_common +'\confspec.ini'

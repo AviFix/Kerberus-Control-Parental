@@ -7,7 +7,7 @@ class navegadores:
     
     def estaInstaladoKerberus(self):
         try:
-            key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\kerberus')
+            key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\kerberus')
             kerberus_version =  _winreg.QueryValueEx(key,'Version')[0]
             if kerberus_version:
                 print "Kerberus instalado, configurando navegadores"
