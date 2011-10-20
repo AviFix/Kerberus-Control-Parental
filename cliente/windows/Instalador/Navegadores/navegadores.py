@@ -112,7 +112,7 @@ class navegadores:
                 print "Seteando IE"
                 # Seteando pagina de inicio
                 key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Internet Explorer\Main',0,_winreg.KEY_SET_VALUE)
-                _winreg.SetValueEx(key,"Start Page",0,_winreg.REG_SZ, r'http://www.kerberus.com.ar/inicio.php')
+                _winreg.SetValueEx(key,"Start Page",0,_winreg.REG_SZ, r'http://www.kerberus.com.ar/inicio')
                 _winreg.CloseKey(key)
 
                 # Seteando proxy
