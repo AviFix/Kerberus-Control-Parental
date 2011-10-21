@@ -36,8 +36,10 @@ else:
         # Si estan vacio estos campos pongo default para linux
         if config['client']['path_db']:
             PATH_DB=config['client']['path_db']
+            print " entro 1"
         else:
             PATH_DB='/var/cache/kerberus/kerberus.db'
+            print " entro 1"
         if config['client']['log_filename']:
             LOG_FILENAME=config['client']['log_filename']
         else:
@@ -99,3 +101,5 @@ else:
     SERVER_PORT=config['server']['port']
     MAX_CACHE_URLS_ACEPTADAS=config['server']['max_urls_aceptadas_cacheadas']
     MAX_CACHE_URLS_DENEGADAS=config['server']['max_urls_denegadas_cacheadas']
+
+print PATH_DB
