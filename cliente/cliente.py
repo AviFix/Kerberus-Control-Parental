@@ -49,8 +49,8 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         self.end_headers()
 
     def mostrarPublicidad(self, url):
-       msg="<html><head><title>Navegación protegida por Kerberus</title>\
-        <meta http-equiv=\"REFRESH\" content=\"0;url=http://www.kerberus.com.ar/inicio.php?kerberus_activado=1\" > \
+       msg="<html><head><title>Navegador protegido por Kerberus</title>\
+        <meta http-equiv=\"REFRESH\" content=\"0;url=http://inicio.kerberus.com.ar\" > \
         </head> <body ></body> </html> "
        self.wfile.write(self.protocol_version + " 200 Connection established\r\n")
        self.wfile.write("Proxy-agent: %s\r\n" % self.version_string())
@@ -59,7 +59,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 
 
     def denegar(self, motivo, url):
-        msg="<html><head><title>Sitio no permitido</title></head><body><iframe src='http://www.kerberus.com.ar/denegado.php?motivo=%s&url=%s' frameborder='0' width='100%%' height='100%%' scrolling='no'><h1>Sitio no permitido</h1><br><h2><a href='javascript:history.back()'> Volver </a></h2><br><h3>%s</h3><br><h3><a href='%s!DeshabilitarFiltrado!'>Deshabilitar filtrado temporalmente</a></h3><br><h3><a href=''>Agregar este sitio a dominios permitidos</a></h3></iframe></body></html>\r\n" % (motivo,url,  motivo, url)
+        msg="<html><head><title>Sitio no permitido</title></head><body><iframe src='http://inicio.kerberus.com.ar/denegado.php?motivo=%s&url=%s' frameborder='0' width='100%%' height='100%%' scrolling='no'><h1>Sitio no permitido</h1><br><h2><a href='javascript:history.back()'> Volver </a></h2><br><h3>%s</h3><br><h3><a href='%s!DeshabilitarFiltrado!'>Deshabilitar filtrado temporalmente</a></h3><br><h3><a href=''>Agregar este sitio a dominios permitidos</a></h3></iframe></body></html>\r\n" % (motivo,url,  motivo, url)
         self.wfile.write(self.protocol_version + " 200 Connection established\r\n")
         self.wfile.write("Proxy-agent: %s\r\n" % self.version_string())
         self.wfile.write("\r\n")
@@ -132,7 +132,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                 url=url[:-22]
         # es para que muestre que kerberus esta activo, asi no lo muestra cuando se accede
         # a la pagina desde cualquier lugar
-        if "http://www.kerberus.com.ar/inicio.php"in url:
+        if "http://inicio.kerberus.com.ar"in url:
             url+="?kerberus_activado=1"
 
         permitido, motivo=verificador.validarUrl(usuario, password,url)
