@@ -4,7 +4,7 @@
 import sys, getopt, _winreg, subprocess
 
 class navegadores:
-    
+
     def estaInstaladoKerberus(self):
         try:
             key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\kerberus')
@@ -17,8 +17,8 @@ class navegadores:
                 return False
         except:
             print "Kerberus no instalado, desconfigurando navegadores"
-            return False    
-    
+            return False
+
     def setNavegadores(self):
         self.setFirefox()
         self.setIE()
@@ -41,7 +41,7 @@ class navegadores:
             else:
                 print "No esta instalado firefox"
                 return False
-            
+
         except:
             print "Problemas verificando si esta instalado firefox"
             return False
@@ -55,7 +55,7 @@ class navegadores:
                 file.close()
                 return True
             else:
-                print "No esta seteado Firefox"                
+                print "No esta seteado Firefox"
                 return False
         except:
             print "No esta seteado Firefox"
@@ -84,7 +84,7 @@ class navegadores:
                 #try:
                     print "Deseteando firefox"
                     preference_file = "%s\\defaults\\pref\\all-kerberus.js" % self.firefoxInstallDir
-                    mozilla_cfg = "\"%s\\mozilla.cfg\"" % self.firefoxInstallDir                    
+                    mozilla_cfg = "\"%s\\mozilla.cfg\"" % self.firefoxInstallDir
                     comando = "del \"%s\" %s /F" % (preference_file,mozilla_cfg)
                     print comando
                     result = subprocess.Popen(comando,stdout=subprocess.PIPE, shell=True)
@@ -119,30 +119,30 @@ class navegadores:
                 key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Windows\CurrentVersion\Internet Settings',0,_winreg.KEY_SET_VALUE)
                 _winreg.SetValueEx(key,"MigrateProxy",0,_winreg.REG_DWORD, 1)
                 _winreg.CloseKey(key)
-                
+
                 key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Windows\CurrentVersion\Internet Settings',0,_winreg.KEY_SET_VALUE)
                 _winreg.SetValueEx(key,"ProxyEnable",0,_winreg.REG_DWORD, 1)
                 _winreg.CloseKey(key)
-                
+
                 key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Windows\CurrentVersion\Internet Settings',0,_winreg.KEY_SET_VALUE)
                 _winreg.SetValueEx(key,"ProxyHttp1.1",0,_winreg.REG_DWORD, 1)
                 _winreg.CloseKey(key)
-                
+
                 key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Windows\CurrentVersion\Internet Settings',0,_winreg.KEY_SET_VALUE)
                 _winreg.SetValueEx(key,"ProxyServer",0,_winreg.REG_SZ,r'http://127.0.0.1:8080')
                 _winreg.CloseKey(key)
-                
+
                 key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Windows\CurrentVersion\Internet Settings',0,_winreg.KEY_SET_VALUE)
                 _winreg.SetValueEx(key,"ProxyOverride",0,_winreg.REG_SZ,r'<local>')
                 _winreg.CloseKey(key)
-                
+
                 print "Fin del seteo de IE"
-                
+
             #except:
             #    print "Problema seteando IE"
 
     def unsetIE(self):
-        if self.estaSeteadoIE():       
+        if self.estaSeteadoIE():
         #try:
             print "Desseteando IE"
             # Saco la pagina de inicio
@@ -152,12 +152,12 @@ class navegadores:
 
             key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Windows\CurrentVersion\Internet Settings',0,_winreg.KEY_SET_VALUE)
             _winreg.DeleteValue(key,r'MigrateProxy')
-            _winreg.CloseKey(key)            
+            _winreg.CloseKey(key)
 
             key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Windows\CurrentVersion\Internet Settings',0,_winreg.KEY_SET_VALUE)
             _winreg.DeleteValue(key,r'ProxyEnable')
             _winreg.CloseKey(key)
-            
+
             key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Windows\CurrentVersion\Internet Settings',0,_winreg.KEY_SET_VALUE)
             _winreg.DeleteValue(key,r'ProxyHttp1.1')
             _winreg.CloseKey(key)
@@ -165,16 +165,20 @@ class navegadores:
             key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Windows\CurrentVersion\Internet Settings',0,_winreg.KEY_SET_VALUE)
             _winreg.DeleteValue(key,r'ProxyServer')
             _winreg.CloseKey(key)
-            
+
             key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Windows\CurrentVersion\Internet Settings',0,_winreg.KEY_SET_VALUE)
             _winreg.DeleteValue(key,r'ProxyOverride')
-            _winreg.CloseKey(key)                           
+            _winreg.CloseKey(key)
 
             print "Fin del desseteado de IE"
         #except:
         #    print "Problema Desseteando IE"
-            
-            
+
+    def self.getUserDataDir(self):
+        return environ['APPDATA']
+
+
+
 if __name__ == '__main__':
     navs=navegadores()
     if navs.estaInstaladoKerberus():
