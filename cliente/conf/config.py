@@ -37,7 +37,7 @@ else:
         if config['client']['path_db']:
             PATH_DB=config['client']['path_db']
         else:
-#            PATH_DB='/var/cache/kerberus/kerberus.db'
+            PATH_DB='/var/cache/kerberus/kerberus.db'
         if config['client']['log_filename']:
             LOG_FILENAME=config['client']['log_filename']
         else:

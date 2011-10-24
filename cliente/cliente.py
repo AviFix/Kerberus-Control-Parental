@@ -132,8 +132,8 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                 url=url[:-22]
         # es para que muestre que kerberus esta activo, asi no lo muestra cuando se accede
         # a la pagina desde cualquier lugar
-        if "http://inicio.kerberus.com.ar"in url:
-            url+="?kerberus_activado=1"
+        #if "http://inicio.kerberus.com.ar"in url and "?kerberus_activado=1" not in url:
+        #    url+="?kerberus_activado=1"
 
         permitido, motivo=verificador.validarUrl(usuario, password,url)
         if not permitido:
