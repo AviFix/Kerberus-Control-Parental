@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import sys, getopt, _winreg, subprocess
+import sys, getopt, _winreg, subprocess, os
 
 class navegadores:
 
@@ -45,38 +45,40 @@ class navegadores:
         except:
             print "Problemas verificando si esta instalado firefox"
             return False
-
-    def estaSeteadoFirefox(self):
-        try:
-            filename = "%s\\defaults\\pref\\all-kerberus.js" % self.firefoxInstallDir
-            file = open(filename, 'r')
-            if file:
-                print "Esta seteado Firefox"
-                file.close()
-                return True
-            else:
-                print "No esta seteado Firefox"
-                return False
-        except:
-            print "No esta seteado Firefox"
+    
+    def getFirefoxProfiles(self, user):       
+            profiles=[]
+            profiles_path=os.environ['APPDATA']+"\\Mozilla\\Firefox\\Profiles"
+            print "Profile path: %s" % profiles_path
+            for entrada in os.listdir(profiles_path):
+                objecto="%s\\%s" % (profiles_path,entrada,)
+                if os.path.isdir(objecto):
+                    profiles.append(objecto)
+            return profiles
+            
+    def estaSeteadoFirefox(self, perfil):
+            archivo_config="%s\\user.js" % perfil
+            if os.path.isfile(archivo_config):
+                archivo = open(archivo_config,'r')
+                for linea in archivo.readlines():
+                    if "inicio.kerberus.com.ar" in linea:
+                        print "El perfil ya esta seteado: %s" % perfil
+                        return True
             return False
 
     def setFirefox(self):
         if self.estaFirefoxInstalado():
-            if not self.estaSeteadoFirefox():
-                    print "seteando firefox"
-                    filename = "%s\\defaults\\pref\\all-kerberus.js" % self.firefoxInstallDir
-                    file = open(filename, 'w')
-                    configuracion="pref(\"general.config.filename\", \"mozilla.cfg\");"
-                    file.write(configuracion)
-                    file.close()
-                    key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\kerberus')
-                    path_common_kerberus = _winreg.QueryValueEx(key,'kerberus-common')[0]
-                    mozilla_config_file="\"%s\\mozilla.cfg\"" % path_common_kerberus
-                    destino = "\"%s\\mozilla.cfg\"" % self.firefoxInstallDir
-                    comando = "copy %s %s /y" % (mozilla_config_file, destino)
-                    result = subprocess.Popen(comando,stdout=subprocess.PIPE, shell=True)
-                    print "Se termino de setear firefox"
+            for perfil in self.getFirefoxProfiles(os.environ['USERNAME']):
+                if not self.estaSeteadoFirefox(perfil):
+                        print "seteando el perfil %s" % perfil
+                        key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\kerberus')
+                        path_common_kerberus = _winreg.QueryValueEx(key,'kerberus-common')[0]
+                        mozilla_config_file="\"%s\\user.js\"" % path_common_kerberus
+                        destino = "\"%s\\user.js\"" % perfil
+                        comando = "copy %s %s /y" % (mozilla_config_file, destino)
+                        print "El comando es: %s" % comando
+                        result = subprocess.Popen(comando,stdout=subprocess.PIPE, shell=True)
+                        print "Se termino de setear firefox para el perfil %s" % perfil
 
     def unsetFirefox(self):
         if self.estaFirefoxInstalado():
@@ -173,9 +175,6 @@ class navegadores:
             print "Fin del desseteado de IE"
         #except:
         #    print "Problema Desseteando IE"
-
-    def self.getUserDataDir(self):
-        return environ['APPDATA']
 
 
 
