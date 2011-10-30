@@ -1,6 +1,23 @@
 # -*- coding: utf-8 -*-
 
 import sqlite3
+import logging
+import logging.handlers
+
+def logSetup (logfile, logsize, cant_rotaciones):
+    logger = logging.getLogger ("Cliente")
+    #logger.setLevel (logging.DEBUG)
+    logger.setLevel (logging.INFO)
+    #logger.setLevel (logging.ERROR)
+    handler = logging.handlers.RotatingFileHandler (logfile, maxBytes=(logsize*(1<<20)), backupCount=cant_rotaciones)
+    fmt = logging.Formatter (
+                                "[%(asctime)-12s.%(msecs)03d] "
+                                "%(levelname)-4s {%(name)s %(threadName)s}"
+                                " %(message)s",
+                                "%Y-%m-%d %H:%M:%S")
+    handler.setFormatter (fmt)
+    logger.addHandler (handler)
+    return logger
 
 def crearDBCliente(PATH_DB):
     conn = sqlite3.connect(PATH_DB)
@@ -10,7 +27,7 @@ def crearDBCliente(PATH_DB):
     id               INTEGER PRIMARY KEY,
     username    TEXT    unique,
     admin         boolean,
-    password     TEXT   
+    password     TEXT
     );
 
     CREATE TABLE dominios_permitidos(
@@ -39,7 +56,7 @@ def crearDBCliente(PATH_DB):
     CREATE TABLE dominios_publicamente_denegados(
         url               TEXT,
         tipo        INTEGER,
-        FOREIGN KEY(tipo) REFERENCES tipos_de_dominios(id)      
+        FOREIGN KEY(tipo) REFERENCES tipos_de_dominios(id)
     );
 
     CREATE TABLE cache_urls_aceptadas(
@@ -53,7 +70,7 @@ def crearDBCliente(PATH_DB):
     );
 
     CREATE TABLE sincronizador(
-        ultima_actualizacion  real           
+        ultima_actualizacion  real
     );
     insert into usuarios(username,password,admin) values ('test_admin','098f6bcd4621d373cade4e832627b4f6',1);
     insert into usuarios(username,password,admin) values ('test_user','098f6bcd4621d373cade4e832627b4f6',0);

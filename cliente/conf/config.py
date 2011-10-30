@@ -5,8 +5,11 @@
 import platform, os
 from configobj import ConfigObj, flatten_errors
 from validate import Validator
+import logging
 
+import funciones
 
+logger = funciones.logSetup ('kerberus-config.log',1, 1)
 
 if  platform.uname()[0] == 'Linux':
     archivo_de_configuracion='/home/mboscovich/proyectos/control_parental/cliente/cliente.conf'
@@ -18,6 +21,10 @@ else:
     archivo_de_configuracion= path_common +'\cliente.conf'
     archivo_de_spec= path_common +'\confspec.ini'
 
+logger.log (logging.INFO, "Plataforma detectada %s" % platform.uname()[0] )
+logger.log (logging.INFO, "Utiliando el archivo de configuración: %s" %  archivo_de_configuracion)
+logger.log (logging.INFO, "Utiliando el archivo de spec: %s" %  archivo_de_spec)
+
 config = ConfigObj(archivo_de_configuracion, configspec=archivo_de_spec)
 validator = Validator()
 result = config.validate(validator)
@@ -27,11 +34,14 @@ if result != True:
     for (section_list, key, _) in flatten_errors(config, result):
         if key is not None:
             print 'El parámetro "%s" de la sección "%s" es incorrecto' % (key, ', '.join(section_list))
+            logger.log (logging.INFO, 'El parámetro "%s" de la sección "%s" es incorrecto' % (key, ', '.join(section_list)))
         else:
             print 'No se encontro la sección:%s ' % ', '.join(section_list)
+            logger.log (logging.INFO, 'No se encontro la sección:%s ' % ', '.join(section_list))
+
 else:
     #print "Se leyo la configuración del cliente correctamente"
-
+    logger.log (logging.INFO, 'Se leyo la configuración del cliente correctamente')
     if  platform.uname()[0] == 'Linux':
         # Si estan vacio estos campos pongo default para linux
         if config['client']['path_db']:

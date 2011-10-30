@@ -4,8 +4,6 @@ __version__ = "0.5"
 
 # Modulos externos
 import BaseHTTPServer, select, socket, SocketServer, urlparse
-import logging
-import logging.handlers
 import sys
 import signal
 import threading
@@ -15,6 +13,7 @@ import base64
 import platform
 import os
 import time
+import logging
 
 sys.path.append('clases')
 sys.path.append('conf')
@@ -25,11 +24,11 @@ sys.path.append('password')
 import consultor
 import manejadorUrls
 import config
+import funciones
 
-from funciones import *
 
 if not os.path.exists(config.PATH_DB):
-    crearDBCliente(config.PATH_DB)
+    funciones.crearDBCliente(config.PATH_DB)
 
 verificador=consultor.Consultor()
 urls=manejadorUrls.ManejadorUrls()
@@ -237,20 +236,6 @@ class ThreadingHTTPServer (SocketServer.ThreadingMixIn,
                                             RequestHandlerClass)
         self.logger = logger
 
-def logSetup (logfile, logsize, cant_rotaciones):
-    logger = logging.getLogger ("Cliente")
-    #logger.setLevel (logging.DEBUG)
-    logger.setLevel (logging.INFO)
-    #logger.setLevel (logging.ERROR)
-    handler = logging.handlers.RotatingFileHandler (logfile, maxBytes=(logsize*(1<<20)), backupCount=cant_rotaciones)
-    fmt = logging.Formatter (
-                                "[%(asctime)-12s.%(msecs)03d] "
-                                "%(levelname)-4s {%(name)s %(threadName)s}"
-                                " %(message)s",
-                                "%Y-%m-%d %H:%M:%S")
-    handler.setFormatter (fmt)
-    logger.addHandler (handler)
-    return logger
 
 def handler (signo, frame):
     while frame and isinstance (frame, FrameType):
@@ -263,7 +248,7 @@ def handler (signo, frame):
 def main ():
     run_event = threading.Event ()
     # setup the log file
-    logger = logSetup (config.LOG_FILENAME, config.LOG_SIZE_MB, config.LOG_CANT_ROTACIONES)
+    logger = funciones.logSetup (config.LOG_FILENAME, config.LOG_SIZE_MB, config.LOG_CANT_ROTACIONES)
     signal.signal (signal.SIGINT, handler)
     server_address = (config.BIND_ADDRESS, config.BIND_PORT)
     ProxyHandler.protocol = "HTTP/1.1"
@@ -273,6 +258,7 @@ def main ():
     verificador.setLogger(logger)
     sa = httpd.socket.getsockname ()
     print "Kerberus - Cliente, atendiendo en ", sa[0], "puerto", sa[1]
+    logger.log(logging.INFO,'Kerberus - Cliente, atendiendo en %s puerto %s' % (sa[0],sa[1],))
     req_count = 0
     while not run_event.isSet ():
         try:
