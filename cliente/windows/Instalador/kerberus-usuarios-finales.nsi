@@ -51,7 +51,7 @@ OutFile Kerberus-control-parental.exe
 ; Bienvenido al Asistente de Instalación de Aplicación $Name
 ; no se ve el contenido de la variable $Name si el tamaño es muy grande
 Name "Kerberus Control Parental Web"
-Caption "Kerberus Control Parental Web ${VERSION} para 32bits"
+Caption "Kerberus Control Parental Web"
 
 ;Comprobacion de integridad del fichero activada
 CRCCheck on
