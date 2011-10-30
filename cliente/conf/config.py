@@ -22,7 +22,7 @@ else:
     archivo_de_spec= path_common +'\confspec.ini'
 
 logger.log (logging.INFO, "Plataforma detectada %s" % platform.uname()[0] )
-logger.log (logging.INFO, "Utiliando el archivo de configuración: %s" %  archivo_de_configuracion)
+logger.log (logging.INFO, "Utiliando el archivo de configuracion: %s" %  archivo_de_configuracion)
 logger.log (logging.INFO, "Utiliando el archivo de spec: %s" %  archivo_de_spec)
 
 config = ConfigObj(archivo_de_configuracion, configspec=archivo_de_spec)
@@ -30,7 +30,7 @@ validator = Validator()
 result = config.validate(validator)
 
 if result != True:
-    print "Error al leer el archivo de configuración!!!"
+    print "Error al leer el archivo de configuracion!!!"
     for (section_list, key, _) in flatten_errors(config, result):
         if key is not None:
             print 'El parámetro "%s" de la sección "%s" es incorrecto' % (key, ', '.join(section_list))
@@ -41,7 +41,7 @@ if result != True:
 
 else:
     #print "Se leyo la configuración del cliente correctamente"
-    logger.log (logging.INFO, 'Se leyo la configuración del cliente correctamente')
+    logger.log (logging.INFO, 'Se leyo la configuracion del cliente correctamente')
     if  platform.uname()[0] == 'Linux':
         # Si estan vacio estos campos pongo default para linux
         if config['client']['path_db']:
@@ -75,6 +75,9 @@ else:
     # Asignaciones desde archivo de conf
     ########
     # Constantes de debug
+    logger.log (logging.INFO, "PATH_DB: %s" %  PATH_DB)
+    logger.log (logging.INFO, "LOG_FILENAME: %s" %  LOG_FILENAME)
+    logger.log (logging.INFO, "SYNC_LOG_FILENAME: %s" %  SYNC_LOG_FILENAME)    
     DEBUG_EXTENSIONES=config['debug']['debug_extensiones']
     DEBUG_DOM_PERM=config['debug']['debug_dominios_permitidos']
     DEBUG_DOM_DENG=config['debug']['debug_deminios_denegados']
@@ -93,7 +96,8 @@ else:
     SYNC_SERVER_PORT = config['sync']['port']
     SYNC_LOG_SIZE_MB = config['sync']['log_size_mb']
     SYNC_LOG_CANT_ROTACIONES = config['sync']['log_cantidad_de_rotaciones']
-
+    logger.log (logging.INFO, "Sincronizador: %s:%s" %  (SYNC_SERVER_IP, SYNC_SERVER_PORT,))
+    
     #Cliente
     CLIENT_LOG_FILENAME = config['client']['log_filename']
     BIND_ADDRESS = config['client']['bind_address']
@@ -103,10 +107,13 @@ else:
     PROXY_PORT=config['client']['proxy_port']
     LOG_SIZE_MB = config['client']['log_size_mb']
     LOG_CANT_ROTACIONES = config['client']['log_cantidad_de_rotaciones']
+    logger.log (logging.INFO, "Cliente escuchando en: %s:%s" %  (BIND_ADDRESS,BIND_PORT,))
+    logger.log (logging.INFO, "Cliente usando proxy: ( %s ) direccion %s:%s" %  (USAR_PROXY, PROXY_IP, PROXY_PORT,))
 
     # Server
     SERVER_IP=config['server']['ip']
     SERVER_PORT=config['server']['port']
     MAX_CACHE_URLS_ACEPTADAS=config['server']['max_urls_aceptadas_cacheadas']
     MAX_CACHE_URLS_DENEGADAS=config['server']['max_urls_denegadas_cacheadas']
+    logger.log (logging.INFO, "Validador: %s:%s" %  (SERVER_IP, SERVER_PORT,))
 
