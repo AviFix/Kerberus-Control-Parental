@@ -7,6 +7,7 @@ from configobj import ConfigObj, flatten_errors
 from validate import Validator
 import logging
 
+# Modulos propios
 import funciones
 
 logger = funciones.logSetup ('kerberus-config.log',1, 1)
@@ -77,7 +78,7 @@ else:
     # Constantes de debug
     logger.log (logging.INFO, "PATH_DB: %s" %  PATH_DB)
     logger.log (logging.INFO, "LOG_FILENAME: %s" %  LOG_FILENAME)
-    logger.log (logging.INFO, "SYNC_LOG_FILENAME: %s" %  SYNC_LOG_FILENAME)    
+    logger.log (logging.INFO, "SYNC_LOG_FILENAME: %s" %  SYNC_LOG_FILENAME)
     DEBUG_EXTENSIONES=config['debug']['debug_extensiones']
     DEBUG_DOM_PERM=config['debug']['debug_dominios_permitidos']
     DEBUG_DOM_DENG=config['debug']['debug_deminios_denegados']
@@ -97,7 +98,7 @@ else:
     SYNC_LOG_SIZE_MB = config['sync']['log_size_mb']
     SYNC_LOG_CANT_ROTACIONES = config['sync']['log_cantidad_de_rotaciones']
     logger.log (logging.INFO, "Sincronizador: %s:%s" %  (SYNC_SERVER_IP, SYNC_SERVER_PORT,))
-    
+
     #Cliente
     CLIENT_LOG_FILENAME = config['client']['log_filename']
     BIND_ADDRESS = config['client']['bind_address']
@@ -116,4 +117,3 @@ else:
     MAX_CACHE_URLS_ACEPTADAS=config['server']['max_urls_aceptadas_cacheadas']
     MAX_CACHE_URLS_DENEGADAS=config['server']['max_urls_denegadas_cacheadas']
     logger.log (logging.INFO, "Validador: %s:%s" %  (SERVER_IP, SERVER_PORT,))
-

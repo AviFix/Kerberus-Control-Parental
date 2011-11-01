@@ -8,11 +8,13 @@ import re, sqlite3, time, sys, urllib2, httplib
 # Modulos propios
 sys.path.append('../conf')
 import config
+import servidores
 
 # Clase
 class Usuario:
     def __init__(self, usuario):
         self.nombre=usuario
+        self.servers=servidores.Servidor()
         conexion = sqlite3.connect(config.PATH_DB)
         self.cursor=conexion.cursor()
         self.id, self.es_admin=self.getUserIdAndAdmin(usuario)
@@ -166,7 +168,12 @@ class Usuario:
             self.buffer_denegadas=[]
 
     def recargarPeriodoDeActualizacion(self):
-        conexion=httplib.HTTPConnection("%s:%s" % (config.SYNC_SERVER_IP, config.SYNC_SERVER_PORT))
+        ip=config.SYNC_SERVER_IP
+        port=config.SERVER_PORT
+        if not self.servers.estaOnline(ip, port):
+            ip, port=self.servers.obtenerSincronizador()
+        print ip, port
+        conexion=httplib.HTTPConnection("%s:%s" % (ip, port))
         headers = {"UserID": "1","Peticion":"getPeriodoDeActualizacion"}
         conexion.request("GET", "/", "", headers)
         respuesta=conexion.getresponse()
@@ -196,7 +203,13 @@ class Usuario:
             urllib2.install_opener(opener)
 
         heads = {"UserID": "1","URL":url,"Peticion":"consulta"}
-        req = urllib2.Request("http://%s:%s" %(config.SERVER_IP, config.SERVER_PORT),headers=heads)
+        ip=config.SERVER_IP
+        port=config.SERVER_PORT
+        if not self.servidores.estaOnline(ip, port):
+            ip, port=self.servidores.obtenerValidador()
+
+        req = urllib2.Request("http://%s:%s" %(ip, port, ),headers=heads)
+        print "utilizando servidor %s:%s" % (ip,port,)
         try:
             respuesta = urllib2.urlopen(req)
             if respuesta.getcode() == 204:
