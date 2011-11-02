@@ -14,7 +14,7 @@ import servidores
 class Usuario:
     def __init__(self, usuario):
         self.nombre=usuario
-        self.servers=servidores.Servidor()
+        self.servidor=servidores.Servidor()
         conexion = sqlite3.connect(config.PATH_DB)
         self.cursor=conexion.cursor()
         self.id, self.es_admin=self.getUserIdAndAdmin(usuario)
@@ -170,15 +170,15 @@ class Usuario:
     def recargarPeriodoDeActualizacion(self):
         ip=config.SYNC_SERVER_IP
         port=config.SERVER_PORT
-        if not self.servers.estaOnline(ip, port):
-            ip, port=self.servers.obtenerSincronizador()
-        print ip, port
+        # prueba con el servidor seteado en la conifg, y sino devuelve
+        # uno valido
+        ip, port=self.servidor.obtenerServidor(ip,port)
         conexion=httplib.HTTPConnection("%s:%s" % (ip, port))
         headers = {"UserID": "1","Peticion":"getPeriodoDeActualizacion"}
         conexion.request("GET", "/", "", headers)
         respuesta=conexion.getresponse()
         respuesta=respuesta.read()
-        if not respuesta:
+        if not respuesta or not respuesta.isdigit():
             respuesta=10
         self.periodoDeActualizacionDB=int(respuesta)*60
 
@@ -196,20 +196,21 @@ class Usuario:
         """Consulta al servidor por la url, porque no pudo determinar su aptitud"""
         self.chequearEdadCaches()
         if config.USAR_PROXY:
-            server="http://%s:%s" % (config.PROXY_IP,config.PROXY_PORT)
-            proxy={'http':server, 'https': server}
-            proxy_handler=urllib2.ProxyHandler(proxy)
-            opener=urllib2.build_opener(proxy_handler)
-            urllib2.install_opener(opener)
+            if self.servidor.estaOnline(config.PROXY_IP,config.PROXY_PORT):
+                server="http://%s:%s" % (config.PROXY_IP,config.PROXY_PORT)
+                proxy={'http':server, 'https': server}
+                proxy_handler=urllib2.ProxyHandler(proxy)
+                opener=urllib2.build_opener(proxy_handler)
+                urllib2.install_opener(opener)
+            else:
+                print "El proxy no esta escuchando en %s:%s por lo que no se \
+                utilizara" % (config.PROXY_IP,config.PROXY_PORT,)
 
         heads = {"UserID": "1","URL":url,"Peticion":"consulta"}
         ip=config.SERVER_IP
         port=config.SERVER_PORT
-        if not self.servidores.estaOnline(ip, port):
-            ip, port=self.servidores.obtenerValidador()
-
+        ip,port=self.servidor.obtenerServidor(ip,port)
         req = urllib2.Request("http://%s:%s" %(ip, port, ),headers=heads)
-        print "utilizando servidor %s:%s" % (ip,port,)
         try:
             respuesta = urllib2.urlopen(req)
             if respuesta.getcode() == 204:

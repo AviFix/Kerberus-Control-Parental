@@ -23,18 +23,14 @@ class Servidor:
         except:
             return False
 
-    def obtenerValidador(self):
-        for i in range(1,100):
-            ip="validador%s.kerberus.com.ar" % i
-            port=80
+    def obtenerServidor(self,ip=False, port=False):
+        if ip and port:
             if self.estaOnline(ip,port):
                 return ip, port
-        return False
-
-    def obtenerSincronizador(self):
-        for i in range(1,100):
-            ip="sincronizador%s.kerberus.com.ar" % i
-            port=80
-            if self.estaOnline(ip,port):
-                return ip, port
-        return False
+            else:
+                for i in range(1,100):
+                    ip="validador%s.kerberus.com.ar" % i
+                    port=80
+                    if self.estaOnline(ip,port):
+                        return ip, port
+                return False
