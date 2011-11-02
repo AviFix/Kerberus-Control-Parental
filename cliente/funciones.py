@@ -4,11 +4,9 @@ import sqlite3
 import logging
 import logging.handlers
 
-def logSetup (logfile, logsize, cant_rotaciones):
-    logger = logging.getLogger ("Cliente")
-    #logger.setLevel (logging.DEBUG)
-    logger.setLevel (logging.INFO)
-    #logger.setLevel (logging.ERROR)
+def logSetup (logfile, loglevel=5, logsize=1, cant_rotaciones=1,cabecera_log=""):
+    logger = logging.getLogger (cabecera_log)
+    logger.setLevel (loglevel*10)
     handler = logging.handlers.RotatingFileHandler (logfile, maxBytes=(logsize*(1<<20)), backupCount=cant_rotaciones)
     fmt = logging.Formatter (
                                 "[%(asctime)-12s.%(msecs)03d] "

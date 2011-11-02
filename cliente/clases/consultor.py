@@ -32,10 +32,6 @@ class Consultor:
             myapp.show()
             sys.exit(app.exec_())
 
-
-    def setLogger(self, logger):
-        self.logger=logger
-
     def debug(self, texto, activo):
         if activo:
             fin=time.time()

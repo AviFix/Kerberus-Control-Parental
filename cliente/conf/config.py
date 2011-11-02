@@ -10,7 +10,7 @@ import logging
 # Modulos propios
 import funciones
 
-logger = funciones.logSetup ('kerberus-config.log',1, 1)
+logger = funciones.logSetup ('config.log',1, 1)
 
 if  platform.uname()[0] == 'Linux':
     archivo_de_configuracion='/home/mboscovich/proyectos/control_parental/cliente/cliente.conf'
@@ -108,6 +108,8 @@ else:
     PROXY_PORT=config['client']['proxy_port']
     LOG_SIZE_MB = config['client']['log_size_mb']
     LOG_CANT_ROTACIONES = config['client']['log_cantidad_de_rotaciones']
+    LOGLEVEL= config['client']['loglevel']
+
     logger.log (logging.INFO, "Cliente escuchando en: %s:%s" %  (BIND_ADDRESS,BIND_PORT,))
     logger.log (logging.INFO, "Cliente usando proxy: ( %s ) direccion %s:%s" %  (USAR_PROXY, PROXY_IP, PROXY_PORT,))
 

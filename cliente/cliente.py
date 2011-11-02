@@ -30,6 +30,7 @@ import funciones
 if not os.path.exists(config.PATH_DB):
     funciones.crearDBCliente(config.PATH_DB)
 
+logger = funciones.logSetup (config.LOG_FILENAME, config.LOGLEVEL, config.LOG_SIZE_MB, config.LOG_CANT_ROTACIONES,"cliente")
 verificador=consultor.Consultor()
 urls=manejadorUrls.ManejadorUrls()
 
@@ -248,17 +249,14 @@ def handler (signo, frame):
 def main ():
     run_event = threading.Event ()
     # setup the log file
-    logger = funciones.logSetup (config.LOG_FILENAME, config.LOG_SIZE_MB, config.LOG_CANT_ROTACIONES)
     signal.signal (signal.SIGINT, handler)
     server_address = (config.BIND_ADDRESS, config.BIND_PORT)
     ProxyHandler.protocol = "HTTP/1.1"
     if config.USAR_PROXY:
-        print "Usando kerberus a traves de proxy %s:%s" % (config.PROXY_IP,config.PROXY_PORT)
+        logger.log(logging.INFO,"Usando kerberus a traves de proxy %s:%s" % (config.PROXY_IP,config.PROXY_PORT))
     httpd = ThreadingHTTPServer (server_address, ProxyHandler, logger)
-    verificador.setLogger(logger)
     sa = httpd.socket.getsockname ()
-    print "Kerberus - Cliente, atendiendo en ", sa[0], "puerto", sa[1]
-    logger.log(logging.INFO,'Kerberus - Cliente, atendiendo en %s puerto %s' % (sa[0],sa[1],))
+    logger.log(logging.INFO,'Kerberus - Cliente Activo, atendiendo en %s puerto %s' % (sa[0],sa[1],))
     req_count = 0
     while not run_event.isSet ():
         try:
@@ -272,7 +270,7 @@ def main ():
             if e[0] == 4 and run_event.isSet (): pass
             else:
                 logger.log (logging.CRITICAL, "Errno: %d - %s", e[0], e[1])
-    logger.log (logging.INFO, "Server shutdown")
+    logger.log (logging.INFO, "Se ha detenido el cliente de Kerberus satisfactoriamente")
     return 0
 
 if __name__ == '__main__':
