@@ -26,11 +26,11 @@ import manejadorUrls
 import config
 import funciones
 
+# Logging
+logger = funciones.logSetup (config.LOG_FILENAME, config.LOGLEVEL, config.LOG_SIZE_MB, config.LOG_CANT_ROTACIONES,"Modulo cliente")
 
 if not os.path.exists(config.PATH_DB):
     funciones.crearDBCliente(config.PATH_DB)
-
-logger = funciones.logSetup (config.LOG_FILENAME, config.LOGLEVEL, config.LOG_SIZE_MB, config.LOG_CANT_ROTACIONES,"cliente")
 verificador=consultor.Consultor()
 urls=manejadorUrls.ManejadorUrls()
 

@@ -11,10 +11,14 @@ import manejadorUrls
 import usuario
 import config
 import logging
+import funciones
 
 #Excepciones
 class ConsultorError(Exception): pass
 #class nombre(ConsultorError): pass
+
+# Logging
+logger = funciones.logSetup (config.LOG_FILENAME, config.LOGLEVEL, config.LOG_SIZE_MB, config.LOG_CANT_ROTACIONES,"Modulo Consultor")
 
 # Clase
 class Consultor:
@@ -32,14 +36,6 @@ class Consultor:
             myapp.show()
             sys.exit(app.exec_())
 
-    def debug(self, texto, activo):
-        if activo:
-            fin=time.time()
-            tiempototal=fin-self.inicio
-            if tiempototal >=config.LOG_TIEMPOS_MAYORES_A:
-                print  texto
-                print "Tiempo: %s segs.\n" % tiempototal
-
     def extensionValida(self, url):
         url=url.lower()
         return re.match(".*\.(gif|jpeg|jpg|png|js|css|swf|ico|json|mp3|wav|rss|rar|zip|pdf|xml)$",url)
@@ -54,58 +50,58 @@ class Consultor:
             mensaje= "Usuario administrador"
             return True, mensaje
             if config.DEBUG_IS_ADMIN:
-                self.logger.log(logging.INFO, mensaje)
+                logger.log(logging.INFO, mensaje)
 
         elif usuario.dominioDenegado(url):
             mensaje="Dominio denegado: " + url
             if config.DEBUG_DOM_DENG:
-                self.logger.log(logging.INFO, mensaje)
+                logger.log(logging.INFO, mensaje)
             return False, mensaje
 
         elif usuario.dominioPermitido(url):
             mensaje = "Dominio permitido: " + url
             if config.DEBUG_DOM_PERM:
-                self.logger.log(logging.INFO, mensaje)
+                logger.log(logging.INFO, mensaje)
             return True,  mensaje
 
         elif usuario.dominioPublicamentePermitido(url):
             mensaje = "Dominio publicamente permitido: " + url
             if config.DEBUG_DOM_PUB_PERM:
-                self.logger.log(logging.INFO, mensaje)
+                logger.log(logging.INFO, mensaje)
             return True, mensaje
 
         elif usuario.dominioPublicamenteDenegado(url):
             mensaje = "Dominio publicamente denegado: " + url
             if config.DEBUG_DOM_PUB_DENG:
-                self.logger.log(logging.INFO, mensaje)
+                logger.log(logging.INFO, mensaje)
             return False, mensaje
 
         elif self.extensionValida(url):
             mensaje = "Exension valida: " + url
             if config.DEBUG_EXTENSIONES:
-                self.logger.log(logging.INFO, mensaje)
+                logger.log(logging.INFO, mensaje)
             return True, mensaje
 
         elif usuario.cacheAceptadas(url):
             mensaje = "CACHEADA, Autorizada: " + url
             if config.DEBUG_CACHEADA_PERM:
-                self.logger.log(logging.INFO, mensaje)
+                logger.log(logging.INFO, mensaje)
             return True, mensaje
 
         elif usuario.cacheDenegadas(url):
             mensaje = "CACHEADA, Denegada: " + url
             if config.DEBUG_CACHEADA_PERM:
-                self.logger.log(logging.INFO, mensaje)
+                logger.log(logging.INFO, mensaje)
             return False, mensaje
         else:
             valido, razon= usuario.validarRemotamente(url)
             if valido:
                 mensaje = "Url validada remotamente : " + url
                 if config.DEBUG_VALIDA_REM:
-                    self.logger.log(logging.INFO, mensaje)
+                    logger.log(logging.INFO, mensaje)
                 return True,  ""
             else:
                 mensaje = "URL: %s <br>Motivo: %s" % (url,  razon)
                 if config.DEBUG_NO_VALIDA_REM:
-                    self.logger.log(logging.INFO, mensaje)
+                    logger.log(logging.INFO, mensaje)
                 return False, mensaje

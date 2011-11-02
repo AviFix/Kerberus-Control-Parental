@@ -174,12 +174,10 @@ class Usuario:
             self.buffer_denegadas=[]
 
     def recargarPeriodoDeActualizacion(self):
-        ip=config.SYNC_SERVER_IP
-        port=config.SERVER_PORT
         # prueba con el servidor seteado en la conifg, y sino devuelve
-        # uno valido
-        ip, port=self.servidor.obtenerServidor(ip,port)
-        conexion=httplib.HTTPConnection("%s:%s" % (ip, port))
+        # uno valido y lo setea para seguir usandolo
+        config.SYNC_SERVER_IP,config.SERVER_PORT=self.servidor.obtenerServidor(config.SYNC_SERVER_IP,config.SERVER_PORT)
+        conexion=httplib.HTTPConnection("%s:%s" % (config.SYNC_SERVER_IP,config.SERVER_PORT,))
         headers = {"UserID": "1","Peticion":"getPeriodoDeActualizacion"}
         conexion.request("GET", "/", "", headers)
         respuesta=conexion.getresponse()
@@ -216,10 +214,10 @@ class Usuario:
                 utilizara" % (config.PROXY_IP,config.PROXY_PORT,))
 
         heads = {"UserID": "1","URL":url,"Peticion":"consulta"}
-        ip=config.SERVER_IP
-        port=config.SERVER_PORT
-        ip,port=self.servidor.obtenerServidor(ip,port)
-        req = urllib2.Request("http://%s:%s" %(ip, port, ),headers=heads)
+        # prueba con el servidor seteado en la config, y sino devuelve
+        # uno valido y lo setea para seguir usandolo
+        config.SERVER_IP,config.SERVER_PORT=self.servidor.obtenerServidor(config.SERVER_IP,config.SERVER_PORT)
+        req = urllib2.Request("http://%s:%s" %(config.SERVER_IP,config.SERVER_PORT, ),headers=heads)
         try:
             respuesta = urllib2.urlopen(req)
             if respuesta.getcode() == 204:
