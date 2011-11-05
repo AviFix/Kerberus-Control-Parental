@@ -97,6 +97,7 @@ else:
     SYNC_SERVER_PORT = config['sync']['port']
     SYNC_LOG_SIZE_MB = config['sync']['log_size_mb']
     SYNC_LOG_CANT_ROTACIONES = config['sync']['log_cantidad_de_rotaciones']
+    SYNC_LOGLEVEL= config['sync']['loglevel']
     logger.log (logging.INFO, "Sincronizador: %s:%s" %  (SYNC_SERVER_IP, SYNC_SERVER_PORT,))
 
     #Cliente

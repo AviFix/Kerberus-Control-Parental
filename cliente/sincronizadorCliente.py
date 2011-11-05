@@ -1,39 +1,37 @@
 # -*- coding: utf-8 -*-
 
-import sys, time, os, sqlite3, httplib, platform
+# Modulos externos
+import sys, time, os, sqlite3, httplib, platform, logging, urllib2
+#import logging.handlers
 
-from funciones import *
-
+# Modulos propios
 sys.path.append('conf')
-import config, urllib2
-import logging.handlers
+sys.path.append('clases')
 
-def logSetup ():
-    logger = logging.getLogger ("Sincronizador")
-    logger.setLevel (logging.DEBUG)
-    handler = logging.handlers.RotatingFileHandler (config.SYNC_LOG_FILENAME,
-                        maxBytes=(config.SYNC_LOG_SIZE_MB*(1<<20)),
-                        backupCount=config.SYNC_LOG_CANT_ROTACIONES)
-    fmt = logging.Formatter (
-                                "[%(asctime)-12s.%(msecs)03d] "
-                                "%(levelname)-4s"
-                                " %(message)s",
-                                "%Y-%m-%d %H:%M:%S")
-    handler.setFormatter (fmt)
-    logger.addHandler (handler)
-    return logger
+import config
+import funciones
+import servidores
+
+# Logging
+logger = funciones.logSetup (config.SYNC_LOG_FILENAME, config.SYNC_LOGLEVEL, config.SYNC_LOG_SIZE_MB, config.SYNC_LOG_CANT_ROTACIONES,"Sincronizador")
 
 def obtenerRespuesta(headers):
+        servidor=servidores.Servidor()
+        config.SYNC_SERVER_IP,config.SYNC_SERVER_PORT = servidor.obtenerServidor(config.SYNC_SERVER_IP,config.SYNC_SERVER_PORT)
         server_sync="%s:%s" % (config.SYNC_SERVER_IP,config.SYNC_SERVER_PORT)
         if config.USAR_PROXY:
-            url_proxy="http://%s:%s" % (config.PROXY_IP,config.PROXY_PORT)
-            logger.log(logging.DEBUG,"Conectando a %s, por medio del proxy %s , para realizar la solicitud: %s" %(server_sync,url_proxy,headers['Peticion']))
-            proxy={'http':url_proxy, 'https': url_proxy}
-            proxy_handler=urllib2.ProxyHandler(proxy)
-            opener=urllib2.build_opener(proxy_handler)
-            urllib2.install_opener(opener)
-            req = urllib2.Request("http://"+server_sync, headers=headers)
-            respuesta = urllib2.urlopen(req)
+            if servidor.estaOnline(config.PROXY_IP,config.PROXY_PORT):
+                url_proxy="http://%s:%s" % (config.PROXY_IP,config.PROXY_PORT)
+                logger.log(logging.DEBUG,"Conectando a %s, por medio del proxy %s , para realizar la solicitud: %s" %(server_sync,url_proxy,headers['Peticion']))
+                proxy={'http':url_proxy, 'https': url_proxy}
+                proxy_handler=urllib2.ProxyHandler(proxy)
+                opener=urllib2.build_opener(proxy_handler)
+                urllib2.install_opener(opener)
+                req = urllib2.Request("http://"+server_sync, headers=headers)
+                respuesta = urllib2.urlopen(req)
+            else:
+                logger.log(logging.ERROR,"El proxy no esta escuchando en %s:%s por lo que no se \
+                utilizara" % (config.PROXY_IP,config.PROXY_PORT,))
         else:
             logger.log(logging.DEBUG,"Conectando a %s para realizar la solicitud: %s" %(server_sync,headers['Peticion']))
             conexion=httplib.HTTPConnection(server_sync)
@@ -99,7 +97,6 @@ def sincronizarDominiosConServer(tiempo_actual):
 #    print "Se han borrado las urls viejas de cache"
 
 # Inicio
-logger = logSetup ()
 
 while True:
     #obtiene el tiempo en minutos
