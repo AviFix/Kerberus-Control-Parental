@@ -1,3 +1,6 @@
+copy ..\..\cliente.conf ArchivosDefault\cliente.conf
+copy ..\..\conf\confspec.ini ArchivosDefault\confspec.ini
+pause
 cd kerberus-daemon
 C:\Python27\python setup.py py2exe
 cd ..
