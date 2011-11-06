@@ -140,7 +140,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
             self.denegar(motivo, url)
             return False
 
-        if urls.soportaSafeSearch(url):
+        if urls.soportaSafeSearch(url) and motivo != "Usuario administrador":
             url=urls.agregarSafeSearch(url)
             self.server.logger.log (logging.INFO, "La URL %s  soporta SafeSearch. Forzando su uso", url)
 
