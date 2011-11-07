@@ -115,8 +115,9 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         url=self.path
         if verificador.primerUrl:
             verificador.primerUrl=False
-            self.mostrarPublicidad(url)
-            return False
+            if "kerberus.com.ar" not in url:
+                self.mostrarPublicidad(url)
+                return False
 
         proxy_user=self.headers.getheader('Proxy-Authorization')
         if proxy_user:
