@@ -41,6 +41,9 @@ class Consultor:
         return re.match(".*\.(gif|jpeg|jpg|png|js|css|swf|ico|json|mp3|wav|rss|rar|zip|pdf|xml)$",url)
 
     def validarUrl(self, username, password, url):
+        if "kerberus.com.ar" in url:
+            return True, "Consulta a kerberus"
+        
         if not self.usuarios.usuario_valido(username, password):
             return False, "Usuario no valido %s : %s" %(username, password, )
 

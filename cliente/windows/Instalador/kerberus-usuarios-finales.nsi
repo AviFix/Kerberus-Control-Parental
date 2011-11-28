@@ -50,8 +50,8 @@ OutFile Kerberus-control-parental.exe
 ;la frase en español mas larga:
 ; Bienvenido al Asistente de Instalación de Aplicación $Name
 ; no se ve el contenido de la variable $Name si el tamaño es muy grande
-Name "Kerberus Control Parental Web"
-Caption "Kerberus Control Parental Web"
+Name "Kerberus"
+Caption "Kerberus"
 
 ;Comprobacion de integridad del fichero activada
 CRCCheck on
@@ -78,7 +78,7 @@ SetDatablockOptimize on
 ;Habilitamos la compresión de nuestro instalador
 SetCompress auto
 ;Personalizamos el mensaje de desinstalación
-UninstallText "Desinstalar kerberus Control Parental Web."
+UninstallText "Desinstalar kerberus CPW."
 
 
 # default section start
@@ -189,7 +189,7 @@ writeRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
 
 
 writeRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
-"ProxyOverride" "<local>"
+"ProxyOverride" "127.0.0.1,localhost"
 
 
 ; Make the directory "$INSTDIR\database" read write accessible by all users
@@ -216,9 +216,6 @@ SectionEnd
 Section "Uninstall"
         ;SetShellVarContext all
         SetShellVarContext current
-	ExecWait '"$COMMONFILES\kerberus\navegadores.exe" unset'
-        RMDir /r /REBOOTOK $INSTDIR
-	RMDir /r /REBOOTOK $COMMONFILES\kerberus
         DeleteRegKey HKCU "SOFTWARE\Kerberus"
         DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus"
         DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Run" "Kerberus-client"
@@ -228,6 +225,9 @@ Section "Uninstall"
         DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyHttp1.1"
         DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyServer"
         DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyOverride"
+	ExecWait "$INSTDIR\checkNavs\navegadores.exe"
+        RMDir /r /REBOOTOK $INSTDIR        
+
 ;	writeRegDword HKCU "SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxySettingsPerUser" 1
 
 ;        DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "MigrateProxy"

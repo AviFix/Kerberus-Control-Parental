@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import sys, getopt, _winreg, subprocess, os
+import sys, getopt, _winreg, subprocess, os, re
 
 class navegadores:
 
@@ -82,15 +82,27 @@ class navegadores:
 
     def unsetFirefox(self):
         if self.estaFirefoxInstalado():
-            if self.estaSeteadoFirefox():
-                #try:
-                    print "Deseteando firefox"
-                    preference_file = "%s\\defaults\\pref\\all-kerberus.js" % self.firefoxInstallDir
-                    mozilla_cfg = "\"%s\\mozilla.cfg\"" % self.firefoxInstallDir
-                    comando = "del \"%s\" %s /F" % (preference_file,mozilla_cfg)
-                    print comando
-                    result = subprocess.Popen(comando,stdout=subprocess.PIPE, shell=True)
-                    print "Fin del desseteado de firefox"
+            for perfil in self.getFirefoxProfiles(os.environ['USERNAME']):
+                if self.estaSeteadoFirefox(perfil):
+                        print "desseteando el perfil %s" % perfil
+                        destino = "\"%s\\user.js\"" % perfil
+                        comando = "del %s" % (destino)
+                        print "El comando es: %s" % comando
+                        result = subprocess.Popen(comando,stdout=subprocess.PIPE, shell=True)
+                        
+                        # busco el seteo de proxy en pref.js
+                        archivo_config="%s\\prefs.js" % perfil
+                        if os.path.isfile(archivo_config):
+                            print "modificando el archivo %s " % archivo_config
+                            archivo = open(archivo_config,'w')
+                            data = open(archivo_config).read()
+                            con_proxy='user_pref("network.proxy.type", 1);'
+                            sin_proxy='user_pref("network.proxy.type", 0);'
+                            nuevo_archivo=re.sub(re.escape(con_proxy),sin_proxy, data)
+                            print nuevo_archivo
+                            archivo.write( nuevo_archivo )                            
+                            archivo.close()
+                        print "Se termino de dessetear firefox para el perfil %s" % perfil
                 #except:
                 #    return "No se pudo dessetear firefox, a pesar de estar instalado"
 
