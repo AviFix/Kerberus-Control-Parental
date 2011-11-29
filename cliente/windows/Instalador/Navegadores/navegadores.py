@@ -60,12 +60,16 @@ class navegadores:
             archivo_config="%s\\prefs.js" % perfil
             if os.path.isfile(archivo_config):
                 archivo = open(archivo_config,'r')
+                regex_ip = '.*network.proxy.http..*127.0.0.1.*'
+                regex_port = '.*network.proxy.http_port..*8080.*'
+                ip_encontrada = False
+                port_encontrado = False
                 for linea in archivo.readlines():
-                    if "user_pref(\"network.proxy.http\", \"127.0.0.1\");" in linea:
-                        ip=True
-                    if "user_pref(\"network.proxy.http_port\", 8080);" in linea:
-                        port=True
-                if ip and port:
+                    if re.match(regex_ip, re.escape(linea)):
+                        ip_encontrada=True
+                    if re.match(regex_port, re.escape(linea)):
+                        port_encontrado=True
+                if ip_encontrada and port_encontrado:
                     return True
             return False
 
