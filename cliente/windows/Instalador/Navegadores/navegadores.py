@@ -61,8 +61,12 @@ class navegadores:
             if os.path.isfile(archivo_config):
                 archivo = open(archivo_config,'r')
                 for linea in archivo.readlines():
-                    if "inicio.kerberus.com.ar" in linea:
-                        return True
+                    if "user_pref(\"network.proxy.http\", \"127.0.0.1\");" in linea:
+                        ip=True
+                    if "user_pref(\"network.proxy.http_port\", 8080);" in linea:
+                        port=True
+                if ip and port:
+                    return True
             return False
 
     def setFirefox(self):
@@ -94,14 +98,7 @@ class navegadores:
                             lineas_a_borrar = []
                             for linea in archivo_user.split('\n'):
                                 lineas_a_borrar.append(linea)
-                             lineas_a_borrar = lineas_a_borrar[0:-1]
-#                            lineas_a_borrar.append('user_pref("browser.startup.homepage","http://inicio.kerberus.com.ar/");\n')
-#                            lineas_a_borrar.append('user_pref("app.update.enabled", false);\n')
-#                            lineas_a_borrar.append('user_pref("network.proxy.http", "127.0.0.1");\n')
-#                            lineas_a_borrar.append('user_pref("network.proxy.http_port", 8080);\n')
-#                            lineas_a_borrar.append('user_pref("network.proxy.type", 1);\n')
-#                            lineas_a_borrar.append('user_pref("network.proxy.no_proxies_on", "localhost, 127.0.0.1");\n')
-#                            lineas_a_borrar.append('user_pref("network.proxy.share_proxy_settings", true);\n')
+                            lineas_a_borrar = lineas_a_borrar[0:-1]
                             data = open(archivo_config,'r').read()
                             for linea in lineas_a_borrar:
                                 data=re.sub(re.escape(linea),'', data)
@@ -201,8 +198,12 @@ class navegadores:
 
 if __name__ == '__main__':
     navs=navegadores()
-    if navs.estaInstaladoKerberus():
-        navs.setNavegadores()
-    else:
+#    if navs.estaInstaladoKerberus():
+#        navs.setNavegadores()
+#    else:
+#        navs.unsetNavegadores()
+    if "unset" in sys.argv:
         navs.unsetNavegadores()
+    else:
+        navs.setNavegadores()
     sys.exit(0)
