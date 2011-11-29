@@ -57,12 +57,11 @@ class navegadores:
             return profiles
 
     def estaSeteadoFirefox(self, perfil):
-            archivo_config="%s\\user.js" % perfil
+            archivo_config="%s\\prefs.js" % perfil
             if os.path.isfile(archivo_config):
                 archivo = open(archivo_config,'r')
                 for linea in archivo.readlines():
                     if "inicio.kerberus.com.ar" in linea:
-                        print "El perfil ya esta seteado: %s" % perfil
                         return True
             return False
 
@@ -85,29 +84,26 @@ class navegadores:
             for perfil in self.getFirefoxProfiles(os.environ['USERNAME']):
                 if self.estaSeteadoFirefox(perfil):
                         print "desseteando el perfil %s" % perfil
-                        destino = "\"%s\\user.js\"" % perfil
-                        comando = "del %s" % (destino)
-                        print "El comando es: %s" % comando
-                        result = subprocess.Popen(comando,stdout=subprocess.PIPE, shell=True)
-
                         # busco el seteo de proxy en pref.js
                         archivo_config="%s\\prefs.js" % perfil
                         if os.path.isfile(archivo_config):
-                            print "modificando el archivo %s " % archivo_config
                             data = open(archivo_config,'r').read()
                             lineas_a_borrar=[]
-                            lineas_a_borrar.append('user_pref("browser.startup.homepage","http://inicio.kerberus.com.ar/");\r\n')
-                            lineas_a_borrar.append('user_pref("app.update.enabled", false);\r\n')
-                            lineas_a_borrar.append('user_pref("network.proxy.http", "127.0.0.1");\r\n')
-                            lineas_a_borrar.append('user_pref("network.proxy.http_port", 8080);\r\n')
-                            lineas_a_borrar.append('user_pref("network.proxy.type", 1);\r\n')
-                            lineas_a_borrar.append('user_pref("network.proxy.no_proxies_on", "localhost, 127.0.0.1");\r\n')
-                            lineas_a_borrar.append('user_pref("network.proxy.share_proxy_settings", true);\r\n')
+                            lineas_a_borrar.append('user_pref("browser.startup.homepage","http://inicio.kerberus.com.ar/");\n')
+                            lineas_a_borrar.append('user_pref("app.update.enabled", false);\n')
+                            lineas_a_borrar.append('user_pref("network.proxy.http", "127.0.0.1");\n')
+                            lineas_a_borrar.append('user_pref("network.proxy.http_port", 8080);\n')
+                            lineas_a_borrar.append('user_pref("network.proxy.type", 1);\n')
+                            lineas_a_borrar.append('user_pref("network.proxy.no_proxies_on", "localhost, 127.0.0.1");\n')
+                            lineas_a_borrar.append('user_pref("network.proxy.share_proxy_settings", true);\n')
                             for linea in lineas_a_borrar:
                                 data=re.sub(re.escape(linea),'', data)
                             archivo = open(archivo_config,'w')
                             archivo.write( data )
                             archivo.close()
+                        destino = "\"%s\\user.js\"" % perfil
+                        comando = "del %s" % (destino)
+                        result = subprocess.Popen(comando,stdout=subprocess.PIPE, shell=True)                            
                         print "Se termino de dessetear firefox para el perfil %s" % perfil
                 #except:
                 #    return "No se pudo dessetear firefox, a pesar de estar instalado"
