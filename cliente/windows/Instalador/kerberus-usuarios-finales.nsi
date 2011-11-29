@@ -18,12 +18,12 @@ SetCompressor lzma
 ;--------------------------------
 ;Pages
 
-  ;Mostramos la página de bienvenida 
-  !insertmacro MUI_PAGE_WELCOME 
-  ;página donde se selecciona el directorio donde instalar nuestra aplicacion 
-  !insertmacro MUI_PAGE_DIRECTORY 
-  ;página de instalación de ficheros 
-  !insertmacro MUI_PAGE_INSTFILES 
+  ;Mostramos la página de bienvenida
+  !insertmacro MUI_PAGE_WELCOME
+  ;página donde se selecciona el directorio donde instalar nuestra aplicacion
+  !insertmacro MUI_PAGE_DIRECTORY
+  ;página de instalación de ficheros
+  !insertmacro MUI_PAGE_INSTFILES
   ;página final
   !insertmacro MUI_PAGE_FINISH
 
@@ -83,21 +83,21 @@ UninstallText "Desinstalar kerberus CPW."
 
 # default section start
 ;section
- 
+
     # call userInfo plugin to get user info.  The plugin puts the result in the stack
 ;    userInfo::getAccountType
-   
+
     # pop the result from the stack into $0
 ;    pop $0
- 
+
     # compare the result with the string "Admin" to see if the user is admin.
     # If match, jump 3 lines down.
 ;    strCmp $0 "Admin" +3
- 
+
     # if there is not a match, print message and return
 ;    messageBox MB_OK "Debe tener Permisos de Administrador para instalar Kerberus: $0"
 ;    return
-  
+
 # default section end
 ;sectionEnd
 
@@ -158,7 +158,7 @@ WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus" 
 WriteUninstaller "uninstall.exe"
 
 WriteRegStr HKCU "Software\Kerberus" "InstallDir" $INSTDIR
-       
+
 WriteRegStr HKCU "Software\Kerberus" "Version" "${VERSION}"
 
 WriteRegStr HKCU "Software\Kerberus" "kerberus-common" "$INSTDIR"
@@ -216,7 +216,8 @@ SectionEnd
 Section "Uninstall"
         ;SetShellVarContext all
         SetShellVarContext current
-        DeleteRegKey HKCU "SOFTWARE\Kerberus"
+        ExecWait '"$INSTDIR\checkNavs\navegadores.exe" unset'
+        DeleteRegKey HKCU "Software\Kerberus"
         DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus"
         DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Run" "Kerberus-client"
         DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Run" "Kerberus-sync"
@@ -225,8 +226,7 @@ Section "Uninstall"
         DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyHttp1.1"
         DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyServer"
         DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyOverride"
-	ExecWait "$INSTDIR\checkNavs\navegadores.exe"
-        RMDir /r /REBOOTOK $INSTDIR        
+        RMDir /r /REBOOTOK $INSTDIR
 
 ;	writeRegDword HKCU "SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxySettingsPerUser" 1
 

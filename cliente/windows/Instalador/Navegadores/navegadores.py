@@ -49,7 +49,6 @@ class navegadores:
     def getFirefoxProfiles(self, user):
             profiles=[]
             profiles_path=os.environ['APPDATA']+"\\Mozilla\\Firefox\\Profiles"
-            print "Profile path: %s" % profiles_path
             for entrada in os.listdir(profiles_path):
                 objecto="%s\\%s" % (profiles_path,entrada,)
                 if os.path.isdir(objecto):
@@ -65,9 +64,9 @@ class navegadores:
                 ip_encontrada = False
                 port_encontrado = False
                 for linea in archivo.readlines():
-                    if re.match(regex_ip, re.escape(linea)):
+                    if re.match(regex_ip, linea):
                         ip_encontrada=True
-                    if re.match(regex_port, re.escape(linea)):
+                    if re.match(regex_port, linea):
                         port_encontrado=True
                 if ip_encontrada and port_encontrado:
                     return True
@@ -96,19 +95,21 @@ class navegadores:
                         archivo_config="%s\\prefs.js" % perfil
                         key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\kerberus')
                         path_common_kerberus = _winreg.QueryValueEx(key,'kerberus-common')[0]
-                        mozilla_config_file="\"%s\\user.js\"" % path_common_kerberus
-                        if os.path.isfile(archivo_config) and os.path.isfile(mozilla_config_file):
-                            archivo_user = open(mozilla_config_file,'r').read()
-                            lineas_a_borrar = []
-                            for linea in archivo_user.split('\n'):
-                                lineas_a_borrar.append(linea)
-                            lineas_a_borrar = lineas_a_borrar[0:-1]
-                            data = open(archivo_config,'r').read()
-                            for linea in lineas_a_borrar:
-                                data=re.sub(re.escape(linea),'', data)
-                            archivo = open(archivo_config,'w')
-                            archivo.write( data )
-                            archivo.close()
+                        mozilla_config_file= "%s\\user.js" % path_common_kerberus
+                        archivo_user = open(mozilla_config_file,'r').read()
+                        lineas_a_borrar = []
+                        print "cargando lineas a borrar"
+                        for linea in archivo_user.split('\n'):
+                            lineas_a_borrar.append(linea)
+                        lineas_a_borrar = lineas_a_borrar[0:-1]
+                        data = open(archivo_config,'r').read()
+                        print "data antes: %s" % data
+                        for linea in lineas_a_borrar:
+                            data=re.sub(re.escape(linea),'', data)
+                        archivo = open(archivo_config,'w')
+                        print "data despues: %s" % data
+                        archivo.write( data )
+                        archivo.close()
                         destino = "\"%s\\user.js\"" % perfil
                         comando = "del %s" % (destino)
                         result = subprocess.Popen(comando,stdout=subprocess.PIPE, shell=True)
