@@ -10,17 +10,17 @@ import logging
 # Modulos propios
 import funciones
 
-logger = funciones.logSetup ('config.log',1, 1)
-
 if  platform.uname()[0] == 'Linux':
     archivo_de_configuracion='/home/mboscovich/proyectos/control_parental/cliente/cliente.conf'
     archivo_de_spec= '/home/mboscovich/proyectos/control_parental/cliente/conf/confspec.ini'
+    logger = funciones.logSetup ('/var/log/kerberus-config.log',1, 1)
 else:
     import _winreg, subprocess
     key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\kerberus')
     path_common = _winreg.QueryValueEx(key,'kerberus-common')[0]
     archivo_de_configuracion= path_common +'\cliente.conf'
     archivo_de_spec= path_common +'\confspec.ini'
+    logger = funciones.logSetup (path_common+'\config.log',1, 1)
 
 logger.log (logging.INFO, "Plataforma detectada %s" % platform.uname()[0] )
 logger.log (logging.INFO, "Utiliando el archivo de configuracion: %s" %  archivo_de_configuracion)
