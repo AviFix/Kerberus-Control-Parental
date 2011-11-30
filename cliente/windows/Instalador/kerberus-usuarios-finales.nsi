@@ -2,13 +2,13 @@
 ;Include Modern UI
 
   !include "MUI.nsh"
-;Seleccionamos el algoritmo de compresión utilizado para comprimir nuestra aplicación
+;Seleccionamos el algoritmo de compresin utilizado para comprimir nuestra aplicacin
 SetCompressor lzma
 
 ;--------------------------------
-;Con esta opción alertamos al usuario cuando pulsa el botón cancelar y le pedimos confirmación para abortar
-;la instalación
-;Esta macro debe colocarse en esta posición del script sino no funcionara
+;Con esta opcin alertamos al usuario cuando pulsa el botn cancelar y le pedimos confirmacin para abortar
+;la instalacin
+;Esta macro debe colocarse en esta posicin del script sino no funcionara
   !define mui_abortwarning
 
 ;Definimos el valor de la variable VERSION, en caso de no definirse en el script
@@ -18,16 +18,16 @@ SetCompressor lzma
 ;--------------------------------
 ;Pages
 
-  ;Mostramos la página de bienvenida
+  ;Mostramos la pgina de bienvenida
   !insertmacro MUI_PAGE_WELCOME
-  ;página donde se selecciona el directorio donde instalar nuestra aplicacion
+  ;pgina donde se selecciona el directorio donde instalar nuestra aplicacion
   !insertmacro MUI_PAGE_DIRECTORY
-  ;página de instalación de ficheros
+  ;pgina de instalacin de ficheros
   !insertmacro MUI_PAGE_INSTFILES
-  ;página final
+  ;pgina final
   !insertmacro MUI_PAGE_FINISH
 
-;páginas referentes al desinstalador
+;pginas referentes al desinstalador
 !insertmacro MUI_UNPAGE_WELCOME
 !insertmacro MUI_UNPAGE_CONFIRM
 !insertmacro MUI_UNPAGE_INSTFILES
@@ -39,18 +39,21 @@ SetCompressor lzma
 !insertmacro MUI_LANGUAGE "Spanish"
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;
-; Configuración General ;
+; Configuracin General ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Nombre del instalador
 OutFile Kerberus-control-parental.exe
 
-;Aquí comprobamos que en la versión Inglesa se muestra correctamente el mensaje:
+;Aqu comprobamos que en la versin Inglesa se muestra correctamente el mensaje:
 ;Welcome to the $Name Setup Wizard
 ;Al tener reservado un espacio fijo para este mensaje, y al ser
-;la frase en español mas larga:
-; Bienvenido al Asistente de Instalación de Aplicación $Name
-; no se ve el contenido de la variable $Name si el tamaño es muy grande
+;la frase en espaol mas larga:
+; Bienvenido al Asistente de Instalacin de Aplicacin $Name
+; no se ve el contenido de la variable $Name si el tamao es muy grande
 Name "Kerberus"
+; Le dice que use privilegios de usuario nomas
+RequestExecutionLevel user
+
 Caption "Kerberus"
 
 ;Comprobacion de integridad del fichero activada
@@ -58,26 +61,26 @@ CRCCheck on
 ;Estilos visuales del XP activados
 XPStyle on
 
-;Indicamos cual será el directorio por defecto donde instalaremos nuestra
-;aplicación, el usuario puede cambiar este valor en tiempo de ejecución.
+;Indicamos cual ser el directorio por defecto donde instalaremos nuestra
+;aplicacin, el usuario puede cambiar este valor en tiempo de ejecucin.
 InstallDir "$APPDATA\Kerberus"
 ; check if the program has already been installed, if so, take this dir
 ; as install dir
 InstallDirRegKey HKCU SOFTWARE\KERBERUS "Install_Dir"
 
 ;Mensaje que mostraremos para indicarle al usuario que seleccione un directorio
-DirText "Elija un directorio donde instalar la aplicación:"
-;Indicamos que cuando la instalación se complete no se cierre el instalador automáticamente
+DirText "Elija un directorio donde instalar la aplicacin:"
+;Indicamos que cuando la instalacin se complete no se cierre el instalador automticamente
 AutoCloseWindow false
-;Mostramos todos los detalles del la instalación al usuario.
+;Mostramos todos los detalles del la instalacin al usuario.
 ShowInstDetails show
 ;En caso de encontrarse los ficheros se sobreescriben
 SetOverwrite on
-;Optimizamos nuestro paquete en tiempo de compilación, es altamente recomendable habilitar siempre esta opción
+;Optimizamos nuestro paquete en tiempo de compilacin, es altamente recomendable habilitar siempre esta opcin
 SetDatablockOptimize on
-;Habilitamos la compresión de nuestro instalador
+;Habilitamos la compresin de nuestro instalador
 SetCompress auto
-;Personalizamos el mensaje de desinstalación
+;Personalizamos el mensaje de desinstalacin
 UninstallText "Desinstalar kerberus CPW."
 
 
@@ -104,7 +107,7 @@ UninstallText "Desinstalar kerberus CPW."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Install settings                                                    ;
-; En esta sección añadimos los ficheros que forman nuestra aplicación ;
+; En esta seccin aadimos los ficheros que forman nuestra aplicacin ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 Section "Programa"
@@ -118,7 +121,7 @@ File libs\vcredist_x86.exe
 SetOutPath $INSTDIR\checkNavs
 File Navegadores\dist\*.*
 
-;Incluimos todos los ficheros que componen nuestra aplicación
+;Incluimos todos los ficheros que componen nuestra aplicacin
 SetOutPath $INSTDIR\client
 File   kerberus-daemon\dist\*.*
 
@@ -135,9 +138,9 @@ AccessControl::GrantOnFile \
 AccessControl::GrantOnFile \
 "$INSTDIR\checkNavs" "(BU)" "GenericRead + GenericWrite + AddFile"
 
-;Hacemos que la instalación se realice para todos los usuarios del sistema
+;Hacemos que la instalacin se realice para todos los usuarios del sistema
 ;SetShellVarContext all
-;Hacemos que la instalación se realice para el usuario que ejecuta el instalador
+;Hacemos que la instalacin se realice para el usuario que ejecuta el instalador
 SetShellVarContext current
 
 ;;;;;;;;;;;;;;;;;;;;;;;
@@ -202,7 +205,7 @@ writeRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
 
 ExecWait '"$INSTDIR\client\cliente.exe"'
 
-MessageBox MB_YESNO|MB_ICONQUESTION "Se debe reiniciar para completar la instalación. Desea reiniciar ahora?" IDNO +2
+MessageBox MB_YESNO|MB_ICONQUESTION "Se debe reiniciar para completar la instalacin. Desea reiniciar ahora?" IDNO +2
 	reboot
 
 SectionEnd
@@ -239,7 +242,7 @@ Section "Uninstall"
 ;SimpleSC::RemoveService "kerberus-daemon"
 ;SimpleSC::RemoveService "kerberus-sync"
 
-MessageBox MB_YESNO|MB_ICONQUESTION "Se debe reiniciar para completar la desinstalación. Desea reiniciar ahora?" IDNO +2
+MessageBox MB_YESNO|MB_ICONQUESTION "Se debe reiniciar para completar la desinstalacin. Desea reiniciar ahora?" IDNO +2
 	reboot
 SectionEnd
 
