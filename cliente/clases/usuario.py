@@ -206,13 +206,16 @@ class Usuario:
             if self.servidor.estaOnline(config.PROXY_IP,config.PROXY_PORT):
                 server="http://%s:%s" % (config.PROXY_IP,config.PROXY_PORT)
                 proxy={'http':server, 'https': server}
-                proxy_handler=urllib2.ProxyHandler(proxy)
-                opener=urllib2.build_opener(proxy_handler)
-                urllib2.install_opener(opener)
+
             else:
                 logger.log(logging.ERROR,"El proxy no esta escuchando en %s:%s por lo que no se \
                 utilizara" % (config.PROXY_IP,config.PROXY_PORT,))
+        else:
+            proxy={}
 
+        proxy_handler=urllib2.ProxyHandler(proxy)
+        opener=urllib2.build_opener(proxy_handler)
+        urllib2.install_opener(opener)
         heads = {"UserID": "1","URL":url,"Peticion":"consulta"}
         # prueba con el servidor seteado en la config, y sino devuelve
         # uno valido y lo setea para seguir usandolo
