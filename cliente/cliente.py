@@ -113,11 +113,11 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         # Paso 3: peticion del recurso
         # Verificacion del usuario y url
         url=self.path
-        if verificador.primerUrl:
-            verificador.primerUrl=False
-            if "kerberus.com.ar" not in url:
-                self.mostrarPublicidad(url)
-                return False
+#        if verificador.primerUrl:
+#            verificador.primerUrl=False
+#            if "kerberus.com.ar" not in url:
+#                self.mostrarPublicidad(url)
+#                return False
 
         proxy_user=self.headers.getheader('Proxy-Authorization')
         if proxy_user:

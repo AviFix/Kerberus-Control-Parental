@@ -42,8 +42,10 @@ class Consultor:
 
     def validarUrl(self, username, password, url):
         if "kerberus.com.ar" in url:
-            return True, "Consulta a kerberus"
-        
+            mensaje = "Consulta a kerberus"
+            logger.log(logging.INFO, mensaje)
+            return True, mensaje
+
         if not self.usuarios.usuario_valido(username, password):
             return False, "Usuario no valido %s : %s" %(username, password, )
 
