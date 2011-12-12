@@ -196,7 +196,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         count = 0
         while 1:
             count += 1
-            (ins, _, exs) = select.select(iw, ow, iw, 1)
+            (ins, _, exs) = select.select(iw, ow, iw, 3)
             if exs:
                 break
             if ins:
@@ -205,7 +205,11 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                         out = self.connection
                     else:
                         out = soc
-                    data = i.recv(8192)
+                    try:
+                        data = i.recv(8192)
+                    except:
+                        data = ''
+
                     if data:
                         if local:
                             local_data += data
