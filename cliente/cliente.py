@@ -155,6 +155,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                 if self._connect_to(netloc, soc):
                     self.log_request()
                     try:
+                        self.server.logger.log(logging.DEBUG,"Enviando: %s %s %s\r\n" % (self.command, urlparse.urlunparse(('', '', path, params, query,'')),self.request_version))
                         soc.send("%s %s %s\r\n" % (self.command, urlparse.urlunparse(('', '', path, params, query,'')),self.request_version))
                         self.headers['Connection'] = 'close'
                         del self.headers['Proxy-Connection']
@@ -190,6 +191,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
             self.connection.close()
 
     def _read_write(self, soc, max_idling=20, local=False):
+        #Revisar esta funcion!!!!!! tira el problema 10053 de socket
         iw = [self.connection, soc]
         local_data = ""
         ow = []

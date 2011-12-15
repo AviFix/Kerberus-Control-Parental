@@ -39,8 +39,8 @@ def obtenerRespuesta(headers):
             respuesta=conexion.getresponse()
         return respuesta
 
-def sincronizarDominiosPermitidos():
-        headers = {"UserID": "1","Peticion":"obtenerDominiosPermitidos"}
+def sincronizarDominiosPermitidos(ultima_actualizacion):
+        headers = {"UserID": "1","Peticion":"obtenerDominiosPermitidos","UltimaSync":str(ultima_actualizacion)}
         respuesta = obtenerRespuesta(headers)
         dominios=respuesta.read()
         if len(dominios):
@@ -55,8 +55,8 @@ def sincronizarDominiosPermitidos():
                     cursor.execute('insert into dominios_publicamente_permitidos(url) values(?)', (fila, ) )
             conexion_db.commit()
 
-def sincronizarDominiosDenegados():
-        headers = {"UserID": "1","Peticion":"obtenerDominiosDenegados"}
+def sincronizarDominiosDenegados(ultima_actualizacion):
+        headers = {"UserID": "1","Peticion":"obtenerDominiosDenegados","UltimaSync":str(ultima_actualizacion)}
         respuesta = obtenerRespuesta(headers)
         dominios=respuesta.read()
         if len(dominios):
@@ -78,11 +78,15 @@ def getPeriodoDeActualizacion():
         respuesta = obtenerRespuesta(headers)
         return respuesta.read()
 
+def getHoraServidor():
+        headers = {"UserID": "1","Peticion":"getHoraServidor"}
+        respuesta = obtenerRespuesta(headers)
+        return respuesta.read()
 
-def sincronizarDominiosConServer(tiempo_actual):
-        timestring=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(tiempo_actual))
-        sincronizarDominiosPermitidos()
-        sincronizarDominiosDenegados()
+
+def sincronizarDominiosConServer(tiempo_actual, ultima_actualizacion):
+        sincronizarDominiosPermitidos(ultima_actualizacion)
+        sincronizarDominiosDenegados(ultima_actualizacion)
         cursor.execute('update sincronizador set ultima_actualizacion=?', (tiempo_actual, ))
         conexion_db.commit()
         logger.log(logging.INFO, "Se ha sincronizado la base de datos de dominios publicamente aceptados/denegados")
@@ -101,7 +105,9 @@ def sincronizarDominiosConServer(tiempo_actual):
 while True:
     #obtiene el tiempo en minutos
     periodo_expiracion=getPeriodoDeActualizacion()
+    hora_servidor=getHoraServidor()
     logger.log(logging.INFO, "Iniciando el demonio de sincronización")
+    logger.log(logging.DEBUG, "Hora del servidor: %s" % hora_servidor)
     if not periodo_expiracion:
         periodo_expiracion=1
     logger.log(logging.DEBUG, "Periodo de actualizacion: %s minuto/s" % periodo_expiracion)
@@ -110,11 +116,11 @@ while True:
     conexion_db = sqlite3.connect(config.PATH_DB)
     cursor=conexion_db.cursor()
     ultima_actualizacion=cursor.execute('select ultima_actualizacion from sincronizador').fetchone()[0]
-    tiempo_actual=time.time()
+    tiempo_actual=float(hora_servidor)
     tiempo_transcurrido=tiempo_actual - ultima_actualizacion
     if (tiempo_transcurrido > periodo_expiracion)  :
         logger.log(logging.DEBUG,"Sincronizando dominios permitidos/dengados con servidor...")
-        sincronizarDominiosConServer(tiempo_actual)
+        sincronizarDominiosConServer(tiempo_actual,ultima_actualizacion)
         #borrarUrlsViejasCache(tiempo_actual, periodo_expiracion)
     else:
         tiempo_restante=ultima_actualizacion + periodo_expiracion - tiempo_actual
