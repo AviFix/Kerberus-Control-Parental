@@ -37,10 +37,11 @@ def obtenerRespuesta(headers):
         dormir_por=1
         while True:
             try:
-                req = urllib2.Request("http://"+server_sync, headers=headers)
-                respuesta = urllib2.urlopen(req).read()
-                logger.log(logging.DEBUG,"Respuesta: %s" % respuesta)
-                return respuesta
+                if servidor.estaOnline(config.SYNC_SERVER_IP,config.SYNC_SERVER_PORT):
+                    req = urllib2.Request("http://"+server_sync, headers=headers)
+                    respuesta = urllib2.urlopen(req).read()
+                    logger.log(logging.DEBUG,"Respuesta: %s" % respuesta)
+                    return respuesta
             except urllib2.URLError as error:
                 logger.log(logging.ERROR,"Error al conectarse a %s, peticion: %s . ERROR: %s" %(server_sync,headers['Peticion'],error))
             logger.log(logging.ERROR,"Durmiendo por %s", dormir_por)

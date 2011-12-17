@@ -35,10 +35,10 @@ class Servidor:
                 return ip, port
             else:
                 for i in range(1,100):
-                    ip="validador%s.kerberus.com.ar" % i
-                    port=80
-                    if self.estaOnline(ip,port):
-                        logger.log(logging.INFO,"Utilizando el servidor de validacion %s:%s" %(ip,port,))
-                        return ip, port
+                    ip_new="validador%s.kerberus.com.ar" % i
+                    port_new=80
+                    if self.estaOnline(ip_new,port_new):
+                        logger.log(logging.INFO,"Utilizando el servidor de validacion %s:%s" %(ip_new,port_new,))
+                        return ip_new, port_new
                 logger.log(logging.CRITICAL,"No se pudo obtener ningun servidor de validacion!")
-                return False
+                return ip, port

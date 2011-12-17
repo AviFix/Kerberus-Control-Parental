@@ -212,7 +212,7 @@ writeRegStr HKCU "Software\Policies\Google\Chrome" \
 
 ExecWait '"$INSTDIR\client\cliente.exe"'
 
-MessageBox MB_YESNO|MB_ICONQUESTION "Se debe reiniciar para completar la instalacin. Desea reiniciar ahora?" IDNO +2
+MessageBox MB_YESNO|MB_ICONQUESTION "Se debe reiniciar la sessión actual para completar la instalación. Desea reiniciarla ahora?" IDNO +2
 	reboot
 
 SectionEnd
