@@ -184,7 +184,7 @@ class Usuario:
         respuesta=respuesta.read()
         if not respuesta or not respuesta.isdigit():
             respuesta=10
-            logger.log(logging.INFO,"No se obtuvo un Periodo de actualizacion. Seteando por defecto a:" % respuesta)
+            logger.log(logging.INFO,"No se obtuvo un Periodo de actualizacion. Seteando por defecto a: %s" % respuesta)
         self.periodoDeActualizacionDB=int(respuesta)*60
         logger.log(logging.INFO,"Periodo de actualizacion de la DB obtenido: %s" % self.periodoDeActualizacionDB )
 
@@ -210,9 +210,9 @@ class Usuario:
             else:
                 logger.log(logging.ERROR,"El proxy no esta escuchando en %s:%s por lo que no se \
                 utilizara" % (config.PROXY_IP,config.PROXY_PORT,))
+                proxy={}
         else:
             proxy={}
-
         proxy_handler=urllib2.ProxyHandler(proxy)
         opener=urllib2.build_opener(proxy_handler)
         urllib2.install_opener(opener)
