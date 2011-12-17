@@ -194,6 +194,13 @@ writeRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
 writeRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
 "ProxyOverride" "127.0.0.1,localhost"
 
+; Seteando google chrome, sacado de http://www.chromium.org/administrators/policy-list-3
+writeRegStr HKCU "Software\Policies\Google\Chrome" \
+"HomepageLocation" "http://inicio.kerberus.com.ar"
+writeRegStr HKCU "Software\Policies\Google\Chrome" \
+"ProxyMode" "system"
+writeRegStr HKCU "Software\Policies\Google\Chrome" \
+"DefaultSearchProviderSearchURL" "http://inicio.kerberus.com.ar/buscador.php?cx=partner-pub-5233852436544664%3A0998292818&ie=UTF-8&sa=Search&q={searchTerms}"
 
 ; Make the directory "$INSTDIR\database" read write accessible by all users
 ;AccessControl::GrantOnFile \
@@ -229,6 +236,10 @@ Section "Uninstall"
         DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyHttp1.1"
         DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyServer"
         DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyOverride"
+        DeleteRegValue HKCU "Software\Policies\Google\Chrome" "HomepageLocation"
+        DeleteRegValue HKCU "Software\Policies\Google\Chrome" "system"
+        DeleteRegValue HKCU "Software\Policies\Google\Chrome" "DefaultSearchProviderSearchURL"
+        
         RMDir /r /REBOOTOK $INSTDIR
 
 ;	writeRegDword HKCU "SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxySettingsPerUser" 1
