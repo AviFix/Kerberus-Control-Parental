@@ -73,9 +73,8 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(QtGui.QApplication.translate("Form", "Password de administrador", None, QtGui.QApplication.UnicodeUTF8))
-        self.label.setText(QtGui.QApplication.translate("Form", "Configure la password del usuario 'admin'.", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_2.setText(QtGui.QApplication.translate("Form", "Esta password le permitirá deshabilitar el filtrado de kerberus \n"
-" de forma temporal en caso de necesitarlo.", None, QtGui.QApplication.UnicodeUTF8))
+        self.label.setText(QtGui.QApplication.translate("Form", "Configure la password del \nusuario 'admin'.", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_2.setText(QtGui.QApplication.translate("Form", "Esta password le permitirá deshabilitar el filtrado \nde kerberus de forma temporal en caso \nde necesitarlo.", None, QtGui.QApplication.UnicodeUTF8))
         self.label_passwordActual.setText(QtGui.QApplication.translate("Form", "Password actual", None, QtGui.QApplication.UnicodeUTF8))
         self.label_3.setText(QtGui.QApplication.translate("Form", "Password", None, QtGui.QApplication.UnicodeUTF8))
         self.label_4.setText(QtGui.QApplication.translate("Form", "Vuelva a ingresar la password", None, QtGui.QApplication.UnicodeUTF8))

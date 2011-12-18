@@ -25,6 +25,7 @@ import consultor
 import manejadorUrls
 import config
 import funciones
+import administradoDeUsuarios
 
 # Logging
 logger = funciones.logSetup (config.LOG_FILENAME, config.LOGLEVEL, config.LOG_SIZE_MB, config.LOG_CANT_ROTACIONES,"Modulo cliente")
@@ -33,6 +34,7 @@ if not os.path.exists(config.PATH_DB):
     funciones.crearDBCliente(config.PATH_DB)
 verificador=consultor.Consultor()
 urls=manejadorUrls.ManejadorUrls()
+adminUsers=administadorDeUsuarios.AdministradorDeUsuarios()
 
 class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
     __base = BaseHTTPServer.BaseHTTPRequestHandler
@@ -122,6 +124,8 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         proxy_user=self.headers.getheader('Proxy-Authorization')
         if proxy_user:
             usuario, password=base64.b64decode(proxy_user.split(' ')[1]).split(':')
+            if not adminUsers.usuario_valido(usuario,password):
+                self.pedirUsuario("Acceso para usuarios adultos")
         else:
             usuario, password="NoBody", "NoBody"
             if "!DeshabilitarFiltrado!" in url:
