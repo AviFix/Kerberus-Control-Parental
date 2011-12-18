@@ -152,10 +152,11 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 
         if verificador.kerberus_activado:
             if "!DeshabilitarFiltrado!" in url:
-                url=url[:-22]
+                url=url.replace('!DeshabilitarFiltrado!','')
                 usuario_admin=self.pedirPassword()
                 if usuario_admin:
                     verificador.kerberus_activado=False
+                    url=url.replace('?kerberus_activado=1','')
             permitido, motivo=verificador.validarUrl(usuario, password,url)
             if not permitido:
                 self.denegar(motivo, url)
