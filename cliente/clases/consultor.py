@@ -26,6 +26,7 @@ class Consultor:
         self.usuarios=administradorDeUsuarios.AdministradorDeUsuarios()
         self.primerUrl=True
         self.checkAdminPasswordSet()
+        self.kerberus_activado=True
 
     def checkAdminPasswordSet(self):
         if not self.usuarios.passwordSeteada('admin'):

@@ -14,6 +14,7 @@ import platform
 import os
 import time
 import logging
+from PyQt4 import QtGui
 
 sys.path.append('clases')
 sys.path.append('conf')
@@ -25,7 +26,8 @@ import consultor
 import manejadorUrls
 import config
 import funciones
-import administradoDeUsuarios
+import administradorDeUsuarios
+import pedirUsuario
 
 # Logging
 logger = funciones.logSetup (config.LOG_FILENAME, config.LOGLEVEL, config.LOG_SIZE_MB, config.LOG_CANT_ROTACIONES,"Modulo cliente")
@@ -34,7 +36,8 @@ if not os.path.exists(config.PATH_DB):
     funciones.crearDBCliente(config.PATH_DB)
 verificador=consultor.Consultor()
 urls=manejadorUrls.ManejadorUrls()
-adminUsers=administadorDeUsuarios.AdministradorDeUsuarios()
+adminUsers=administradorDeUsuarios.AdministradorDeUsuarios()
+
 
 class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
     __base = BaseHTTPServer.BaseHTTPRequestHandler
@@ -44,11 +47,11 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
     rbufsize = 0                        # self.rfile Be unbuffered
     global verificador
 
-    def pedirUsuario(self, motivo):
-        self.send_response(407, motivo)
-        self.send_header('Proxy-Authenticate', 'Basic realm="Ingrese como usuario admin y como password la que configuro en la instalacion"')
-        self.send_header('Conection', 'close')
-        self.end_headers()
+#    def pedirUsuario(self, motivo):
+#        self.send_response(407, motivo)
+#        self.send_header('Proxy-Authenticate', 'Basic realm="Ingrese como usuario admin y como password la que configuro en la instalacion"')
+#        self.send_header('Conection', 'close')
+#        self.end_headers()
 
     def mostrarPublicidad(self, url):
        msg="<html><head><title>Navegador protegido por Kerberus</title>\
@@ -111,6 +114,16 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
             soc.close()
             self.connection.close()
 
+    def pedirPassword(self):
+        app = QtGui.QApplication(sys.argv)
+        myapp = pedirUsuario.formularioUsuario()
+        myapp.show()
+        app.exec_()
+        resp=myapp.verificado
+        del app
+        return resp
+
+
     def do_GET(self):
         # Paso 3: peticion del recurso
         # Verificacion del usuario y url
@@ -121,29 +134,38 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 #                self.mostrarPublicidad(url)
 #                return False
 
-        proxy_user=self.headers.getheader('Proxy-Authorization')
-        if proxy_user:
-            usuario, password=base64.b64decode(proxy_user.split(' ')[1]).split(':')
-            if not adminUsers.usuario_valido(usuario,password):
-                self.pedirUsuario("Acceso para usuarios adultos")
-        else:
-            usuario, password="NoBody", "NoBody"
-            if "!DeshabilitarFiltrado!" in url:
-                self.server.logger.log (logging.INFO, "Solicitando acceso para usuarios adultos")
-                self.pedirUsuario("Acceso para usuarios adultos")
-                return False
-
-        if "!DeshabilitarFiltrado!" in url:
-                url=url[:-22]
+#        proxy_user=self.headers.getheader('Proxy-Authorization')
+#        if proxy_user:
+#            usuario, password=base64.b64decode(proxy_user.split(' ')[1]).split(':')
+#            if not adminUsers.usuario_valido(usuario,password):
+#                usuario, password = "NoBody", "NoBody"
+#                self.pedirUsuario("Acceso para usuarios adultos")
+#        else:
+#            usuario, password="NoBody", "NoBody"
+#            if "!DeshabilitarFiltrado!" in url:
+#                self.server.logger.log (logging.INFO, "Solicitando acceso para usuarios adultos")
+#                self.pedirUsuario("Acceso para usuarios adultos")
+#                return False
+        usuario, password="NoBody", "NoBody"
         # es para que muestre que kerberus esta activo, asi no lo muestra cuando se accede
         # a la pagina desde cualquier lugar
-        if "http://inicio.kerberus.com.ar" in url and usuario == "NoBody" and "?kerberus_activado=1" not in url:
-            url+="?kerberus_activado=1"
 
-        permitido, motivo=verificador.validarUrl(usuario, password,url)
-        if not permitido:
-            self.denegar(motivo, url)
-            return False
+        if verificador.kerberus_activado:
+            if "!DeshabilitarFiltrado!" in url:
+                url=url[:-22]
+                usuario_admin=self.pedirPassword()
+                if usuario_admin:
+                    verificador.kerberus_activado=False
+            permitido, motivo=verificador.validarUrl(usuario, password,url)
+            if not permitido:
+                self.denegar(motivo, url)
+
+        if "http://inicio.kerberus.com.ar" in url:
+            if not verificador.kerberus_activado:
+                url=url.replace('?kerberus_activado=1','')
+            elif "?kerberus_activado=1" not in url:
+                url=url+"?kerberus_activado=1"
+
 
         if urls.soportaSafeSearch(url) and motivo != "Usuario administrador":
             url=urls.agregarSafeSearch(url)
