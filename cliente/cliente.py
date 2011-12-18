@@ -44,7 +44,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 
     def pedirUsuario(self, motivo):
         self.send_response(407, motivo)
-        self.send_header('Proxy-Authenticate', 'Basic realm="Kerberus"')
+        self.send_header('Proxy-Authenticate', 'Basic realm="Ingrese como usuario admin y como password la que configuro en la instalacion"')
         self.send_header('Conection', 'close')
         self.end_headers()
 

@@ -14,6 +14,12 @@ class formularioPassword(QtGui.QMainWindow):
         QtCore.QObject.connect(self.ui.boton,QtCore.SIGNAL("clicked()"), self.acentarPassword)
         self.ui.label_passwordActual.setVisible(False)
         self.ui.password_actual.setVisible(False)
+        self.center()
+
+    def center(self):
+        screen = QtGui.QDesktopWidget().screenGeometry()
+        size = self.geometry()
+        self.move((screen.width()-size.width())/2, (screen.height()-size.height())/2)
 
     def acentarPassword(self):
         if (self.ui.password1.text() <> self.ui.password2.text() or (len(self.ui.password1.text()) < 1)):
