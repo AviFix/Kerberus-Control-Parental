@@ -32,10 +32,12 @@ class formularioUsuario(QtGui.QMainWindow):
             QtGui.QMessageBox.critical(self, 'Kerberus', 'Password incorrecta.', QtGui.QMessageBox.Ok)
             self.ui.password.clear()
             self.ui.password.setFocus()
+        return True
 
     def cancelar(self):
         self.verificado=False
         self.close()
+        return True
 
 
 

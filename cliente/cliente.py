@@ -64,7 +64,8 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 
 
     def denegar(self, motivo, url):
-        msg="<html><head><title>Sitio no permitido</title></head><body><iframe src='http://inicio.kerberus.com.ar/denegado.php?motivo=%s&url=%s' frameborder='0' width='100%%' height='100%%' scrolling='no'><h1>Sitio no permitido</h1><br><h2><a href='javascript:history.back()'> Volver </a></h2><br><h3>%s</h3><br><h3><a href='%s!DeshabilitarFiltrado!'>Deshabilitar filtrado temporalmente</a></h3><br><h3><a href=''>Agregar este sitio a dominios permitidos</a></h3></iframe></body></html>\r\n" % (motivo,url,  motivo, url)
+        #msg="<html><head><title>Sitio no permitido</title></head><body><iframe src='http://inicio.kerberus.com.ar/denegado.php?motivo=%s&url=%s' frameborder='0' width='100%%' height='100%%' scrolling='no'><h1>Sitio no permitido</h1><br><h2><a href='javascript:history.back()'> Volver </a></h2><br><h3>%s</h3><br><h3><a href='%s!DeshabilitarFiltrado!'>Deshabilitar filtrado temporalmente</a></h3><br><h3><a href=''>Agregar este sitio a dominios permitidos</a></h3></iframe></body></html>\r\n" % (motivo,url,  motivo, url)
+        msg="<html><head><meta HTTP-EQUIV=\"REFRESH\" content=\"0; url=http://inicio.kerberus.com.ar/denegado.php?motivo=%s&url=%s\"></head></html>" % (motivo,url)
         self.wfile.write(self.protocol_version + " 200 Connection established\r\n")
         self.wfile.write("Proxy-agent: %s\r\n" % self.version_string())
         self.wfile.write("\r\n")
@@ -119,9 +120,13 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         myapp = pedirUsuario.formularioUsuario()
         myapp.show()
         app.exec_()
-        resp=myapp.verificado
+        es_admin=myapp.verificado
+        if es_admin:
+            verificador.kerberus_activado=False
+        else:
+            verificador.kerberus_activado=True
         del app
-        return resp
+        return es_admin
 
 
     def do_GET(self):
@@ -150,27 +155,24 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         # es para que muestre que kerberus esta activo, asi no lo muestra cuando se accede
         # a la pagina desde cualquier lugar
 
-        if verificador.kerberus_activado:
-            if "!DeshabilitarFiltrado!" in url:
-                url=url.replace('!DeshabilitarFiltrado!','')
+        if "!DeshabilitarFiltrado!" in url:
+            url=url.replace('!DeshabilitarFiltrado!','')
+            if verificador.kerberus_activado:
                 usuario_admin=self.pedirPassword()
-                if usuario_admin:
-                    verificador.kerberus_activado=False
-                    url=url.replace('?kerberus_activado=1','')
+#                if usuario_admin:
+#                    verificador.kerberus_activado=False
+#
+        if "http://inicio.kerberus.com.ar" in url and verificador.kerberus_activado and "denegado.php" not in url:
+           url=url+"?kerberus_activado=1"
+
+        if verificador.kerberus_activado:
             permitido, motivo=verificador.validarUrl(usuario, password,url)
             if not permitido:
                 self.denegar(motivo, url)
-
-        if "http://inicio.kerberus.com.ar" in url:
-            if not verificador.kerberus_activado:
-                url=url.replace('?kerberus_activado=1','')
-            elif "?kerberus_activado=1" not in url:
-                url=url+"?kerberus_activado=1"
-
-
-        if urls.soportaSafeSearch(url) and motivo != "Usuario administrador":
-            url=urls.agregarSafeSearch(url)
-            self.server.logger.log (logging.INFO, "La URL %s  soporta SafeSearch. Forzando su uso", url)
+                return False
+            if urls.soportaSafeSearch(url):
+                url=urls.agregarSafeSearch(url)
+                self.server.logger.log (logging.INFO, "La URL %s  soporta SafeSearch. Forzando su uso", url)
 
         (scm, netloc, path, params, query, fragment) = urlparse.urlparse(url,  'http')
         if scm not in ('http', 'ftp') or fragment or not netloc:
