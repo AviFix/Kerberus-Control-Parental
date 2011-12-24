@@ -29,15 +29,15 @@
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <item row="3" column="0">
-     <widget class="QLabel" name="label_2">
+    <item row="3" column="0" colspan="3">
+     <widget class="QLabel" name="Descripcion">
       <property name="font">
        <font>
         <pointsize>11</pointsize>
        </font>
       </property>
       <property name="text">
-       <string>Ingrese la password del usuario adminitrador</string>
+       <string>Ingrese la password del usuario adminitrador de kerberus</string>
       </property>
      </widget>
     </item>
@@ -49,7 +49,7 @@
      </widget>
     </item>
     <item row="2" column="0">
-     <widget class="QLabel" name="label">
+     <widget class="QLabel" name="titulo">
       <property name="font">
        <font>
         <pointsize>13</pointsize>
@@ -78,8 +78,6 @@
     </item>
    </layout>
   </widget>
-  <zorder>gridLayoutWidget</zorder>
-  <zorder>boton</zorder>
  </widget>
  <resources/>
  <connections/>

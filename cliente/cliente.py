@@ -117,7 +117,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 
     def pedirPassword(self):
         app = QtGui.QApplication(sys.argv)
-        myapp = pedirUsuario.formularioUsuario()
+        myapp = pedirUsuario.formularioUsuario('Deshabilitar Filtrado de Kerberus','Ingrese la password del usuario adminitrador de kerberus')
         myapp.show()
         app.exec_()
         es_admin=myapp.verificado

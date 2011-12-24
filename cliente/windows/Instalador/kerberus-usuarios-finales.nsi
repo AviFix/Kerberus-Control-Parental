@@ -158,7 +158,7 @@ WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus" 
 WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus" \
 "UninstallString" '"$INSTDIR\uninstall.exe"'
 
-WriteUninstaller "uninstall.exe"
+WriteUninstaller "kcpwu.exe"
 
 WriteRegStr HKCU "Software\Kerberus" "InstallDir" $INSTDIR
 
@@ -212,7 +212,7 @@ writeRegStr HKCU "Software\Policies\Google\Chrome" \
 
 ExecWait '"$INSTDIR\client\cliente.exe"'
 
-MessageBox MB_YESNO|MB_ICONQUESTION "Se debe reiniciar la sessión actual para completar la instalación. Desea reiniciarla ahora?" IDNO +2
+MessageBox MB_YESNO|MB_ICONQUESTION "Se debe reiniciar la sessin actual para completar la instalacin. Desea reiniciarla ahora?" IDNO +2
 	reboot
 
 SectionEnd
@@ -239,7 +239,7 @@ Section "Uninstall"
         DeleteRegValue HKCU "Software\Policies\Google\Chrome" "HomepageLocation"
         DeleteRegValue HKCU "Software\Policies\Google\Chrome" "system"
         DeleteRegValue HKCU "Software\Policies\Google\Chrome" "DefaultSearchProviderSearchURL"
-        
+
         RMDir /r /REBOOTOK $INSTDIR
 
 ;	writeRegDword HKCU "SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxySettingsPerUser" 1

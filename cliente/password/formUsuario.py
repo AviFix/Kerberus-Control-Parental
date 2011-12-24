@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'formUsuario.ui'
 #
-# Created: Sun Dec 18 12:40:38 2011
+# Created: Sat Dec 24 11:57:07 2011
 #      by: PyQt4 UI code generator 4.8.5
 #
 # WARNING! All changes made in this file will be lost!
@@ -30,26 +30,26 @@ class Ui_Form(object):
         self.gridLayout = QtGui.QGridLayout(self.gridLayoutWidget)
         self.gridLayout.setMargin(0)
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
-        self.label_2 = QtGui.QLabel(self.gridLayoutWidget)
+        self.Descripcion = QtGui.QLabel(self.gridLayoutWidget)
         font = QtGui.QFont()
         font.setPointSize(11)
-        self.label_2.setFont(font)
-        self.label_2.setText(QtGui.QApplication.translate("Form", "Ingrese la password del usuario adminitrador", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_2.setObjectName(_fromUtf8("label_2"))
-        self.gridLayout.addWidget(self.label_2, 3, 0, 1, 1)
+        self.Descripcion.setFont(font)
+        self.Descripcion.setText(QtGui.QApplication.translate("Form", "Ingrese la password del usuario adminitrador de kerberus", None, QtGui.QApplication.UnicodeUTF8))
+        self.Descripcion.setObjectName(_fromUtf8("Descripcion"))
+        self.gridLayout.addWidget(self.Descripcion, 3, 0, 1, 3)
         self.password = QtGui.QLineEdit(self.gridLayoutWidget)
         self.password.setEchoMode(QtGui.QLineEdit.Password)
         self.password.setObjectName(_fromUtf8("password"))
         self.gridLayout.addWidget(self.password, 4, 0, 1, 1)
-        self.label = QtGui.QLabel(self.gridLayoutWidget)
+        self.titulo = QtGui.QLabel(self.gridLayoutWidget)
         font = QtGui.QFont()
         font.setPointSize(13)
         font.setBold(True)
         font.setWeight(75)
-        self.label.setFont(font)
-        self.label.setText(QtGui.QApplication.translate("Form", "Deshabilitar Filtrado de Kerberus", None, QtGui.QApplication.UnicodeUTF8))
-        self.label.setObjectName(_fromUtf8("label"))
-        self.gridLayout.addWidget(self.label, 2, 0, 1, 1)
+        self.titulo.setFont(font)
+        self.titulo.setText(QtGui.QApplication.translate("Form", "Deshabilitar Filtrado de Kerberus", None, QtGui.QApplication.UnicodeUTF8))
+        self.titulo.setObjectName(_fromUtf8("titulo"))
+        self.gridLayout.addWidget(self.titulo, 2, 0, 1, 1)
         self.boton = QtGui.QPushButton(self.gridLayoutWidget)
         self.boton.setText(QtGui.QApplication.translate("Form", "Aceptar", None, QtGui.QApplication.UnicodeUTF8))
         self.boton.setObjectName(_fromUtf8("boton"))

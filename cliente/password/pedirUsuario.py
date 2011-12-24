@@ -6,10 +6,12 @@ sys.path.append('../conf')
 import administradorDeUsuarios
 
 class formularioUsuario(QtGui.QMainWindow):
-    def __init__(self, parent=None):
+    def __init__(self, titulo='',descripcion='', parent=None):
         QtGui.QWidget.__init__(self, parent)
         self.ui = Ui_Form()
         self.ui.setupUi(self)
+        self.ui.Descripcion.setText(descripcion)
+        self.ui.titulo.setText(titulo)
         self.center()
         # Conexiones
         QtCore.QObject.connect(self.ui.boton,QtCore.SIGNAL("clicked()"), self.checkPassword)
@@ -25,7 +27,6 @@ class formularioUsuario(QtGui.QMainWindow):
         admUser=administradorDeUsuarios.AdministradorDeUsuarios()
         valido=admUser.usuario_valido('admin',str(self.ui.password.text()))
         if valido:
-            QtGui.QMessageBox.question(self, 'Kerberus', 'Filtrado de kerberus Deshabilitado correctamente para la sesion actual.', QtGui.QMessageBox.Ok)
             self.verificado=True
             self.close()
         else:
