@@ -128,6 +128,9 @@ File   kerberus-daemon\dist\*.*
 SetOutPath $INSTDIR\sync
 File   kerberus-sync\dist\*.*
 
+SetOutPath $INSTDIR\extradata
+File   desinstalador\dist\*.*
+
 
 ExecWait '"$INSTDIR\vcredist_x86.exe" /q'
 
@@ -156,9 +159,9 @@ WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus" 
 "DisplayName" "Kerbers-client-${VERSION}"
 
 WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus" \
-"UninstallString" '"$INSTDIR\uninstall.exe"'
+"UninstallString" '"$INSTDIR\extradata\uninstall.exe"'
 
-WriteUninstaller "kcpwu.exe"
+WriteUninstaller $INSTDIR\extradata\kcpwu.dat
 
 WriteRegStr HKCU "Software\Kerberus" "InstallDir" $INSTDIR
 
