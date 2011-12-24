@@ -31,11 +31,17 @@
      <height>111</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Verdana</family>
+    </font>
+   </property>
    <layout class="QGridLayout" name="gridLayout">
     <item row="3" column="0" colspan="3">
      <widget class="QLabel" name="Descripcion">
       <property name="font">
        <font>
+        <family>Verdana</family>
         <pointsize>11</pointsize>
        </font>
       </property>
@@ -46,6 +52,11 @@
     </item>
     <item row="4" column="0">
      <widget class="QLineEdit" name="password">
+      <property name="font">
+       <font>
+        <family>Verdana</family>
+       </font>
+      </property>
       <property name="echoMode">
        <enum>QLineEdit::Password</enum>
       </property>
@@ -55,7 +66,8 @@
      <widget class="QLabel" name="titulo">
       <property name="font">
        <font>
-        <pointsize>13</pointsize>
+        <family>Verdana</family>
+        <pointsize>12</pointsize>
         <weight>75</weight>
         <bold>true</bold>
        </font>
@@ -67,6 +79,11 @@
     </item>
     <item row="4" column="1">
      <widget class="QPushButton" name="boton">
+      <property name="font">
+       <font>
+        <family>Verdana</family>
+       </font>
+      </property>
       <property name="text">
        <string>Aceptar</string>
       </property>
@@ -74,6 +91,11 @@
     </item>
     <item row="4" column="2">
      <widget class="QPushButton" name="botoncancelar">
+      <property name="font">
+       <font>
+        <family>Verdana</family>
+       </font>
+      </property>
       <property name="text">
        <string>Cancelar</string>
       </property>
