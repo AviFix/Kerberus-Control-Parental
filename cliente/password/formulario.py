@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'formulario.ui'
 #
-# Created: Sat Dec 24 17:58:52 2011
+# Created: Sat Dec 24 18:02:56 2011
 #      by: PyQt4 UI code generator 4.8.5
 #
 # WARNING! All changes made in this file will be lost!
@@ -18,7 +18,7 @@ class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName(_fromUtf8("Form"))
         Form.setWindowModality(QtCore.Qt.ApplicationModal)
-        Form.resize(565, 343)
+        Form.resize(607, 343)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -26,7 +26,7 @@ class Ui_Form(object):
         Form.setSizePolicy(sizePolicy)
         Form.setWindowTitle(QtGui.QApplication.translate("Form", "Password de administrador", None, QtGui.QApplication.UnicodeUTF8))
         self.verticalLayoutWidget = QtGui.QWidget(Form)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(10, 20, 541, 311))
+        self.verticalLayoutWidget.setGeometry(QtCore.QRect(10, 20, 581, 311))
         self.verticalLayoutWidget.setObjectName(_fromUtf8("verticalLayoutWidget"))
         self.verticalLayout = QtGui.QVBoxLayout(self.verticalLayoutWidget)
         self.verticalLayout.setMargin(0)
@@ -34,7 +34,7 @@ class Ui_Form(object):
         self.label = QtGui.QLabel(self.verticalLayoutWidget)
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Verdana"))
-        font.setPointSize(12)
+        font.setPointSize(11)
         font.setBold(True)
         font.setWeight(75)
         self.label.setFont(font)
@@ -49,7 +49,7 @@ class Ui_Form(object):
         self.label_2.setSizePolicy(sizePolicy)
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Verdana"))
-        font.setPointSize(11)
+        font.setPointSize(10)
         self.label_2.setFont(font)
         self.label_2.setText(QtGui.QApplication.translate("Form", "Esta password le permitirá deshabilitar temporalmente el filtrado de\n"
 "kerberus y a su vez,  le será requerida para desinstalarlo.\n"
@@ -62,6 +62,7 @@ class Ui_Form(object):
         self.label_passwordActual.setEnabled(True)
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Verdana"))
+        font.setPointSize(10)
         font.setBold(True)
         font.setWeight(75)
         self.label_passwordActual.setFont(font)
@@ -71,12 +72,14 @@ class Ui_Form(object):
         self.password_actual = QtGui.QLineEdit(self.verticalLayoutWidget)
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Verdana"))
+        font.setPointSize(10)
         self.password_actual.setFont(font)
         self.password_actual.setObjectName(_fromUtf8("password_actual"))
         self.verticalLayout.addWidget(self.password_actual)
         self.label_3 = QtGui.QLabel(self.verticalLayoutWidget)
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Verdana"))
+        font.setPointSize(10)
         font.setBold(True)
         font.setWeight(75)
         self.label_3.setFont(font)
@@ -86,6 +89,7 @@ class Ui_Form(object):
         self.password1 = QtGui.QLineEdit(self.verticalLayoutWidget)
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Verdana"))
+        font.setPointSize(10)
         self.password1.setFont(font)
         self.password1.setEchoMode(QtGui.QLineEdit.Password)
         self.password1.setObjectName(_fromUtf8("password1"))
@@ -93,6 +97,7 @@ class Ui_Form(object):
         self.label_4 = QtGui.QLabel(self.verticalLayoutWidget)
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Verdana"))
+        font.setPointSize(10)
         font.setBold(True)
         font.setWeight(75)
         self.label_4.setFont(font)
@@ -102,6 +107,7 @@ class Ui_Form(object):
         self.password2 = QtGui.QLineEdit(self.verticalLayoutWidget)
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Verdana"))
+        font.setPointSize(10)
         self.password2.setFont(font)
         self.password2.setEchoMode(QtGui.QLineEdit.Password)
         self.password2.setObjectName(_fromUtf8("password2"))
@@ -114,6 +120,7 @@ class Ui_Form(object):
         self.boton.setSizePolicy(sizePolicy)
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Verdana"))
+        font.setPointSize(10)
         self.boton.setFont(font)
         self.boton.setText(QtGui.QApplication.translate("Form", "Aceptar", None, QtGui.QApplication.UnicodeUTF8))
         self.boton.setObjectName(_fromUtf8("boton"))
