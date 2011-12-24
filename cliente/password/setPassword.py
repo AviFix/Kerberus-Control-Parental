@@ -30,7 +30,7 @@ class formularioPassword(QtGui.QMainWindow):
         else:
             admUser=administradorDeUsuarios.AdministradorDeUsuarios()
             admUser.cambiarPassword('admin', 'perico', str(self.ui.password1.text()))
-            QtGui.QMessageBox.question(self, 'Kerberus', 'Password seteada correctamente.', QtGui.QMessageBox.Ok)
+#            QtGui.QMessageBox.question(self, 'Kerberus', 'Password seteada correctamente.', QtGui.QMessageBox.Ok)
             self.close()
 
 
