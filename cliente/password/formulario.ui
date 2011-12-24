@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>663</width>
+    <width>565</width>
     <height>343</height>
    </rect>
   </property>
@@ -27,7 +27,7 @@
     <rect>
      <x>10</x>
      <y>20</y>
-     <width>641</width>
+     <width>541</width>
      <height>311</height>
     </rect>
    </property>
@@ -62,8 +62,8 @@
        </font>
       </property>
       <property name="text">
-       <string>Esta password le permitirá deshabilitar temporalmente el filtrado de kerberus 
-y a su vez,  le será requerida para desinstalarlo.
+       <string>Esta password le permitirá deshabilitar temporalmente el filtrado de
+kerberus y a su vez,  le será requerida para desinstalarlo.
 Es muy recomendable que la recuerde.</string>
       </property>
       <property name="scaledContents">
@@ -73,19 +73,6 @@ Es muy recomendable que la recuerde.</string>
        <bool>false</bool>
       </property>
      </widget>
-    </item>
-    <item>
-     <spacer name="verticalSpacer">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>20</width>
-        <height>40</height>
-       </size>
-      </property>
-     </spacer>
     </item>
     <item>
      <widget class="QLabel" name="label_passwordActual">

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'formulario.ui'
 #
-# Created: Sat Dec 24 17:54:44 2011
+# Created: Sat Dec 24 17:58:52 2011
 #      by: PyQt4 UI code generator 4.8.5
 #
 # WARNING! All changes made in this file will be lost!
@@ -18,7 +18,7 @@ class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName(_fromUtf8("Form"))
         Form.setWindowModality(QtCore.Qt.ApplicationModal)
-        Form.resize(663, 343)
+        Form.resize(565, 343)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -26,7 +26,7 @@ class Ui_Form(object):
         Form.setSizePolicy(sizePolicy)
         Form.setWindowTitle(QtGui.QApplication.translate("Form", "Password de administrador", None, QtGui.QApplication.UnicodeUTF8))
         self.verticalLayoutWidget = QtGui.QWidget(Form)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(10, 20, 641, 311))
+        self.verticalLayoutWidget.setGeometry(QtCore.QRect(10, 20, 541, 311))
         self.verticalLayoutWidget.setObjectName(_fromUtf8("verticalLayoutWidget"))
         self.verticalLayout = QtGui.QVBoxLayout(self.verticalLayoutWidget)
         self.verticalLayout.setMargin(0)
@@ -51,15 +51,13 @@ class Ui_Form(object):
         font.setFamily(_fromUtf8("Verdana"))
         font.setPointSize(11)
         self.label_2.setFont(font)
-        self.label_2.setText(QtGui.QApplication.translate("Form", "Esta password le permitirá deshabilitar temporalmente el filtrado de kerberus \n"
-"y a su vez,  le será requerida para desinstalarlo.\n"
+        self.label_2.setText(QtGui.QApplication.translate("Form", "Esta password le permitirá deshabilitar temporalmente el filtrado de\n"
+"kerberus y a su vez,  le será requerida para desinstalarlo.\n"
 "Es muy recomendable que la recuerde.", None, QtGui.QApplication.UnicodeUTF8))
         self.label_2.setScaledContents(False)
         self.label_2.setWordWrap(False)
         self.label_2.setObjectName(_fromUtf8("label_2"))
         self.verticalLayout.addWidget(self.label_2)
-        spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.verticalLayout.addItem(spacerItem)
         self.label_passwordActual = QtGui.QLabel(self.verticalLayoutWidget)
         self.label_passwordActual.setEnabled(True)
         font = QtGui.QFont()
