@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'formUsuario.ui'
 #
-# Created: Sat Dec 24 14:08:48 2011
+# Created: Sat Dec 24 17:39:40 2011
 #      by: PyQt4 UI code generator 4.8.5
 #
 # WARNING! All changes made in this file will be lost!
@@ -17,6 +17,7 @@ except AttributeError:
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName(_fromUtf8("Form"))
+        Form.setWindowModality(QtCore.Qt.ApplicationModal)
         Form.resize(594, 137)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
