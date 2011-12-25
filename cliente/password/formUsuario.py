@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'formUsuario.ui'
 #
-# Created: Sat Dec 24 17:54:46 2011
+# Created: Sun Dec 25 12:26:50 2011
 #      by: PyQt4 UI code generator 4.8.5
 #
 # WARNING! All changes made in this file will be lost!
@@ -46,6 +46,7 @@ class Ui_Form(object):
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Verdana"))
         self.password.setFont(font)
+        self.password.setFocusPolicy(QtCore.Qt.NoFocus)
         self.password.setEchoMode(QtGui.QLineEdit.Password)
         self.password.setObjectName(_fromUtf8("password"))
         self.gridLayout.addWidget(self.password, 4, 0, 1, 1)
@@ -75,7 +76,10 @@ class Ui_Form(object):
         self.gridLayout.addWidget(self.botoncancelar, 4, 2, 1, 1)
 
         self.retranslateUi(Form)
+        QtCore.QObject.connect(self.password, QtCore.SIGNAL(_fromUtf8("returnPressed()")), self.boton.click)
         QtCore.QMetaObject.connectSlotsByName(Form)
+        Form.setTabOrder(self.password, self.boton)
+        Form.setTabOrder(self.boton, self.botoncancelar)
 
     def retranslateUi(self, Form):
         pass

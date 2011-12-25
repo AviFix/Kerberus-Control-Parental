@@ -13,6 +13,7 @@ class formularioUsuario(QtGui.QMainWindow):
         self.ui.Descripcion.setText(descripcion)
         self.ui.titulo.setText(titulo)
         self.center()
+        self.ui.password.setFocus()
         # Conexiones
         QtCore.QObject.connect(self.ui.boton,QtCore.SIGNAL("clicked()"), self.checkPassword)
         QtCore.QObject.connect(self.ui.botoncancelar,QtCore.SIGNAL("clicked()"), self.cancelar)
