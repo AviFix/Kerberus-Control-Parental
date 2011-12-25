@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'formUsuario.ui'
 #
-# Created: Sun Dec 25 12:26:50 2011
+# Created: Sun Dec 25 12:50:56 2011
 #      by: PyQt4 UI code generator 4.8.5
 #
 # WARNING! All changes made in this file will be lost!
@@ -24,6 +24,7 @@ class Ui_Form(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(Form.sizePolicy().hasHeightForWidth())
         Form.setSizePolicy(sizePolicy)
+        Form.setFocusPolicy(QtCore.Qt.StrongFocus)
         Form.setWindowTitle(QtGui.QApplication.translate("Form", "Password de administrador", None, QtGui.QApplication.UnicodeUTF8))
         self.gridLayoutWidget = QtGui.QWidget(Form)
         self.gridLayoutWidget.setGeometry(QtCore.QRect(10, 10, 570, 111))
