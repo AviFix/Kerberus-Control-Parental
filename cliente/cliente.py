@@ -129,6 +129,9 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         del app
         return es_admin
 
+#    def validarPassword(self,password):
+#        if adminUsers.usuario_valido('admin',password):
+#            verificador.kerberus_activado=False
 
     def do_GET(self):
         # Paso 3: peticion del recurso
@@ -155,6 +158,12 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         usuario, password="NoBody", "NoBody"
         # es para que muestre que kerberus esta activo, asi no lo muestra cuando se accede
         # a la pagina desde cualquier lugar
+
+#        if url == "http://localhost/inicio/login.php" and self.command == 'POST':
+#            content_len = int(self.headers.getheader('content-length'))
+#            post_body = self.rfile.read(content_len)
+#            password=post_body.split("=")[1]
+#            self.validarPassword(password)
 
         if "!DeshabilitarFiltrado!" in url:
             url=url.replace('!DeshabilitarFiltrado!','')
