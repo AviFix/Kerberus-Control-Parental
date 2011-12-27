@@ -1,13 +1,14 @@
 import sys
-from PyQt4 import QtGui
+from PyQt4 import QtGui, QtCore
 
 class SystemTrayIcon(QtGui.QSystemTrayIcon):
 
     def __init__(self, icon, parent=None):
         QtGui.QSystemTrayIcon.__init__(self, icon, parent)
         menu = QtGui.QMenu(parent)
-        exitAction = menu.addAction("Exit")
+        exitAction = menu.addAction("Deshabilitar filtrado")
         self.setContextMenu(menu)
+        QtCore.QObject.connect(self.exitAction,QtCore.SIGNAL("clicked()"), exit())
 
 def main():
     app = QtGui.QApplication(sys.argv)
