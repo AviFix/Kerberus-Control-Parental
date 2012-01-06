@@ -11,6 +11,7 @@ import logging
 import funciones
 
 if  platform.uname()[0] == 'Linux':
+    PATH_COMMON='/home/mboscovich/proyectos/control_parental/cliente/'
     archivo_de_configuracion='/home/mboscovich/proyectos/control_parental/cliente/cliente.conf'
     archivo_de_spec= '/home/mboscovich/proyectos/control_parental/cliente/conf/confspec.ini'
     logger = funciones.logSetup ('/var/log/kerberus-config.log',1, 1)
@@ -18,6 +19,7 @@ else:
     import _winreg, subprocess
     key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\kerberus')
     path_common = _winreg.QueryValueEx(key,'kerberus-common')[0]
+    PATH_COMMON=path_common
     archivo_de_configuracion= path_common +'\cliente.conf'
     archivo_de_spec= path_common +'\confspec.ini'
     logger = funciones.logSetup (path_common+'\config.log',1, 1)
@@ -43,6 +45,11 @@ if result != True:
 else:
     #print "Se leyo la configuración del cliente correctamente"
     logger.log (logging.INFO, 'Se leyo la configuracion del cliente correctamente')
+
+    #revisar y arreglar para que quede mejor
+    PATH_TEMPLATES=PATH_COMMON+'/templates'
+    ##
+
     if  platform.uname()[0] == 'Linux':
         # Si estan vacio estos campos pongo default para linux
         if config['client']['path_db']:

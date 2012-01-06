@@ -28,6 +28,7 @@ import config
 import funciones
 import administradorDeUsuarios
 import pedirUsuario
+import mensajesHtml
 
 # Logging
 logger = funciones.logSetup (config.LOG_FILENAME, config.LOGLEVEL, config.LOG_SIZE_MB, config.LOG_CANT_ROTACIONES,"Modulo cliente")
@@ -62,15 +63,40 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
        self.wfile.write("\r\n")
        self.wfile.write(msg)
 
+    def mostrarDeshabilitado(self):
+       msg="<html><head><title>Navegador protegido por Kerberus</title>\
+        </head> <body >Navegación Deshabilitada</body> </html> "
+       self.wfile.write(self.protocol_version + " 200 Connection established\r\n")
+       self.wfile.write("Proxy-agent: %s\r\n" % self.version_string())
+       self.wfile.write("\r\n")
+       self.wfile.write(msg)
+
+    def responderAlCliente(self,mensaje):
+        tamano=len(mensaje)
+        self.wfile.write(self.protocol_version + " 200 Connection established\r\n")
+        self.wfile.write("Content-Type: text/html\r\n")
+        self.wfile.write(" Content-Length: %s\r\n" % tamano)
+        self.wfile.write("\r\n")
+        self.wfile.write(mensaje)
+        self.connection.close()
+
+    def pedirPassword(self):
+       mensaje=mensajesHtml.MensajesHtml(config.PATH_TEMPLATES)
+       msg=mensaje.pedirPassword()
+       self.responderAlCliente(msg)
+
+    def redirigirDesbloqueado(self, url):
+        msg="<html><head><meta HTTP-EQUIV=\"REFRESH\" content=\"0; url=%s\"></head></html>" % url
+        self.responderAlCliente(msg)
+
+    def passwordErronea(self):
+        mensaje=mensajesHtml.MensajesHtml(config.PATH_TEMPLATES)
+        msg=mensaje.pedirPassword('Password incorrecta!')
+        self.responderAlCliente(msg)
 
     def denegar(self, motivo, url):
-        #msg="<html><head><title>Sitio no permitido</title></head><body><iframe src='http://inicio.kerberus.com.ar/denegado.php?motivo=%s&url=%s' frameborder='0' width='100%%' height='100%%' scrolling='no'><h1>Sitio no permitido</h1><br><h2><a href='javascript:history.back()'> Volver </a></h2><br><h3>%s</h3><br><h3><a href='%s!DeshabilitarFiltrado!'>Deshabilitar filtrado temporalmente</a></h3><br><h3><a href=''>Agregar este sitio a dominios permitidos</a></h3></iframe></body></html>\r\n" % (motivo,url,  motivo, url)
         msg="<html><head><meta HTTP-EQUIV=\"REFRESH\" content=\"0; url=http://inicio.kerberus.com.ar/denegado.php?motivo=%s&url=%s\"></head></html>" % (motivo,url)
-        self.wfile.write(self.protocol_version + " 200 Connection established\r\n")
-        self.wfile.write("Proxy-agent: %s\r\n" % self.version_string())
-        self.wfile.write("\r\n")
-        self.wfile.write(msg)
-#
+        self.responderAlCliente(msg)
 
     def handle(self):
 #        # Paso 1: autenticacion de ip origen
@@ -115,23 +141,9 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
             soc.close()
             self.connection.close()
 
-    def pedirPassword(self):
-        app = QtGui.QApplication(sys.argv)
-        myapp = pedirUsuario.formularioUsuario('Deshabilitar Filtrado de Kerberus','Ingrese la password del usuario adminitrador de kerberus')
-        myapp.show()
-        myapp.raise_()
-        app.exec_()
-        es_admin=myapp.verificado
-        if es_admin:
-            verificador.kerberus_activado=False
-        else:
-            verificador.kerberus_activado=True
-        del app
-        return es_admin
 
-#    def validarPassword(self,password):
-#        if adminUsers.usuario_valido('admin',password):
-#            verificador.kerberus_activado=False
+    def validarPassword(self,password):
+        return adminUsers.usuario_valido('admin',password)
 
     def do_GET(self):
         # Paso 3: peticion del recurso
@@ -163,15 +175,31 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 #            content_len = int(self.headers.getheader('content-length'))
 #            post_body = self.rfile.read(content_len)
 #            password=post_body.split("=")[1]
-#            self.validarPassword(password)
-
+#            usuario_admin = self.validarPassword(password)
+#            if usuario_admin:
+#                self.mostrarDeshabilitado()
+#            else:
+#                self.passwordErronea()
+#
         if "!DeshabilitarFiltrado!" in url:
             url=url.replace('!DeshabilitarFiltrado!','')
             if verificador.kerberus_activado:
-                usuario_admin=self.pedirPassword()
-#                if usuario_admin:
-#                    verificador.kerberus_activado=False
-#
+                if self.command == 'POST':
+                    content_len = int(self.headers.getheader('content-length'))
+                    post_body = self.rfile.read(content_len)
+                    password=post_body.split("=")[1]
+                    usuario_admin=self.validarPassword(password)
+                    if usuario_admin:
+                        verificador.kerberus_activado=False
+                        self.redirigirDesbloqueado(url)
+                        return True
+                    else:
+                        self.passwordErronea()
+                        return True
+                else:
+                    self.pedirPassword()
+                    return True
+
         if "http://inicio.kerberus.com.ar" in url and verificador.kerberus_activado and "denegado.php" not in url:
            url=url+"?kerberus_activado=1"
 
