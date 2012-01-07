@@ -131,6 +131,9 @@ File   kerberus-sync\dist\*.*
 SetOutPath $INSTDIR\extradata
 File   desinstalador\dist\*.*
 
+SetOutPath $INSTDIR\templates
+File   ..\..\templates\*.*
+
 
 ExecWait '"$INSTDIR\vcredist_x86.exe" /q'
 
