@@ -11,7 +11,7 @@ import logging
 import funciones
 
 if  platform.uname()[0] == 'Linux':
-    PATH_COMMON='/home/mboscovich/proyectos/control_parental/cliente/'
+    PATH_COMMON='/home/mboscovich/proyectos/control_parental/cliente'
     archivo_de_configuracion='/home/mboscovich/proyectos/control_parental/cliente/cliente.conf'
     archivo_de_spec= '/home/mboscovich/proyectos/control_parental/cliente/conf/confspec.ini'
     logger = funciones.logSetup ('/var/log/kerberus-config.log',1, 1)

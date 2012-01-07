@@ -95,7 +95,8 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         self.responderAlCliente(msg)
 
     def denegar(self, motivo, url):
-        msg="<html><head><meta HTTP-EQUIV=\"REFRESH\" content=\"0; url=http://inicio.kerberus.com.ar/denegado.php?motivo=%s&url=%s\"></head></html>" % (motivo,url)
+        mensaje=mensajesHtml.MensajesHtml(config.PATH_TEMPLATES)
+        msg=mensaje.denegarSitio(url)
         self.responderAlCliente(msg)
 
     def handle(self):
