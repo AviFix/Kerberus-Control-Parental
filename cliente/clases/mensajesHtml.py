@@ -32,7 +32,7 @@ class MensajesHtml:
 
     def pedirPassword(self,mensaje=''):
         diccionario=dict(
-            titulo='Deshabilitar Filtrado',
+            titulo='Deshabilitar Filtrado por esta sesión',
             mensaje='Ingrese la password del administrador de kerberus',
             mensaje_error=mensaje
             )

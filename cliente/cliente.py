@@ -81,9 +81,9 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         self.connection.close()
 
     def pedirPassword(self):
-       mensaje=mensajesHtml.MensajesHtml(config.PATH_TEMPLATES)
-       msg=mensaje.pedirPassword()
-       self.responderAlCliente(msg)
+        mensaje=mensajesHtml.MensajesHtml(config.PATH_TEMPLATES)
+        msg=mensaje.pedirPassword()
+        self.responderAlCliente(msg)
 
     def redirigirDesbloqueado(self, url):
         msg="<html><head><meta HTTP-EQUIV=\"REFRESH\" content=\"0; url=%s\"></head></html>" % url
