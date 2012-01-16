@@ -1,15 +1,19 @@
-import sys
+import sys, os
 from PyQt4 import QtCore, QtGui
 from formulario import Ui_Form
 sys.path.append('../clases')
 sys.path.append('../conf')
+sys.path.append('../')
 import administradorDeUsuarios
+import config
 
 class formularioPassword(QtGui.QMainWindow):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
         self.ui = Ui_Form()
         self.ui.setupUi(self)
+        self.temp_file="%s/kerberus.lock" % config.PATH_COMMON
+        self.lock()
         # Conexiones
         QtCore.QObject.connect(self.ui.boton,QtCore.SIGNAL("clicked()"), self.acentarPassword)
         self.ui.label_passwordActual.setVisible(False)
@@ -30,12 +34,19 @@ class formularioPassword(QtGui.QMainWindow):
         else:
             admUser=administradorDeUsuarios.AdministradorDeUsuarios()
             admUser.cambiarPassword('admin', 'perico', str(self.ui.password1.text()))
-#            QtGui.QMessageBox.question(self, 'Kerberus', 'Password seteada correctamente.', QtGui.QMessageBox.Ok)
+            self.unlock()
             self.close()
 
+    def lock(self):
+        os.open(self.temp_file,os.O_RDWR|os.O_CREAT)
 
-#if __name__ == "__main__":
-#    app = QtGui.QApplication(sys.argv)
-#    myapp = formularioPassword()
-#    myapp.show()
-#    sys.exit(app.exec_())
+    def unlock(self):
+        os.remove(self.temp_file)
+
+
+
+if __name__ == "__main__":
+    app = QtGui.QApplication(sys.argv)
+    myapp = formularioPassword()
+    myapp.show()
+    sys.exit(app.exec_())

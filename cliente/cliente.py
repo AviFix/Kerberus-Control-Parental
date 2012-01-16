@@ -55,21 +55,16 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 #        self.end_headers()
 
     def mostrarPublicidad(self, url):
-       msg="<html><head><title>Navegador protegido por Kerberus</title>\
+        msg="<html><head><title>Navegador protegido por Kerberus</title>\
         <meta http-equiv=\"REFRESH\" content=\"0;url=http://inicio.kerberus.com.ar\" > \
         </head> <body ></body> </html> "
-       self.wfile.write(self.protocol_version + " 200 Connection established\r\n")
-       self.wfile.write("Proxy-agent: %s\r\n" % self.version_string())
-       self.wfile.write("\r\n")
-       self.wfile.write(msg)
+        self.server.logger.log (logging.DEBUG, "Primer pagina de acceso.")
+        self.responderAlCliente(msg)
 
     def mostrarDeshabilitado(self):
-       msg="<html><head><title>Navegador protegido por Kerberus</title>\
+        msg="<html><head><title>Navegador protegido por Kerberus</title>\
         </head> <body >Navegación Deshabilitada</body> </html> "
-       self.wfile.write(self.protocol_version + " 200 Connection established\r\n")
-       self.wfile.write("Proxy-agent: %s\r\n" % self.version_string())
-       self.wfile.write("\r\n")
-       self.wfile.write(msg)
+        self.responderAlCliente(msg)
 
     def responderAlCliente(self,mensaje):
         tamano=len(mensaje)
@@ -155,7 +150,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 #            if "kerberus.com.ar" not in url:
 #                self.mostrarPublicidad(url)
 #                return False
-
+#
 #        proxy_user=self.headers.getheader('Proxy-Authorization')
 #        if proxy_user:
 #            usuario, password=base64.b64decode(proxy_user.split(' ')[1]).split(':')

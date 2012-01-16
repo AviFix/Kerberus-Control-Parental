@@ -129,13 +129,21 @@ class Usuario:
 
     def dominioPublicamentePermitido(self, url):
         """Verifica si el dominio esta en la lista de dominios Publicamente permitidos"""
-        dominio=url.split('/')[2]
-        return dominio in self.dominios_publicamente_permitidos
+        try:
+            dominio=url.split('/')[2]
+            return dominio in self.dominios_publicamente_permitidos
+        except:
+            logger.log(logging.ERROR,"Error al tratar de obtener el dominio desde la url: %s" % url)
+            return True
 
     def dominioPublicamenteDenegado(self, url):
         """Verifica si el dominio esta en la lista de dominios Publicamente denegados"""
-        dominio=url.split('/')[2]
-        return dominio in self.dominios_publicamente_denegados
+        try:
+            dominio=url.split('/')[2]
+            return dominio in self.dominios_publicamente_denegados
+        except:
+            logger.log(logging.ERROR,"Error al tratar de obtener el dominio desde la url: %s" % url)
+            return False
 
     def cacheAceptadas(self, url):
         """Verifica si la url esta en la cache de aceptadas"""

@@ -11,10 +11,10 @@ import logging
 import funciones
 
 if  platform.uname()[0] == 'Linux':
-    PATH_COMMON='/home/mboscovich/proyectos/control_parental/cliente'
-    archivo_de_configuracion='/home/mboscovich/proyectos/control_parental/cliente/cliente.conf'
-    archivo_de_spec= '/home/mboscovich/proyectos/control_parental/cliente/conf/confspec.ini'
-    logger = funciones.logSetup ('/var/log/kerberus-config.log',1, 1)
+    PATH_COMMON='/usr/share/kerberus'
+    archivo_de_configuracion='/etc/kerberus/cliente.conf'
+    archivo_de_spec= PATH_COMMON+'/confspec.ini'
+    logger = funciones.logSetup ('/var/log/kerberus-cliente.log',1, 1)
 else:
     import _winreg, subprocess
     key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\kerberus')
@@ -55,7 +55,8 @@ else:
         if config['client']['path_db']:
             PATH_DB=config['client']['path_db']
         else:
-            PATH_DB='/var/cache/kerberus/kerberus.db'
+            PATH_DB=PATH_COMMON+'/kerberus.db'
+
         if config['client']['log_filename']:
             LOG_FILENAME=config['client']['log_filename']
         else:
@@ -63,7 +64,7 @@ else:
         if config['sync']['log_filename']:
             SYNC_LOG_FILENAME=config['sync']['log_filename']
         else:
-            SYNC_LOG_FILENAME='/var/log/kerberus-syncd-cliente.log'
+            SYNC_LOG_FILENAME='/var/log/kerberus-cliente.log'
     else:
         # Si estan vacio estos campos pongo default para windows
         if config['client']['path_db']:
