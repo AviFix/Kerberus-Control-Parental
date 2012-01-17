@@ -73,7 +73,7 @@ DirText "Elija un directorio donde instalar la aplicacin:"
 ;Indicamos que cuando la instalacin se complete no se cierre el instalador automticamente
 AutoCloseWindow false
 ;Mostramos todos los detalles del la instalacin al usuario.
-ShowInstDetails show
+ShowInstDetails nevershow
 ;En caso de encontrarse los ficheros se sobreescriben
 SetOverwrite on
 ;Optimizamos nuestro paquete en tiempo de compilacin, es altamente recomendable habilitar siempre esta opcin
@@ -84,8 +84,48 @@ SetCompress auto
 UninstallText "Desinstalar kerberus CPW."
 
 
+##########################
+# chequeo si esta instalado previamente
+Function .onInit
+ 
+  ReadRegStr $R0 HKCU \
+  "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus" \
+  "UninstallString"
+  StrCmp $R0 "" done
+ 
+  MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION \
+  "Kerberus ya esta instalado. $\n$\nDesea desinstalar la \
+  version actualmente instalada, para luego instalar esta nueva?." \
+  IDOK uninst
+  Abort
+ 
+;Run the uninstaller
+uninst:
+  ClearErrors
+  ExecWait '$R0 _?=$INSTDIR' ;Do not copy the uninstaller to a temp file
+  Abort
+  IfErrors no_remove_uninstaller done
+    ;You can either use Delete /REBOOTOK in the uninstaller or add some code
+    ;here to remove the uninstaller. Use a registry key to check
+    ;whether the user has chosen to uninstall. If you are using an uninstaller
+    ;components page, make sure all sections are uninstalled.
+  no_remove_uninstaller:
+  Abort
+done:
+ 
+FunctionEnd
+
+##########################
+
 # default section start
 ;section
+
+; Check to see if already installed
+;  ReadRegStr $R0 HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus" "UninstallString"
+;  strCmp $R0 "Kerberus-control-parental" +1 
+;  Abort "Kerberus ya se encuentra instalado. Desinstale la version previa."
+;  return
+
 
     # call userInfo plugin to get user info.  The plugin puts the result in the stack
 ;    userInfo::getAccountType
@@ -159,7 +199,7 @@ SetShellVarContext current
 
 
 WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus" \
-"DisplayName" "Kerbers-client-${VERSION}"
+"DisplayName" "Kerberus-control-parental"
 
 WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus" \
 "UninstallString" '"$INSTDIR\extradata\uninstall.exe"'

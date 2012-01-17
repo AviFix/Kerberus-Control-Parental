@@ -95,7 +95,7 @@ section
     strCmp $0 "Admin" +3
  
     # if there is not a match, print message and return
-    messageBox MB_OK "Debe tener Permisos de Administrador para instalar Kerberus: $0"
+    abort "Debe tener Permisos de Administrador para instalar Kerberus: $0"
     return
   
 # default section end
