@@ -207,7 +207,7 @@ writeRegStr HKCU "Software\Policies\Google\Chrome" \
 "ProxyMode" "system"
 writeRegStr HKCU "Software\Policies\Google\Chrome" \
 "DefaultSearchProviderSearchURL" "http://inicio.kerberus.com.ar/buscador.php?cx=partner-pub-5233852436544664%3A0998292818&ie=UTF-8&sa=Search&q={searchTerms}"
-writeRegStr HKCU "Software\Policies\Google\Chrome" \
+writeRegDWord HKCU "Software\Policies\Google\Chrome" \
 "HomepageIsNewTabPage" 0
 
 ; Make the directory "$INSTDIR\database" read write accessible by all users
