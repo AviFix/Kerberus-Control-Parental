@@ -194,7 +194,7 @@ writeRegDWord HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings"
 "ProxyHttp1.1" 1
 
 writeRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
-"ProxyServer" "http://127.0.0.1:8080"
+"ProxyServer" "127.0.0.1:8080"
 
 
 writeRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
@@ -209,6 +209,7 @@ writeRegStr HKCU "Software\Policies\Google\Chrome" \
 "DefaultSearchProviderSearchURL" "http://inicio.kerberus.com.ar/buscador.php?cx=partner-pub-5233852436544664%3A0998292818&ie=UTF-8&sa=Search&q={searchTerms}"
 writeRegDWord HKCU "Software\Policies\Google\Chrome" \
 "HomepageIsNewTabPage" 0
+
 
 ; Make the directory "$INSTDIR\database" read write accessible by all users
 ;AccessControl::GrantOnFile \

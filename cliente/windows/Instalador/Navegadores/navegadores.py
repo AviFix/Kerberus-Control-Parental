@@ -121,7 +121,7 @@ class navegadores:
         try:
             key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Internet Explorer\Main')
             proxy = _winreg.QueryValueEx(key,'ProxyServer')[0]
-            if proxy == "http://127.0.0.1:8080":
+            if proxy == "127.0.0.1:8080":
                 print "Esta seteado Internet Explorer"
                 return True
             else:
@@ -137,7 +137,7 @@ class navegadores:
                 print "Seteando IE"
                 # Seteando pagina de inicio
                 key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Internet Explorer\Main',0,_winreg.KEY_SET_VALUE)
-                _winreg.SetValueEx(key,"Start Page",0,_winreg.REG_SZ, r'http://www.kerberus.com.ar/inicio')
+                _winreg.SetValueEx(key,"Start Page",0,_winreg.REG_SZ, r'http://inicio.kerberus.com.ar')
                 _winreg.CloseKey(key)
 
                 # Seteando proxy
@@ -154,7 +154,7 @@ class navegadores:
                 _winreg.CloseKey(key)
 
                 key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Windows\CurrentVersion\Internet Settings',0,_winreg.KEY_SET_VALUE)
-                _winreg.SetValueEx(key,"ProxyServer",0,_winreg.REG_SZ,r'http://127.0.0.1:8080')
+                _winreg.SetValueEx(key,"ProxyServer",0,_winreg.REG_SZ,r'127.0.0.1:8080')
                 _winreg.CloseKey(key)
 
                 key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Windows\CurrentVersion\Internet Settings',0,_winreg.KEY_SET_VALUE)
