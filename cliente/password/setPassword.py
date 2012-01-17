@@ -38,10 +38,12 @@ class formularioPassword(QtGui.QMainWindow):
             self.close()
 
     def lock(self):
-        os.open(self.temp_file,os.O_RDWR|os.O_CREAT)
+        if config.PLATAFORMA == 'Linux':
+            os.open(self.temp_file,os.O_RDWR|os.O_CREAT)
 
     def unlock(self):
-        os.remove(self.temp_file)
+        if config.PLATAFORMA == 'Linux':
+            os.remove(self.temp_file)
 
 
 

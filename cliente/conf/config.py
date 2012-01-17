@@ -11,12 +11,14 @@ import logging
 import funciones
 
 if  platform.uname()[0] == 'Linux':
+    PLATAFORMA='Linux'
     PATH_COMMON='/usr/share/kerberus'
     archivo_de_configuracion='/etc/kerberus/cliente.conf'
     archivo_de_spec= PATH_COMMON+'/confspec.ini'
     logger = funciones.logSetup ('/var/log/kerberus-cliente.log',1, 1)
 else:
     import _winreg, subprocess
+    PLATAFORMA='Windows'
     key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\kerberus')
     path_common = _winreg.QueryValueEx(key,'kerberus-common')[0]
     PATH_COMMON=path_common
