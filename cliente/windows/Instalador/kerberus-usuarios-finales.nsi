@@ -69,7 +69,7 @@ InstallDir "$APPDATA\Kerberus"
 InstallDirRegKey HKCU SOFTWARE\KERBERUS "Install_Dir"
 
 ;Mensaje que mostraremos para indicarle al usuario que seleccione un directorio
-DirText "Elija un directorio donde instalar la aplicacin:"
+DirText "Elija un directorio donde instalar la aplicacion:"
 ;Indicamos que cuando la instalacin se complete no se cierre el instalador automticamente
 AutoCloseWindow false
 ;Mostramos todos los detalles del la instalacin al usuario.
@@ -261,7 +261,7 @@ writeRegDWord HKCU "Software\Policies\Google\Chrome" \
 
 ExecWait '"$INSTDIR\client\cliente.exe"'
 
-MessageBox MB_YESNO|MB_ICONQUESTION "Se debe reiniciar la sessin actual para completar la instalacin. Desea reiniciarla ahora?" IDNO +2
+MessageBox MB_YESNO|MB_ICONQUESTION "Es necesario reiniciar para completar la instalacion. Desea reiniciar ahora?" IDNO +2
 	reboot
 
 SectionEnd
@@ -302,7 +302,7 @@ Section "Uninstall"
 ;SimpleSC::RemoveService "kerberus-daemon"
 ;SimpleSC::RemoveService "kerberus-sync"
 
-MessageBox MB_YESNO|MB_ICONQUESTION "Se debe reiniciar para completar la desinstalacin. Desea reiniciar ahora?" IDNO +2
+MessageBox MB_YESNO|MB_ICONQUESTION "Es necesario reiniciar para completar la desinstalacion. Desea reiniciar ahora?" IDNO +2
 	reboot
 SectionEnd
 
