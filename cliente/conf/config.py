@@ -2,26 +2,32 @@
 """Modulo encargado de cargar (y recargar) la configuracion del servidor leyendo la misma desde server.conf"""
 
 #Modulos externos
-import platform, os
+import platform, os, sys
 from configobj import ConfigObj, flatten_errors
 from validate import Validator
 import logging
 
+sys.path.append('../')
+
 # Modulos propios
 import funciones
+
+#FIXME: Esto se deberia sacar de otro lado
+VERSION=0.7
+#
+
 
 if  platform.uname()[0] == 'Linux':
     PLATAFORMA='Linux'
     PATH_COMMON='/usr/share/kerberus'
     archivo_de_configuracion='/etc/kerberus/cliente.conf'
     archivo_de_spec= PATH_COMMON+'/confspec.ini'
-    logger = funciones.logSetup ('/var/log/kerberus-cliente.log',1, 1)
+    logger = funciones.logSetup ('/var/log/kerberus-cliente.log', 1, 1, 1,"Config")
 else:
     import _winreg, subprocess
     PLATAFORMA='Windows'
     key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\kerberus')
     path_common = _winreg.QueryValueEx(key,'kerberus-common')[0]
-    PATH_COMMON=path_common
     archivo_de_configuracion= path_common +'\cliente.conf'
     archivo_de_spec= path_common +'\confspec.ini'
     logger = funciones.logSetup (path_common+'\config.log',1, 1)

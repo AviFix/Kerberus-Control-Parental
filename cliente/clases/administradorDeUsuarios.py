@@ -48,6 +48,14 @@ class AdministradorDeUsuarios:
             conexion.commit()
             conexion.close()
 
+        def setPassword(self, usuario, password):
+            password_md5=self.md5sum(password)
+            conexion = sqlite3.connect(config.PATH_DB)
+            cursor=conexion.cursor()
+            cursor.execute('update usuarios set password=? ,passwordseteada=1 where username=?',(password_md5, usuario,))
+            conexion.commit()
+            conexion.close()
+
         def usuario_valido(self, user, pwd):
             """Verifica si el usuario esta en la base o en cache"""
             if user not in self.usuarios_ya_validados:

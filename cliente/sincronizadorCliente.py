@@ -2,58 +2,28 @@
 
 # Modulos externos
 import sys, time, os, sqlite3, httplib, platform, logging, urllib2
-#import logging.handlers
 
 # Modulos propios
 sys.path.append('conf')
 sys.path.append('clases')
+sys.path.append('password')
 
 import config
 import funciones
 import servidores
+import registrar
+import registrarUsuario
+import peticion
 
 # Logging
+#FIXME: No se porque en los logs aparecen 2 veces las entradas... repetidas digamos.
 logger = funciones.logSetup (config.SYNC_LOG_FILENAME, config.SYNC_LOGLEVEL, config.SYNC_LOG_SIZE_MB, config.SYNC_LOG_CANT_ROTACIONES,"Sincronizador")
 
-def obtenerRespuesta(headers):
-        servidor=servidores.Servidor()
-        config.SYNC_SERVER_IP,config.SYNC_SERVER_PORT = servidor.obtenerServidor(config.SYNC_SERVER_IP,config.SYNC_SERVER_PORT)
-        server_sync="%s:%s" % (config.SYNC_SERVER_IP,config.SYNC_SERVER_PORT)
-        if config.USAR_PROXY:
-            if servidor.estaOnline(config.PROXY_IP,config.PROXY_PORT):
-                url_proxy="http://%s:%s" % (config.PROXY_IP,config.PROXY_PORT)
-                logger.log(logging.DEBUG,"Conectando a %s, por medio del proxy %s , para realizar la solicitud: %s" %(server_sync,url_proxy,headers['Peticion']))
-                proxy={'http':url_proxy, 'https': url_proxy}
-            else:
-                logger.log(logging.ERROR,"El proxy no esta escuchando en %s:%s por lo que no se \
-                utilizara" % (config.PROXY_IP,config.PROXY_PORT,))
-                proxy={}
-        else:
-            proxy={}
-        proxy_handler=urllib2.ProxyHandler(proxy)
-        opener=urllib2.build_opener(proxy_handler)
-        urllib2.install_opener(opener)
-        logger.log(logging.DEBUG,"Conectando a %s para realizar la solicitud: %s" %(server_sync,headers['Peticion']))
-        dormir_por=1
-        while True:
-            try:
-                if servidor.estaOnline(config.SYNC_SERVER_IP,config.SYNC_SERVER_PORT):
-                    req = urllib2.Request("http://"+server_sync, headers=headers)
-                    respuesta = urllib2.urlopen(req).read()
-                    logger.log(logging.DEBUG,"Respuesta: %s" % respuesta)
-                    return respuesta
-            except urllib2.URLError as error:
-                logger.log(logging.ERROR,"Error al conectarse a %s, peticion: %s . ERROR: %s" %(server_sync,headers['Peticion'],error))
-            logger.log(logging.ERROR,"Durmiendo por %s", dormir_por)
-            time.sleep(dormir_por)
-            #se va incrementando el tiempo de dormir para no  matar el micro
-            dormir_por=dormir_por*2
 
 def sincronizarDominiosPermitidos(ultima_actualizacion,recargar_todos_los_dominios):
         if recargar_todos_los_dominios:
             ultima_actualizacion=0
-        headers = {"UserID": "1","Peticion":"obtenerDominiosPermitidos","UltimaSync":str(ultima_actualizacion)}
-        dominios = obtenerRespuesta(headers)
+        dominios = peticionRemota.obtenerDominiosPermitidos(ultima_actualizacion)
         if len(dominios):
             if dominios[-1]=="":
                     array_dominios=dominios.rsplit("\n")[0:-1]
@@ -72,8 +42,7 @@ def sincronizarDominiosPermitidos(ultima_actualizacion,recargar_todos_los_domini
 def sincronizarDominiosDenegados(ultima_actualizacion,recargar_todos_los_dominios):
         if recargar_todos_los_dominios:
             ultima_actualizacion=0
-        headers = {"UserID": "1","Peticion":"obtenerDominiosDenegados","UltimaSync":str(ultima_actualizacion)}
-        dominios = obtenerRespuesta(headers)
+        dominios = peticionRemota.obtenerDominiosDenegados(ultima_actualizacion)
         if len(dominios):
             if dominios[-1]=="":
                 array_dominios=dominios.rsplit("\n")[0:-1]
@@ -88,21 +57,6 @@ def sincronizarDominiosDenegados(ultima_actualizacion,recargar_todos_los_dominio
             conexion_db.commit()
         else:
            logger.log(logging.DEBUG,"No hay dominios denegados para actualizar")
-
-def getPeriodoDeActualizacion():
-        headers = {"UserID": "1","Peticion":"getPeriodoDeActualizacion"}
-        respuesta = obtenerRespuesta(headers)
-        return respuesta
-
-def getPeriodoDeRecargaCompleta():
-        headers = {"UserID": "1","Peticion":"getPeriodoDeRecargaCompleta"}
-        respuesta = obtenerRespuesta(headers)
-        return respuesta
-
-def getHoraServidor():
-        headers = {"UserID": "1","Peticion":"getHoraServidor"}
-        respuesta = obtenerRespuesta(headers)
-        return respuesta
 
 def sincronizarDominiosConServer(tiempo_actual, ultima_actualizacion,recargar_todos_los_dominios):
         sincronizarDominiosPermitidos(ultima_actualizacion,recargar_todos_los_dominios)
@@ -124,13 +78,31 @@ def sincronizarDominiosConServer(tiempo_actual, ultima_actualizacion,recargar_to
 #    print "Se han borrado las urls viejas de cache"
 
 # Inicio
+registrador=registrar.Registradores()
+registradoLocalmente=registrador.checkRegistradoLocalmente()
+registradoRemotamente=registrador.checkRegistradoRemotamente()
+
+if not registradoLocalmente:
+    #TODO: lanzar el wizard de registro
+    logger.log(logging.INFO, "Iniciando proceso de solicitud de datos")
+    reg=registrarUsuario.RegistrarUsuario()
+else:
+    id, nombre, email, version, password = registrador.obtenerDatosRegistrados()
+    peticionRemota=peticion.Peticion(1)
+    #FIXME: Borrar este print!
+    print "Datos registrados:\n - id: %s\n - Nombre: %s\n - Email: %s\n - Version: %s\n - Password: %s" % (id, nombre, email, version, password)
+    logger.log(logging.INFO, "Esta registrado localmente")
+    if not registradoRemotamente:
+        registrador.registrarRemotamente()
+        logger.log(logging.INFO, "Iniciando proceso de registro remoto")
 
 while True:
+    #OPTIMIZE: Rehacer completamente con clases y demas
     #obtiene el tiempo en minutos
     logger.log(logging.INFO, "Iniciando el demonio de sincronización")
-    periodo_expiracion=getPeriodoDeActualizacion()
-    periodo_recarga_completa=getPeriodoDeRecargaCompleta()
-    hora_servidor=getHoraServidor()
+    periodo_expiracion=peticionRemota.obtenerPeriodoDeActualizacion()
+    periodo_recarga_completa=peticionRemota.obtenerPeriodoDeRecargaCompleta()
+    hora_servidor=peticionRemota.obtenerHoraServidor()
     logger.log(logging.DEBUG, "Hora del servidor: %s" % hora_servidor)
     if not periodo_expiracion:
         periodo_expiracion=1
@@ -160,4 +132,3 @@ while True:
         logger.log(logging.DEBUG, "Faltan %s minutos para que se chequee si hay dominios nuevos, y %s minutos para recargar todos los dominios" % (tiempo_restante/60,tiempo_proxima_recarga_completa/60))
         time.sleep(tiempo_restante)
     conexion_db.close()
-

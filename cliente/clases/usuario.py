@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+#
 """Modulo que carga la configuracion particular del usuario ingresado"""
 
 # Modulos externos

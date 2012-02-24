@@ -23,19 +23,8 @@ logger = funciones.logSetup (config.LOG_FILENAME, config.LOGLEVEL, config.LOG_SI
 # Clase
 class Consultor:
     def __init__(self):
-        self.usuarios=administradorDeUsuarios.AdministradorDeUsuarios()
         self.primerUrl=True
-        self.checkAdminPasswordSet()
         self.kerberus_activado=True
-
-    def checkAdminPasswordSet(self):
-        if not self.usuarios.passwordSeteada('admin'):
-            from PyQt4 import QtCore, QtGui
-            import setPassword
-            app = QtGui.QApplication(sys.argv)
-            myapp = setPassword.formularioPassword()
-            myapp.show()
-            sys.exit(app.exec_())
 
     def extensionValida(self, url):
         url=url.lower()
