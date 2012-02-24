@@ -18,6 +18,7 @@ logger = funciones.logSetup (config.LOG_FILENAME, config.LOGLEVEL, config.LOG_SI
 # Clase
 class Servidor:
     def estaOnline(self,ip,port):
+        #FIXME: Solo chequea que el puerto este activo, y deberia ver si esta escuchando
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.settimeout(0.6)
         try:

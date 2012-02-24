@@ -120,6 +120,7 @@ class Sincronizador:
     def sincronizarDominiosConServer(self):
             self.sincronizarDominiosPermitidos()
             self.sincronizarDominiosDenegados()
+            logger.log(logging.DEBUG,"Se terminaron de sincronizar los dominios")
             if self.recargar_todos_los_dominios:
                 self.cursor.execute('update sincronizador set ultima_actualizacion=?, ultima_recarga_completa=?', (self.tiempo_actual, self.tiempo_actual))
                 self.recargar_todos_los_dominios = False
