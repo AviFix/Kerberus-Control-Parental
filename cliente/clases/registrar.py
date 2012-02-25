@@ -12,6 +12,7 @@ sys.path.append('../')
 import config
 import funciones
 import administradorDeUsuarios
+import peticion
 
 # Clase
 class Registradores:
@@ -24,9 +25,14 @@ class Registradores:
         self.cursor.close()
 
     def checkRegistradoRemotamente(self):
-        """Verifica y trata de registrar remotamente a la instalacion"""
-        #TODO: hacer funcion checkRegistradoRemotamente
-        pass
+        """Verifica si esta registrado remotamente"""
+        id, nombre, email, version, password=self.obtenerDatosRegistrados()
+        if id > 0:
+            peticionRemota=peticion.Peticion(id)
+            id_remoto=peticionRemota.usuarioRegistrado(id)
+            return (id_remoto > 0)
+        else:
+            return False
 
     def checkRegistradoLocalmente(self):
         """Verifica si estan registrado los datos del usuario"""
@@ -54,9 +60,16 @@ class Registradores:
 
     def registrarRemotamente(self):
         """Registra localmente los datos solicitados al momento de la instalacion"""
-        #TODO: hacer funcion registrarRemotamente
-
-        pass
+        id, nombre, email, version, password=self.obtenerDatosRegistrados()
+        if id == 0:
+            peticionRemota=peticion.Peticion(id)
+            id_obtenido=peticionRemota.registrarUsuario(nombre, email, password,version)
+            if (int(id_obtenido) > 0):
+                self.cursor.execute('update instalacion set id =?', (id_obtenido))
+                self.conexion_db.commit()
+                self.logger.log(logging.INFO,'Se registro correctamente la instalacion')
+            else:
+                self.logger.log(loggin.ERROR,'Hubo un error al tratar de registrarse remotamente')
 
     def obtenerDatosRegistrados(self):
         """Devuelve id, nombre, email y version"""
@@ -64,7 +77,7 @@ class Registradores:
             id, nombre, email, version, password = self.cursor.execute('select id, nombretitular, email, version, password from instalacion').fetchone()
         except sqlite3.OperationalError, msg:
             self.logger.log(logging.ERROR,"No se pudieron obtener los datos locales de la instalacion. Tal vez no esta la base de datos instalada.\nError: %s" % msg)
-            id=-1
+            id=0
             nombre=""
             email=""
             version=""

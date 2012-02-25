@@ -14,30 +14,29 @@ import registrarUsuario
 import peticion
 
 # Logging
-#FIXME: No se porque en los logs aparecen 2 veces las entradas... repetidas digamos.
 logger = funciones.logSetup (config.SYNC_LOG_FILENAME, config.SYNC_LOGLEVEL, config.SYNC_LOG_SIZE_MB, config.SYNC_LOG_CANT_ROTACIONES,"Sincronizador")
 
 class Sincronizador:
 
     def __init__(self):
         self.registrador=registrar.Registradores()
-        registradoLocalmente=self.registrador.checkRegistradoLocalmente()
-        registradoRemotamente=self.registrador.checkRegistradoRemotamente()
 
+        registradoLocalmente=self.registrador.checkRegistradoLocalmente()
         if not registradoLocalmente:
             logger.log(logging.INFO, "Iniciando proceso de solicitud de datos")
             reg=registrarUsuario.RegistrarUsuario()
         else:
-            #FIXME: Borrar este print!
             self.id, self.nombre, self.email, self.version, self.password = self.registrador.obtenerDatosRegistrados()
-            print "Datos registrados:\n - id: %s\n - Nombre: %s\n - Email: %s\n - Version: %s\n - Password: %s" % (self.id, self.nombre, self.email, self.version, self.password)
             logger.log(logging.INFO, "Esta registrado localmente")
-            if not registradoRemotamente:
-                self.registrador.registrarRemotamente()
-                logger.log(logging.INFO, "Iniciando proceso de registro remoto")
+
+        registradoRemotamente=self.registrador.checkRegistradoRemotamente()
+        if not registradoRemotamente:
+            logger.log(logging.INFO, "Iniciando proceso de registro remoto")
+            self.registrador.registrarRemotamente()
+        else:
+            logger.log(logging.INFO, "Esta registrado remotamente")
 
         self.id, self.nombre, self.email, self.version, self.password = self.registrador.obtenerDatosRegistrados()
-        #FIXME: Debe enviar el id registrado, ahora esta asi para que ande
         self.peticionRemota=peticion.Peticion(self.id)
 
         self.conexion_db = sqlite3.connect(config.PATH_DB)
@@ -49,6 +48,8 @@ class Sincronizador:
         self.periodo_recarga_completa=self.peticionRemota.obtenerPeriodoDeRecargaCompleta()
         logger.log(logging.DEBUG, "Periodo de actualizacion: %s segundos" % self.periodo_expiracion)
         logger.log(logging.DEBUG, "Periodo de recarga completa: %s segundos" % self.periodo_recarga_completa)
+        logger.log(logging.DEBUG, "Ultima actualizacion: %s"  % self.ultima_actualizacion)
+        logger.log(logging.DEBUG, "Ultima recarga completa: %s"  % self.ultima_recarga_completa)
 
         self.recargar_todos_los_dominios = False
 
@@ -77,6 +78,7 @@ class Sincronizador:
                 tiempo_proxima_recarga_completa=self.ultima_recarga_completa + self.periodo_recarga_completa - self.tiempo_actual
                 logger.log(logging.DEBUG, "Faltan %s minutos para que se chequee si hay dominios nuevos, y %s minutos para recargar todos los dominios" % (tiempo_restante/60,tiempo_proxima_recarga_completa/60))
                 time.sleep(tiempo_restante)
+                logger.log(logging.DEBUG, "Chequeando nuevamente los dominios")
 
 
     def sincronizarDominiosPermitidos(self):
@@ -92,7 +94,7 @@ class Sincronizador:
                     self.cursor.execute('delete from dominios_publicamente_permitidos')
                 for fila in array_dominios:
                     if fila <> "":
-                        logger.log(logging.DEBUG, "Se agrego el dominio permitido: %s" % fila)
+                        #logger.log(logging.DEBUG, "Se agrego el dominio permitido: %s" % fila)
                         self.cursor.execute('insert into dominios_publicamente_permitidos(url) values(?)', (fila, ) )
                 self.conexion_db.commit()
             else:
@@ -111,7 +113,7 @@ class Sincronizador:
                     self.cursor.execute('delete from dominios_publicamente_denegados')
                 for fila in array_dominios:
                     if fila <> "":
-                        logger.log(logging.DEBUG, "Se agrego el dominio denegado: %s" % fila)
+                        #logger.log(logging.DEBUG, "Se agrego el dominio denegado: %s" % fila)
                         self.cursor.execute('insert into dominios_publicamente_denegados(url) values(?)',(fila, ) )
                 self.conexion_db.commit()
             else:
@@ -124,6 +126,7 @@ class Sincronizador:
             if self.recargar_todos_los_dominios:
                 self.cursor.execute('update sincronizador set ultima_actualizacion=?, ultima_recarga_completa=?', (self.tiempo_actual, self.tiempo_actual))
                 self.recargar_todos_los_dominios = False
+                self.ultima_actualizacion=self.tiempo_actual
             else:
                 self.cursor.execute('update sincronizador set ultima_actualizacion=?', (self.tiempo_actual,))
             self.conexion_db.commit()
