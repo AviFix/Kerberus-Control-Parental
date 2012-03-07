@@ -6,6 +6,7 @@
 import sys
 import urllib2
 import logging
+import sqlite3
 
 # Modulos propios
 sys.path.append('../conf')
@@ -14,20 +15,33 @@ import servidores
 import config
 import funciones
 import time
+import registrar
 
 # Logging
 logger = funciones.logSetup (config.SYNC_LOG_FILENAME, config.SYNC_LOGLEVEL, config.SYNC_LOG_SIZE_MB, config.SYNC_LOG_CANT_ROTACIONES,"Peticion")
 
 # Clase
 class Peticion:
-    def __init__(self,userid):
+    def __init__(self):
         self.servidor=servidores.Servidor()
-        self.SYNC_SERVER_IP,self.SYNC_SERVER_PORT = self.servidor.obtenerServidor(config.SYNC_SERVER_IP,config.SYNC_SERVER_PORT)
-        self.server_sync="%s:%s" % (self.SYNC_SERVER_IP,self.SYNC_SERVER_PORT)
-        self.userid=userid
+        self.userid=self.obtenerUserID()
+        self.server_ip,self.server_port = self.servidor.obtenerServidor(config.SYNC_SERVER_IP,config.SYNC_SERVER_PORT,self.userid)
+        self.server_sync="%s:%s" % (self.server_ip,self.server_port)
 
+    def obtenerUserID(self):
+        try:
+            conexion_db = sqlite3.connect(config.PATH_DB)
+            cursor=conexion_db.cursor()
+            id = cursor.execute('select id from instalacion').fetchone()[0]
+            cursor.close()
+            return id
+        except sqlite3.OperationalError, msg:
+            self.logger.log(logging.ERROR,"No se pudo obtener el id de instalacion.\nError: %s" % msg)
+            id=0
+            return id
 
     def obtenerRespuesta(self,headers):
+        #FIXME: Si no obtiene respuesta, deberia buscar otro server
         if config.USAR_PROXY:
             if self.servidor.estaOnline(config.PROXY_IP,config.PROXY_PORT):
                 url_proxy="http://%s:%s" % (config.PROXY_IP,config.PROXY_PORT)
@@ -46,7 +60,7 @@ class Peticion:
         dormir_por=1
         while True:
             try:
-                if self.servidor.estaOnline(self.SYNC_SERVER_IP,self.SYNC_SERVER_PORT):
+                if self.servidor.estaOnline(self.server_ip,self.server_port):
                     req = urllib2.Request("http://"+self.server_sync, headers=headers)
                     respuesta = urllib2.urlopen(req).read()
                     logger.log(logging.DEBUG,"Respuesta: %s" % respuesta)
@@ -58,6 +72,7 @@ class Peticion:
             #se va incrementando el tiempo de dormir para no  matar el micro
             if dormir_por < 64:
                 dormir_por=dormir_por*2
+
 
     def obtenerDominiosPermitidos(self,ultima_actualizacion):
         headers = {"UserID":self.userid ,"Peticion":"obtenerDominiosPermitidos","UltimaSync":str(ultima_actualizacion)}
@@ -99,10 +114,16 @@ class Peticion:
         respuesta = self.obtenerRespuesta(headers)
         return respuesta
 
-    def usuarioRegistrado(self, id):
+    def eliminarUsuario(self, id):
+        """Solicita la eliminacion"""
+        headers = {"UserID": self.userid,"Peticion":"eliminarUsuario"}
+        respuesta = self.obtenerRespuesta(headers)
+        return respuesta
+
+    def usuarioRegistrado(self, id, email):
         #FIXME: Debe enviar id y email para verificar
         """Devuelve true o false"""
-        headers = {"UserID": self.userid,"Peticion":"usuarioRegistrado","ID":id}
+        headers = {"UserID": self.userid,"Peticion":"usuarioRegistrado","ID":id,"Email":email}
         respuesta = self.obtenerRespuesta(headers)
         return respuesta
 

@@ -24,13 +24,14 @@ class Registradores:
     def __del__(self):
         self.cursor.close()
 
+    #FIXME: Utilizar mysql-cluster!!!!!!! porque sino va a haber replicacion de usuarios con diferentes ids.
     def checkRegistradoRemotamente(self):
         """Verifica si esta registrado remotamente"""
         id, nombre, email, version, password=self.obtenerDatosRegistrados()
         if id > 0:
-            peticionRemota=peticion.Peticion(id)
-            id_remoto=peticionRemota.usuarioRegistrado(id)
-            return (id_remoto > 0)
+            peticionRemota=peticion.Peticion()
+            registrado=peticionRemota.usuarioRegistrado(id, email)
+            return (registrado <> None)
         else:
             return False
 
@@ -61,15 +62,20 @@ class Registradores:
     def registrarRemotamente(self):
         """Registra localmente los datos solicitados al momento de la instalacion"""
         id, nombre, email, version, password=self.obtenerDatosRegistrados()
-        if id == 0:
-            peticionRemota=peticion.Peticion(id)
-            id_obtenido=peticionRemota.registrarUsuario(nombre, email, password,version)
-            if (int(id_obtenido) > 0):
-                self.cursor.execute('update instalacion set id =?', (id_obtenido))
-                self.conexion_db.commit()
-                self.logger.log(logging.INFO,'Se registro correctamente la instalacion')
-            else:
-                self.logger.log(loggin.ERROR,'Hubo un error al tratar de registrarse remotamente')
+        peticionRemota=peticion.Peticion()
+        id_obtenido=peticionRemota.registrarUsuario(nombre, email, password,version)
+        if (int(id_obtenido) > 0):
+            self.cursor.execute('update instalacion set id =?', (id_obtenido,))
+            self.conexion_db.commit()
+            self.logger.log(logging.INFO,'Se registro correctamente la instalacion')
+        else:
+            self.logger.log(loggin.ERROR,'Hubo un error al tratar de registrarse remotamente')
+
+    def eliminarRemotamente(self):
+        """Ejecutado cuando un usuario desinstala el soft"""
+        id, nombre, email, version, password=self.obtenerDatosRegistrados()
+        peticionRemota=peticion.Peticion(id)
+        id_obtenido=peticionRemota.eliminarUsuario(id)
 
     def obtenerDatosRegistrados(self):
         """Devuelve id, nombre, email y version"""

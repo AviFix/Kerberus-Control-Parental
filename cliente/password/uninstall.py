@@ -2,9 +2,12 @@ from PyQt4 import QtGui, QtCore
 import sys
 
 sys.path.append('../')
+sys.path.append('../clases')
+
 import pedirUsuario
 import funciones
 import _winreg, subprocess
+import registrar
 
 app = QtGui.QApplication(sys.argv)
 myapp = pedirUsuario.formularioUsuario('Desinstalar Kerberus', 'Ingrese la password de administrador de Kerberus \n(la que ingreso al momento de instalarlo)')
@@ -21,5 +24,9 @@ if desinstalar:
     subprocess.Popen(comando,stdout=subprocess.PIPE, shell=True)
     print "Ejecutando %s" % desinstalador
     subprocess.call(desinstalador)
+    reg=registar.Registradores()
+    reg.eliminarRemotamente()
+
+
 
 

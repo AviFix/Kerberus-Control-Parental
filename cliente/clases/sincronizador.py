@@ -37,7 +37,7 @@ class Sincronizador:
             logger.log(logging.INFO, "Esta registrado remotamente")
 
         self.id, self.nombre, self.email, self.version, self.password = self.registrador.obtenerDatosRegistrados()
-        self.peticionRemota=peticion.Peticion(self.id)
+        self.peticionRemota=peticion.Peticion()
 
         self.conexion_db = sqlite3.connect(config.PATH_DB)
         self.cursor=self.conexion_db.cursor()
