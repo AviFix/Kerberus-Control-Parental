@@ -70,7 +70,7 @@ class IntroPage(QWizardPage):
             return False
         else:
             admUser=administradorDeUsuarios.AdministradorDeUsuarios()
-            admUser.cambiarPassword('admin', 'perico', str(password1))
+            admUser.setPassword('admin', str(password1))
             return True
 
 

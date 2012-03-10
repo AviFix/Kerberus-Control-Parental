@@ -37,6 +37,7 @@ class Consultor:
         return re.match(".*\.(gif|jpeg|jpg|png|js|css|swf|ico|json|mp3|wav|rss|rar|zip|pdf|xml)$",url)
 
     def validarUrl(self, username, password, url):
+        #TODO: No se si esto esta bien, revisar
         if "kerberus.com.ar" in url:
             mensaje = "Consulta a kerberus"
             logger.log(logging.INFO, mensaje)

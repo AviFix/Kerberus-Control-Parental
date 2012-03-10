@@ -13,6 +13,11 @@ import config
 
 # Lanza el sincronizador
 syncd=sincronizador.Sincronizador()
+
+if not syncd.passwordNotificada():
+    print "notificando password"
+    syncd.notificarPassword()
+
 syncd.run()
 
 

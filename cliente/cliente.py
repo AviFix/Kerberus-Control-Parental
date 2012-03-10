@@ -35,6 +35,7 @@ logger = funciones.logSetup (config.LOG_FILENAME, config.LOGLEVEL, config.LOG_SI
 
 if not os.path.exists(config.PATH_DB):
     funciones.crearDBCliente(config.PATH_DB)
+
 verificador=consultor.Consultor()
 urls=manejadorUrls.ManejadorUrls()
 adminUsers=administradorDeUsuarios.AdministradorDeUsuarios()
@@ -48,11 +49,6 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
     rbufsize = 0                        # self.rfile Be unbuffered
     global verificador
 
-#    def pedirUsuario(self, motivo):
-#        self.send_response(407, motivo)
-#        self.send_header('Proxy-Authenticate', 'Basic realm="Ingrese como usuario admin y como password la que configuro en la instalacion"')
-#        self.send_header('Conection', 'close')
-#        self.end_headers()
 
     def mostrarPublicidad(self, url):
         msg="<html><head><title>Navegador protegido por Kerberus</title>\
@@ -95,14 +91,6 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         self.responderAlCliente(msg)
 
     def handle(self):
-#        # Paso 1: autenticacion de ip origen
-#        (ip, port) =  self.client_address
-#        self.server.logger.log (logging.INFO, "Request from '%s'", ip)
-#        if hasattr(self, 'allowed_clients') and ip not in self.allowed_clients:
-#            self.raw_requestline = self.rfile.readline()
-#            if self.parse_request():
-#                self.send_error(403)
-#        else:
         self.__base_handle()
 
     def _connect_to(self, netloc, soc):
@@ -128,7 +116,6 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
             if self._connect_to(self.path, soc):
-#                self.log_request(200)
                 self.wfile.write(self.protocol_version +" 200 Connection established\r\n")
                 self.wfile.write("Proxy-agent: %s\r\n" % self.version_string())
                 self.wfile.write("\r\n")
@@ -142,8 +129,6 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         return adminUsers.usuario_valido('admin',password)
 
     def do_GET(self):
-        # Paso 3: peticion del recurso
-        # Verificacion del usuario y url
         url=self.path
 #        if verificador.primerUrl:
 #            verificador.primerUrl=False
@@ -151,32 +136,10 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 #                self.mostrarPublicidad(url)
 #                return False
 #
-#        proxy_user=self.headers.getheader('Proxy-Authorization')
-#        if proxy_user:
-#            usuario, password=base64.b64decode(proxy_user.split(' ')[1]).split(':')
-#            if not adminUsers.usuario_valido(usuario,password):
-#                usuario, password = "NoBody", "NoBody"
-#                self.pedirUsuario("Acceso para usuarios adultos")
-#        else:
-#            usuario, password="NoBody", "NoBody"
-#            if "!DeshabilitarFiltrado!" in url:
-#                self.server.logger.log (logging.INFO, "Solicitando acceso para usuarios adultos")
-#                self.pedirUsuario("Acceso para usuarios adultos")
-#                return False
         usuario, password="NoBody", "NoBody"
         # es para que muestre que kerberus esta activo, asi no lo muestra cuando se accede
         # a la pagina desde cualquier lugar
 
-#        if url == "http://localhost/inicio/login.php" and self.command == 'POST':
-#            content_len = int(self.headers.getheader('content-length'))
-#            post_body = self.rfile.read(content_len)
-#            password=post_body.split("=")[1]
-#            usuario_admin = self.validarPassword(password)
-#            if usuario_admin:
-#                self.mostrarDeshabilitado()
-#            else:
-#                self.passwordErronea()
-#
         if "!DeshabilitarFiltrado!" in url:
             url=url.replace('!DeshabilitarFiltrado!','')
             if verificador.kerberus_activado:
@@ -195,7 +158,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                 else:
                     self.pedirPassword()
                     return True
-
+        #FIXME: Esto deberia ser un header no por url
         if "http://inicio.kerberus.com.ar" in url and verificador.kerberus_activado and "denegado.php" not in url:
            url=url+"?kerberus_activado=1"
 
@@ -208,6 +171,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                 url=urls.agregarSafeSearch(url)
                 self.server.logger.log (logging.INFO, "La URL %s  soporta SafeSearch. Forzando su uso", url)
 
+        # Si llego hasta aca es porque esta permitido
         (scm, netloc, path, params, query, fragment) = urlparse.urlparse(url,  'http')
         if scm not in ('http', 'ftp') or fragment or not netloc:
             self.send_error(400, "Url erronea: %s" % url)

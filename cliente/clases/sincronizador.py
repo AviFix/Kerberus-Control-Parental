@@ -54,6 +54,7 @@ class Sincronizador:
         self.recargar_todos_los_dominios = False
 
     def __del__(self):
+       #TODO: Tambien deberia informar que se cerror la sesion
        self.conexion_db.close()
        logger.log(logging.DEBUG, "Deteniendo el demonio de sincronizacion")
 
@@ -79,6 +80,28 @@ class Sincronizador:
                 logger.log(logging.DEBUG, "Faltan %s minutos para que se chequee si hay dominios nuevos, y %s minutos para recargar todos los dominios" % (tiempo_restante/60,tiempo_proxima_recarga_completa/60))
                 time.sleep(tiempo_restante)
                 logger.log(logging.DEBUG, "Chequeando nuevamente los dominios")
+
+    def passwordNotificada(self):
+        """Verifica si se informo remotamente la password"""
+        try:
+            password_notificada = self.cursor.execute('select passwordnotificada from instalacion').fetchone()[0]
+        except sqlite3.OperationalError, msg:
+            self.logger.log(logging.ERROR,"No se pudo verificar si la password esta verficada. Tal vez no esta la base de datos instalada.\nError: %s" % msg)
+            return True
+        return password_notificada
+
+    def notificarPassword(self):
+        try:
+            conexion_db = sqlite3.connect(config.PATH_DB)
+            cursor=conexion_db.cursor()
+            password = cursor.execute('select password from instalacion').fetchone()[0]
+            respuesta=self.peticionRemota.informarNuevaPassword(password)
+            if respuesta == 'Informada':
+                cursor.execute('update instalacion set passwordnotificada=1')
+            cursor.close()
+            conexion_db.commit()
+        except sqlite3.OperationalError, msg:
+            self.logger.log(logging.ERROR,"No se pudo obtener la pass para notificarla.\nError: %s" % msg)
 
 
     def sincronizarDominiosPermitidos(self):

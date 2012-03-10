@@ -1,11 +1,14 @@
 import sys, os
 from PyQt4 import QtCore, QtGui
-from formulario import Ui_Form
+
 sys.path.append('../clases')
 sys.path.append('../conf')
 sys.path.append('../')
+
 import administradorDeUsuarios
 import config
+from cambiarPasswordForm import Ui_Form
+
 
 class formularioPassword(QtGui.QMainWindow):
     def __init__(self, parent=None):
@@ -16,8 +19,6 @@ class formularioPassword(QtGui.QMainWindow):
         self.lock()
         # Conexiones
         QtCore.QObject.connect(self.ui.boton,QtCore.SIGNAL("clicked()"), self.acentarPassword)
-        self.ui.label_passwordActual.setVisible(False)
-        self.ui.password_actual.setVisible(False)
         self.center()
 
     def center(self):
@@ -26,16 +27,24 @@ class formularioPassword(QtGui.QMainWindow):
         self.move((screen.width()-size.width())/2, (screen.height()-size.height())/2)
 
     def acentarPassword(self):
-        if (self.ui.password1.text() <> self.ui.password2.text() or (len(self.ui.password1.text()) < 1)):
-            QtGui.QMessageBox.critical(self, 'Kerberus', 'Las password no coinciden, reescribalas.', QtGui.QMessageBox.Ok)
-            self.ui.password1.clear()
-            self.ui.password2.clear()
-            self.ui.password1.setFocus()
+        admUser=administradorDeUsuarios.AdministradorDeUsuarios()
+        pass_actual=str(self.ui.password_actual.text())
+        pass_valida=admUser.usuario_valido('admin', pass_actual)
+        if pass_valida:
+            if (self.ui.password1.text() <> self.ui.password2.text() or (len(self.ui.password1.text()) < 1)):
+                QtGui.QMessageBox.critical(self, 'Kerberus', 'Las passwords no coinciden, reescribalas.', QtGui.QMessageBox.Ok)
+                self.ui.password1.clear()
+                self.ui.password2.clear()
+                self.ui.password1.setFocus()
+            else:
+                admUser.cambiarPassword('admin', pass_actual, str(self.ui.password1.text()))
+                self.unlock()
+                self.close()
         else:
-            admUser=administradorDeUsuarios.AdministradorDeUsuarios()
-            admUser.cambiarPassword('admin', 'perico', str(self.ui.password1.text()))
-            self.unlock()
-            self.close()
+                QtGui.QMessageBox.critical(self, 'Kerberus', 'Las antigua password es incorrecta.', QtGui.QMessageBox.Ok)
+                self.ui.password_actual.clear()
+                self.ui.password_actual.setFocus()
+
 
     def lock(self):
         if config.PLATAFORMA == 'Linux':

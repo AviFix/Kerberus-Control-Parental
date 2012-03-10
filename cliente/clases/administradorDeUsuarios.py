@@ -44,7 +44,10 @@ class AdministradorDeUsuarios:
             password_nueva_md5=self.md5sum(password_nueva)
             conexion = sqlite3.connect(config.PATH_DB)
             cursor=conexion.cursor()
-            cursor.execute('update usuarios set password=? ,passwordseteada=1 where username=? and password =?',(password_nueva_md5, usuario, password_vieja_md5, ))
+            cursor.execute('update usuarios set password=? where username=? and password=? and passwordseteada=1',(password_nueva_md5, usuario, password_vieja_md5, ))
+            conexion.commit()
+            cursor.execute('update instalacion set password="%s", passwordnotificada=0' % password_nueva)
+            conexion.commit()
             conexion.commit()
             conexion.close()
 
@@ -52,7 +55,9 @@ class AdministradorDeUsuarios:
             password_md5=self.md5sum(password)
             conexion = sqlite3.connect(config.PATH_DB)
             cursor=conexion.cursor()
-            cursor.execute('update usuarios set password=? ,passwordseteada=1 where username=?',(password_md5, usuario,))
+            cursor.execute('update usuarios set password=? ,passwordseteada=1 where username=? and passwordseteada=0',(password_md5, usuario,))
+            # esta nofificada, porque le llega el mail del registro con la pass
+            cursor.execute('update instalacion set passwordnotificada=1')
             conexion.commit()
             conexion.close()
 
