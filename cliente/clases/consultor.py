@@ -12,6 +12,7 @@ import usuario
 import config
 import logging
 import funciones
+import servidores
 
 #Excepciones
 class ConsultorError(Exception): pass
@@ -24,13 +25,15 @@ logger = funciones.logSetup (config.LOG_FILENAME, config.LOGLEVEL, config.LOG_SI
 class Consultor:
     def __init__(self):
         self.primerUrl=True
-        ip,port = self.obtenerServidor(config.SERVER_IP,config.SERVER_PORT)
+        servers=servidores.Servidor()
+        ip,port = servers.obtenerServidor(config.SERVER_IP,config.SERVER_PORT)
         if ip and port:
             self.kerberus_activado=True
             logger.log(logging.DEBUG, "Activando el filtrado de Kerberus")
         else:
             logger.log(logging.ERROR, "No se pudo obtener ningun servidor kerberus, por lo que el filtrado se deshabilita")
             self.kerberus_activado=False
+        self.usuarios=administradorDeUsuarios.AdministradorDeUsuarios()
 
     def extensionValida(self, url):
         url=url.lower()
@@ -40,7 +43,7 @@ class Consultor:
         #TODO: No se si esto esta bien, revisar
         if "kerberus.com.ar" in url:
             mensaje = "Consulta a kerberus"
-            logger.log(logging.INFO, mensaje)
+            logger.log(logging.DEBUG, mensaje)
             return True, mensaje
 
         if not self.usuarios.usuario_valido(username, password):
