@@ -40,6 +40,15 @@ class MensajesHtml:
         mensaje=self.renderizarMensaje(self.template_pedir_password,diccionario)
         return mensaje
 
+    def cambiarPassword(self,mensaje=''):
+        diccionario=dict(
+            titulo='Cambiar password',
+            subtitulo='(Cambio de la password del administrador de kerberus)',
+            mensaje_error=mensaje
+            )
+        mensaje=self.renderizarMensaje(self.template_pedir_password,diccionario)
+        return mensaje
+
     def denegarSitio(self,sitio=''):
         diccionario=dict(
             sitio=sitio,
