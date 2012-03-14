@@ -23,6 +23,8 @@ class MensajesHtml:
         self.path_templates=path_templates
         self.template_pedir_password=path_templates+'/pedirPassword.html'
         self.template_sitio_denegado=path_templates+'/sitioDenegado.html'
+        self.template_cambiar_password=path_templates+'/cambiarPassword.html'
+        self.template_password_cambiada=path_templates+'/passwordCambiadaCorrectamente.html'
 
     def renderizarMensaje(self,template_path,diccionario):
         archivo_template=open(template_path,'r').read()
@@ -40,13 +42,22 @@ class MensajesHtml:
         mensaje=self.renderizarMensaje(self.template_pedir_password,diccionario)
         return mensaje
 
-    def cambiarPassword(self,mensaje=''):
+    def cambiarPassword(self,mensaje='',focus_en=''):
         diccionario=dict(
             titulo='Cambiar password',
             subtitulo='(Cambio de la password del administrador de kerberus)',
-            mensaje_error=mensaje
+            mensaje_error=mensaje,
+            focus=focus_en
             )
-        mensaje=self.renderizarMensaje(self.template_pedir_password,diccionario)
+        mensaje=self.renderizarMensaje(self.template_cambiar_password,diccionario)
+        return mensaje
+
+    def passwordCambiadaCorrectamente(self,mensaje=''):
+        diccionario=dict(
+            titulo='Cambiar password',
+            mensaje=mensaje
+            )
+        mensaje=self.renderizarMensaje(self.template_password_cambiada,diccionario)
         return mensaje
 
     def denegarSitio(self,sitio=''):

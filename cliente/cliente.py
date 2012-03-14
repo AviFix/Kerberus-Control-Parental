@@ -78,7 +78,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 
     def cambiarPassword(self):
         mensaje=mensajesHtml.MensajesHtml(config.PATH_TEMPLATES)
-        msg=mensaje.cambiarPassword()
+        msg=mensaje.cambiarPassword('','password_actual')
         self.responderAlCliente(msg)
 
     def redirigirDesbloqueado(self, url):
@@ -92,9 +92,18 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 
     def cambioPassPasswordErronea(self):
         mensaje=mensajesHtml.MensajesHtml(config.PATH_TEMPLATES)
-        msg=mensaje.cambiarPassword('Password incorrecta!')
+        msg=mensaje.cambiarPassword('Password incorrecta!','password_actual')
         self.responderAlCliente(msg)
 
+    def passwordCambiadaCorrectamente(self):
+        mensaje=mensajesHtml.MensajesHtml(config.PATH_TEMPLATES)
+        msg=mensaje.passwordCambiadaCorrectamente('Password cambiada correctamente!')
+        self.responderAlCliente(msg)
+
+    def cambioPassPasswordNoCoinciden(self):
+        mensaje=mensajesHtml.MensajesHtml(config.PATH_TEMPLATES)
+        msg=mensaje.cambiarPassword('Las passwords no coinciden!','password_nueva1')
+        self.responderAlCliente(msg)
 
     def denegar(self, motivo, url):
         mensaje=mensajesHtml.MensajesHtml(config.PATH_TEMPLATES)
@@ -172,29 +181,28 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 
         # Cambio de password
 #
-#        if "!CambiarPassword!" in url:
-#            url=url.replace('!CambiarPassword!','')
-#            if self.command == 'POST':
-#                content_len = int(self.headers.getheader('content-length'))
-#                post_body = self.rfile.read(content_len)
-#                print post_body
-#                password_actual=post_body.split("=")[1]
-#                usuario_admin=self.validarPassword(password_actual)
-#                if usuario_admin:
-#                    password_nueva1=post_body.split("=")[2]
-#                    password_nueva2=post_body.split("=")[3]
-#                    if password_nueva1 <> password_nueva2:
-#                        self.cambioPassPasswordNoCoinciden()
-#                    # Cambiar Aca la password!!!!!!!!!!!!!!!
-#                    # Quede aca
-#                    return True
-#                else:
-#                    self.cambioPassPasswordErronea()
-#                    return True
-#            else:
-#                self.pedirPassword()
-#                return True
-#
+        if "!CambiarPassword!" in url:
+            url=url.replace('!CambiarPassword!','')
+            if self.command == 'POST':
+                content_len = int(self.headers.getheader('content-length'))
+                post_body = self.rfile.read(content_len)
+                password_actual=post_body.split("&")[0].split("=")[1]
+                password_nueva1=post_body.split("&")[1].split("=")[1]
+                password_nueva2=post_body.split("&")[2].split("=")[1]
+                usuario_admin=self.validarPassword(password_actual)
+                if usuario_admin:
+                    if password_nueva1 <> password_nueva2:
+                        self.cambioPassPasswordNoCoinciden()
+                    adminUsers.cambiarPassword('admin',str(password_actual),str(password_nueva1))
+                    self.passwordCambiadaCorrectamente()
+                    return True
+                else:
+                    self.cambioPassPasswordErronea()
+                    return True
+            else:
+                self.cambiarPassword()
+                return True
+
 
         #FIXME: Esto deberia ser un header no por url
         if "http://inicio.kerberus.com.ar" in url and verificador.kerberus_activado and "denegado.php" not in url:

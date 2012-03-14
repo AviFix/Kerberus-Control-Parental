@@ -50,6 +50,8 @@ class AdministradorDeUsuarios:
             conexion.commit()
             conexion.commit()
             conexion.close()
+            index=self.usuarios_ya_validados.index('admin')
+            self.usuarios_ya_validados_pass[index]=password_nueva_md5
 
         def setPassword(self, usuario, password):
             password_md5=self.md5sum(password)
