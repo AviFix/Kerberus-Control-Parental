@@ -193,6 +193,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                 if usuario_admin:
                     if password_nueva1 <> password_nueva2:
                         self.cambioPassPasswordNoCoinciden()
+                        return True
                     adminUsers.cambiarPassword('admin',str(password_actual),str(password_nueva1))
                     self.passwordCambiadaCorrectamente()
                     return True
