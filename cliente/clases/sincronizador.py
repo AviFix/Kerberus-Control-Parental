@@ -20,11 +20,14 @@ class Sincronizador:
 
     def __init__(self):
         self.registrador=registrar.Registradores()
+        self.recienRegistrado=False
 
         registradoLocalmente=self.registrador.checkRegistradoLocalmente()
         if not registradoLocalmente:
             logger.log(logging.INFO, "Iniciando proceso de solicitud de datos")
             reg=registrarUsuario.RegistrarUsuario()
+            if config.PLATAFORMA == 'Windows':
+                self.recienRegistrado=True
         else:
             self.id, self.nombre, self.email, self.version, self.password = self.registrador.obtenerDatosRegistrados()
             logger.log(logging.INFO, "Esta registrado localmente")
@@ -60,26 +63,29 @@ class Sincronizador:
 
 
     def run(self):
-        logger.log(logging.INFO, "Iniciando el demonio de sincronización")
-        while True:
-            hora_servidor=self.peticionRemota.obtenerHoraServidor()
-            self.tiempo_actual=float(hora_servidor)
-            tiempo_transcurrido=self.tiempo_actual - self.ultima_actualizacion
-            tiempo_transcurrido_ultima_recarga=self.tiempo_actual - self.ultima_recarga_completa
+        if self.recienRegistrado:
+            logger.log(logging.INFO, "Se terminaron de obtener los datos del usuario")
+        else:
+            logger.log(logging.INFO, "Iniciando el demonio de sincronización")
+            while True:
+                hora_servidor=self.peticionRemota.obtenerHoraServidor()
+                self.tiempo_actual=float(hora_servidor)
+                tiempo_transcurrido=self.tiempo_actual - self.ultima_actualizacion
+                tiempo_transcurrido_ultima_recarga=self.tiempo_actual - self.ultima_recarga_completa
 
-            if (tiempo_transcurrido_ultima_recarga > self.periodo_recarga_completa):
-                self.recargar_todos_los_dominios = True
-                logger.log(logging.DEBUG,"Se recargaran todos los dominios permitidos/dengados con servidor...")
+                if (tiempo_transcurrido_ultima_recarga > self.periodo_recarga_completa):
+                    self.recargar_todos_los_dominios = True
+                    logger.log(logging.DEBUG,"Se recargaran todos los dominios permitidos/dengados con servidor...")
 
-            if (tiempo_transcurrido > self.periodo_expiracion):
-                logger.log(logging.DEBUG,"Sincronizando dominios permitidos/dengados con servidor...")
-                self.sincronizarDominiosConServer()
-            else:
-                tiempo_restante=self.ultima_actualizacion + self.periodo_expiracion - self.tiempo_actual
-                tiempo_proxima_recarga_completa=self.ultima_recarga_completa + self.periodo_recarga_completa - self.tiempo_actual
-                logger.log(logging.DEBUG, "Faltan %s minutos para que se chequee si hay dominios nuevos, y %s minutos para recargar todos los dominios" % (tiempo_restante/60,tiempo_proxima_recarga_completa/60))
-                time.sleep(tiempo_restante)
-                logger.log(logging.DEBUG, "Chequeando nuevamente los dominios")
+                if (tiempo_transcurrido > self.periodo_expiracion):
+                    logger.log(logging.DEBUG,"Sincronizando dominios permitidos/dengados con servidor...")
+                    self.sincronizarDominiosConServer()
+                else:
+                    tiempo_restante=self.ultima_actualizacion + self.periodo_expiracion - self.tiempo_actual
+                    tiempo_proxima_recarga_completa=self.ultima_recarga_completa + self.periodo_recarga_completa - self.tiempo_actual
+                    logger.log(logging.DEBUG, "Faltan %s minutos para que se chequee si hay dominios nuevos, y %s minutos para recargar todos los dominios" % (tiempo_restante/60,tiempo_proxima_recarga_completa/60))
+                    time.sleep(tiempo_restante)
+                    logger.log(logging.DEBUG, "Chequeando nuevamente los dominios")
 
     def passwordNotificada(self):
         """Verifica si se informo remotamente la password"""

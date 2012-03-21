@@ -27,10 +27,10 @@ else:
     import _winreg, subprocess
     PLATAFORMA='Windows'
     key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\kerberus')
-    path_common = _winreg.QueryValueEx(key,'kerberus-common')[0]
-    archivo_de_configuracion= path_common +'\cliente.conf'
-    archivo_de_spec= path_common +'\confspec.ini'
-    logger = funciones.logSetup (path_common+'\config.log',1, 1)
+    PATH_COMMON = _winreg.QueryValueEx(key,'kerberus-common')[0]
+    archivo_de_configuracion= PATH_COMMON +'\cliente.conf'
+    archivo_de_spec= PATH_COMMON +'\confspec.ini'
+    logger = funciones.logSetup (PATH_COMMON+'\config.log',1, 1)
 
 logger.log (logging.INFO, "Plataforma detectada %s" % platform.uname()[0] )
 logger.log (logging.INFO, "Utiliando el archivo de configuracion: %s" %  archivo_de_configuracion)
@@ -79,15 +79,15 @@ else:
             PATH_DB=config['client']['path_db']
         else:
             LOG_FILENAME=config['client']['log_filename']
-            PATH_DB=path_common +'\kerberus.db'
+            PATH_DB=PATH_COMMON +'\kerberus.db'
         if config['client']['log_filename']:
             LOG_FILENAME=config['client']['log_filename']
         else:
-            LOG_FILENAME=path_common +'\kerberus-cliente.log'
+            LOG_FILENAME=PATH_COMMON +'\kerberus-cliente.log'
         if config['sync']['log_filename']:
             SYNC_LOG_FILENAME=config['sync']['log_filename']
         else:
-            SYNC_LOG_FILENAME=path_common +'\kerberus-syncd-cliente.log'
+            SYNC_LOG_FILENAME=PATH_COMMON +'\kerberus-syncd-cliente.log'
     #######
     # Asignaciones desde archivo de conf
     ########
