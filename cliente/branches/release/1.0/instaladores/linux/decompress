@@ -1,0 +1,17 @@
+#!/bin/bash
+# permito el acceso al X en Debian sobre todo
+xhost + > /dev/null
+
+export TMPDIR=`mktemp -d /tmp/selfextract.XXXXXX`
+
+ARCHIVE=`awk '/^__ARCHIVE_BELOW__/ {print NR + 1; exit 0; }' $0`
+
+tail -n+$ARCHIVE $0 | tar xzv -C $TMPDIR > /dev/null
+
+cd $TMPDIR
+echo "Solicitando permisos de sudo:"
+sudo ./installer
+
+exit 0
+
+__ARCHIVE_BELOW__
