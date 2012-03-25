@@ -13,7 +13,7 @@ SetCompressor lzma
 
 ;Definimos el valor de la variable VERSION, en caso de no definirse en el script
 ;podria ser definida en el compilador
-!define VERSION "0.7"
+!define VERSION "0.7-trunk"
 
 ;--------------------------------
 ;Pages
@@ -176,7 +176,7 @@ SetOutPath $INSTDIR\extradata
 File   desinstalador\dist\uninstall\*.*
 
 SetOutPath $INSTDIR\templates
-File   ..\..\cliente\templates\*.*
+File   ..\..\templates\*.*
 
 
 
