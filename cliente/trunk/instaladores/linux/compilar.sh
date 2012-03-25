@@ -6,11 +6,11 @@ echo "   - Limpiando directorios..."
 [ -d ../sincronizadorCliente/dist ] && rm -r ../sincronizadorCliente/dist
 
 echo "   - configurando pyinstaller..."
-python pyinstaller-1.5.1/Configure.py 2> /dev/null 1> /dev/null
+python ../common/pyinstaller-1.5.1/Configure.py 2> /dev/null 1> /dev/null
 echo "   - compilando cliente..."
-python pyinstaller-1.5.1/Build.py -y ./cliente/cliente.spec > /dev/null
+python ../common/pyinstaller-1.5.1/Build.py -y ./cliente/cliente.spec > /dev/null
 echo "   - compilando sincronizador..."
-python pyinstaller-1.5.1/Build.py -y ./sincronizadorCliente/sincronizadorCliente.spec > /dev/null
+python ../common/pyinstaller-1.5.1/Build.py -y ./sincronizadorCliente/sincronizadorCliente.spec > /dev/null
 echo "   - Generando archivo payload..."
 cd cliente/dist/
 tar cvfz ../../payload/cliente.tar.gz cliente > /dev/null

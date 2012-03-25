@@ -1,19 +1,21 @@
 #!/bin/bash
+VERSION="Trunk"
 echo "----------------------------------------------------"
-echo "Regenerando el instalador de kerberus para GNU/Linux"
+echo "Regenerando el instalador de kerberus, version ${VERSION} para GNU/Linux"
 echo "----------------------------------------------------"
 echo ""
-nombre_inst="kerberus-installer.sh"
+
+nombre_inst="kerberus-installer-${VERSION}.sh"
 echo "- Compilando ${nombre_inst}..."
-sh compilar.sh 
+sh compilar.sh
 echo "- Generando DB..."
 if [ -f payload/kerberus.db ]; then
   rm payload/kerberus.db
 fi
-cat ../../cliente/cliente.sql |sqlite3 payload/kerberus.db
+cat ../../cliente.sql |sqlite3 payload/kerberus.db
 
 echo "- Copiando templates..."
-cp ../../cliente/templates/* payload/templates/
+cp ../../templates/* payload/templates/
 
 echo "- Armando el archivo self-extracting..."
 cd payload
