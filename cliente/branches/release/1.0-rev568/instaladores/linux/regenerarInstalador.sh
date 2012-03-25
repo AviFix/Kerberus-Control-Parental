@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="Trunk"
+VERSION="1.0"
 echo "----------------------------------------------------"
 echo "Regenerando el instalador de kerberus, version ${VERSION} para GNU/Linux"
 echo "----------------------------------------------------"

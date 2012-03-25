@@ -13,7 +13,7 @@ sys.path.append('../')
 import funciones
 
 #FIXME: Esto se deberia sacar de otro lado
-VERSION=0.7
+VERSION=1.0
 #
 
 
