@@ -84,6 +84,11 @@ class Peticion:
         respuesta = self.obtenerRespuesta(headers)
         return respuesta
 
+    def recordarPassword(self):
+        headers = {"UserID":self.userid ,"Peticion":"recordarPassword"}
+        respuesta = self.obtenerRespuesta(headers)
+        return respuesta
+
     def obtenerDominiosDenegados(self,ultima_actualizacion):
         headers = {"UserID":self.userid ,"Peticion":"obtenerDominiosDenegados","UltimaSync":str(ultima_actualizacion)}
         dominios = self.obtenerRespuesta(headers)

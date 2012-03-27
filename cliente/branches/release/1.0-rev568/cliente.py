@@ -81,6 +81,23 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         msg=mensaje.cambiarPassword('','password_actual')
         self.responderAlCliente(msg)
 
+    def recordarPassword(self):
+        import registrar
+        registrador=registrar.Registradores()
+        if registrador.checkRegistradoRemotamente():
+            import peticion
+            peticionRemota=peticion.Peticion()
+            respuesta=peticionRemota.recordarPassword()
+            id, nombre, email, version, password=registrador.obtenerDatosRegistrados()
+            mensaje=mensajesHtml.MensajesHtml(config.PATH_TEMPLATES)
+            if respuesta == 'Recordada':
+                msj='Estimado %s,<br><br>Le hemos enviado un e-mail a su cuenta de correo %s con la password de administrador de kerberus.' % (nombre,email)
+            else:
+                msj='Estimado %s,<br><br>Ya hemos enviado un e-mail a su cuenta de correo %s con la password de administrador de kerberus.' % (nombre,email)
+            msg=mensaje.recordarPassword(msj)
+            self.responderAlCliente(msg)
+
+
     def redirigirDesbloqueado(self, url):
         msg="<html><head><meta HTTP-EQUIV=\"REFRESH\" content=\"0; url=%s\"></head></html>" % url
         self.responderAlCliente(msg)
@@ -203,6 +220,11 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
             else:
                 self.cambiarPassword()
                 return True
+
+        if "!RecordarPassword!" in url:
+            url=url.replace('!RecordarPassword!','')
+            self.recordarPassword()
+            return True
 
 
         #FIXME: Esto deberia ser un header no por url
