@@ -1,6 +1,6 @@
 # -*- mode: python -*-
-a = Analysis([os.path.join(HOMEPATH,'support/_mountzlib.py'), os.path.join(HOMEPATH,'support/useUnicode.py'), '../../../cliente/password/uninstall.py'],
-             pathex=['../../../cliente/clases','../../../cliente','../../../cliente/conf','../../../cliente/password'])
+a = Analysis([os.path.join(HOMEPATH,'support/_mountzlib.py'), os.path.join(HOMEPATH,'support/useUnicode.py'), '../../../password/uninstall.py'],
+             pathex=['../../../clases','../../../','../../../conf','../../../password'])
 pyz = PYZ(a.pure)
 exe = EXE(pyz,
           a.scripts,
