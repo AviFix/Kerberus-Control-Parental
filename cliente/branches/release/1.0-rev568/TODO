@@ -1,4 +1,5 @@
 * Hacer que thunderbird utilice el proxy (al menos en linux no se setea).
 * Hacer auto-instalable. Crear un directorio por cada versión.
 * El cliente debería informar la versión que esta usando en los headers de la consulta.
-
+* Reducir la cantidad de servidores a pocos, y que al finalizar la busqueda de un server, si termino de chequear todos, vuelva a empezar
+* Ver porque pide dos veces la pass para desinstalar.
