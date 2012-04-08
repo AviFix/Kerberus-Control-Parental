@@ -81,6 +81,11 @@ class Peticion:
             if dormir_por < 64:
                 dormir_por=dormir_por*2
 
+    def chequearActualizaciones(self):
+        headers = {"Peticion":"chequearActualizaciones"}
+        respuesta = self.obtenerRespuesta(headers)
+        actualizacion, md5sum = respuesta.split(',')
+        return actualizacion, md5sum
 
     def obtenerDominiosPermitidos(self,ultima_actualizacion):
         headers = {"Peticion":"obtenerDominiosPermitidos","UltimaSync":str(ultima_actualizacion)}

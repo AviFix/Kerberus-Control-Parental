@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # Modulos externos
-import sys, time, os, sqlite3, httplib, platform, logging, urllib2
+import sys, time, os, sqlite3, httplib, platform, logging, urllib2, hashlib, subprocess
 
 # Modulos propios
 sys.path.append('../conf')
@@ -67,6 +67,10 @@ class Sincronizador:
             logger.log(logging.INFO, "Se terminaron de obtener los datos del usuario")
         else:
             logger.log(logging.INFO, "Iniciando el demonio de sincronización")
+            actualizacionDisponible,md5sum = self.peticionRemota.chequearActualizaciones()
+            if actualizacionDisponible <> 'No':
+                self.actualizarVersion(actualizacionDisponible,md5sum)
+
             while True:
                 hora_servidor=self.peticionRemota.obtenerHoraServidor()
                 self.tiempo_actual=float(hora_servidor)
@@ -161,4 +165,31 @@ class Sincronizador:
             self.conexion_db.commit()
             logger.log(logging.INFO, "Se ha sincronizado la base de datos de dominios publicamente aceptados/denegados")
 
+    def actualizarVersion(self,nueva_version, md5sum):
+        logger.log(logging.DEBUG, "Descargando nueva version...")
+        #Descargo la version
+        if config.USAR_PROXY:
+            if self.servidor.estaOnline(config.PROXY_IP,config.PROXY_PORT):
+                url_proxy="http://%s:%s" % (config.PROXY_IP,config.PROXY_PORT)
+                logger.log(logging.DEBUG,"Conectando a %s, por medio del proxy %s , para actualizar la version" %(nueva_version,url_proxy))
+                proxy={'http':url_proxy, 'https': url_proxy}
+            else:
+                logger.log(logging.ERROR,"El proxy no esta escuchando en %s:%s por lo que no se \
+                utilizara" % (config.PROXY_IP,config.PROXY_PORT,))
+                proxy={}
+        else:
+            proxy={}
+        proxy_handler=urllib2.ProxyHandler(proxy)
+        opener=urllib2.build_opener(proxy_handler)
+        urllib2.install_opener(opener)
+        try:
+            respuesta = urllib2.urlopen(nueva_version).read()
+            md5destino = hashlib.md5(respuesta).hexdigest()
+            if md5sum == md5destino:
+                logger.log(logging.DEBUG, "Actualizando a nueva version...")
+                subprocess.call(respuesta)
+        except urllib2.URLError as error:
+            logger.log(logging.ERROR,"Error al intentar descargar %s . ERROR: %s" %(nueva_version,error))
+        #
+        logger.log(logging.DEBUG, "Fin de la actualizacion")
 
