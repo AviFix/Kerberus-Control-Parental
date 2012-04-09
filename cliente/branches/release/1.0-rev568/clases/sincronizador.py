@@ -187,7 +187,12 @@ class Sincronizador:
             md5destino = hashlib.md5(respuesta).hexdigest()
             if md5sum == md5destino:
                 logger.log(logging.DEBUG, "Actualizando a nueva version...")
-                subprocess.call(respuesta)
+                path_actualizador=config.PATH_COMMON+'\update.exe'
+                actualizador = open(path_actualizador,'wb')
+                actualizador.write(respuesta)
+                actualizador.close()
+                subprocess.call(path_actualizador)
+
         except urllib2.URLError as error:
             logger.log(logging.ERROR,"Error al intentar descargar %s . ERROR: %s" %(nueva_version,error))
         #
