@@ -85,7 +85,10 @@ class Peticion:
         headers = {"Peticion":"chequearActualizaciones"}
         respuesta = self.obtenerRespuesta(headers)
         actualizacion, md5sum = respuesta.split(',')
-        return actualizacion, md5sum
+        if actualizacion == 'No'
+            return None,None
+        else:
+            return actualizacion, md5sum
 
     def obtenerDominiosPermitidos(self,ultima_actualizacion):
         headers = {"Peticion":"obtenerDominiosPermitidos","UltimaSync":str(ultima_actualizacion)}

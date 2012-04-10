@@ -247,7 +247,7 @@ writeRegDWord HKCU "Software\Policies\Google\Chrome" "HomepageIsNewTabPage" 0
 ;ExecWait '"$INSTDIR\$VERSION\sync\sincronizadorCliente.exe"'
 
 CopyFiles /SILENT $ANTERIOR_INSTALLDIR\kerberus.db $INSTDIR\$VERSION\kerberus.db
-
+CopyFiles /SILENT $ANTERIOR_INSTALLDIR\cliente.conf $INSTDIR\$VERSION\cliente.conf
 SectionEnd
 
 
