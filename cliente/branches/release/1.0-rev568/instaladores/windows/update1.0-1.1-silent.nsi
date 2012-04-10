@@ -139,7 +139,12 @@ FunctionEnd
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 Section "Programa"
-  
+
+; Copio el installdir anterior
+Var /GLOBAL ANTERIOR_INSTALLDIR
+ReadRegStr $ANTERIOR_INSTALLDIR HKCU "Software\Kerberus" "InstallDir"
+
+
 CreateDirectory $INSTDIR\$VERSION
 
 SetOutPath $INSTDIR\$VERSION
@@ -186,29 +191,8 @@ SetShellVarContext current
 WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus" \
 "DisplayName" "Kerberus-control-parental"
 
-WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus" \
-"UninstallString" '"$INSTDIR\$VERSION\extradata\uninstall.exe"'
 
 WriteUninstaller $INSTDIR\$VERSION\extradata\kcpwu.dat
-
-Var /GLOBAL ANTERIOR_INSTALLDIR
-
-ReadRegStr $ANTERIOR_INSTALLDIR HKCU "Software\Kerberus" "InstallDir"
-
-WriteRegStr HKCU "Software\Kerberus" "InstallDir" $INSTDIR\$VERSION
-
-WriteRegStr HKCU "Software\Kerberus" "Version" "$VERSION"
-
-WriteRegStr HKCU "Software\Kerberus" "kerberus-common" "$INSTDIR\$VERSION"
-
-writeRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Run" \
-"Kerberus-client" "$INSTDIR\$VERSION\client\cliente.exe"
-
-writeRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Run" \
-"Kerberus-sync" "$INSTDIR\$VERSION\sync\sincronizadorCliente.exe"
-
-WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Run" \
-"checkNavs" "$INSTDIR\$VERSION\checkNavs\navegadores.exe"
 
 ;writeRegDword HKCU "SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" \
 ;"ProxySettingsPerUser" 0
@@ -248,6 +232,27 @@ writeRegDWord HKCU "Software\Policies\Google\Chrome" "HomepageIsNewTabPage" 0
 
 CopyFiles /SILENT $ANTERIOR_INSTALLDIR\kerberus.db $INSTDIR\$VERSION\kerberus.db
 CopyFiles /SILENT $ANTERIOR_INSTALLDIR\cliente.conf $INSTDIR\$VERSION\cliente.conf
+
+; Modifico las variables, porque en teoria ya se copio todo
+
+WriteRegStr HKCU "Software\Kerberus" "InstallDir" $INSTDIR\$VERSION
+
+WriteRegStr HKCU "Software\Kerberus" "Version" "$VERSION"
+
+WriteRegStr HKCU "Software\Kerberus" "kerberus-common" "$INSTDIR\$VERSION"
+
+writeRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Run" \
+"Kerberus-client" "$INSTDIR\$VERSION\client\cliente.exe"
+
+writeRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Run" \
+"Kerberus-sync" "$INSTDIR\$VERSION\sync\sincronizadorCliente.exe"
+
+WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Run" \
+"checkNavs" "$INSTDIR\$VERSION\checkNavs\navegadores.exe"
+
+WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus" \
+"UninstallString" '"$INSTDIR\$VERSION\extradata\uninstall.exe"'
+
 SectionEnd
 
 
