@@ -67,9 +67,10 @@ class Sincronizador:
             logger.log(logging.INFO, "Se terminaron de obtener los datos del usuario")
         else:
             logger.log(logging.INFO, "Iniciando el demonio de sincronización")
-            actualizacionDisponible,md5sum = self.peticionRemota.chequearActualizaciones()
-            if actualizacionDisponible <> None:
-                self.actualizarVersion(actualizacionDisponible,md5sum)
+            if config.PLATAFORMA == 'Windows':
+                actualizacionDisponible,md5sum = self.peticionRemota.chequearActualizaciones()
+                if actualizacionDisponible <> None:
+                    self.actualizarVersion(actualizacionDisponible,md5sum)
 
             while True:
                 hora_servidor=self.peticionRemota.obtenerHoraServidor()
