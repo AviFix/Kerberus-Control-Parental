@@ -82,7 +82,7 @@ class Peticion:
                 dormir_por=dormir_por*2
 
     def chequearActualizaciones(self):
-        headers = {"Peticion":"chequearActualizaciones"}
+        headers = {"Peticion":"chequearActualizaciones","Plataforma":config.PLATAFORMA}
         respuesta = self.obtenerRespuesta(headers)
         actualizacion, md5sum = respuesta.split(',')
         if actualizacion == 'No':
