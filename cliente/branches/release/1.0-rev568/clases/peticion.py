@@ -70,7 +70,8 @@ class Peticion:
             try:
                 if self.servidor.estaOnline(self.server_ip,self.server_port):
                     req = urllib2.Request("http://"+self.server_sync, headers=headers)
-                    respuesta = urllib2.urlopen(req).read()
+                    timeout=10
+                    respuesta = urllib2.urlopen(req,timeout).read()
                     logger.log(logging.DEBUG,"Respuesta: %s" % respuesta)
                     return respuesta
             except urllib2.URLError as error:

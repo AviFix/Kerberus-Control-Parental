@@ -50,7 +50,8 @@ class Servidor:
         urllib2.install_opener(opener)
         try:
             req = urllib2.Request(server, headers=headers)
-            respuesta = urllib2.urlopen(req).read()
+            timeout=2
+            respuesta = urllib2.urlopen(req,timeout).read()
             logger.log(logging.DEBUG,"Respuesta: %s" % respuesta)
             return (respuesta == 'Online')
         except urllib2.URLError as error:
@@ -60,7 +61,7 @@ class Servidor:
     def estaOnline(self,ip,port):
         """Verifica si el puerto esta abierto. Util para chequear el proxy nomas"""
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.settimeout(0.6)
+        s.settimeout(1.5)
         try:
             s.connect((ip, int(port)))
             s.shutdown(2)

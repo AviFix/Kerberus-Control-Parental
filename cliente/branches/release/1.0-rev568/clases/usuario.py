@@ -230,7 +230,8 @@ class Usuario:
         config.SERVER_IP,config.SERVER_PORT=self.servidor.obtenerServidor(config.SERVER_IP,config.SERVER_PORT)
         req = urllib2.Request("http://%s:%s" %(config.SERVER_IP,config.SERVER_PORT, ),headers=heads)
         try:
-            respuesta = urllib2.urlopen(req)
+            timeout = 10
+            respuesta = urllib2.urlopen(req,timeout)
             if respuesta.getcode() == 204:
                 logger.log(logging.INFO,"URL validada remotamente: %s" % url)
                 return True, ""

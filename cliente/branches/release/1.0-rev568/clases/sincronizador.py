@@ -184,7 +184,8 @@ class Sincronizador:
         opener=urllib2.build_opener(proxy_handler)
         urllib2.install_opener(opener)
         try:
-            respuesta = urllib2.urlopen(nueva_version).read()
+            timeout = 10
+            respuesta = urllib2.urlopen(nueva_version,timeout).read()
             md5destino = hashlib.md5(respuesta).hexdigest()
             if md5sum == md5destino:
                 logger.log(logging.DEBUG, "Actualizando a nueva version...")
