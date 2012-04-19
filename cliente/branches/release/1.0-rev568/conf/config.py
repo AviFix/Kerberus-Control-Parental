@@ -15,22 +15,32 @@ import funciones
 #FIXME: Esto se deberia sacar de otro lado
 VERSION=1.0
 #
+# Poner en false esta variable a la hora de pasar a produccion
+ENTORNO_DE_DESARROLLO=True
 
-
-if  platform.uname()[0] == 'Linux':
+if platform.uname()[0] == 'Linux':
     PLATAFORMA='Linux'
-    PATH_COMMON='/usr/share/kerberus'
-    archivo_de_configuracion='/etc/kerberus/cliente.conf'
-    archivo_de_spec= PATH_COMMON+'/confspec.ini'
-    logger = funciones.logSetup ('/var/log/kerberus-cliente.log', 1, 1, 1,"Config")
 else:
-    import _winreg, subprocess
     PLATAFORMA='Windows'
-    key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\kerberus')
-    PATH_COMMON = _winreg.QueryValueEx(key,'kerberus-common')[0]
-    archivo_de_configuracion= PATH_COMMON +'\cliente.conf'
-    archivo_de_spec= PATH_COMMON +'\confspec.ini'
-    logger = funciones.logSetup (PATH_COMMON+'\config.log',1, 1)
+
+if ENTORNO_DE_DESARROLLO:
+    PATH_COMMON='entorno_prueba'
+    archivo_de_configuracion='entorno_prueba/cliente.conf'
+    archivo_de_spec= PATH_COMMON+'/confspec.ini'
+    logger = funciones.logSetup ('/tmp/kerberus-cliente.log', 1, 1, 1,"Config")
+else:
+    if PLATAFORMA == 'Linux':
+        PATH_COMMON='/usr/share/kerberus'
+        archivo_de_configuracion='/etc/kerberus/cliente.conf'
+        archivo_de_spec= PATH_COMMON+'/confspec.ini'
+        logger = funciones.logSetup ('/var/log/kerberus-cliente.log', 1, 1, 1,"Config")
+    else:
+        import _winreg, subprocess
+        key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\kerberus')
+        PATH_COMMON = _winreg.QueryValueEx(key,'kerberus-common')[0]
+        archivo_de_configuracion= PATH_COMMON +'\cliente.conf'
+        archivo_de_spec= PATH_COMMON +'\confspec.ini'
+        logger = funciones.logSetup (PATH_COMMON+'\config.log',1, 1)
 
 logger.log (logging.INFO, "Plataforma detectada %s" % platform.uname()[0] )
 logger.log (logging.INFO, "Utiliando el archivo de configuracion: %s" %  archivo_de_configuracion)
