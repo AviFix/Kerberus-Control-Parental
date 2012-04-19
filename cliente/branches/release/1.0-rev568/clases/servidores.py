@@ -51,7 +51,7 @@ class Servidor:
         try:
             req = urllib2.Request(server, headers=headers)
             timeout=2
-            respuesta = urllib2.urlopen(req,timeout).read()
+            respuesta = urllib2.urlopen(req,timeout=timeout).read()
             logger.log(logging.DEBUG,"Respuesta: %s" % respuesta)
             return (respuesta == 'Online')
         except urllib2.URLError as error:

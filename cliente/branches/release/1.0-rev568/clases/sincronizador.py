@@ -185,7 +185,7 @@ class Sincronizador:
         urllib2.install_opener(opener)
         try:
             timeout = 10
-            respuesta = urllib2.urlopen(nueva_version,timeout).read()
+            respuesta = urllib2.urlopen(nueva_version,timeout=timeout).read()
             md5destino = hashlib.md5(respuesta).hexdigest()
             if md5sum == md5destino:
                 logger.log(logging.DEBUG, "Actualizando a nueva version...")

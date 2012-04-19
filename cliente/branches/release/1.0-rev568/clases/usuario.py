@@ -231,7 +231,7 @@ class Usuario:
         req = urllib2.Request("http://%s:%s" %(config.SERVER_IP,config.SERVER_PORT, ),headers=heads)
         try:
             timeout = 10
-            respuesta = urllib2.urlopen(req,timeout)
+            respuesta = urllib2.urlopen(req,timeout=timeout)
             if respuesta.getcode() == 204:
                 logger.log(logging.INFO,"URL validada remotamente: %s" % url)
                 return True, ""
