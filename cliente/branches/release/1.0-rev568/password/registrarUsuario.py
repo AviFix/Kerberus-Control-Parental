@@ -107,7 +107,7 @@ class ConclusionPage(QWizardPage):
         email=self.field("email").toString()
         password=self.field("password1").toString()
         registrador=registrar.Registradores()
-        registrador.registrarLocalmente(nombre,email,password,config.VERSION)
+        registrador.registrarLocalmente(nombre,email,password)
         titulo="Fin de la configuracion"
         mensaje="Estimado %s,\n\nHemos registrado sus password correctamente.\nLe enviaremos un e-mail con la misma a %s de modo que la pueda tener presente.\n\n\nGracias por utilizar Kerberus Control Parental!" % (nombre, email)
         self.setTitle(titulo)

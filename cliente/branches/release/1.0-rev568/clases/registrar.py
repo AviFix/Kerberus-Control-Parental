@@ -47,11 +47,11 @@ class Registradores:
         else:
             return False
 
-    def registrarLocalmente(self,nombre,email,password,version):
+    def registrarLocalmente(self,nombre,email,password):
         """Registra localmente los datos solicitados al momento de la instalacion"""
         try:
             #TODO: despues de que envie la contrasena se deberia borrar
-            self.cursor.execute('update instalacion set nombretitular=?, email=?, password=?, version=?', (str(nombre),str(email),str(password),str(version)))
+            self.cursor.execute('update instalacion set nombretitular=?, email=?, password=?', (str(nombre),str(email),str(password)))
             self.conexion_db.commit()
             admUser=administradorDeUsuarios.AdministradorDeUsuarios()
             admUser.setPassword('admin', str(password))

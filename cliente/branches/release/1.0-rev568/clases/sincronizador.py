@@ -191,13 +191,12 @@ class Sincronizador:
                 logger.log(logging.DEBUG, "Actualizando a nueva version...")
                 if config.PLATAFORMA == 'Windows':
                     path_actualizador=config.PATH_COMMON+'\update.exe'
-                    actualizador = open(path_actualizador,'wb')
-                    actualizador.write(respuesta)
-                    actualizador.close()
-                    subprocess.call(path_actualizador)
                 elif config.PLATAFORMA == 'Linux':
-                    #FIXME: Hacer el autoupdate para linux
-                    pass
+                    path_actualizador=config.PATH_COMMON+'\update.sh'
+                actualizador = open(path_actualizador,'wb')
+                actualizador.write(respuesta)
+                actualizador.close()
+                subprocess.call(path_actualizador)
 
         except urllib2.URLError as error:
             logger.log(logging.ERROR,"Error al intentar descargar %s . ERROR: %s" %(nueva_version,error))
