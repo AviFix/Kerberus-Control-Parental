@@ -21,7 +21,7 @@ if desinstalar:
     desinstalador = path_common +'\kcpwu.exe'
     comando = "move \"%s\" \"%s\"" % (origen, desinstalador)
     print "El comando es: %s" % comando
-    subprocess.Popen(comando,stdout=subprocess.PIPE, shell=True)
+    subprocess.Popen(comando,stdout=subprocess.PIPE, shell=False)
     print "Ejecutando %s" % desinstalador
     subprocess.call(desinstalador)
     reg=registar.Registradores()
