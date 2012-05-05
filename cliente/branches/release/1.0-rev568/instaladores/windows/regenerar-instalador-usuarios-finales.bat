@@ -1,5 +1,5 @@
-copy ..\..\cliente.conf ArchivosDefault\cliente.conf
-copy ..\..\conf\confspec.ini ArchivosDefault\confspec.ini
+copy ..\..\cliente.conf ArchivosDefault\cliente.conf /Y
+copy ..\..\conf\confspec.ini ArchivosDefault\confspec.ini /Y
 
 python ../common/pyinstaller-1.5.1/Configure.py
 

@@ -154,3 +154,14 @@ class Peticion:
         respuesta = self.obtenerRespuesta(headers)
         return respuesta
 
+    def validarUrl(self, url):
+        """Devuelve true o false, segun la url se permita o no. En caso de que no se permita, devuelve a su vez el motivo de porque no se permite."""
+        headers = {"Peticion":"validarUrl", "URL":url}
+        respuesta = self.obtenerRespuesta(headers)
+        if respuesta == "":
+            logger.log(logging.INFO,"URL validada remotamente: %s" % url)
+            return True, ""
+        else:
+            logger.log(logging.INFO,"URL denegada remotamente: %s" % url)
+            logger.log(logging.INFO,"Motivo: %s" % respuesta)
+            return False, respuesta

@@ -16,7 +16,7 @@ import funciones
 VERSION=1.0
 #
 # Poner en false esta variable a la hora de pasar a produccion
-ENTORNO_DE_DESARROLLO=True
+ENTORNO_DE_DESARROLLO=False
 
 if platform.uname()[0] == 'Linux':
     PLATAFORMA='Linux'
