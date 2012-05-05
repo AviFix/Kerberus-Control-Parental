@@ -14,6 +14,11 @@ if [ -f payload/kerberus.db ]; then
 fi
 cat ../../cliente.sql |sqlite3 payload/kerberus.db
 
+if [ -f payload/licencia.txt ]; then
+  rm payload/licencia.txt
+fi
+cp ../windows/ArchivosDefault/licencia.txt payload/licencia.txt
+
 echo "- Copiando templates..."
 cp ../../templates/* payload/templates/
 
