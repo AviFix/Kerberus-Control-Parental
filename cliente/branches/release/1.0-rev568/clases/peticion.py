@@ -85,9 +85,10 @@ class Peticion:
     def chequearActualizaciones(self):
         headers = {"Peticion":"chequearActualizaciones","Plataforma":config.PLATAFORMA}
         respuesta = self.obtenerRespuesta(headers)
+        print "Respuesta: %s" % respuesta
         actualizacion, md5sum = respuesta.split(',')
         if actualizacion == 'No':
-            return None,None
+            return None, None
         else:
             return actualizacion, md5sum
 

@@ -10,7 +10,6 @@ sys.path.append('../conf')
 import config
 import funciones
 import peticion
-import servidores
 
 logger = funciones.logSetup (config.LOG_FILENAME, config.LOGLEVEL, config.LOG_SIZE_MB, config.LOG_CANT_ROTACIONES,"usuario")
 
@@ -19,7 +18,6 @@ class Usuario:
     def __init__(self, usuario):
         logger.log(logging.INFO,"Conectado como usuario: %s" % usuario)
         self.nombre=usuario
-        self.servidor=servidores.Servidor()
         self.peticionRemota = peticion.Peticion()
         conexion = sqlite3.connect(config.PATH_DB)
         self.cursor=conexion.cursor()

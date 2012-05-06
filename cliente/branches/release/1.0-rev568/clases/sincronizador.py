@@ -68,7 +68,7 @@ class Sincronizador:
         else:
             logger.log(logging.INFO, "Iniciando el demonio de sincronización")
             if config.PLATAFORMA == 'Windows':
-                actualizacionDisponible,md5sum = self.peticionRemota.chequearActualizaciones()
+                actualizacionDisponible, md5sum = self.peticionRemota.chequearActualizaciones()
                 if actualizacionDisponible <> None:
                     self.actualizarVersion(actualizacionDisponible,md5sum)
 
