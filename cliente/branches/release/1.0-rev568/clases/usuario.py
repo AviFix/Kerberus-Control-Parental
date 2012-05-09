@@ -198,7 +198,7 @@ class Usuario:
             # FIXME: no deberia ir esto aca, pero es para que la primera vez se use los dominios sincronizados.
             # sino la primera vez self.dominios_publicamente_permitidos esta vacio, porque al momento de refrezcarse,
             # todavia no se habian sincronizado los dominios.
-            if len(self.dominios_publicamente_permitidos) == 1:
+            if len(self.dominios_publicamente_permitidos) == 0:
                 self.periodoDeActualizacionDB = 5
             modulo_logger.log(logging.INFO,"Dominios recargados, se volveran a sincronizar en %s" % self.periodoDeActualizacionDB)
 

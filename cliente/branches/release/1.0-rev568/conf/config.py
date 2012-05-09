@@ -55,7 +55,7 @@ else:
         PATH_COMMON = _winreg.QueryValueEx(key,'kerberus-common')[0]
         archivo_de_configuracion= PATH_COMMON +'\cliente.conf'
         archivo_de_spec= PATH_COMMON +'\confspec.ini'
-        logger = logSetup (PATH_COMMON+'\kerberus-cliente-config.log',1, 1)
+        logger = logSetup (PATH_COMMON+'\config.log',1, 1)
 
 logger.log (logging.INFO, "Plataforma detectada %s" % platform.uname()[0] )
 logger.log (logging.INFO, "Utiliando el archivo de configuracion: %s" %  archivo_de_configuracion)
