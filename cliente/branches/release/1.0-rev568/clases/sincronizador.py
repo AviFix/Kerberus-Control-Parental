@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
 
 # Modulos externos
-import sys, time, os, sqlite3, httplib, platform, logging, urllib2, hashlib, subprocess
+import sys, time, os, sqlite3, httplib, platform, urllib2, hashlib, subprocess
 
 # Modulos propios
 sys.path.append('../conf')
 sys.path.append('../password')
 
 import config
-import funciones
 import registrar
 import registrarUsuario
 import peticion
+import logging
+import loguear
 
-# Logging
-logger = funciones.logSetup (config.SYNC_LOG_FILENAME, config.SYNC_LOGLEVEL, config.SYNC_LOG_SIZE_MB, config.SYNC_LOG_CANT_ROTACIONES,"Sincronizador")
+modulo_logger = loguear.logSetup (config.SYNC_LOG_FILENAME, config.SYNC_LOGLEVEL, config.SYNC_LOG_SIZE_MB, config.SYNC_LOG_CANT_ROTACIONES,"Kerberus-sync")
+
 
 class Sincronizador:
 
@@ -24,20 +25,20 @@ class Sincronizador:
 
         registradoLocalmente=self.registrador.checkRegistradoLocalmente()
         if not registradoLocalmente:
-            logger.log(logging.INFO, "Iniciando proceso de solicitud de datos")
+            modulo_logger.log(logging.INFO, "Iniciando proceso de solicitud de datos")
             reg=registrarUsuario.RegistrarUsuario()
             if config.PLATAFORMA == 'Windows':
                 self.recienRegistrado=True
         else:
             self.id, self.nombre, self.email, self.version, self.password = self.registrador.obtenerDatosRegistrados()
-            logger.log(logging.INFO, "Esta registrado localmente")
+            modulo_logger.log(logging.INFO, "Esta registrado localmente")
 
         registradoRemotamente=self.registrador.checkRegistradoRemotamente()
         if not registradoRemotamente:
-            logger.log(logging.INFO, "Iniciando proceso de registro remoto")
+            modulo_logger.log(logging.INFO, "Iniciando proceso de registro remoto")
             self.registrador.registrarRemotamente()
         else:
-            logger.log(logging.INFO, "Esta registrado remotamente")
+            modulo_logger.log(logging.INFO, "Esta registrado remotamente")
 
         self.id, self.nombre, self.email, self.version, self.password = self.registrador.obtenerDatosRegistrados()
         self.peticionRemota=peticion.Peticion()
@@ -49,24 +50,24 @@ class Sincronizador:
 
         self.periodo_expiracion=self.peticionRemota.obtenerPeriodoDeActualizacion()
         self.periodo_recarga_completa=self.peticionRemota.obtenerPeriodoDeRecargaCompleta()
-        logger.log(logging.DEBUG, "Periodo de actualizacion: %s segundos" % self.periodo_expiracion)
-        logger.log(logging.DEBUG, "Periodo de recarga completa: %s segundos" % self.periodo_recarga_completa)
-        logger.log(logging.DEBUG, "Ultima actualizacion: %s"  % self.ultima_actualizacion)
-        logger.log(logging.DEBUG, "Ultima recarga completa: %s"  % self.ultima_recarga_completa)
+        modulo_logger.log(logging.DEBUG, "Periodo de actualizacion: %s segundos" % self.periodo_expiracion)
+        modulo_logger.log(logging.DEBUG, "Periodo de recarga completa: %s segundos" % self.periodo_recarga_completa)
+        modulo_logger.log(logging.DEBUG, "Ultima actualizacion: %s"  % self.ultima_actualizacion)
+        modulo_logger.log(logging.DEBUG, "Ultima recarga completa: %s"  % self.ultima_recarga_completa)
 
         self.recargar_todos_los_dominios = False
 
     def __del__(self):
        #TODO: Tambien deberia informar que se cerror la sesion
        self.conexion_db.close()
-       logger.log(logging.DEBUG, "Deteniendo el demonio de sincronizacion")
+       modulo_logger.log(logging.DEBUG, "Deteniendo el demonio de sincronizacion")
 
 
     def run(self):
         if self.recienRegistrado:
-            logger.log(logging.INFO, "Se terminaron de obtener los datos del usuario")
+            modulo_logger.log(logging.INFO, "Se terminaron de obtener los datos del usuario")
         else:
-            logger.log(logging.INFO, "Iniciando el demonio de sincronización")
+            modulo_logger.log(logging.INFO, "Iniciando el demonio de sincronización")
             if config.PLATAFORMA == 'Windows':
                 actualizacionDisponible, md5sum = self.peticionRemota.chequearActualizaciones()
                 if actualizacionDisponible <> None:
@@ -80,24 +81,24 @@ class Sincronizador:
 
                 if (tiempo_transcurrido_ultima_recarga > self.periodo_recarga_completa):
                     self.recargar_todos_los_dominios = True
-                    logger.log(logging.DEBUG,"Se recargaran todos los dominios permitidos/dengados con servidor...")
+                    modulo_logger.log(logging.DEBUG,"Se recargaran todos los dominios permitidos/dengados con servidor...")
 
                 if (tiempo_transcurrido > self.periodo_expiracion):
-                    logger.log(logging.DEBUG,"Sincronizando dominios permitidos/dengados con servidor...")
+                    modulo_logger.log(logging.DEBUG,"Sincronizando dominios permitidos/dengados con servidor...")
                     self.sincronizarDominiosConServer()
                 else:
                     tiempo_restante=self.ultima_actualizacion + self.periodo_expiracion - self.tiempo_actual
                     tiempo_proxima_recarga_completa=self.ultima_recarga_completa + self.periodo_recarga_completa - self.tiempo_actual
-                    logger.log(logging.DEBUG, "Faltan %s minutos para que se chequee si hay dominios nuevos, y %s minutos para recargar todos los dominios" % (tiempo_restante/60,tiempo_proxima_recarga_completa/60))
+                    modulo_logger.log(logging.DEBUG, "Faltan %s minutos para que se chequee si hay dominios nuevos, y %s minutos para recargar todos los dominios" % (tiempo_restante/60,tiempo_proxima_recarga_completa/60))
                     time.sleep(tiempo_restante)
-                    logger.log(logging.DEBUG, "Chequeando nuevamente los dominios")
+                    modulo_logger.log(logging.DEBUG, "Chequeando nuevamente los dominios")
 
     def passwordNotificada(self):
         """Verifica si se informo remotamente la password"""
         try:
             password_notificada = self.cursor.execute('select passwordnotificada from instalacion').fetchone()[0]
         except sqlite3.OperationalError, msg:
-            self.logger.log(logging.ERROR,"No se pudo verificar si la password esta verficada. Tal vez no esta la base de datos instalada.\nError: %s" % msg)
+            self.modulo_logger.log(logging.ERROR,"No se pudo verificar si la password esta verficada. Tal vez no esta la base de datos instalada.\nError: %s" % msg)
             return True
         return password_notificada
 
@@ -112,7 +113,7 @@ class Sincronizador:
             cursor.close()
             conexion_db.commit()
         except sqlite3.OperationalError, msg:
-            self.logger.log(logging.ERROR,"No se pudo obtener la pass para notificarla.\nError: %s" % msg)
+            self.modulo_logger.log(logging.ERROR,"No se pudo obtener la pass para notificarla.\nError: %s" % msg)
 
 
     def sincronizarDominiosPermitidos(self):
@@ -128,11 +129,11 @@ class Sincronizador:
                     self.cursor.execute('delete from dominios_publicamente_permitidos')
                 for fila in array_dominios:
                     if fila <> "":
-                        #logger.log(logging.DEBUG, "Se agrego el dominio permitido: %s" % fila)
+                        #modulo_logger.log(logging.DEBUG, "Se agrego el dominio permitido: %s" % fila)
                         self.cursor.execute('insert into dominios_publicamente_permitidos(url) values(?)', (fila, ) )
                 self.conexion_db.commit()
             else:
-               logger.log(logging.DEBUG,"No hay dominios permitidos para actualizar")
+               modulo_logger.log(logging.DEBUG,"No hay dominios permitidos para actualizar")
 
     def sincronizarDominiosDenegados(self):
             if self.recargar_todos_los_dominios:
@@ -147,16 +148,16 @@ class Sincronizador:
                     self.cursor.execute('delete from dominios_publicamente_denegados')
                 for fila in array_dominios:
                     if fila <> "":
-                        #logger.log(logging.DEBUG, "Se agrego el dominio denegado: %s" % fila)
+                        #modulo_logger.log(logging.DEBUG, "Se agrego el dominio denegado: %s" % fila)
                         self.cursor.execute('insert into dominios_publicamente_denegados(url) values(?)',(fila, ) )
                 self.conexion_db.commit()
             else:
-               logger.log(logging.DEBUG,"No hay dominios denegados para actualizar")
+               modulo_logger.log(logging.DEBUG,"No hay dominios denegados para actualizar")
 
     def sincronizarDominiosConServer(self):
             self.sincronizarDominiosPermitidos()
             self.sincronizarDominiosDenegados()
-            logger.log(logging.DEBUG,"Se terminaron de sincronizar los dominios")
+            modulo_logger.log(logging.DEBUG,"Se terminaron de sincronizar los dominios")
             if self.recargar_todos_los_dominios:
                 self.cursor.execute('update sincronizador set ultima_actualizacion=?, ultima_recarga_completa=?', (self.tiempo_actual, self.tiempo_actual))
                 self.recargar_todos_los_dominios = False
@@ -164,18 +165,18 @@ class Sincronizador:
             else:
                 self.cursor.execute('update sincronizador set ultima_actualizacion=?', (self.tiempo_actual,))
             self.conexion_db.commit()
-            logger.log(logging.INFO, "Se ha sincronizado la base de datos de dominios publicamente aceptados/denegados")
+            modulo_logger.log(logging.INFO, "Se ha sincronizado la base de datos de dominios publicamente aceptados/denegados")
 
     def actualizarVersion(self,nueva_version, md5sum):
-        logger.log(logging.DEBUG, "Descargando nueva version...")
+        modulo_logger.log(logging.DEBUG, "Descargando nueva version...")
         #Descargo la version
         if config.USAR_PROXY:
             if self.servidor.estaOnline(config.PROXY_IP,config.PROXY_PORT):
                 url_proxy="http://%s:%s" % (config.PROXY_IP,config.PROXY_PORT)
-                logger.log(logging.DEBUG,"Conectando a %s, por medio del proxy %s , para actualizar la version" %(nueva_version,url_proxy))
+                modulo_logger.log(logging.DEBUG,"Conectando a %s, por medio del proxy %s , para actualizar la version" %(nueva_version,url_proxy))
                 proxy={'http':url_proxy, 'https': url_proxy}
             else:
-                logger.log(logging.ERROR,"El proxy no esta escuchando en %s:%s por lo que no se \
+                modulo_logger.log(logging.ERROR,"El proxy no esta escuchando en %s:%s por lo que no se \
                 utilizara" % (config.PROXY_IP,config.PROXY_PORT,))
                 proxy={}
         else:
@@ -188,7 +189,7 @@ class Sincronizador:
             respuesta = urllib2.urlopen(nueva_version,timeout=timeout).read()
             md5destino = hashlib.md5(respuesta).hexdigest()
             if md5sum == md5destino:
-                logger.log(logging.DEBUG, "Actualizando a nueva version...")
+                modulo_logger.log(logging.DEBUG, "Actualizando a nueva version...")
                 if config.PLATAFORMA == 'Windows':
                     path_actualizador=config.PATH_COMMON+'\update.exe'
                 elif config.PLATAFORMA == 'Linux':
@@ -199,7 +200,7 @@ class Sincronizador:
                 subprocess.call(path_actualizador)
 
         except urllib2.URLError as error:
-            logger.log(logging.ERROR,"Error al intentar descargar %s . ERROR: %s" %(nueva_version,error))
+            modulo_logger.log(logging.ERROR,"Error al intentar descargar %s . ERROR: %s" %(nueva_version,error))
         #
-        logger.log(logging.DEBUG, "Fin de la actualizacion")
+        modulo_logger.log(logging.DEBUG, "Fin de la actualizacion")
 

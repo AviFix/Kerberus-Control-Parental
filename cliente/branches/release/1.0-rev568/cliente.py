@@ -29,9 +29,10 @@ import funciones
 import administradorDeUsuarios
 import pedirUsuario
 import mensajesHtml
+import loguear
 
 # Logging
-logger = funciones.logSetup (config.LOG_FILENAME, config.LOGLEVEL, config.LOG_SIZE_MB, config.LOG_CANT_ROTACIONES,"Modulo cliente")
+logger = loguear.logSetup (config.LOG_FILENAME, config.LOGLEVEL, config.LOG_SIZE_MB, config.LOG_CANT_ROTACIONES,"kerberus")
 
 if not os.path.exists(config.PATH_DB):
     funciones.crearDBCliente(config.PATH_DB)
@@ -355,11 +356,9 @@ def main ():
     signal.signal (signal.SIGINT, handler)
     server_address = (config.BIND_ADDRESS, config.BIND_PORT)
     ProxyHandler.protocol = "HTTP/1.1"
-    if config.USAR_PROXY:
-        logger.log(logging.INFO,"Usando kerberus a traves de proxy %s:%s" % (config.PROXY_IP,config.PROXY_PORT))
     httpd = ThreadingHTTPServer (server_address, ProxyHandler, logger)
     sa = httpd.socket.getsockname ()
-    logger.log(logging.INFO,'Kerberus - Cliente Activo, atendiendo en %s puerto %s' % (sa[0],sa[1],))
+    print 'Kerberus - Cliente Activo, atendiendo en %s puerto %s' % (sa[0],sa[1])
     req_count = 0
     while not run_event.isSet ():
         try:
@@ -373,7 +372,6 @@ def main ():
             if e[0] == 4 and run_event.isSet (): pass
             else:
                 logger.log (logging.CRITICAL, "Errno: %d - %s", e[0], e[1])
-    logger.log (logging.INFO, "Se ha detenido el cliente de Kerberus satisfactoriamente")
     return 0
 
 if __name__ == '__main__':

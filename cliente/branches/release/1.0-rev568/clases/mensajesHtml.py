@@ -8,14 +8,13 @@ from string import Template
 #Modulos propios
 import config
 import logging
-import funciones
+
+modulo_logger = logging.getLogger('kerberus.'+__name__)
 
 #Excepciones
 class MensajesHtmlError(Exception): pass
 #class nombre(ConsultorError): pass
 
-# Logging
-logger = funciones.logSetup (config.LOG_FILENAME, config.LOGLEVEL, config.LOG_SIZE_MB, config.LOG_CANT_ROTACIONES,"Modulo Consultor")
 
 # Clase
 class MensajesHtml:

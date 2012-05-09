@@ -6,11 +6,26 @@ import platform, os, sys
 from configobj import ConfigObj, flatten_errors
 from validate import Validator
 import logging
+import logging.handlers
 
 sys.path.append('../')
 
 # Modulos propios
-import funciones
+
+# FIXME: Deberia estar en loguear en vez de aca
+def logSetup (logfile, loglevel=5, logsize=1, cant_rotaciones=1,cabecera_log=""):
+    logger = logging.getLogger (cabecera_log)
+    logger.setLevel (loglevel*10)
+    handler = logging.handlers.RotatingFileHandler (logfile, maxBytes=(logsize*(1<<20)), backupCount=cant_rotaciones)
+    fmt = logging.Formatter (
+                                "[%(asctime)-12s.%(msecs)03d] "
+                                "%(levelname)-4s {%(name)s %(threadName)s}"
+                                " %(message)s",
+                                "%Y-%m-%d %H:%M:%S")
+    handler.setFormatter (fmt)
+    logger.addHandler (handler)
+    return logger
+####
 
 #FIXME: Esto se deberia sacar de otro lado
 VERSION=1.0
@@ -27,20 +42,20 @@ if ENTORNO_DE_DESARROLLO:
     PATH_COMMON='entorno_prueba'
     archivo_de_configuracion='entorno_prueba/cliente.conf'
     archivo_de_spec= PATH_COMMON+'/confspec.ini'
-    logger = funciones.logSetup ('/tmp/kerberus-cliente.log', 1, 1, 1,"Config")
+    logger = logSetup (PATH_COMMON +'/kerberus-cliente-config.log', 1, 1, 1,"Config")
 else:
     if PLATAFORMA == 'Linux':
         PATH_COMMON='/usr/share/kerberus'
         archivo_de_configuracion='/etc/kerberus/cliente.conf'
         archivo_de_spec= PATH_COMMON+'/confspec.ini'
-        logger = funciones.logSetup ('/var/log/kerberus-cliente.log', 1, 1, 1,"Config")
+        logger = logSetup ('/var/log/kerberus-cliente-config.log', 1, 1, 1,"Config")
     else:
         import _winreg, subprocess
         key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\kerberus')
         PATH_COMMON = _winreg.QueryValueEx(key,'kerberus-common')[0]
         archivo_de_configuracion= PATH_COMMON +'\cliente.conf'
         archivo_de_spec= PATH_COMMON +'\confspec.ini'
-        logger = funciones.logSetup (PATH_COMMON+'\config.log',1, 1)
+        logger = logSetup (PATH_COMMON+'\kerberus-cliente-config.log',1, 1)
 
 logger.log (logging.INFO, "Plataforma detectada %s" % platform.uname()[0] )
 logger.log (logging.INFO, "Utiliando el archivo de configuracion: %s" %  archivo_de_configuracion)

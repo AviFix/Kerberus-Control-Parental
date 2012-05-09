@@ -1,21 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import sqlite3
-import logging
-import logging.handlers
-
-def logSetup (logfile, loglevel=5, logsize=1, cant_rotaciones=1,cabecera_log=""):
-    logger = logging.getLogger (cabecera_log)
-    logger.setLevel (loglevel*10)
-    handler = logging.handlers.RotatingFileHandler (logfile, maxBytes=(logsize*(1<<20)), backupCount=cant_rotaciones)
-    fmt = logging.Formatter (
-                                "[%(asctime)-12s.%(msecs)03d] "
-                                "%(levelname)-4s {%(name)s %(threadName)s}"
-                                " %(message)s",
-                                "%Y-%m-%d %H:%M:%S")
-    handler.setFormatter (fmt)
-    logger.addHandler (handler)
-    return logger
 
 def crearDBCliente(PATH_DB):
     conn = sqlite3.connect(PATH_DB)

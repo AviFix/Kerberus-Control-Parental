@@ -5,7 +5,6 @@
 # Modulos externos
 import sys
 import urllib2
-import logging
 import sqlite3
 
 # Modulos propios
@@ -13,12 +12,12 @@ sys.path.append('../conf')
 sys.path.append('../')
 import servidores
 import config
-import funciones
-import time
-import registrar
 
-# Logging
-logger = funciones.logSetup (config.SYNC_LOG_FILENAME, config.SYNC_LOGLEVEL, config.SYNC_LOG_SIZE_MB, config.SYNC_LOG_CANT_ROTACIONES,"Peticion")
+import registrar
+import logging
+
+modulo_logger = logging.getLogger('kerberus.'+__name__)
+
 
 # Clase
 class Peticion:
@@ -36,7 +35,7 @@ class Peticion:
             cursor.close()
             return id, version, nombretitular
         except sqlite3.OperationalError, msg:
-            self.logger.log(logging.ERROR,"No se pudo obtener el id de instalacion.\nError: %s" % msg)
+            modulo_logger.log(logging.ERROR,"No se pudo obtener el id de instalacion.\nError: %s" % msg)
             id=0
             version=0
             nombretitular=''
@@ -47,10 +46,10 @@ class Peticion:
         if config.USAR_PROXY:
             if self.servidor.estaOnline(config.PROXY_IP,config.PROXY_PORT):
                 url_proxy="http://%s:%s" % (config.PROXY_IP,config.PROXY_PORT)
-                logger.log(logging.DEBUG,"Conectando a %s, por medio del proxy %s , para realizar la solicitud: %s" %(self.server_sync,url_proxy,headers['Peticion']))
+                modulo_logger.log(logging.DEBUG,"Conectando a %s, por medio del proxy %s , para realizar la solicitud: %s" %(self.server_sync,url_proxy,headers['Peticion']))
                 proxy={'http':url_proxy, 'https': url_proxy}
             else:
-                logger.log(logging.ERROR,"El proxy no esta escuchando en %s:%s por lo que no se \
+                modulo_logger.log(logging.ERROR,"El proxy no esta escuchando en %s:%s por lo que no se \
                 utilizara" % (config.PROXY_IP,config.PROXY_PORT,))
                 proxy={}
         else:
@@ -58,7 +57,7 @@ class Peticion:
         proxy_handler=urllib2.ProxyHandler(proxy)
         opener=urllib2.build_opener(proxy_handler)
         urllib2.install_opener(opener)
-        logger.log(logging.DEBUG,"Conectando a %s para realizar la solicitud: %s" %(self.server_sync,headers['Peticion']))
+        modulo_logger.log(logging.DEBUG,"Conectando a %s para realizar la solicitud: %s" %(self.server_sync,headers['Peticion']))
         dormir_por=1
 
         # Agrego los datos particulares del cliente
@@ -72,20 +71,17 @@ class Peticion:
                     req = urllib2.Request("http://"+self.server_sync, headers=headers)
                     timeout=10
                     respuesta = urllib2.urlopen(req,timeout=timeout).read()
-                    logger.log(logging.DEBUG,"Respuesta: %s" % respuesta)
+                    modulo_logger.log(logging.DEBUG,"Respuesta: %s" % respuesta)
                     return respuesta
             except urllib2.URLError as error:
-                logger.log(logging.ERROR,"Error al conectarse a %s, peticion: %s . ERROR: %s" %(self.server_sync,headers['Peticion'],error))
-            logger.log(logging.ERROR,"Durmiendo por %s", dormir_por)
-            time.sleep(dormir_por)
-            #se va incrementando el tiempo de dormir para no  matar el micro
-            if dormir_por < 64:
-                dormir_por=dormir_por*2
+                modulo_logger.log(logging.ERROR,"Error al conectarse a %s, peticion: %s . ERROR: %s" %(self.server_sync,headers['Peticion'],error))
+                self.server_ip,self.server_port = self.servidor.obtenerServidor(self.server_ip,self.server_ip,self.userid)
+                self.server_sync="%s:%s" % (self.server_ip,self.server_port)
+                modulo_logger.log(logging.INFO,"Se cambia al servidor %(server)s " % self.server_sync )
 
     def chequearActualizaciones(self):
         headers = {"Peticion":"chequearActualizaciones","Plataforma":config.PLATAFORMA}
         respuesta = self.obtenerRespuesta(headers)
-        print "Respuesta: %s" % respuesta
         actualizacion, md5sum = respuesta.split(',')
         if actualizacion == 'No':
             return None, None
@@ -160,9 +156,9 @@ class Peticion:
         headers = {"Peticion":"validarUrl", "URL":url}
         respuesta = self.obtenerRespuesta(headers)
         if respuesta == "":
-            logger.log(logging.INFO,"URL validada remotamente: %s" % url)
+            modulo_logger.log(logging.INFO,"URL validada remotamente: %s" % url)
             return True, ""
         else:
-            logger.log(logging.INFO,"URL denegada remotamente: %s" % url)
-            logger.log(logging.INFO,"Motivo: %s" % respuesta)
+            modulo_logger.log(logging.INFO,"URL denegada remotamente: %s" % url)
+            modulo_logger.log(logging.INFO,"Motivo: %s" % respuesta)
             return False, respuesta
