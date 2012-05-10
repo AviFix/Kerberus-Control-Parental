@@ -173,7 +173,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 #            if "kerberus.com.ar" not in url:
 #                self.mostrarPublicidad(url)
 #                return False
-#
+
         usuario, password="NoBody", "NoBody"
         # es para que muestre que kerberus esta activo, asi no lo muestra cuando se accede
         # a la pagina desde cualquier lugar
@@ -198,7 +198,6 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                     return True
 
         # Cambio de password
-#
         if "!CambiarPassword!" in url:
             url=url.replace('!CambiarPassword!','')
             if self.command == 'POST':
@@ -352,7 +351,6 @@ def handler (signo, frame):
 
 def main ():
     run_event = threading.Event ()
-    # setup the log file
     signal.signal (signal.SIGINT, handler)
     server_address = (config.BIND_ADDRESS, config.BIND_PORT)
     ProxyHandler.protocol = "HTTP/1.1"
