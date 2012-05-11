@@ -89,34 +89,24 @@ class navegadores:
     def unsetFirefox(self):
         if self.estaFirefoxInstalado():
             for perfil in self.getFirefoxProfiles(os.environ['USERNAME']):
-                if self.estaSeteadoFirefox(perfil):
-                        print "desseteando el perfil %s" % perfil
-                        # busco el seteo de proxy en pref.js
-                        archivo_config="%s\\prefs.js" % perfil
-#                        key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\kerberus')
-#                        path_common_kerberus = _winreg.QueryValueEx(key,'kerberus-common')[0]
-#                        mozilla_config_file= "%s\\user.js" % path_common_kerberus
-                        mozilla_config_file= "%s\\user.js" % perfil
-                        archivo_user = open(mozilla_config_file,'r').read()
-                        lineas_a_borrar = []
-                        print "cargando lineas a borrar"
-                        for linea in archivo_user.split('\n'):
-                            lineas_a_borrar.append(linea)
-                        lineas_a_borrar = lineas_a_borrar[0:-1]
-                        data = open(archivo_config,'r').read()
-                        print "data antes: %s" % data
-                        for linea in lineas_a_borrar:
-                            data=re.sub(re.escape(linea),'', data)
-                        archivo = open(archivo_config,'w')
-                        print "data despues: %s" % data
-                        archivo.write( data )
-                        archivo.close()
-                        destino = "\"%s\\user.js\"" % perfil
-                        comando = "del %s" % (destino)
-                        result = subprocess.Popen(comando,stdout=subprocess.PIPE, shell=True)
-                        print "Se termino de dessetear firefox para el perfil %s" % perfil
-                #except:
-                #    return "No se pudo dessetear firefox, a pesar de estar instalado"
+                print "desseteando el perfil %s" % perfil
+                path_archivo = "%s\\prefs.js" % perfil
+                archivo = open(path_archivo,'r')
+                nuevo = []
+                for linea in archivo.readlines():
+                	if "user_pref(\"network.proxy.type\", 1);" in linea:
+			  nuevo.append("user_pref(\"network.proxy.type\", 0);\r\n")
+			else:
+			  nuevo.append(linea)
+		archivo.close()
+		archivo = open(path_archivo,'w')
+		for linea in nuevo:
+			archivo.write(linea+'\n')
+		archivo.close()
+                destino = "\"%s\\user.js\"" % perfil
+                comando = "del %s" % (destino)
+                result = subprocess.Popen(comando,stdout=subprocess.PIPE, shell=True)
+                print "Se termino de dessetear firefox para el perfil %s" % perfil
 
     def estaSeteadoIE(self):
         try:
