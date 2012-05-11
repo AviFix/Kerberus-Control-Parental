@@ -103,9 +103,11 @@ class navegadores:
 		for linea in nuevo:
 			archivo.write(linea+'\n')
 		archivo.close()
-                destino = "\"%s\\user.js\"" % perfil
-                comando = "del %s" % (destino)
-                result = subprocess.Popen(comando,stdout=subprocess.PIPE, shell=True)
+		archivo_user = "%s\\user.js" % perfil
+		if os.path.isfile(archivo_user):
+                	destino = "\"%s\"" % archivo_user 
+                	comando = "del %s" % (destino)
+                	result = subprocess.Popen(comando,stdout=subprocess.PIPE, shell=True)
                 print "Se termino de dessetear firefox para el perfil %s" % perfil
 
     def estaSeteadoIE(self):
