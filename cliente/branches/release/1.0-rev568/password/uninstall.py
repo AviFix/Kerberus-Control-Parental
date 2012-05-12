@@ -18,8 +18,8 @@ desinstalar=myapp.verificado
 if desinstalar:
     key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\kerberus')
     path_common = _winreg.QueryValueEx(key,'kerberus-common')[0]
-    origen = path_common +'\extradata\kcpwu.dat'
-    desinstalador = path_common +'\extradata\kcpwu.exe'
+    origen = path_common +'\kcpwu.dat'
+    desinstalador = path_common +'\kcpwu.exe'
     comando = "move \"%s\" \"%s\"" % (origen, desinstalador)
     print "El comando es: %s" % comando
     subprocess.Popen(comando,stdout=subprocess.PIPE, shell=True)

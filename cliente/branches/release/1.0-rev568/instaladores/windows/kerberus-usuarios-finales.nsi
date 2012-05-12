@@ -12,7 +12,7 @@ SetCompressor lzma
   !define mui_abortwarning
 
 
-  
+
 
 ;--------------------------------
 ;Pages
@@ -96,7 +96,7 @@ Function .onInit
   ;podria ser definida en el compilador
   Var /GLOBAL VERSION
   StrCpy $VERSION "1.0"
-  
+
   ReadRegStr $R0 HKCU \
   "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus" \
   "UninstallString"
@@ -160,7 +160,7 @@ FunctionEnd
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 Section "Programa"
-  
+
 CreateDirectory $INSTDIR\$VERSION
 
 SetOutPath $INSTDIR\$VERSION
@@ -176,7 +176,7 @@ File   kerberus-daemon\dist\cliente\*.*
 SetOutPath $INSTDIR\$VERSION\sync
 File   kerberus-sync\dist\sincronizadorCliente\*.*
 
-SetOutPath $INSTDIR\$VERSION\extradata
+SetOutPath $INSTDIR\$VERSION
 File   desinstalador\dist\uninstall\*.*
 
 SetOutPath $INSTDIR\$VERSION\templates
@@ -208,9 +208,9 @@ WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus" 
 "DisplayName" "Kerberus-control-parental"
 
 WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus" \
-"UninstallString" '"$INSTDIR\$VERSION\extradata\uninstall.exe"'
+"UninstallString" '"$INSTDIR\$VERSION\uninstall.exe"'
 
-WriteUninstaller $INSTDIR\$VERSION\extradata\kcpwu.dat
+WriteUninstaller $INSTDIR\$VERSION\kcpwu.dat
 
 WriteRegStr HKCU "Software\Kerberus" "InstallDir" $INSTDIR\$VERSION
 
@@ -323,18 +323,21 @@ Section "Uninstall"
         DeleteRegValue HKCU "Software\Policies\Google\Chrome" "system"
         DeleteRegValue HKCU "Software\Policies\Google\Chrome" "DefaultSearchProviderSearchURL"
         DeleteRegValue HKCU "Software\Policies\Google\Chrome" "HomepageIsNewTabPage"
-        RMDir /r /REBOOTOK $INSTDIR\$VERSION
 
-;	writeRegDword HKCU "SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxySettingsPerUser" 1
+        Delete /REBOOTOK $INSTDIR\$VERSION\checkNavs\*.*
+        RMDir /REBOOTOK $INSTDIR\$VERSION\checkNavs
 
-;        DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "MigrateProxy"
-;        DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyEnable"
-;        DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyHttp1.1"
-;        DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyServer"
-;        DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyOverride"
+        Delete /REBOOTOK $INSTDIR\$VERSION\client\*.*
+        RMDir /REBOOTOK $INSTDIR\$VERSION\client
 
-;SimpleSC::RemoveService "kerberus-daemon"
-;SimpleSC::RemoveService "kerberus-sync"
+        Delete /REBOOTOK $INSTDIR\$VERSION\sync\*.*
+        RMDir /REBOOTOK $INSTDIR\$VERSION\sync
+
+        Delete /REBOOTOK $INSTDIR\$VERSION\templates\*.*
+        RMDir /REBOOTOK $INSTDIR\$VERSION\templates
+
+        Delete /REBOOTOK $INSTDIR\$VERSION\*.*
+        RMDir /REBOOTOK $INSTDIR\$VERSION
 
 MessageBox MB_YESNO|MB_ICONQUESTION "Es necesario reiniciar para completar la desinstalacion. Desea reiniciar ahora?" IDNO +2
 	reboot
