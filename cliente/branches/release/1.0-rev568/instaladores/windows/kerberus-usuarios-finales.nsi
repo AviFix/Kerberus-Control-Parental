@@ -324,20 +324,7 @@ Section "Uninstall"
         DeleteRegValue HKCU "Software\Policies\Google\Chrome" "DefaultSearchProviderSearchURL"
         DeleteRegValue HKCU "Software\Policies\Google\Chrome" "HomepageIsNewTabPage"
 
-        Delete /REBOOTOK $INSTDIR\$VERSION\checkNavs\*.*
-        RMDir /REBOOTOK $INSTDIR\$VERSION\checkNavs
-
-        Delete /REBOOTOK $INSTDIR\$VERSION\client\*.*
-        RMDir /REBOOTOK $INSTDIR\$VERSION\client
-
-        Delete /REBOOTOK $INSTDIR\$VERSION\sync\*.*
-        RMDir /REBOOTOK $INSTDIR\$VERSION\sync
-
-        Delete /REBOOTOK $INSTDIR\$VERSION\templates\*.*
-        RMDir /REBOOTOK $INSTDIR\$VERSION\templates
-
-        Delete /REBOOTOK $INSTDIR\$VERSION\*.*
-        RMDir /REBOOTOK $INSTDIR\$VERSION
+        RMDir /r /REBOOTOK $INSTDIR\$VERSION
 
 MessageBox MB_YESNO|MB_ICONQUESTION "Es necesario reiniciar para completar la desinstalacion. Desea reiniciar ahora?" IDNO +2
 	reboot
