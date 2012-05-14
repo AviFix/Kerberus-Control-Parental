@@ -8,12 +8,11 @@ echo ""
 nombre_inst="kerberus-installer-${VERSION}.sh"
 echo "- Compilando ${nombre_inst}..."
 sh compilar.sh
-echo "- Generando DB..."
+echo "- Copiando DB del instalador de windows..."
 if [ -f payload/kerberus.db ]; then
   rm payload/kerberus.db
 fi
-cat ../../cliente.sql |sqlite3 payload/kerberus.db
-
+cp ../windows/ArchivosDefault/kerberus.db payload/kerberus.db
 if [ -f payload/licencia.txt ]; then
   rm payload/licencia.txt
 fi

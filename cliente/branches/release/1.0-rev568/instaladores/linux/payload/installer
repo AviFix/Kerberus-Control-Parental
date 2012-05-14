@@ -96,8 +96,8 @@ if [ -f ${PATH_COMMON}/kerberus.lock ]; then
 fi
 chmod 755 ${PATH_COMMON} -R
 /etc/init.d/kerberus-cliented start
-iptables -D OUTPUT -m owner --uid-owner root -j ACCEPT
-iptables -D OUTPUT -p tcp --dport 80 -j REJECT
+#iptables -D OUTPUT -m owner --uid-owner root -j ACCEPT
+#iptables -D OUTPUT -p tcp --dport 80 -j REJECT
 #iptables -D OUTPUT -p tcp --dport 443 -j REJECT
 
 /etc/init.d/kerberus-sincronizadord start
