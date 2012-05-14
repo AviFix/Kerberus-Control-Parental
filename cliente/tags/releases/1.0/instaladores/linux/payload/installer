@@ -1,0 +1,106 @@
+#!/bin/bash
+PATH_COMMON=/usr/share/kerberus
+CONFIG_DIR=/etc/kerberus
+INIT_DIR=/etc/init.d
+
+if [ -f ${PATH_COMMON}/uninstaller ]; then
+  echo "Kerberus ya se encuentra instalado, desea desinstalarlo? [y/N]"
+  read respuesta
+  if [ "${respuesta}" = "y" ]; then
+    sh ${PATH_COMMON}/uninstaller
+  fi
+  exit 0
+fi
+
+# Muestro la licencia
+  more licencia.txt
+  echo ""
+  echo ""
+  echo "Acepta los terminos y condiciones de la licencia de uso? [Y/n]"
+  read respuesta
+  if [ "${respuesta}" = "n" ]; then
+	exit 0
+  fi
+  while [ "${respuesta}" != "n" ] && [ "${respuesta}" != "y" ] && [ "${respuesta}" && "Y" ]; do 
+	echo "Ingrese y o n"
+  	if [ "${respuesta}" = "n" ]; then
+		exit 0
+	fi
+	if [ "${respuesta}" = "y" || "${respuesta}" = "Y" ];then
+	    break
+	fi
+	read respuesta
+  done
+
+echo "Instalando Kerberus Control Parental..."
+
+mkdir -p ${PATH_COMMON}
+mkdir -p ${CONFIG_DIR}
+
+tar xvfz ./cliente.tar.gz -C ${PATH_COMMON} > /dev/null
+tar xvfz ./sincronizador.tar.gz -C ${PATH_COMMON} > /dev/null
+cp ./confspec.ini ${PATH_COMMON}
+cp ./cliente.conf ${CONFIG_DIR}
+cp ./kerberus-cliented ${INIT_DIR}/
+cp ./kerberus-sincronizadord ${INIT_DIR}/
+cp ./kerberus.db ${PATH_COMMON}/
+cp -r templates ${PATH_COMMON}
+cp ./setProxy.sh ${PATH_COMMON}
+cp ./uninstaller ${PATH_COMMON}
+
+# Seteando configuracion a todos los usuarios
+echo "Configurando kerberus para el/los usuarios:"
+for user_home in /home/*;
+do 
+  	# seteando sistema
+  	if [ -d ${user_home} ] && [ -d ${user_home}/.gconf ];then
+	  usuario=`echo $user_home|cut -f 3 -d "/"`
+	  echo " - ${usuario}"
+	  su - ${usuario} -c "sh ${PATH_COMMON}/setProxy.sh set localhost 8080" > /dev/null 2> /dev/null
+	fi
+
+	# seteando Google Chrome
+	# chromiun
+	if [ -d /etc/chromium-browser/policies/managed/ ]; then
+	  cp ./kerberus.json /etc/chromium-browser/policies/managed/
+	fi
+	# chrome
+	if [ -d /etc/opt/chrome/policies/managed ]; then
+	  cp ./kerberus.json /etc/opt/chrome/policies/managed/
+	fi
+
+	# seteando firefox
+  	dir_firefox_profiles=${user_home}/.mozilla/firefox
+	if [ -f ${dir_firefox_profiles}/profiles.ini ]; 
+	then
+		dir_profile=`grep "Path=" ${dir_firefox_profiles}/profiles.ini |cut -f 2 -d "="`
+		path_profile=${dir_firefox_profiles}/${dir_profile}
+		if [ -d ${path_profile} ];
+		then
+			cp ./user.js ${path_profile}/
+		fi
+  	fi
+done
+
+update-rc.d kerberus-cliented defaults > /dev/null
+update-rc.d kerberus-sincronizadord defaults > /dev/null
+
+echo "Solicitando password de administrador..."
+/etc/init.d/kerberus-sincronizadord start 
+sleep 3 
+if [ -f ${PATH_COMMON}/kerberus.lock ]; then
+	while [ -f ${PATH_COMMON}/kerberus.lock ];
+	do
+	  sleep 1
+	done
+fi
+chmod 755 ${PATH_COMMON} -R
+/etc/init.d/kerberus-cliented start
+iptables -D OUTPUT -m owner --uid-owner root -j ACCEPT
+iptables -D OUTPUT -p tcp --dport 80 -j REJECT
+#iptables -D OUTPUT -p tcp --dport 443 -j REJECT
+
+/etc/init.d/kerberus-sincronizadord start
+echo "Fin de la instalacion. Gracias por utilizar Kerberus Control Parental."
+exit 0
+
