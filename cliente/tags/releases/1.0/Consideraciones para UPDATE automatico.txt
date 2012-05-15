@@ -1,4 +1,0 @@
-# -*- coding: utf-8 *-*
- * Se debe copiar la base de datos que tiene el usuario, y su archivo de config.
- * Se debe modificar la versión en la base de datos.
- * lo último que debe hacer el actualizador, es modificar los enlaces de inicio (registro de windows run, o script de init.d en linux)
