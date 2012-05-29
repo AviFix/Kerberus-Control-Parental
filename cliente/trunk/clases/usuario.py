@@ -8,17 +8,18 @@ import re, sqlite3, time, sys, urllib2, httplib, logging
 # Modulos propios
 sys.path.append('../conf')
 import config
-import funciones
-import servidores
+import peticion
+import logging
 
-logger = funciones.logSetup (config.LOG_FILENAME, config.LOGLEVEL, config.LOG_SIZE_MB, config.LOG_CANT_ROTACIONES,"usuario")
+modulo_logger = logging.getLogger('kerberus.'+__name__)
+
 
 # Clase
 class Usuario:
     def __init__(self, usuario):
-        logger.log(logging.INFO,"Conectado como usuario: %s" % usuario)
+        modulo_logger.log(logging.INFO,"Conectado como usuario: %s" % usuario)
         self.nombre=usuario
-        self.servidor=servidores.Servidor()
+        self.peticionRemota = peticion.Peticion()
         conexion = sqlite3.connect(config.PATH_DB)
         self.cursor=conexion.cursor()
         self.id, self.es_admin=self.getUserIdAndAdmin(usuario)
@@ -34,6 +35,7 @@ class Usuario:
         #del(self.cursor)
         self.buffer_denegadas=[]
         self.buffer_aceptadas=[]
+
 
     def __str__(self):
         return self.nombre
@@ -61,7 +63,7 @@ class Usuario:
 
     def recargarCacheDenegadas(self):
         """Recarga la cache de urls denegadas, con lo que esta en la base de datos"""
-        logger.log(logging.INFO,"Recargando cache de URLs denegadas")
+        modulo_logger.log(logging.INFO,"Recargando cache de URLs denegadas")
         self.cache_urls_denegadas=[]
         respuesta=self.cursor.execute('select url from cache_urls_denegadas').fetchall()
         for fila in respuesta:
@@ -69,7 +71,7 @@ class Usuario:
 
     def recargarCacheAceptadas(self):
         """Recarga la cache de urls aceptadas, con lo que esta en la base de datos"""
-        logger.log(logging.INFO,"Recargando cache de URLs aceptadas")
+        modulo_logger.log(logging.INFO,"Recargando cache de URLs aceptadas")
         self.cache_urls_aceptadas=[]
         respuesta=self.cursor.execute('select url from cache_urls_aceptadas').fetchall()
         for fila in respuesta:
@@ -77,7 +79,7 @@ class Usuario:
 
     def recargarDominiosDenegados(self):
         """Carga desde la base de datos a memoria los dominios denegados"""
-        logger.log(logging.INFO,"Recargando dominios denegados")
+        modulo_logger.log(logging.INFO,"Recargando dominios denegados")
         self.dominios_denegados=[]
         respuesta=self.cursor.execute('select url from dominios_denegados where usuario=?', (self.id, )).fetchall()
         for fila in respuesta:
@@ -85,7 +87,7 @@ class Usuario:
 
     def recargarDominiosPermitidos(self):
         """Carga desde la base de datos a memoria los dominios permitidos"""
-        logger.log(logging.INFO,"Recargando dominios permitidos")
+        modulo_logger.log(logging.INFO,"Recargando dominios permitidos")
         self.dominios_permitidos=[]
         respuesta=self.cursor.execute('select url from dominios_permitidos where usuario=?',(self.id, )).fetchall()
         for fila in respuesta:
@@ -93,7 +95,7 @@ class Usuario:
 
     def recargarDominiosPublicamentePermitidos(self):
         """Carga desde la base de datos a memoria los dominios Publicamente permitidos"""
-        logger.log(logging.INFO,"Recargando dominios publicamente permitidos")
+        modulo_logger.log(logging.INFO,"Recargando dominios publicamente permitidos")
         conexion = sqlite3.connect(config.PATH_DB)
         cursor=conexion.cursor()
         self.dominios_publicamente_permitidos=[]
@@ -104,7 +106,7 @@ class Usuario:
 
     def recargarDominiosPublicamenteDenegados(self):
         """Carga desde la base de datos a memoria los dominios Publicamente denegados"""
-        logger.log(logging.INFO,"Recargando dominios publicamente denegados")
+        modulo_logger.log(logging.INFO,"Recargando dominios publicamente denegados")
         conexion = sqlite3.connect(config.PATH_DB)
         cursor=conexion.cursor()
         self.dominios_publicamente_denegados=[]
@@ -133,7 +135,7 @@ class Usuario:
             dominio=url.split('/')[2]
             return dominio in self.dominios_publicamente_permitidos
         except:
-            logger.log(logging.ERROR,"Error al tratar de obtener el dominio desde la url: %s" % url)
+            modulo_logger.log(logging.ERROR,"Error al tratar de obtener el dominio desde la url: %s" % url)
             return True
 
     def dominioPublicamenteDenegado(self, url):
@@ -142,7 +144,7 @@ class Usuario:
             dominio=url.split('/')[2]
             return dominio in self.dominios_publicamente_denegados
         except:
-            logger.log(logging.ERROR,"Error al tratar de obtener el dominio desde la url: %s" % url)
+            modulo_logger.log(logging.ERROR,"Error al tratar de obtener el dominio desde la url: %s" % url)
             return False
 
     def cacheAceptadas(self, url):
@@ -162,7 +164,7 @@ class Usuario:
             cursor=conexion.cursor()
             for item in self.buffer_aceptadas:
                 cursor.execute('insert into cache_urls_aceptadas values (?,?)',(item[0],item[1], ))
-                logger.log(logging.INFO,"Agregando en la cache de urls aceptadas a: %s" % item[0])
+                modulo_logger.log(logging.INFO,"Agregando en la cache de urls aceptadas a: %s" % item[0])
             conexion.commit()
             conexion.close()
             self.buffer_aceptadas=[]
@@ -176,25 +178,14 @@ class Usuario:
             cursor=conexion.cursor()
             for item in self.buffer_denegadas:
                 cursor.execute('insert into cache_urls_denegadas values (?,?)',(item[0],item[1], ))
-                logger.log(logging.INFO,"Agregando en la cache de urls denegadas a: %s" % item[0])
+                modulo_logger.log(logging.INFO,"Agregando en la cache de urls denegadas a: %s" % item[0])
             conexion.commit()
             conexion.close()
             self.buffer_denegadas=[]
 
     def recargarPeriodoDeActualizacion(self):
-        # prueba con el servidor seteado en la conifg, y sino devuelve
-        # uno valido y lo setea para seguir usandolo
-        config.SYNC_SERVER_IP,config.SERVER_PORT=self.servidor.obtenerServidor(config.SYNC_SERVER_IP,config.SERVER_PORT)
-        conexion=httplib.HTTPConnection("%s:%s" % (config.SYNC_SERVER_IP,config.SERVER_PORT,))
-        headers = {"UserID": "1","Peticion":"getPeriodoDeActualizacion"}
-        conexion.request("GET", "/", "", headers)
-        respuesta=conexion.getresponse()
-        respuesta=respuesta.read()
-        if not respuesta or not respuesta.isdigit():
-            respuesta=10
-            logger.log(logging.INFO,"No se obtuvo un Periodo de actualizacion. Seteando por defecto a: %s" % respuesta)
-        self.periodoDeActualizacionDB=int(respuesta)*60
-        logger.log(logging.INFO,"Periodo de actualizacion de la DB obtenido: %s" % self.periodoDeActualizacionDB )
+        self.periodoDeActualizacionDB=self.peticionRemota.obtenerPeriodoDeActualizacion()
+        modulo_logger.log(logging.INFO,"Periodo de actualizacion de la DB obtenido: %s" % self.periodoDeActualizacionDB )
 
     def chequearEdadCaches(self):
         tiempo_actual=time.time()
@@ -204,39 +195,19 @@ class Usuario:
             self.recargarDominiosPublicamenteDenegados()
             self.recargarPeriodoDeActualizacion()
             self.ultimaRecargaDeDominios=tiempo_actual
-            logger.log(logging.INFO,"Dominios recargados, se volveran a sincronizar en %s" % self.periodoDeActualizacionDB)
+            # FIXME: no deberia ir esto aca, pero es para que la primera vez se use los dominios sincronizados.
+            # sino la primera vez self.dominios_publicamente_permitidos esta vacio, porque al momento de refrezcarse,
+            # todavia no se habian sincronizado los dominios.
+            if len(self.dominios_publicamente_permitidos) == 0:
+                self.periodoDeActualizacionDB = 5
+            modulo_logger.log(logging.INFO,"Dominios recargados, se volveran a sincronizar en %s" % self.periodoDeActualizacionDB)
 
     def validarRemotamente(self, url):
         """Consulta al servidor por la url, porque no pudo determinar su aptitud"""
-        self.chequearEdadCaches()
-        logger.log(logging.INFO,"Validando remotamente: %s" % url)
-        if config.USAR_PROXY:
-            if self.servidor.estaOnline(config.PROXY_IP,config.PROXY_PORT):
-                server="http://%s:%s" % (config.PROXY_IP,config.PROXY_PORT)
-                proxy={'http':server, 'https': server}
 
-            else:
-                logger.log(logging.ERROR,"El proxy no esta escuchando en %s:%s por lo que no se \
-                utilizara" % (config.PROXY_IP,config.PROXY_PORT,))
-                proxy={}
-        else:
-            proxy={}
-        proxy_handler=urllib2.ProxyHandler(proxy)
-        opener=urllib2.build_opener(proxy_handler)
-        urllib2.install_opener(opener)
-        heads = {"UserID": "1","URL":url,"Peticion":"consulta"}
-        # prueba con el servidor seteado en la config, y sino devuelve
-        # uno valido y lo setea para seguir usandolo
-        config.SERVER_IP,config.SERVER_PORT=self.servidor.obtenerServidor(config.SERVER_IP,config.SERVER_PORT)
-        req = urllib2.Request("http://%s:%s" %(config.SERVER_IP,config.SERVER_PORT, ),headers=heads)
-        try:
-            respuesta = urllib2.urlopen(req)
-            if respuesta.getcode() == 204:
-                logger.log(logging.INFO,"URL validada remotamente: %s" % url)
-                return True, ""
-            else:
-                logger.log(logging.INFO,"URL denegada remotamente: %s" % url)
-                logger.log(logging.INFO,"Motivo: %s" % respuesta.msg)
-                return False, respuesta.msg
-        except urllib2.HTTPError, e:
-            logger.log(logging.ERROR,"Error verificando la URL: %s , ERROR: %s" % (url, e.code))
+        #TODO: Esto deberia ser cada cierto tiempo, no cuando busque una url no validada
+        self.chequearEdadCaches()
+        #
+        modulo_logger.log(logging.INFO,"Validando remotamente: %s" % url)
+        permitido, mensaje = self.peticionRemota.validarUrl(url)
+        return permitido, mensaje

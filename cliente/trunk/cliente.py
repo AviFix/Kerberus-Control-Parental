@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-__version__ = "0.5"
+__version__ = "1.0"
 
 # Modulos externos
 import BaseHTTPServer, select, socket, SocketServer, urlparse
@@ -29,9 +29,10 @@ import funciones
 import administradorDeUsuarios
 import pedirUsuario
 import mensajesHtml
+import loguear
 
 # Logging
-logger = funciones.logSetup (config.LOG_FILENAME, config.LOGLEVEL, config.LOG_SIZE_MB, config.LOG_CANT_ROTACIONES,"Modulo cliente")
+logger = loguear.logSetup (config.LOG_FILENAME, config.LOGLEVEL, config.LOG_SIZE_MB, config.LOG_CANT_ROTACIONES,"kerberus")
 
 if not os.path.exists(config.PATH_DB):
     funciones.crearDBCliente(config.PATH_DB)
@@ -80,6 +81,23 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         mensaje=mensajesHtml.MensajesHtml(config.PATH_TEMPLATES)
         msg=mensaje.cambiarPassword('','password_actual')
         self.responderAlCliente(msg)
+
+    def recordarPassword(self):
+        import registrar
+        registrador=registrar.Registradores()
+        if registrador.checkRegistradoRemotamente():
+            import peticion
+            peticionRemota=peticion.Peticion()
+            respuesta=peticionRemota.recordarPassword()
+            id, nombre, email, version, password=registrador.obtenerDatosRegistrados()
+            mensaje=mensajesHtml.MensajesHtml(config.PATH_TEMPLATES)
+            if respuesta == 'Recordada':
+                msj='Estimado %s,<br><br>Le hemos enviado un e-mail a su cuenta de correo %s con la password de administrador de kerberus.' % (nombre,email)
+            else:
+                msj='Estimado %s,<br><br>Ya hemos enviado un e-mail a su cuenta de correo %s con la password de administrador de kerberus.' % (nombre,email)
+            msg=mensaje.recordarPassword(msj)
+            self.responderAlCliente(msg)
+
 
     def redirigirDesbloqueado(self, url):
         msg="<html><head><meta HTTP-EQUIV=\"REFRESH\" content=\"0; url=%s\"></head></html>" % url
@@ -155,7 +173,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 #            if "kerberus.com.ar" not in url:
 #                self.mostrarPublicidad(url)
 #                return False
-#
+
         usuario, password="NoBody", "NoBody"
         # es para que muestre que kerberus esta activo, asi no lo muestra cuando se accede
         # a la pagina desde cualquier lugar
@@ -180,7 +198,6 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                     return True
 
         # Cambio de password
-#
         if "!CambiarPassword!" in url:
             url=url.replace('!CambiarPassword!','')
             if self.command == 'POST':
@@ -203,6 +220,11 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
             else:
                 self.cambiarPassword()
                 return True
+
+        if "!RecordarPassword!" in url:
+            url=url.replace('!RecordarPassword!','')
+            self.recordarPassword()
+            return True
 
 
         #FIXME: Esto deberia ser un header no por url
@@ -329,15 +351,12 @@ def handler (signo, frame):
 
 def main ():
     run_event = threading.Event ()
-    # setup the log file
     signal.signal (signal.SIGINT, handler)
     server_address = (config.BIND_ADDRESS, config.BIND_PORT)
     ProxyHandler.protocol = "HTTP/1.1"
-    if config.USAR_PROXY:
-        logger.log(logging.INFO,"Usando kerberus a traves de proxy %s:%s" % (config.PROXY_IP,config.PROXY_PORT))
     httpd = ThreadingHTTPServer (server_address, ProxyHandler, logger)
     sa = httpd.socket.getsockname ()
-    logger.log(logging.INFO,'Kerberus - Cliente Activo, atendiendo en %s puerto %s' % (sa[0],sa[1],))
+    print 'Kerberus - Cliente Activo, atendiendo en %s puerto %s' % (sa[0],sa[1])
     req_count = 0
     while not run_event.isSet ():
         try:
@@ -351,7 +370,6 @@ def main ():
             if e[0] == 4 and run_event.isSet (): pass
             else:
                 logger.log (logging.CRITICAL, "Errno: %d - %s", e[0], e[1])
-    logger.log (logging.INFO, "Se ha detenido el cliente de Kerberus satisfactoriamente")
     return 0
 
 if __name__ == '__main__':

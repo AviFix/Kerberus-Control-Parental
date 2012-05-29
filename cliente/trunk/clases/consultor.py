@@ -10,29 +10,30 @@ import administradorDeUsuarios
 import manejadorUrls
 import usuario
 import config
-import logging
-import funciones
 import servidores
+import logging
+
+
+modulo_logger = logging.getLogger('kerberus.'+__name__)
 
 #Excepciones
 class ConsultorError(Exception): pass
 #class nombre(ConsultorError): pass
 
-# Logging
-logger = funciones.logSetup (config.LOG_FILENAME, config.LOGLEVEL, config.LOG_SIZE_MB, config.LOG_CANT_ROTACIONES,"Modulo Consultor")
 
 # Clase
 class Consultor:
     def __init__(self):
         self.primerUrl=True
-        servers=servidores.Servidor()
-        ip,port = servers.obtenerServidor(config.SERVER_IP,config.SERVER_PORT)
-        if ip and port:
-            self.kerberus_activado=True
-            logger.log(logging.DEBUG, "Activando el filtrado de Kerberus")
-        else:
-            logger.log(logging.ERROR, "No se pudo obtener ningun servidor kerberus, por lo que el filtrado se deshabilita")
-            self.kerberus_activado=False
+#        servers=servidores.Servidor()
+#        ip,port = servers.obtenerServidor(config.SERVER_IP,config.SERVER_PORT)
+#        if ip and port:
+#            self.kerberus_activado=True
+#            modulo_logger.log(logging.DEBUG, "Activando el filtrado de Kerberus")
+#        else:
+#            modulo_logger.log(logging.ERROR, "No se pudo obtener ningun servidor kerberus, por lo que el filtrado se deshabilita")
+#            self.kerberus_activado=False
+        self.kerberus_activado=True
         self.usuarios=administradorDeUsuarios.AdministradorDeUsuarios()
 
     def extensionValida(self, url):
@@ -43,7 +44,7 @@ class Consultor:
         #TODO: No se si esto esta bien, revisar
         if "kerberus.com.ar" in url:
             mensaje = "Consulta a kerberus"
-            logger.log(logging.DEBUG, mensaje)
+            modulo_logger.log(logging.DEBUG, mensaje)
             return True, mensaje
 
         if not self.usuarios.usuario_valido(username, password):
@@ -55,58 +56,58 @@ class Consultor:
             mensaje= "Usuario administrador"
             return True, mensaje
             if config.DEBUG_IS_ADMIN:
-                logger.log(logging.INFO, mensaje)
+                modulo_logger.log(logging.INFO, mensaje)
 
         elif usuario.dominioDenegado(url):
             mensaje="Dominio denegado: " + url
             if config.DEBUG_DOM_DENG:
-                logger.log(logging.INFO, mensaje)
+                modulo_logger.log(logging.INFO, mensaje)
             return False, mensaje
 
         elif usuario.dominioPermitido(url):
             mensaje = "Dominio permitido: " + url
             if config.DEBUG_DOM_PERM:
-                logger.log(logging.INFO, mensaje)
+                modulo_logger.log(logging.INFO, mensaje)
             return True,  mensaje
 
         elif usuario.dominioPublicamentePermitido(url):
             mensaje = "Dominio publicamente permitido: " + url
             if config.DEBUG_DOM_PUB_PERM:
-                logger.log(logging.INFO, mensaje)
+                modulo_logger.log(logging.INFO, mensaje)
             return True, mensaje
 
         elif usuario.dominioPublicamenteDenegado(url):
             mensaje = "Dominio publicamente denegado: " + url
             if config.DEBUG_DOM_PUB_DENG:
-                logger.log(logging.INFO, mensaje)
+                modulo_logger.log(logging.INFO, mensaje)
             return False, mensaje
 
         elif self.extensionValida(url):
             mensaje = "Exension valida: " + url
             if config.DEBUG_EXTENSIONES:
-                logger.log(logging.INFO, mensaje)
+                modulo_logger.log(logging.INFO, mensaje)
             return True, mensaje
 
         elif usuario.cacheAceptadas(url):
             mensaje = "CACHEADA, Autorizada: " + url
             if config.DEBUG_CACHEADA_PERM:
-                logger.log(logging.INFO, mensaje)
+                modulo_logger.log(logging.INFO, mensaje)
             return True, mensaje
 
         elif usuario.cacheDenegadas(url):
             mensaje = "CACHEADA, Denegada: " + url
             if config.DEBUG_CACHEADA_PERM:
-                logger.log(logging.INFO, mensaje)
+                modulo_logger.log(logging.INFO, mensaje)
             return False, mensaje
         else:
             valido, razon= usuario.validarRemotamente(url)
             if valido:
                 mensaje = "Url validada remotamente : " + url
                 if config.DEBUG_VALIDA_REM:
-                    logger.log(logging.INFO, mensaje)
+                    modulo_logger.log(logging.INFO, mensaje)
                 return True,  ""
             else:
                 mensaje = "URL: %s <br>Motivo: %s" % (url,  razon)
                 if config.DEBUG_NO_VALIDA_REM:
-                    logger.log(logging.INFO, mensaje)
+                    modulo_logger.log(logging.INFO, mensaje)
                 return False, mensaje

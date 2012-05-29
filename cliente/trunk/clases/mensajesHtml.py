@@ -8,14 +8,13 @@ from string import Template
 #Modulos propios
 import config
 import logging
-import funciones
+
+modulo_logger = logging.getLogger('kerberus.'+__name__)
 
 #Excepciones
 class MensajesHtmlError(Exception): pass
 #class nombre(ConsultorError): pass
 
-# Logging
-logger = funciones.logSetup (config.LOG_FILENAME, config.LOGLEVEL, config.LOG_SIZE_MB, config.LOG_CANT_ROTACIONES,"Modulo Consultor")
 
 # Clase
 class MensajesHtml:
@@ -24,7 +23,7 @@ class MensajesHtml:
         self.template_pedir_password=path_templates+'/pedirPassword.html'
         self.template_sitio_denegado=path_templates+'/sitioDenegado.html'
         self.template_cambiar_password=path_templates+'/cambiarPassword.html'
-        self.template_password_cambiada=path_templates+'/passwordCambiadaCorrectamente.html'
+        self.template_mensaje=path_templates+'/mensaje.html'
 
     def renderizarMensaje(self,template_path,diccionario):
         archivo_template=open(template_path,'r').read()
@@ -57,7 +56,15 @@ class MensajesHtml:
             titulo='Cambiar password',
             mensaje=mensaje
             )
-        mensaje=self.renderizarMensaje(self.template_password_cambiada,diccionario)
+        mensaje=self.renderizarMensaje(self.template_mensaje,diccionario)
+        return mensaje
+
+    def recordarPassword(self,mensaje=''):
+        diccionario=dict(
+            titulo='Recordar password',
+            mensaje=mensaje
+            )
+        mensaje=self.renderizarMensaje(self.template_mensaje,diccionario)
         return mensaje
 
     def denegarSitio(self,sitio=''):

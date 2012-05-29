@@ -1,6 +1,6 @@
 # -*- mode: python -*-
-a = Analysis([os.path.join(HOMEPATH,'support/_mountzlib.py'), os.path.join(HOMEPATH,'support/useUnicode.py'), '../../../cliente/sincronizadorCliente.py'],
-             pathex=['../../../cliente/conf','../../../cliente/clases','../../../cliente/password'])
+a = Analysis([os.path.join(HOMEPATH,'support/_mountzlib.py'), os.path.join(HOMEPATH,'support/useUnicode.py'), '../../../sincronizadorCliente.py'],
+             pathex=['../../../conf','../../../clases','../../../password'])
 pyz = PYZ(a.pure)
 exe = EXE(pyz,
           a.scripts,

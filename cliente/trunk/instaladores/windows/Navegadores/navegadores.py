@@ -59,18 +59,26 @@ class navegadores:
             archivo_config="%s\\prefs.js" % perfil
             if os.path.isfile(archivo_config):
                 archivo = open(archivo_config,'r')
-                regex_ip = '.*network.proxy.http..*127.0.0.1.*'
-                regex_port = '.*network.proxy.http_port..*8080.*'
-                ip_encontrada = False
-                port_encontrado = False
+                proxy_ip = 'user_pref(\"network.proxy.http\", \"127.0.0.1\");'
+                proxy_port = 'user_pref(\"network.proxy.http_port\", 8080);'
+                proxy_habilitado = 'user_pref(\"network.proxy.type\", 1);'
+                ip_detectada = False
+                puerto_detectado = False
+                proxy_habilitado_detectado = False
                 for linea in archivo.readlines():
-                    if re.match(regex_ip, linea):
-                        ip_encontrada=True
-                    if re.match(regex_port, linea):
-                        port_encontrado=True
-                if ip_encontrada and port_encontrado:
+                    print "linea: %s" % linea
+                    if proxy_ip in linea:
+                        ip_detectada = True
+                    if proxy_port in linea:
+                        puerto_detectado = True
+                    if proxy_habilitado in linea:
+                        proxy_habilitado_detectado = True
+                if proxy_habilitado_detectado and puerto_detectado and ip_detectada:
+                    print "Esta Seteado Firefox, perfil: %s" % perfil
                     return True
-            return False
+                else:
+                    print "No esta Seteado Firefox, perfil: %s" % perfil
+                    return False
 
     def setFirefox(self):
         if self.estaFirefoxInstalado():
@@ -79,44 +87,38 @@ class navegadores:
                         print "seteando el perfil %s" % perfil
                         key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\kerberus')
                         path_common_kerberus = _winreg.QueryValueEx(key,'kerberus-common')[0]
-                        mozilla_config_file="\"%s\\user.js\"" % path_common_kerberus
-                        destino = "\"%s\\user.js\"" % perfil
-                        comando = "copy %s %s /y" % (mozilla_config_file, destino)
-                        print "El comando es: %s" % comando
-                        result = subprocess.Popen(comando,stdout=subprocess.PIPE, shell=True)
+                        mozilla_config_file="%s\\user.js" % path_common_kerberus
+                        destino = "%s\\user.js" % perfil
+                        archivo_origen = open(mozilla_config_file, 'r')
+                        archivo_destino = open(destino,'w')
+                        for linea in archivo_origen.readlines():
+                            archivo_destino.write(linea)
+                        archivo_origen.close()
+                        archivo_destino.close()
                         print "Se termino de setear firefox para el perfil %s" % perfil
 
     def unsetFirefox(self):
         if self.estaFirefoxInstalado():
             for perfil in self.getFirefoxProfiles(os.environ['USERNAME']):
                 if self.estaSeteadoFirefox(perfil):
-                        print "desseteando el perfil %s" % perfil
-                        # busco el seteo de proxy en pref.js
-                        archivo_config="%s\\prefs.js" % perfil
-#                        key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\kerberus')
-#                        path_common_kerberus = _winreg.QueryValueEx(key,'kerberus-common')[0]
-#                        mozilla_config_file= "%s\\user.js" % path_common_kerberus
-                        mozilla_config_file= "%s\\user.js" % perfil
-                        archivo_user = open(mozilla_config_file,'r').read()
-                        lineas_a_borrar = []
-                        print "cargando lineas a borrar"
-                        for linea in archivo_user.split('\n'):
-                            lineas_a_borrar.append(linea)
-                        lineas_a_borrar = lineas_a_borrar[0:-1]
-                        data = open(archivo_config,'r').read()
-                        print "data antes: %s" % data
-                        for linea in lineas_a_borrar:
-                            data=re.sub(re.escape(linea),'', data)
-                        archivo = open(archivo_config,'w')
-                        print "data despues: %s" % data
-                        archivo.write( data )
-                        archivo.close()
-                        destino = "\"%s\\user.js\"" % perfil
-                        comando = "del %s" % (destino)
-                        result = subprocess.Popen(comando,stdout=subprocess.PIPE, shell=True)
-                        print "Se termino de dessetear firefox para el perfil %s" % perfil
-                #except:
-                #    return "No se pudo dessetear firefox, a pesar de estar instalado"
+                    print "desseteando el perfil %s" % perfil
+                    path_archivo = "%s\\prefs.js" % perfil
+                    archivo = open(path_archivo,'r')
+                    nuevo = []
+                    for linea in archivo.readlines():
+                        if "user_pref(\"network.proxy.type\", 1);" in linea:
+                            nuevo.append("user_pref(\"network.proxy.type\", 0);\r\n")
+                        else:
+                            nuevo.append(linea)
+                    archivo.close()
+                    archivo = open(path_archivo,'w')
+                    for linea in nuevo:
+                        archivo.write(linea)
+                    archivo.close()
+                    archivo_user = "%s\\user.js" % perfil
+                    if os.path.isfile(archivo_user):
+                        os.remove(archivo_user)
+                    print "Se termino de dessetear firefox para el perfil %s" % perfil
 
     def estaSeteadoIE(self):
         try:

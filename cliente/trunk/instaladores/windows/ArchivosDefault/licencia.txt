@@ -1,8 +1,8 @@
 LICENCIA FREEWARE - CONTRATO DE LICENCIA DE USUARIO FINAL
-SOFTWARE "KERBERUS - CONTROL PARENTAL WEB"
+SOFTWARE "KERBERUS - CONTROL PARENTAL"
 
 AVISO AL USUARIO:
-Por favor, lea cuidadosamente el presente contrato de licencia. Usando todo o una porción del software "Kerberus - Control parental web" está aceptando todos y cada uno de los términos y condiciones de este contrato. Si no está de acuerdo con estos términos, no use este Software.
+Por favor, lea cuidadosamente el presente contrato de licencia. Usando todo o una porción del software "Kerberus - Control parental" está aceptando todos y cada uno de los términos y condiciones de este contrato. Si no está de acuerdo con estos términos, no use este Software.
  
 1. DEFINICIONES
 
@@ -82,4 +82,4 @@ En ninguna circunstancia el Concesionario será responsable para con el Licencian
 
 Si alguna porción de este contrato se considera inaplicable, el resto se mantendrá válido. Esto significa que si una sección del contrato no es permitida por ley, el resto del contrato sigue en vigor.  El no ejercicio de alguno de los derechos bajo este contrato por alguna de las partes, no constituirá una renuncia de (1) ningún otro término o condición de este contrato, o (2) algún derecho en cualquier momento posterior a exigir el cumplimiento exacto y estricto de los términos de este contrato.
 
-© 2012 NOMBRENUEVO S.R.L. Todos los Derechos Reservados.
+© 2012 Kerberus S.R.L. Todos los Derechos Reservados.

@@ -3,27 +3,27 @@
 """Modulo encargado de verificar si el usuario ingresado por el cliente es valido"""
 
 #Modulos externos
-import sqlite3, time,  hashlib,  os, sys, logging
-
+import sqlite3, time,  hashlib,  os, sys
 #Modulos propios
 sys.path.append('../conf')
 import usuario
 import config
 import funciones
+import logging
+
+modulo_logger = logging.getLogger('kerberus.'+__name__)
 
 #Excepciones
 class AdministradorDeUsuariosError(Exception): pass
 class DatabaseError(AdministradorDeUsuariosError): pass
 class UsuarioNoValido(AdministradorDeUsuariosError): pass
 
-# Logging
-logger = funciones.logSetup (config.LOG_FILENAME, config.LOGLEVEL, config.LOG_SIZE_MB, config.LOG_CANT_ROTACIONES,"Modulo AdministradorDeUsuarios")
 
 # Clase
 class AdministradorDeUsuarios:
         def __init__(self):
             if not os.path.exists(config.PATH_DB):
-                logger.log(logging.ERROR,"La base de datos no existe, o usted no posee permisos para accederla")
+                modulo_logger.log(logging.ERROR,"La base de datos no existe, o usted no posee permisos para accederla")
                 raise DatabaseError, "La base de datos no existe, o usted no posee permisos para accederla"
             self.usuarios = []
             self.usuarios_ya_validados = []

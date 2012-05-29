@@ -6,31 +6,56 @@ import platform, os, sys
 from configobj import ConfigObj, flatten_errors
 from validate import Validator
 import logging
+import logging.handlers
 
 sys.path.append('../')
 
 # Modulos propios
-import funciones
+
+# FIXME: Deberia estar en loguear en vez de aca
+def logSetup (logfile, loglevel=5, logsize=1, cant_rotaciones=1,cabecera_log=""):
+    logger = logging.getLogger (cabecera_log)
+    logger.setLevel (loglevel*10)
+    handler = logging.handlers.RotatingFileHandler (logfile, maxBytes=(logsize*(1<<20)), backupCount=cant_rotaciones)
+    fmt = logging.Formatter (
+                                "[%(asctime)-12s.%(msecs)03d] "
+                                "%(levelname)-4s {%(name)s %(threadName)s}"
+                                " %(message)s",
+                                "%Y-%m-%d %H:%M:%S")
+    handler.setFormatter (fmt)
+    logger.addHandler (handler)
+    return logger
+####
 
 #FIXME: Esto se deberia sacar de otro lado
-VERSION=0.7
+VERSION=1.0
 #
+# Poner en false esta variable a la hora de pasar a produccion
+ENTORNO_DE_DESARROLLO=False
 
-
-if  platform.uname()[0] == 'Linux':
+if platform.uname()[0] == 'Linux':
     PLATAFORMA='Linux'
-    PATH_COMMON='/usr/share/kerberus'
-    archivo_de_configuracion='/etc/kerberus/cliente.conf'
-    archivo_de_spec= PATH_COMMON+'/confspec.ini'
-    logger = funciones.logSetup ('/var/log/kerberus-cliente.log', 1, 1, 1,"Config")
 else:
-    import _winreg, subprocess
     PLATAFORMA='Windows'
-    key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\kerberus')
-    PATH_COMMON = _winreg.QueryValueEx(key,'kerberus-common')[0]
-    archivo_de_configuracion= PATH_COMMON +'\cliente.conf'
-    archivo_de_spec= PATH_COMMON +'\confspec.ini'
-    logger = funciones.logSetup (PATH_COMMON+'\config.log',1, 1)
+
+if ENTORNO_DE_DESARROLLO:
+    PATH_COMMON='entorno_prueba'
+    archivo_de_configuracion='entorno_prueba/cliente.conf'
+    archivo_de_spec= PATH_COMMON+'/confspec.ini'
+    logger = logSetup (PATH_COMMON +'/kerberus-cliente-config.log', 2, 1, 1,"Config")
+else:
+    if PLATAFORMA == 'Linux':
+        PATH_COMMON='/usr/share/kerberus'
+        archivo_de_configuracion='/etc/kerberus/cliente.conf'
+        archivo_de_spec= PATH_COMMON+'/confspec.ini'
+        logger = logSetup ('/var/log/kerberus-cliente-config.log', 2, 1, 1,"Config")
+    else:
+        import _winreg, subprocess
+        key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\kerberus')
+        PATH_COMMON = _winreg.QueryValueEx(key,'kerberus-common')[0]
+        archivo_de_configuracion= PATH_COMMON +'\cliente.conf'
+        archivo_de_spec= PATH_COMMON +'\confspec.ini'
+        logger = logSetup (PATH_COMMON+'\config.log',2, 1)
 
 logger.log (logging.INFO, "Plataforma detectada %s" % platform.uname()[0] )
 logger.log (logging.INFO, "Utiliando el archivo de configuracion: %s" %  archivo_de_configuracion)
@@ -45,14 +70,14 @@ if result != True:
     for (section_list, key, _) in flatten_errors(config, result):
         if key is not None:
             print 'El parámetro "%s" de la sección "%s" es incorrecto' % (key, ', '.join(section_list))
-            logger.log (logging.INFO, 'El parámetro "%s" de la sección "%s" es incorrecto' % (key, ', '.join(section_list)))
+            logger.log (logging.ERROR, 'El parámetro "%s" de la sección "%s" es incorrecto' % (key, ', '.join(section_list)))
         else:
             print 'No se encontro la sección:%s ' % ', '.join(section_list)
-            logger.log (logging.INFO, 'No se encontro la sección:%s ' % ', '.join(section_list))
+            logger.log (logging.ERROR, 'No se encontro la sección:%s ' % ', '.join(section_list))
 
 else:
     #print "Se leyo la configuración del cliente correctamente"
-    logger.log (logging.INFO, 'Se leyo la configuracion del cliente correctamente')
+    logger.log (logging.DEBUG, 'Se leyo la configuracion del cliente correctamente')
 
     #revisar y arreglar para que quede mejor
     PATH_TEMPLATES=PATH_COMMON+'/templates'
@@ -92,9 +117,9 @@ else:
     # Asignaciones desde archivo de conf
     ########
     # Constantes de debug
-    logger.log (logging.INFO, "PATH_DB: %s" %  PATH_DB)
-    logger.log (logging.INFO, "LOG_FILENAME: %s" %  LOG_FILENAME)
-    logger.log (logging.INFO, "SYNC_LOG_FILENAME: %s" %  SYNC_LOG_FILENAME)
+    logger.log (logging.DEBUG, "PATH_DB: %s" %  PATH_DB)
+    logger.log (logging.DEBUG, "LOG_FILENAME: %s" %  LOG_FILENAME)
+    logger.log (logging.DEBUG, "SYNC_LOG_FILENAME: %s" %  SYNC_LOG_FILENAME)
     DEBUG_EXTENSIONES=config['debug']['debug_extensiones']
     DEBUG_DOM_PERM=config['debug']['debug_dominios_permitidos']
     DEBUG_DOM_DENG=config['debug']['debug_deminios_denegados']
@@ -114,7 +139,7 @@ else:
     SYNC_LOG_SIZE_MB = config['sync']['log_size_mb']
     SYNC_LOG_CANT_ROTACIONES = config['sync']['log_cantidad_de_rotaciones']
     SYNC_LOGLEVEL= config['sync']['loglevel']
-    logger.log (logging.INFO, "Sincronizador: %s:%s" %  (SYNC_SERVER_IP, SYNC_SERVER_PORT,))
+    logger.log (logging.DEBUG, "Sincronizador: %s:%s" %  (SYNC_SERVER_IP, SYNC_SERVER_PORT,))
 
     #Cliente
     CLIENT_LOG_FILENAME = config['client']['log_filename']
@@ -127,12 +152,12 @@ else:
     LOG_CANT_ROTACIONES = config['client']['log_cantidad_de_rotaciones']
     LOGLEVEL= config['client']['loglevel']
 
-    logger.log (logging.INFO, "Cliente escuchando en: %s:%s" %  (BIND_ADDRESS,BIND_PORT,))
-    logger.log (logging.INFO, "Cliente usando proxy: ( %s ) direccion %s:%s" %  (USAR_PROXY, PROXY_IP, PROXY_PORT,))
+    logger.log (logging.DEBUG, "Cliente escuchando en: %s:%s" %  (BIND_ADDRESS,BIND_PORT,))
+    logger.log (logging.DEBUG, "Cliente usando proxy: ( %s ) direccion %s:%s" %  (USAR_PROXY, PROXY_IP, PROXY_PORT,))
 
     # Server
     SERVER_IP=config['server']['ip']
     SERVER_PORT=config['server']['port']
     MAX_CACHE_URLS_ACEPTADAS=config['server']['max_urls_aceptadas_cacheadas']
     MAX_CACHE_URLS_DENEGADAS=config['server']['max_urls_denegadas_cacheadas']
-    logger.log (logging.INFO, "Validador: %s:%s" %  (SERVER_IP, SERVER_PORT,))
+    logger.log (logging.DEBUG, "Validador: %s:%s" %  (SERVER_IP, SERVER_PORT,))

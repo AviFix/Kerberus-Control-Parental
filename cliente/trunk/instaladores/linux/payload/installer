@@ -12,6 +12,26 @@ if [ -f ${PATH_COMMON}/uninstaller ]; then
   exit 0
 fi
 
+# Muestro la licencia
+  more licencia.txt
+  echo ""
+  echo ""
+  echo "Acepta los terminos y condiciones de la licencia de uso? [Y/n]"
+  read respuesta
+  if [ "${respuesta}" = "n" ]; then
+	exit 0
+  fi
+  while [ "${respuesta}" != "n" ] && [ "${respuesta}" != "y" ] && [ "${respuesta}" && "Y" ]; do 
+	echo "Ingrese y o n"
+  	if [ "${respuesta}" = "n" ]; then
+		exit 0
+	fi
+	if [ "${respuesta}" = "y" || "${respuesta}" = "Y" ];then
+	    break
+	fi
+	read respuesta
+  done
+
 echo "Instalando Kerberus Control Parental..."
 
 mkdir -p ${PATH_COMMON}
@@ -76,8 +96,8 @@ if [ -f ${PATH_COMMON}/kerberus.lock ]; then
 fi
 chmod 755 ${PATH_COMMON} -R
 /etc/init.d/kerberus-cliented start
-iptables -D OUTPUT -m owner --uid-owner root -j ACCEPT
-iptables -D OUTPUT -p tcp --dport 80 -j REJECT
+#iptables -D OUTPUT -m owner --uid-owner root -j ACCEPT
+#iptables -D OUTPUT -p tcp --dport 80 -j REJECT
 #iptables -D OUTPUT -p tcp --dport 443 -j REJECT
 
 /etc/init.d/kerberus-sincronizadord start

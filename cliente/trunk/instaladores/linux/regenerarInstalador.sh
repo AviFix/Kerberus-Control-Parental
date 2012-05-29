@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="Trunk"
+VERSION="1.0"
 echo "----------------------------------------------------"
 echo "Regenerando el instalador de kerberus, version ${VERSION} para GNU/Linux"
 echo "----------------------------------------------------"
@@ -8,11 +8,15 @@ echo ""
 nombre_inst="kerberus-installer-${VERSION}.sh"
 echo "- Compilando ${nombre_inst}..."
 sh compilar.sh
-echo "- Generando DB..."
+echo "- Copiando DB del instalador de windows..."
 if [ -f payload/kerberus.db ]; then
   rm payload/kerberus.db
 fi
-cat ../../cliente.sql |sqlite3 payload/kerberus.db
+cp ../windows/ArchivosDefault/kerberus.db payload/kerberus.db
+if [ -f payload/licencia.txt ]; then
+  rm payload/licencia.txt
+fi
+cp ../windows/ArchivosDefault/licencia.txt payload/licencia.txt
 
 echo "- Copiando templates..."
 cp ../../templates/* payload/templates/

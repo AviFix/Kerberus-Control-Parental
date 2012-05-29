@@ -11,9 +11,8 @@ SetCompressor lzma
 ;Esta macro debe colocarse en esta posicin del script sino no funcionara
   !define mui_abortwarning
 
-;Definimos el valor de la variable VERSION, en caso de no definirse en el script
-;podria ser definida en el compilador
-!define VERSION "0.7-trunk"
+
+
 
 ;--------------------------------
 ;Pages
@@ -93,6 +92,11 @@ UninstallText "Desinstalar kerberus CPW."
 # chequeo si esta instalado previamente
 Function .onInit
 
+  ;Definimos el valor de la variable VERSION, en caso de no definirse en el script
+  ;podria ser definida en el compilador
+  Var /GLOBAL VERSION
+  StrCpy $VERSION "1.0"
+
   ReadRegStr $R0 HKCU \
   "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus" \
   "UninstallString"
@@ -107,7 +111,7 @@ Function .onInit
 ;Run the uninstaller
 uninst:
   ClearErrors
-  ExecWait '$R0 _?=$INSTDIR' ;Do not copy the uninstaller to a temp file
+  ExecWait '$R0 _?=$INSTDIR\$VERSION' ;Do not copy the uninstaller to a temp file
   Abort
   IfErrors no_remove_uninstaller done
     ;You can either use Delete /REBOOTOK in the uninstaller or add some code
@@ -157,34 +161,34 @@ FunctionEnd
 
 Section "Programa"
 
-CreateDirectory $INSTDIR
+CreateDirectory $INSTDIR\$VERSION
 
-SetOutPath $INSTDIR
+SetOutPath $INSTDIR\$VERSION
 File ArchivosDefault\*.*
 
-SetOutPath $INSTDIR\checkNavs
+SetOutPath $INSTDIR\$VERSION\checkNavs
 File Navegadores\dist\navegadores\*.*
 
 ;Incluimos todos los ficheros que componen nuestra aplicacin
-SetOutPath $INSTDIR\client
+SetOutPath $INSTDIR\$VERSION\client
 File   kerberus-daemon\dist\cliente\*.*
 
-SetOutPath $INSTDIR\sync
+SetOutPath $INSTDIR\$VERSION\sync
 File   kerberus-sync\dist\sincronizadorCliente\*.*
 
-SetOutPath $INSTDIR\extradata
+SetOutPath $INSTDIR\$VERSION
 File   desinstalador\dist\uninstall\*.*
 
-SetOutPath $INSTDIR\templates
+SetOutPath $INSTDIR\$VERSION\templates
 File   ..\..\templates\*.*
 
 
 
 ; Doy permisos
 AccessControl::GrantOnFile \
-"$INSTDIR\kerberus" "(BU)" "GenericRead + GenericWrite + AddFile"
+"$INSTDIR\$VERSION\kerberus" "(BU)" "GenericRead + GenericWrite + AddFile"
 AccessControl::GrantOnFile \
-"$INSTDIR\checkNavs" "(BU)" "GenericRead + GenericWrite + AddFile"
+"$INSTDIR\$VERSION\checkNavs" "(BU)" "GenericRead + GenericWrite + AddFile"
 
 ;Hacemos que la instalacin se realice para todos los usuarios del sistema
 ;SetShellVarContext all
@@ -204,24 +208,24 @@ WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus" 
 "DisplayName" "Kerberus-control-parental"
 
 WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus" \
-"UninstallString" '"$INSTDIR\extradata\uninstall.exe"'
+"UninstallString" '"$INSTDIR\$VERSION\uninstall.exe"'
 
-WriteUninstaller $INSTDIR\extradata\kcpwu.dat
+WriteUninstaller $INSTDIR\$VERSION\kcpwu.dat
 
-WriteRegStr HKCU "Software\Kerberus" "InstallDir" $INSTDIR
+WriteRegStr HKCU "Software\Kerberus" "InstallDir" $INSTDIR\$VERSION
 
-WriteRegStr HKCU "Software\Kerberus" "Version" "${VERSION}"
+WriteRegStr HKCU "Software\Kerberus" "Version" "$VERSION"
 
-WriteRegStr HKCU "Software\Kerberus" "kerberus-common" "$INSTDIR"
-
-writeRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Run" \
-"Kerberus-client" "$INSTDIR\client\cliente.exe"
+WriteRegStr HKCU "Software\Kerberus" "kerberus-common" "$INSTDIR\$VERSION"
 
 writeRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Run" \
-"Kerberus-sync" "$INSTDIR\sync\sincronizadorCliente.exe"
+"Kerberus-client" "$INSTDIR\$VERSION\client\cliente.exe"
+
+writeRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Run" \
+"Kerberus-sync" "$INSTDIR\$VERSION\sync\sincronizadorCliente.exe"
 
 WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Run" \
-"checkNavs" "$INSTDIR\checkNavs\navegadores.exe"
+"checkNavs" "$INSTDIR\$VERSION\checkNavs\navegadores.exe"
 
 ;writeRegDword HKCU "SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" \
 ;"ProxySettingsPerUser" 0
@@ -249,15 +253,15 @@ writeRegStr HKCU "Software\Policies\Google\Chrome" "DefaultSearchProviderSearchU
 writeRegDWord HKCU "Software\Policies\Google\Chrome" "HomepageIsNewTabPage" 0
 
 
-; Make the directory "$INSTDIR\database" read write accessible by all users
+; Make the directory "$INSTDIR\$VERSION\database" read write accessible by all users
 ;AccessControl::GrantOnFile \
 ;"$COMMONFILES\kerberus" "(BU)" "GenericRead + GenericWrite + AddFile"
 
-;SimpleSC::InstallService "kerberus-daemon" "kerberus Daemon Service" "16" "2" "$INSTDIR\client\cliente.exe" "" "" ""
-;SimpleSC::InstallService "kerberus-sync" "kerberus sync Service" "16" "2" "$INSTDIR\sync\sincronizadorCliente.exe" "" "" ""
+;SimpleSC::InstallService "kerberus-daemon" "kerberus Daemon Service" "16" "2" "$INSTDIR\$VERSION\client\cliente.exe" "" "" ""
+;SimpleSC::InstallService "kerberus-sync" "kerberus sync Service" "16" "2" "$INSTDIR\$VERSION\sync\sincronizadorCliente.exe" "" "" ""
 
 
-ExecWait '"$INSTDIR\sync\sincronizadorCliente.exe"'
+ExecWait '"$INSTDIR\$VERSION\sync\sincronizadorCliente.exe"'
 
 MessageBox MB_YESNO|MB_ICONQUESTION "Es necesario reiniciar para completar la instalacion. Desea reiniciar ahora?" IDNO +2
 	reboot
@@ -304,7 +308,7 @@ FunctionEnd
 Section "Uninstall"
         ;SetShellVarContext all
         SetShellVarContext current
-        ExecWait '"$INSTDIR\checkNavs\navegadores.exe" unset'
+        ExecWait '"$INSTDIR\$VERSION\checkNavs\navegadores.exe" unset'
         DeleteRegKey HKCU "Software\Kerberus"
         DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus"
         DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Run" "Kerberus-client"
@@ -319,18 +323,8 @@ Section "Uninstall"
         DeleteRegValue HKCU "Software\Policies\Google\Chrome" "system"
         DeleteRegValue HKCU "Software\Policies\Google\Chrome" "DefaultSearchProviderSearchURL"
         DeleteRegValue HKCU "Software\Policies\Google\Chrome" "HomepageIsNewTabPage"
-        RMDir /r /REBOOTOK $INSTDIR
 
-;	writeRegDword HKCU "SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxySettingsPerUser" 1
-
-;        DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "MigrateProxy"
-;        DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyEnable"
-;        DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyHttp1.1"
-;        DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyServer"
-;        DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyOverride"
-
-;SimpleSC::RemoveService "kerberus-daemon"
-;SimpleSC::RemoveService "kerberus-sync"
+        RMDir /r /REBOOTOK $INSTDIR\$VERSION
 
 MessageBox MB_YESNO|MB_ICONQUESTION "Es necesario reiniciar para completar la desinstalacion. Desea reiniciar ahora?" IDNO +2
 	reboot
