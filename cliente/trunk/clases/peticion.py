@@ -94,7 +94,9 @@ class Peticion:
         return dominios
 
     def informarNuevaPassword(self, password):
-        headers = {"Peticion":"informarNuevaPassword","Password":str(password)}
+        # FIXME: Deberia enviar la password vieja y nueva para verificar que sea el usuario
+        # quien solicito el cambio
+        headers = {"UserID":self.userid ,"Peticion":"informarNuevaPassword","Password":str(password)}
         respuesta = self.obtenerRespuesta(headers)
         return respuesta
 
