@@ -31,7 +31,7 @@ def logSetup (logfile, loglevel=5, logsize=1, cant_rotaciones=1,cabecera_log="")
 VERSION=1.0
 #
 # Poner en false esta variable a la hora de pasar a produccion
-ENTORNO_DE_DESARROLLO=False
+ENTORNO_DE_DESARROLLO=True
 
 if platform.uname()[0] == 'Linux':
     PLATAFORMA='Linux'

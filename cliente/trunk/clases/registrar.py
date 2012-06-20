@@ -26,7 +26,6 @@ class Registradores:
     def __del__(self):
         self.cursor.close()
 
-    #FIXME: Utilizar mysql-cluster!!!!!!! porque sino va a haber replicacion de usuarios con diferentes ids.
     def checkRegistradoRemotamente(self):
         """Verifica si esta registrado remotamente"""
         id, nombre, email, version, password=self.obtenerDatosRegistrados()
@@ -62,7 +61,7 @@ class Registradores:
             modulo_logger.log(logging.ERROR,"No se pudo registrar la instalacion localmente. Tal vez no esta la base de datos instalada.\nERROR: %s" % msg)
 
     def registrarRemotamente(self):
-        """Registra localmente los datos solicitados al momento de la instalacion"""
+        """Registra remotamente los datos solicitados al momento de la instalacion"""
         id, nombre, email, version, password=self.obtenerDatosRegistrados()
         peticionRemota=peticion.Peticion()
         id_obtenido=peticionRemota.registrarUsuario(nombre, email, password,version)
