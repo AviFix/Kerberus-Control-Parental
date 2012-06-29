@@ -47,27 +47,30 @@ class Servidor:
                 modulo_logger.log(logging.DEBUG, "Conectando a %s, por medio "\
                 "del proxy %s , para realizar la solicitud: %s" % \
                 (server, url_proxy, headers['Peticion']))
-                proxy={'http':url_proxy, 'https': url_proxy}
+                proxy = {'http': url_proxy, 'https': url_proxy}
             else:
-                modulo_logger.log(logging.ERROR,"El proxy no esta escuchando en %s:%s por lo que no se \
-                utilizara" % (config.PROXY_IP,config.PROXY_PORT,))
-                proxy={}
+                modulo_logger.log(logging.ERROR, "El proxy no esta escuchando"\
+                " en %s:%s por lo que no se utilizara" % \
+                (config.PROXY_IP, config.PROXY_PORT,))
+                proxy = {}
         else:
-            proxy={}
-        proxy_handler=urllib2.ProxyHandler(proxy)
-        opener=urllib2.build_opener(proxy_handler)
+            proxy = {}
+        proxy_handler = urllib2.ProxyHandler(proxy)
+        opener = urllib2.build_opener(proxy_handler)
         urllib2.install_opener(opener)
         try:
             req = urllib2.Request(server, headers=headers)
             respuesta = urllib2.urlopen(req, timeout=5).read()
-            modulo_logger.log(logging.DEBUG,"Respuesta: %s" % respuesta)
+            modulo_logger.log(logging.DEBUG, "Respuesta: %s" % respuesta)
             return (respuesta == 'Online')
         except urllib2.URLError as error:
-            modulo_logger.log(logging.ERROR,"Error al conectarse a %s, peticion: %s . ERROR: %s" %(server,headers['Peticion'],error))
+            modulo_logger.log(logging.ERROR, "Error al conectarse a %s, "\
+            "peticion: %s . ERROR: %s" % (server, headers['Peticion'], error))
             return False
 
-    def estaOnline(self,ip,port):
-        """Verifica si el puerto esta abierto. Util para chequear el proxy nomas"""
+    def estaOnline(self, ip, port):
+        """Verifica si el puerto esta abierto. Util para chequear el
+        proxy nomas"""
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.settimeout(3)
         try:
@@ -75,24 +78,27 @@ class Servidor:
             s.shutdown(2)
             return True
         except:
-            modulo_logger.log(logging.ERROR,"No hay conexion a %s:%s" %(ip,port,))
+            modulo_logger.log(logging.ERROR, "No hay conexion a %s:%s" % \
+            (ip, port,))
             return False
 
-
-    def obtenerServidor(self,ip=False, port=False,userID=1):
-        servers=[[ip,port]]+self.listaDeServidores
-        dormir_por=5
+    def obtenerServidor(self, ip=False, port=False, userID=1):
+        servers = [[ip, port]] + self.listaDeServidores
+        dormir_por = 5
         while True:
             for ip, port in servers:
-                if self.estaRespondiendo(ip,port,userID):
-                    modulo_logger.log(logging.INFO,"Utilizando el servidor de validacion %s:%s" %(ip,port,))
+                if self.estaRespondiendo(ip, port, userID):
+                    modulo_logger.log(logging.INFO, "Utilizando el servidor "\
+                    "de validacion %s:%s" % (ip, port,))
                     return ip, port
                 else:
-                    modulo_logger.log(logging.INFO,"El servidor de validacion %s:%s no responde" %(ip,port,))
+                    modulo_logger.log(logging.INFO, "El servidor de "\
+                    "validacion %s:%s no responde" % (ip, port,))
 
-            modulo_logger.log(logging.CRITICAL,"No se pudo obtener ningun servidor de validacion!, durmiendo por: %s" % dormir_por)
+            modulo_logger.log(logging.CRITICAL, "No se pudo obtener ningun"\
+            " servidor de validacion!, durmiendo por: %s" % dormir_por)
             time.sleep(dormir_por)
-            dormir_por=dormir_por+5
+            dormir_por = dormir_por + 5
             if dormir_por > 30:
                 dormir_por = 30
         return False, False
