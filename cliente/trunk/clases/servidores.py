@@ -1,9 +1,12 @@
 # -*- coding: utf-8 *-*
-
+#QUEDE ACA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 """Modulo encargado de obtener la lista de servidores activos"""
 
 #Modulos externos
-import socket, sys, urllib2,time
+import socket
+import sys
+import urllib2
+import time
 
 
 #Modulos propios
@@ -11,31 +14,39 @@ sys.path.append('../conf')
 import config
 import logging
 
-modulo_logger = logging.getLogger('kerberus.'+__name__)
+modulo_logger = logging.getLogger('kerberus.' + __name__)
+
 
 #Excepciones
-class ServidorError(Exception): pass
+class ServidorError(Exception):
+
+    def __init__(self):
+        super(ServidorError, self).__init__()
+        pass
+
 
 # Clase
 class Servidor:
 
     def __init__(self):
-        self.listaDeServidores=[]
-        for i in range(1,100):
-            ip_new="validador%s.kerberus.com.ar" % i
-            port_new=80
-            server=[ip_new,port_new]
+        self.listaDeServidores = []
+        for i in range(1, 100):
+            ip_new = "validador%s.kerberus.com.ar" % i
+            port_new = 80
+            server = [ip_new, port_new]
             self.listaDeServidores.append(server)
 
-
     def estaRespondiendo(self, ip, port, userid):
-        server="http://%s:%s" % (ip,port)
-        headers = {"UserID":userid,"Peticion":"estaRespondiendo"}
+        server = "http://%s:%s" % (ip, port)
+        headers = {"UserID": userid, "Peticion": "estaRespondiendo"}
 
         if config.USAR_PROXY:
-            if self.estaOnline(config.PROXY_IP,config.PROXY_PORT):
-                url_proxy="http://%s:%s" % (config.PROXY_IP,config.PROXY_PORT)
-                modulo_logger.log(logging.DEBUG,"Conectando a %s, por medio del proxy %s , para realizar la solicitud: %s" %(server,url_proxy,headers['Peticion']))
+            if self.estaOnline(config.PROXY_IP, config.PROXY_PORT):
+                url_proxy = "http://%s:%s" % \
+                            (config.PROXY_IP, config.PROXY_PORT)
+                modulo_logger.log(logging.DEBUG, "Conectando a %s, por medio "\
+                "del proxy %s , para realizar la solicitud: %s" % \
+                (server, url_proxy, headers['Peticion']))
                 proxy={'http':url_proxy, 'https': url_proxy}
             else:
                 modulo_logger.log(logging.ERROR,"El proxy no esta escuchando en %s:%s por lo que no se \

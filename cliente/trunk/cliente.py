@@ -56,15 +56,15 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
     global verificador
 
     def mostrarPublicidad(self, url):
-        msg = "<html><head><title>Navegador protegido por Kerberus</title>\
-        <meta http-equiv=\"REFRESH\" content=\"0;\
-        url=http://inicio.kerberus.com.ar\" ></head> <body ></body> </html>"
+        msg = "<html><head><title>Navegador protegido por Kerberus</title>"\
+        "<meta http-equiv=\"REFRESH\" content=\"0;"\
+        "url=http://inicio.kerberus.com.ar\" ></head> <body ></body> </html>"
         self.server.logger.log(logging.DEBUG, "Primer pagina de acceso.")
         self.responderAlCliente(msg)
 
     def mostrarDeshabilitado(self):
-        msg = "<html><head><title>Navegador protegido por Kerberus</title>\
-        </head> <body >Navegación Deshabilitada</body> </html> "
+        msg = "<html><head><title>Navegador protegido por Kerberus</title>"\
+        "</head> <body >Navegación Deshabilitada</body> </html> "
         self.responderAlCliente(msg)
 
     def responderAlCliente(self, mensaje):
@@ -98,19 +98,19 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                 registrador.obtenerDatosRegistrados()
             mensaje = mensajesHtml.MensajesHtml(config.PATH_TEMPLATES)
             if respuesta == 'Recordada':
-                msj = 'Estimado %s,<br><br>Le hemos enviado un e-mail a su \
-                cuenta de correo %s con la password de administrador de \
-                kerberus.' % (nombre, email)
+                msj = 'Estimado %s,<br><br>Le hemos enviado un e-mail a su '\
+                'cuenta de correo %s con la password de administrador de '\
+                'kerberus.' % (nombre, email)
             else:
-                msj = 'Estimado %s,<br><br>Ya hemos enviado un e-mail a su \
-                cuenta de correo %s con la password de administrador de \
-                kerberus.' % (nombre, email)
+                msj = 'Estimado %s,<br><br>Ya hemos enviado un e-mail a su '\
+                'cuenta de correo %s con la password de administrador de '\
+                'kerberus.' % (nombre, email)
             msg = mensaje.recordarPassword(msj)
             self.responderAlCliente(msg)
 
     def redirigirDesbloqueado(self, url):
-        msg = "<html><head><meta HTTP-EQUIV=\"REFRESH\" content=\"0; url=%s\">\
-        </head></html>" % url
+        msg = "<html><head><meta HTTP-EQUIV=\"REFRESH\" content=\"0; url=%s\">"\
+        "</head></html>" % url
         self.responderAlCliente(msg)
 
     def passwordErronea(self):

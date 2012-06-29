@@ -9,14 +9,12 @@ sys.path.append('conf')
 sys.path.append('password')
 
 import sincronizador
-import config
+#import config
 
 # Lanza el sincronizador
-syncd=sincronizador.Sincronizador()
+syncd = sincronizador.Sincronizador()
 
 if not syncd.passwordNotificada():
     syncd.notificarPassword()
 
 syncd.run()
-
-
