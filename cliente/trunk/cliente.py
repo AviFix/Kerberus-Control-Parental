@@ -53,6 +53,9 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 
     server_version = "Kerberus - Cliente /" + __version__
     rbufsize = 0                        # self.rfile Be unbuffered
+    # FIXME: esta variable debe ser definida dentro de la clase
+    # ThreadingHTTPServer como self.verificador = consultor.Consultor() y luego
+    # accedida dentro de esta clase como self.server.verificador
     global verificador
 
     def mostrarPublicidad(self, url):
