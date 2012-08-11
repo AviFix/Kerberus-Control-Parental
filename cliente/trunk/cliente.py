@@ -227,6 +227,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                 password_nueva1 = urllib2.unquote(password_nueva1)
                 password_nueva2 = urllib2.unquote(password_nueva2)
                 usuario_admin = self.validarPassword(password_actual)
+                # FIXME: problemas con las ñ y acentos.
                 if usuario_admin:
                     if password_nueva1 != password_nueva2:
                         self.cambioPassPasswordNoCoinciden()

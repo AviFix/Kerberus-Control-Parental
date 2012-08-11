@@ -21,13 +21,16 @@ fi
   if [ "${respuesta}" = "n" ]; then
 	exit 0
   fi
-  while [ "${respuesta}" != "n" ] && [ "${respuesta}" != "y" ] && [ "${respuesta}" && "Y" ]; do 
+  while [ "${respuesta}" != "n" ] && [ "${respuesta}" != "y" ] && [ "${respuesta}" != "Y" ]; do 
 	echo "Ingrese y o n"
-  	if [ "${respuesta}" = "n" ]; then
+  	if [ "${respuesta}" == "n" ];then
 		exit 0
 	fi
-	if [ "${respuesta}" = "y" || "${respuesta}" = "Y" ];then
-	    break
+	if [ "${respuesta}" == "y" ]; then
+	    break;
+	fi
+	if [ "${respuesta}" == "Y" ]; then
+	    break;
 	fi
 	read respuesta
   done

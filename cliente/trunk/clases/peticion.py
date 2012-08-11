@@ -115,7 +115,7 @@ class Peticion:
         # sea el usuario quien solicito el cambio
         headers = {"UserID": self.userid,
                     "Peticion": "informarNuevaPassword",
-                    "Password": str(password)}
+                    "Password": unicode(password, 'utf-8')}
         respuesta = self.obtenerRespuesta(headers)
         return respuesta
 
@@ -157,9 +157,10 @@ class Peticion:
     def registrarUsuario(self, nombre, email, password, version):
         """Devuelve el id si registra, sino devuelve 0"""
         headers = {"Peticion": "registrarUsuario", "Email": email,
-                    "Password": password}
+                    "Password": password, "ServerID": '0'}
         respuesta = self.obtenerRespuesta(headers)
-        return respuesta
+        idUsuario, server_id = respuesta.split(',')
+        return [idUsuario, server_id]
 
     def eliminarUsuario(self, id):
         """Solicita la eliminacion"""

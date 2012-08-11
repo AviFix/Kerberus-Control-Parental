@@ -15,7 +15,7 @@ import administradorDeUsuarios
 import peticion
 import logging
 
-modulo_logger = logging.getLogger('kerberus.' + __name__)
+modulo_logger = logging.getLogger('Kerberus.' + __name__)
 
 
 # Clase
@@ -73,8 +73,10 @@ class Registradores:
         instalacion"""
         id, nombre, email, version, password = self.obtenerDatosRegistrados()
         peticionRemota = peticion.Peticion()
-        id_obtenido = peticionRemota.registrarUsuario(nombre, email, password,
-                                                        version)
+        id_obtenido, server_id = peticionRemota.registrarUsuario(nombre,
+            email, password, version)
+        modulo_logger.log(logging.INFO, 'ID OBTENIDO: %s, server_id: %s' % \
+            (id_obtenido, server_id))
         if (int(id_obtenido) > 0):
             self.cursor.execute('update instalacion set id =?', (id_obtenido,))
             self.conexion_db.commit()

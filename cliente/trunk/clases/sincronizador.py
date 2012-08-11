@@ -152,6 +152,7 @@ class Sincronizador:
             cursor = conexion_db.cursor()
             password = cursor.execute(
                 'select password from instalacion').fetchone()[0]
+            # FIXME: Esto falla cuando la password tiene ñ
             respuesta = self.peticionRemota.informarNuevaPassword(password)
             if respuesta == 'Informada':
                 cursor.execute('update instalacion set passwordnotificada=1')

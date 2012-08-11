@@ -1,5 +1,4 @@
 # -*- coding: utf-8 *-*
-#QUEDE ACA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 """Modulo encargado de obtener la lista de servidores activos"""
 
 #Modulos externos
@@ -14,7 +13,7 @@ sys.path.append('../conf')
 import config
 import logging
 
-modulo_logger = logging.getLogger('kerberus.' + __name__)
+modulo_logger = logging.getLogger('Kerberus.'+__name__)
 
 
 #Excepciones
