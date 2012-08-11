@@ -34,6 +34,7 @@ import administradorDeUsuarios
 #import pedirUsuario
 import mensajesHtml
 import loguear
+import urllib2
 
 # Logging
 logger = loguear.logSetup(config.LOG_FILENAME, config.LOGLEVEL,
@@ -222,6 +223,9 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                 password_actual = post_body.split("&")[0].split("=")[1]
                 password_nueva1 = post_body.split("&")[1].split("=")[1]
                 password_nueva2 = post_body.split("&")[2].split("=")[1]
+                password_actual = urllib2.unquote(password_actual)
+                password_nueva1 = urllib2.unquote(password_nueva1)
+                password_nueva2 = urllib2.unquote(password_nueva2)
                 usuario_admin = self.validarPassword(password_actual)
                 if usuario_admin:
                     if password_nueva1 != password_nueva2:
