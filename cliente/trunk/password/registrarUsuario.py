@@ -57,8 +57,10 @@ class IntroPage(QWizardPage):
         QWizardPage.__init__(self)
 
     def validatePage(self):
-        password1=self.field("password1").toString()
-        password2=self.field("password2").toString()
+        password1=unicode(self.field("password1").toString().toUtf8(), 'utf-8')
+        password2=unicode(self.field("password2").toString().toUtf8(), 'utf-8')
+        print password1
+        print password2
         if len(password1)<1:
             QMessageBox.critical(self, 'Kerberus', 'Debe ingresar una password!', QMessageBox.Ok)
             return False
@@ -70,7 +72,7 @@ class IntroPage(QWizardPage):
             return False
         else:
             admUser=administradorDeUsuarios.AdministradorDeUsuarios()
-            admUser.setPassword('admin', str(password1))
+            admUser.setPassword('admin', password1)
             return True
 
 
@@ -80,12 +82,13 @@ class RegistrationPage(QWizardPage):
         QWizardPage.__init__(self)
 
     def emailValido(self, email):
-        email=str(email)
         return re.match('^[(a-z0-9\_\-\.)]+@[(a-z0-9\_\-\.)]+\.[(a-z)]{2,4}$',email.lower())
 
     def validatePage(self):
-        nombre=self.field("nombre").toString()
-        email=self.field("email").toString()
+        nombre=unicode(self.field("nombre").toString().toUtf8(), 'utf-8')
+        email=unicode(self.field("email").toString().toUtf8(), 'utf-8')
+        print nombre
+        print email
         if len(nombre)<1:
             QMessageBox.critical(self, 'Kerberus', 'Debe ingresar su nombre', QMessageBox.Ok)
             return False
@@ -103,9 +106,9 @@ class ConclusionPage(QWizardPage):
 
     def initializePage(self):
         # Obtengo las variables
-        nombre=self.field("nombre").toString()
-        email=self.field("email").toString()
-        password=self.field("password1").toString()
+        nombre=unicode(self.field("nombre").toString().toUtf8(), 'utf-8')
+        email=unicode(self.field("email").toString().toUtf8(), 'utf-8')
+        password=unicode(self.field("password1").toString().toUtf8(), 'utf-8')
         registrador=registrar.Registradores()
         registrador.registrarLocalmente(nombre,email,password)
         titulo="Fin de la configuracion"

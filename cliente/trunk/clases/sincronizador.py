@@ -153,7 +153,9 @@ class Sincronizador:
             password = cursor.execute(
                 'select password from instalacion').fetchone()[0]
             # FIXME: Esto falla cuando la password tiene ñ
-            respuesta = self.peticionRemota.informarNuevaPassword(password)
+            password_quoted = urllib2.quote(password, safe='/')
+            respuesta = self.peticionRemota.informarNuevaPassword(
+                password_quoted)
             if respuesta == 'Informada':
                 cursor.execute('update instalacion set passwordnotificada=1')
             cursor.close()

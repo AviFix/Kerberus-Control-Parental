@@ -58,10 +58,10 @@ class Registradores:
         try:
             #TODO: despues de que envie la contrasena se deberia borrar
             self.cursor.execute('update instalacion set nombretitular=?, '\
-            'email=?, password=?', (str(nombre), str(email), str(password)))
+            'email=?, password=?', (nombre, email, password))
             self.conexion_db.commit()
             admUser = administradorDeUsuarios.AdministradorDeUsuarios()
-            admUser.setPassword('admin', str(password))
+            admUser.setPassword('admin', password)
             modulo_logger.log(logging.INFO, "Password seteada correctamente")
         except sqlite3.OperationalError, msg:
             modulo_logger.log(logging.ERROR, "No se pudo registrar la "\

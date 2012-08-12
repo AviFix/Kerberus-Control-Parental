@@ -70,9 +70,8 @@ class Peticion:
 
         # Agrego los datos particulares del cliente
         headers['UserID'] = self.userid
-        headers['Version'] = self.version
-        headers['Nombre'] = self.nombretitular
-
+        headers['Version'] = urllib2.quote(self.version.encode('utf-8'))
+        headers['Nombre'] = urllib2.quote(self.nombretitular.encode('utf-8'))
         while True:
             try:
                 if self.servidor.estaOnline(self.server_ip, self.server_port):
@@ -115,7 +114,7 @@ class Peticion:
         # sea el usuario quien solicito el cambio
         headers = {"UserID": self.userid,
                     "Peticion": "informarNuevaPassword",
-                    "Password": unicode(password, 'utf-8')}
+                    "Password": password}
         respuesta = self.obtenerRespuesta(headers)
         return respuesta
 
@@ -156,9 +155,14 @@ class Peticion:
 
     def registrarUsuario(self, nombre, email, password, version):
         """Devuelve el id si registra, sino devuelve 0"""
+        nombre = urllib2.quote(nombre.encode('utf8'), safe='/')
+        email = urllib2.quote(email.encode('utf8'), safe='/')
+        password = urllib2.quote(password.encode('utf8'), safe='/')
+        version = urllib2.quote(version.encode('utf8'), safe='/')
         headers = {"Peticion": "registrarUsuario", "Email": email,
                     "Password": password, "ServerID": '0'}
         respuesta = self.obtenerRespuesta(headers)
+        print "Respuesta: %s" % respuesta
         idUsuario, server_id = respuesta.split(',')
         return [idUsuario, server_id]
 
