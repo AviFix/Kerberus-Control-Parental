@@ -112,6 +112,7 @@ class Peticion:
     def informarNuevaPassword(self, password):
         # FIXME: Deberia enviar la password vieja y nueva para verificar que
         # sea el usuario quien solicito el cambio
+        password = urllib2.quote(password.encode('utf8'), safe='/')
         headers = {"UserID": self.userid,
                     "Peticion": "informarNuevaPassword",
                     "Password": password}

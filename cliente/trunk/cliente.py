@@ -93,6 +93,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 
     def recordarPassword(self):
         import registrar
+        # FIXME: si mandan un ' en el nombre, se pudre todo
         registrador = registrar.Registradores()
         if registrador.checkRegistradoRemotamente():
             import peticion
@@ -223,17 +224,20 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                 password_actual = post_body.split("&")[0].split("=")[1]
                 password_nueva1 = post_body.split("&")[1].split("=")[1]
                 password_nueva2 = post_body.split("&")[2].split("=")[1]
-                password_actual = urllib2.unquote(password_actual)
-                password_nueva1 = urllib2.unquote(password_nueva1)
-                password_nueva2 = urllib2.unquote(password_nueva2)
+                password_actual = unicode(urllib2.unquote(password_actual),
+                                            'utf-8')
+                password_nueva1 = unicode(urllib2.unquote(password_nueva1),
+                                            'utf-8')
+                password_nueva2 = unicode(urllib2.unquote(password_nueva2),
+                                            'utf-8')
                 usuario_admin = self.validarPassword(password_actual)
                 # FIXME: problemas con las ñ y acentos.
                 if usuario_admin:
                     if password_nueva1 != password_nueva2:
                         self.cambioPassPasswordNoCoinciden()
                         return True
-                    adminUsers.cambiarPassword('admin', str(password_actual),
-                        str(password_nueva1))
+                    adminUsers.cambiarPassword('admin', password_actual,
+                        password_nueva1)
                     self.passwordCambiadaCorrectamente()
                     return True
                 else:
