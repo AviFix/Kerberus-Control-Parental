@@ -59,8 +59,6 @@ class IntroPage(QWizardPage):
     def validatePage(self):
         password1=unicode(self.field("password1").toString().toUtf8(), 'utf-8')
         password2=unicode(self.field("password2").toString().toUtf8(), 'utf-8')
-        print password1
-        print password2
         if len(password1)<1:
             QMessageBox.critical(self, 'Kerberus', 'Debe ingresar una password!', QMessageBox.Ok)
             return False
@@ -87,8 +85,7 @@ class RegistrationPage(QWizardPage):
     def validatePage(self):
         nombre=unicode(self.field("nombre").toString().toUtf8(), 'utf-8')
         email=unicode(self.field("email").toString().toUtf8(), 'utf-8')
-        print nombre
-        print email
+
         if len(nombre)<1:
             QMessageBox.critical(self, 'Kerberus', 'Debe ingresar su nombre', QMessageBox.Ok)
             return False
@@ -135,13 +132,11 @@ class RegistrarUsuario:
 
     def lock(self):
         temp_file="%s/kerberus.lock" % config.PATH_COMMON
-        print "Locking!"
         if config.PLATAFORMA == 'Linux':
             os.open(temp_file,os.O_RDWR|os.O_CREAT)
 
     def unlock(self):
         temp_file="%s/kerberus.lock" % config.PATH_COMMON
-        print "Unlocking!"
         if config.PLATAFORMA == 'Linux':
             os.remove(temp_file)
 

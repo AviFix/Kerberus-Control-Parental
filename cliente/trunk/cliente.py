@@ -103,11 +103,11 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                 registrador.obtenerDatosRegistrados()
             mensaje = mensajesHtml.MensajesHtml(config.PATH_TEMPLATES)
             if respuesta == 'Recordada':
-                msj = 'Estimado %s,<br><br>Le hemos enviado un e-mail a su '\
+                msj = u'Estimado %s,<br><br>Le hemos enviado un e-mail a su '\
                 'cuenta de correo %s con la password de administrador de '\
                 'kerberus.' % (nombre, email)
             else:
-                msj = 'Estimado %s,<br><br>Ya hemos enviado un e-mail a su '\
+                msj = u'Estimado %s,<br><br>Ya hemos enviado un e-mail a su '\
                 'cuenta de correo %s con la password de administrador de '\
                 'kerberus.' % (nombre, email)
             msg = mensaje.recordarPassword(msj)
