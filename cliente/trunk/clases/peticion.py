@@ -77,7 +77,7 @@ class Peticion:
                 if self.servidor.estaOnline(self.server_ip, self.server_port):
                     req = urllib2.Request("http://" + self.server_sync, \
                     headers=headers)
-                    timeout = 10
+                    timeout = 60
                     respuesta = urllib2.urlopen(req, timeout=timeout).read()
                     modulo_logger.log(logging.DEBUG,
                                         "Respuesta: %s" % respuesta)
