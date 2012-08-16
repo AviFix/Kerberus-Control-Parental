@@ -102,14 +102,15 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
             id, nombre, email, version, password = \
                 registrador.obtenerDatosRegistrados()
             mensaje = mensajesHtml.MensajesHtml(config.PATH_TEMPLATES)
+
             if respuesta == 'Recordada':
-                msj = u'Estimado %s,<br><br>Le hemos enviado un e-mail a su '\
-                'cuenta de correo %s con la password de administrador de '\
-                'kerberus.' % (nombre, email)
+                msj = u'Estimado usuario,<br><br>Le hemos enviado un e-mail '\
+                'a su cuenta de correo %s con la password de administrador de '\
+                'kerberus.' % (email)
             else:
-                msj = u'Estimado %s,<br><br>Ya hemos enviado un e-mail a su '\
-                'cuenta de correo %s con la password de administrador de '\
-                'kerberus.' % (nombre, email)
+                msj = u'Estimado usuario,<br><br>Ya hemos enviado un e-mail a '\
+                'su cuenta de correo %s con la password de administrador de '\
+                'kerberus.' % (email)
             msg = mensaje.recordarPassword(msj)
             self.responderAlCliente(msg)
 
@@ -203,6 +204,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                     content_len = int(self.headers.getheader('content-length'))
                     post_body = self.rfile.read(content_len)
                     password = post_body.split("=")[1]
+                    password = unicode(urllib2.unquote(password), 'utf-8')
                     usuario_admin = self.validarPassword(password)
                     if usuario_admin:
                         verificador.kerberus_activado = False

@@ -77,7 +77,7 @@ class Peticion:
                 if self.servidor.estaOnline(self.server_ip, self.server_port):
                     req = urllib2.Request("http://" + self.server_sync, \
                     headers=headers)
-                    timeout = 60
+                    timeout = 120
                     respuesta = urllib2.urlopen(req, timeout=timeout).read()
                     modulo_logger.log(logging.DEBUG,
                                         "Respuesta: %s" % respuesta)
@@ -163,7 +163,8 @@ class Peticion:
         headers = {"Peticion": "registrarUsuario", "Email": email,
                     "Password": password, "ServerID": '0'}
         respuesta = self.obtenerRespuesta(headers)
-        print "Respuesta: %s" % respuesta
+        modulo_logger.log(logging.DEBUG, "Id de usuario y  Id server: %s" % \
+                            respuesta)
         idUsuario, server_id = respuesta.split(',')
         return [idUsuario, server_id]
 
