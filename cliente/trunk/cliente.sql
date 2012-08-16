@@ -9,6 +9,7 @@ CREATE TABLE usuarios(
 
 CREATE TABLE instalacion(
     id               INTEGER,
+    serverid         INTEGER,
     nombretitular    TEXT,
     email            TEXT,
     password         TEXT,
@@ -55,4 +56,4 @@ insert into usuarios(username,password,admin,safesearch,passwordseteada) values 
 insert into usuarios(username,password,admin,safesearch,passwordseteada) values ('usuario','f8032d5cae3de20fcec887f395ec9a6a',0,1,1);
 insert into usuarios(username,password,admin,safesearch,passwordseteada) values ('','d41d8cd98f00b204e9800998ecf8427e',0,1,1);
 insert into sincronizador values (0,0);
-insert into instalacion values (0,"","","","1.0",0);
+insert into instalacion values (0,0,"","","","1.1",0);

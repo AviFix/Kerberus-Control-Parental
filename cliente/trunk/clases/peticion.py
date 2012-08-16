@@ -23,7 +23,8 @@ modulo_logger = logging.getLogger('kerberus.' + __name__)
 class Peticion:
     def __init__(self):
         self.servidor = servidores.Servidor()
-        self.userid, self.version, self.nombretitular = self.obtenerDatos()
+        self.userid, self.serverid, self.version, self.nombretitular = \
+            self.obtenerDatos()
         self.server_ip, self.server_port = self.servidor.obtenerServidor(\
             config.SYNC_SERVER_IP, config.SYNC_SERVER_PORT, self.userid)
         self.server_sync = "%s:%s" % (self.server_ip, self.server_port)
@@ -32,10 +33,11 @@ class Peticion:
         try:
             conexion_db = sqlite3.connect(config.PATH_DB)
             cursor = conexion_db.cursor()
-            idUsuario, version, nombretitular = cursor.execute('select id, '\
-            'version, nombretitular from instalacion').fetchone()
+            idUsuario, serverId, version, nombretitular = \
+                cursor.execute('select id, serverid, version, nombretitular '\
+                'from instalacion').fetchone()
             cursor.close()
-            return idUsuario, version, nombretitular
+            return idUsuario, serverId, version, nombretitular
         except sqlite3.OperationalError, msg:
             modulo_logger.log(logging.ERROR, "No se pudo obtener el id de "\
             "instalacion.\nError: %s" % msg)
@@ -70,6 +72,7 @@ class Peticion:
 
         # Agrego los datos particulares del cliente
         headers['UserID'] = self.userid
+        headers['ServerID'] = self.serverid
         headers['Version'] = urllib2.quote(self.version.encode('utf-8'))
         headers['Nombre'] = urllib2.quote(self.nombretitular.encode('utf-8'))
         while True:
