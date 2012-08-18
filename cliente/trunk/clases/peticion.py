@@ -44,7 +44,8 @@ class Peticion:
             idUsuario = 0
             version = 0
             nombretitular = ''
-            return idUsuario, version, nombretitular
+            serverId = 0
+            return idUsuario, serverId, version, nombretitular
 
     def obtenerRespuesta(self, headers):
         #FIXME: Si no obtiene respuesta, deberia buscar otro server
@@ -73,7 +74,7 @@ class Peticion:
         # Agrego los datos particulares del cliente
         headers['UserID'] = self.userid
         headers['ServerID'] = self.serverid
-        headers['Version'] = urllib2.quote(self.version.encode('utf-8'))
+        headers['Version'] = self.version
         headers['Nombre'] = urllib2.quote(self.nombretitular.encode('utf-8'))
         while True:
             try:
