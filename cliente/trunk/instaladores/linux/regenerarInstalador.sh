@@ -6,6 +6,12 @@ echo "----------------------------------------------------"
 echo ""
 
 nombre_inst="kerberus-installer-${VERSION}.sh"
+
+grep "ENTORNO_DE_DESARROLLO = True" ../../conf/config.py > /dev/null
+if [ ${?} -eq 0 ]; then 
+  echo "- Cambiando a modo produccion";
+  sed -i 's/ENTORNO_DE_DESARROLLO\ =\ True/ENTORNO_DE_DESARROLLO\ =\ False/g' ../../conf/config.py
+fi
 echo "- Compilando ${nombre_inst}..."
 sh compilar.sh
 #echo "- Copiando DB del instalador de windows..."
