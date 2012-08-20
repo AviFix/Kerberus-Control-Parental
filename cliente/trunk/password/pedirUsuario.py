@@ -26,7 +26,8 @@ class formularioUsuario(QtGui.QMainWindow):
 
     def checkPassword(self):
         admUser=administradorDeUsuarios.AdministradorDeUsuarios()
-        valido=admUser.usuario_valido('admin',str(self.ui.password.text()))
+        password=unicode(self.ui.password.text().toUtf8(), 'utf-8')
+        valido=admUser.usuario_valido('admin', password)
         if valido:
             self.verificado=True
             self.close()
