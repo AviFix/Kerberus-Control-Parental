@@ -193,9 +193,8 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 #                self.mostrarPublicidad(url)
 #                return False
 
+        # Usuarios del sistema no remotos (para cuando tengamos multi-user)
         usuario, password = "NoBody", "NoBody"
-        # es para que muestre que kerberus esta activo, asi no lo muestra
-        # cuando se accede a la pagina desde cualquier lugar
 
         if "!DeshabilitarFiltrado!" in url:
             url = url.replace('!DeshabilitarFiltrado!', '')

@@ -16,7 +16,7 @@ import config
 #import registrar
 import logging
 
-modulo_logger = logging.getLogger('kerberus.' + __name__)
+modulo_logger = logging.getLogger('kerberus')
 
 
 # Clase

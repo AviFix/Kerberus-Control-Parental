@@ -25,7 +25,7 @@ import loguear
 modulo_logger = loguear.logSetup(
     config.SYNC_LOG_FILENAME,
     config.SYNC_LOGLEVEL, config.SYNC_LOG_SIZE_MB,
-    config.SYNC_LOG_CANT_ROTACIONES, "Kerberus-sync"
+    config.SYNC_LOG_CANT_ROTACIONES, "kerberus"
     )
 
 
@@ -57,18 +57,24 @@ class Sincronizador:
 
         self.id, self.nombre, self.email, self.version, self.password = \
                 self.registrador.obtenerDatosRegistrados()
+
         self.peticionRemota = peticion.Peticion()
 
         self.conexion_db = sqlite3.connect(config.PATH_DB)
         self.cursor = self.conexion_db.cursor()
+
         self.ultima_actualizacion = self.cursor.execute(
             'select ultima_actualizacion from sincronizador').fetchone()[0]
+
         self.ultima_recarga_completa = self.cursor.execute(
             'select ultima_recarga_completa from sincronizador').fetchone()[0]
+
         self.periodo_expiracion = \
             self.peticionRemota.obtenerPeriodoDeActualizacion()
+
         self.periodo_recarga_completa = \
             self.peticionRemota.obtenerPeriodoDeRecargaCompleta()
+
         modulo_logger.log(logging.DEBUG,
             "Periodo de actualizacion: %s segundos" % self.periodo_expiracion)
         modulo_logger.log(logging.DEBUG,
@@ -283,5 +289,4 @@ class Sincronizador:
             modulo_logger.log(logging.ERROR,
                 "Error al intentar descargar %s . ERROR: %s" % \
                 (nueva_version, error))
-        #
         modulo_logger.log(logging.DEBUG, "Fin de la actualizacion")
