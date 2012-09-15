@@ -6,6 +6,7 @@
 import sys
 import urllib2
 import sqlite3
+import hashlib
 
 # Modulos propios
 sys.path.append('../conf')
@@ -23,8 +24,8 @@ modulo_logger = logging.getLogger('kerberus')
 class Peticion:
     def __init__(self):
         self.servidor = servidores.Servidor()
-        self.userid, self.serverid, self.version, self.nombretitular = \
-            self.obtenerDatos()
+        self.userid, self.serverid, self.version, self.nombretitular,\
+        self.credencial = self.obtenerDatos()
         self.server_ip, self.server_port = self.servidor.obtenerServidor(\
             config.SYNC_SERVER_IP, config.SYNC_SERVER_PORT, self.userid)
         self.server_sync = "%s:%s" % (self.server_ip, self.server_port)
@@ -33,11 +34,12 @@ class Peticion:
         try:
             conexion_db = sqlite3.connect(config.PATH_DB)
             cursor = conexion_db.cursor()
-            idUsuario, serverId, version, nombretitular = \
-                cursor.execute('select id, serverid, version, nombretitular '\
-                'from instalacion').fetchone()
+            idUsuario, serverId, version, nombretitular, password = \
+                cursor.execute('select id, serverid, version, nombretitular, '\
+                'password from instalacion').fetchone()
             cursor.close()
-            return idUsuario, serverId, version, nombretitular
+            credencial = hashlib.md5(password).hexdigest()
+            return idUsuario, serverId, version, nombretitular, credencial
         except sqlite3.OperationalError, msg:
             modulo_logger.log(logging.ERROR, "No se pudo obtener el id de "\
             "instalacion.\nError: %s" % msg)
@@ -75,6 +77,7 @@ class Peticion:
         headers['UserID'] = self.userid
         headers['ServerID'] = self.serverid
         headers['Version'] = self.version
+        headers['Credencial'] = self.credencial
         headers['Nombre'] = urllib2.quote(self.nombretitular.encode('utf-8'))
         while True:
             try:
@@ -114,6 +117,9 @@ class Peticion:
         return dominios
 
     def informarNuevaPassword(self, password):
+        #FIXME: Ver de actualizar self.credencial con la nueva password una vez
+        # que se haya informado la password
+
         # FIXME: Deberia enviar la password vieja y nueva para verificar que
         # sea el usuario quien solicito el cambio
         password = urllib2.quote(password.encode('utf8'), safe='/')
