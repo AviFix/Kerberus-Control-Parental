@@ -25,7 +25,7 @@ class Peticion:
     def __init__(self):
         self.servidor = servidores.Servidor()
         self.userid, self.serverid, self.version, self.nombretitular,\
-        self.password, self.credencial = self.obtenerDatos()
+        self.password = self.obtenerDatos()
         self.server_ip, self.server_port = self.servidor.obtenerServidor(\
             config.SYNC_SERVER_IP, config.SYNC_SERVER_PORT, self.userid,
             self.serverid)
@@ -35,14 +35,16 @@ class Peticion:
         try:
             conexion_db = sqlite3.connect(config.PATH_DB)
             cursor = conexion_db.cursor()
-            idUsuario, serverId, version, nombretitular, password = \
-                cursor.execute('select id, serverid, version, nombretitular, '\
-                'password from instalacion').fetchone()
+            # FIXME: la pass y el md5 deberia esta en la tabla instalacion
+            idUsuario, serverId, version, nombretitular = \
+                cursor.execute('select id, serverid, version, nombretitular '\
+                'from instalacion').fetchone()
+            password = cursor.execute('select password from usuarios '\
+                'where username=\'admin\'').fetchone()[0]
             cursor.close()
-            password = urllib2.quote(password.encode('utf-8'))
-            credencial = hashlib.md5(password).hexdigest()
-            return idUsuario, serverId, version, nombretitular, password, \
-            credencial
+
+            return idUsuario, serverId, version, nombretitular, password
+
         except sqlite3.OperationalError, msg:
             modulo_logger.log(logging.ERROR, "No se pudo obtener el id de "\
             "instalacion.\nError: %s" % msg)
@@ -50,7 +52,7 @@ class Peticion:
             version = 0
             nombretitular = ''
             serverId = 0
-            return idUsuario, serverId, version, nombretitular
+            return idUsuario, serverId, version, nombretitular, password
 
     def obtenerRespuesta(self, headers):
         #FIXME: Si no obtiene respuesta, deberia buscar otro server
@@ -80,7 +82,7 @@ class Peticion:
         headers['UserID'] = self.userid
         headers['ServerID'] = self.serverid
         headers['Version'] = self.version
-        headers['Credencial'] = self.credencial
+        headers['Credencial'] = self.password
         headers['Nombre'] = urllib2.quote(self.nombretitular.encode('utf-8'))
         while True:
             try:
@@ -120,6 +122,8 @@ class Peticion:
         return dominios
 
     def informarNuevaPassword(self, password):
+        # FIXME: quede ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAA!!!!
+        # Manda el md5 de la pass nueva, no la vieja
         password = urllib2.quote(password.encode('utf8'), safe='/')
         headers = {"UserID": self.userid,
                     "Peticion": "informarNuevaPassword",
@@ -127,8 +131,8 @@ class Peticion:
                     "PasswordNueva": password}
         respuesta = self.obtenerRespuesta(headers)
         if respuesta == 'Informada':
-            self.credencial = hashlib.md5(password).hexdigest()
-            self.password = password
+            # FIXME: Cambiar encriptacion de md5 a algo mejor
+            self.password = hashlib.md5(password).hexdigest()
 
         return respuesta
 

@@ -31,7 +31,7 @@ class Servidor:
         self.listaDeServidores = []
         for i in range(1, 100):
             ip_new = "validador%s.kerberus.com.ar" % i
-            port_new = 443
+            port_new = 80
             server = [ip_new, port_new]
             self.listaDeServidores.append(server)
 

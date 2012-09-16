@@ -140,6 +140,10 @@ class Sincronizador:
                     " recargar todos los dominios" % \
                     (tiempo_restante / 60,
                     tiempo_proxima_recarga_completa / 60))
+                    # FIXME: pongo esto porque sino a veces queda loco pidiendo
+                    # hay que ver porque.
+                    if tiempo_restante < 60:
+                        tiempo_restante = 60
                     time.sleep(tiempo_restante)
                     modulo_logger.log(logging.DEBUG,
                         "Chequeando nuevamente los dominios")
@@ -164,13 +168,12 @@ class Sincronizador:
             cursor = conexion_db.cursor()
             password = cursor.execute(
                 'select password from instalacion').fetchone()[0]
-            # FIXME: QUEDE ACAAAAAAAAAAAAAA
-            # Manda la password vieja como nueva
-            peticionRemota=peticion.Peticion()
+            peticionRemota = peticion.Peticion()
             respuesta = peticionRemota.informarNuevaPassword(
                 password)
             if respuesta == 'Informada':
-                cursor.execute('update instalacion set passwordnotificada=1')
+                cursor.execute('update instalacion set passwordnotificada=1, '\
+                'password=""')
             cursor.close()
             conexion_db.commit()
         except sqlite3.OperationalError, msg:
