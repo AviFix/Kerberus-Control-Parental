@@ -35,9 +35,10 @@ class Servidor:
             server = [ip_new, port_new]
             self.listaDeServidores.append(server)
 
-    def estaRespondiendo(self, ip, port, userid):
+    def estaRespondiendo(self, ip, port, userid, serverid):
         server = "http://%s:%s" % (ip, port)
-        headers = {"UserID": userid, "Peticion": "estaRespondiendo"}
+        headers = {"UserID": userid, "ServerID": serverid,
+        "Peticion": "estaRespondiendo"}
 
         if config.USAR_PROXY:
             if self.estaOnline(config.PROXY_IP, config.PROXY_PORT):
@@ -81,12 +82,12 @@ class Servidor:
             (ip, port,))
             return False
 
-    def obtenerServidor(self, ip=False, port=False, userID=1):
+    def obtenerServidor(self, ip=False, port=False, userID=1, serverID=-1):
         servers = [[ip, port]] + self.listaDeServidores
         dormir_por = 5
         while True:
             for ip, port in servers:
-                if self.estaRespondiendo(ip, port, userID):
+                if self.estaRespondiendo(ip, port, userID, serverID):
                     modulo_logger.log(logging.INFO, "Utilizando el servidor "\
                     "de validacion %s:%s" % (ip, port,))
                     return ip, port

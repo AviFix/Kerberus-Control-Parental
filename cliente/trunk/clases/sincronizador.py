@@ -58,6 +58,10 @@ class Sincronizador:
         self.id, self.nombre, self.email, self.version, self.password = \
                 self.registrador.obtenerDatosRegistrados()
 
+        # Verifico si se informo una nueva password
+        if not self.passwordNotificada():
+            self.notificarPassword()
+
         self.peticionRemota = peticion.Peticion()
 
         self.conexion_db = sqlite3.connect(config.PATH_DB)
@@ -143,7 +147,9 @@ class Sincronizador:
     def passwordNotificada(self):
         """Verifica si se informo remotamente la password"""
         try:
-            password_notificada = self.cursor.execute(
+            conexion_db = sqlite3.connect(config.PATH_DB)
+            cursor = conexion_db.cursor()
+            password_notificada = cursor.execute(
                 'select passwordnotificada from instalacion').fetchone()[0]
         except sqlite3.OperationalError, msg:
             self.modulo_logger.log(logging.ERROR, "No se pudo verificar si la"\
@@ -158,8 +164,10 @@ class Sincronizador:
             cursor = conexion_db.cursor()
             password = cursor.execute(
                 'select password from instalacion').fetchone()[0]
-            # FIXME: Esto falla cuando la password tiene ñ
-            respuesta = self.peticionRemota.informarNuevaPassword(
+            # FIXME: QUEDE ACAAAAAAAAAAAAAA
+            # Manda la password vieja como nueva
+            peticionRemota=peticion.Peticion()
+            respuesta = peticionRemota.informarNuevaPassword(
                 password)
             if respuesta == 'Informada':
                 cursor.execute('update instalacion set passwordnotificada=1')

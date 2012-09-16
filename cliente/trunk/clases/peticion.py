@@ -25,9 +25,10 @@ class Peticion:
     def __init__(self):
         self.servidor = servidores.Servidor()
         self.userid, self.serverid, self.version, self.nombretitular,\
-        self.credencial = self.obtenerDatos()
+        self.password, self.credencial = self.obtenerDatos()
         self.server_ip, self.server_port = self.servidor.obtenerServidor(\
-            config.SYNC_SERVER_IP, config.SYNC_SERVER_PORT, self.userid)
+            config.SYNC_SERVER_IP, config.SYNC_SERVER_PORT, self.userid,
+            self.serverid)
         self.server_sync = "%s:%s" % (self.server_ip, self.server_port)
 
     def obtenerDatos(self):
@@ -38,8 +39,10 @@ class Peticion:
                 cursor.execute('select id, serverid, version, nombretitular, '\
                 'password from instalacion').fetchone()
             cursor.close()
+            password = urllib2.quote(password.encode('utf-8'))
             credencial = hashlib.md5(password).hexdigest()
-            return idUsuario, serverId, version, nombretitular, credencial
+            return idUsuario, serverId, version, nombretitular, password, \
+            credencial
         except sqlite3.OperationalError, msg:
             modulo_logger.log(logging.ERROR, "No se pudo obtener el id de "\
             "instalacion.\nError: %s" % msg)
@@ -117,16 +120,16 @@ class Peticion:
         return dominios
 
     def informarNuevaPassword(self, password):
-        #FIXME: Ver de actualizar self.credencial con la nueva password una vez
-        # que se haya informado la password
-
-        # FIXME: Deberia enviar la password vieja y nueva para verificar que
-        # sea el usuario quien solicito el cambio
         password = urllib2.quote(password.encode('utf8'), safe='/')
         headers = {"UserID": self.userid,
                     "Peticion": "informarNuevaPassword",
-                    "Password": password}
+                    "PasswordVieja": self.password,
+                    "PasswordNueva": password}
         respuesta = self.obtenerRespuesta(headers)
+        if respuesta == 'Informada':
+            self.credencial = hashlib.md5(password).hexdigest()
+            self.password = password
+
         return respuesta
 
     def recordarPassword(self):
