@@ -88,7 +88,8 @@ class AdministradorDeUsuarios:
             cursor.execute('update usuarios set password=? ,passwordseteada=1 '\
             'where username=? and passwordseteada=0', (password_md5, usuario,))
             # esta nofificada, porque le llega el mail del registro con la pass
-            cursor.execute('update instalacion set passwordnotificada=1')
+            cursor.execute('update instalacion set credencial=?, '\
+            'passwordnotificada=1', password_md5)
             conexion.commit()
             conexion.close()
 
