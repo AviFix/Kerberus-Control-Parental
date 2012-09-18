@@ -36,7 +36,7 @@ class Peticion:
             conexion_db = sqlite3.connect(config.PATH_DB)
             cursor = conexion_db.cursor()
             # FIXME: la pass y el md5 deberia esta en la tabla instalacion
-            idUsuario, serverId, version, nombretitular = \
+            idUsuario, serverId, version, nombretitular, credencial = \
                 cursor.execute('select id, serverid, version, nombretitular '\
                 ', credencial from instalacion').fetchone()
             cursor.close()
@@ -50,6 +50,7 @@ class Peticion:
             version = 0
             nombretitular = ''
             serverId = 0
+            credencial = ''
             return idUsuario, serverId, version, nombretitular, credencial
 
     def obtenerRespuesta(self, headers):
@@ -120,15 +121,15 @@ class Peticion:
         return dominios
 
     def informarNuevaPassword(self, password):
-        password = urllib2.quote(password.encode('utf8'), safe='/')
+        password_quoted = urllib2.quote(password.encode('utf8'), safe='/')
         headers = {"UserID": self.userid,
                     "Peticion": "informarNuevaPassword",
                     "PasswordVieja": self.credencial,
-                    "PasswordNueva": password}
+                    "PasswordNueva": password_quoted}
         respuesta = self.obtenerRespuesta(headers)
         if respuesta == 'Informada':
             # FIXME: Cambiar encriptacion de md5 a algo mejor
-            self.credencial = hashlib.md5(password).hexdigest()
+            self.credencial = hashlib.md5(password.encode('utf-8')).hexdigest()
 
         return respuesta
 

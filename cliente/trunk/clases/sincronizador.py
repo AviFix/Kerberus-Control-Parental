@@ -172,9 +172,10 @@ class Sincronizador:
             respuesta = peticionRemota.informarNuevaPassword(
                 password)
             if respuesta == 'Informada':
-                md5_password_nueva = hashlib.md5(password).hexdigest()
-                cursor.execute('update instalacion set passwordnotificada=1, '\
-                'password="", credencial=?', md5_password_nueva)
+                md5_password_nueva = \
+                    hashlib.md5(password.encode('utf-8')).hexdigest()
+                cursor.execute('update instalacion set passwordnotificada=?, '\
+                'password=?, credencial=?', (1, '', md5_password_nueva,))
             cursor.close()
             conexion_db.commit()
         except sqlite3.OperationalError, msg:
