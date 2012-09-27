@@ -181,7 +181,7 @@ class Peticion:
         idUsuario, server_id = respuesta.split(',')
         return [idUsuario, server_id]
 
-    def eliminarUsuario(self, id):
+    def eliminarUsuario(self):
         """Solicita la eliminacion"""
         headers = {"Peticion": "eliminarUsuario"}
         respuesta = self.obtenerRespuesta(headers)

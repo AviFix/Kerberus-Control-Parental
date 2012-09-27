@@ -90,8 +90,8 @@ class Registradores:
     def eliminarRemotamente(self):
         """Ejecutado cuando un usuario desinstala el soft"""
         id, nombre, email, version, password = self.obtenerDatosRegistrados()
-        peticionRemota = peticion.Peticion(id)
-        id_obtenido = peticionRemota.eliminarUsuario(id)
+        peticionRemota = peticion.Peticion()
+        id_obtenido = peticionRemota.eliminarUsuario()
 
     def obtenerDatosRegistrados(self):
         """Devuelve id, nombre, email y version"""

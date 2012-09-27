@@ -5,7 +5,6 @@ sys.path.append('../')
 sys.path.append('../clases')
 
 import pedirUsuario
-import funciones
 import _winreg, subprocess
 import registrar
 import time
@@ -26,7 +25,7 @@ if desinstalar:
     time.sleep(1)
     print "Ejecutando %s" % desinstalador
     subprocess.call(desinstalador)
-    reg=registar.Registradores()
+    reg = registrar.Registradores()
     reg.eliminarRemotamente()
 
 
