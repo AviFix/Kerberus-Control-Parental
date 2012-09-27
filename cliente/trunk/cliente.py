@@ -43,7 +43,6 @@ logger = loguear.logSetup(config.LOG_FILENAME, config.LOGLEVEL,
 if not os.path.exists(config.PATH_DB):
     funciones.crearDBCliente(config.PATH_DB)
 
-verificador = consultor.Consultor()
 urls = manejadorUrls.ManejadorUrls()
 adminUsers = administradorDeUsuarios.AdministradorDeUsuarios()
 
@@ -54,10 +53,6 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 
     server_version = "Kerberus - Cliente /" + __version__
     rbufsize = 0                        # self.rfile Be unbuffered
-    # FIXME: esta variable debe ser definida dentro de la clase
-    # ThreadingHTTPServer como self.verificador = consultor.Consultor() y luego
-    # accedida dentro de esta clase como self.server.verificador
-    global verificador
 
     def mostrarPublicidad(self, url):
         msg = "<html><head><title>Navegador protegido por Kerberus</title>"\
@@ -93,7 +88,6 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 
     def recordarPassword(self):
         import registrar
-        # FIXME: si mandan un ' en el nombre, se pudre todo
         registrador = registrar.Registradores()
         if registrador.checkRegistradoRemotamente():
             import peticion
@@ -187,8 +181,8 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 
     def do_GET(self):
         url = self.path
-#        if verificador.primerUrl:
-#            verificador.primerUrl=False
+#        if self.server.verificador.primerUrl:
+#            self.server.verificador.primerUrl=False
 #            if "kerberus.com.ar" not in url:
 #                self.mostrarPublicidad(url)
 #                return False
@@ -198,7 +192,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 
         if "!DeshabilitarFiltrado!" in url:
             url = url.replace('!DeshabilitarFiltrado!', '')
-            if verificador.kerberus_activado:
+            if self.server.verificador.kerberus_activado:
                 if self.command == 'POST':
                     content_len = int(self.headers.getheader('content-length'))
                     post_body = self.rfile.read(content_len)
@@ -206,7 +200,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                     password = unicode(urllib2.unquote(password), 'utf-8')
                     usuario_admin = self.validarPassword(password)
                     if usuario_admin:
-                        verificador.kerberus_activado = False
+                        self.server.verificador.kerberus_activado = False
                         self.redirigirDesbloqueado(url)
                         return True
                     else:
@@ -232,7 +226,6 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                 password_nueva2 = unicode(urllib2.unquote(password_nueva2),
                                             'utf-8')
                 usuario_admin = self.validarPassword(password_actual)
-                # FIXME: problemas con las ñ y acentos.
                 if usuario_admin:
                     if password_nueva1 != password_nueva2:
                         self.cambioPassPasswordNoCoinciden()
@@ -255,11 +248,13 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 
         #FIXME: Esto deberia ser un header no por url
         if "http://inicio.kerberus.com.ar" in url and \
-            verificador.kerberus_activado and "denegado.php" not in url:
+            self.server.verificador.kerberus_activado and \
+            "denegado.php" not in url:
             url = url + "?kerberus_activado=1"
 
-        if verificador.kerberus_activado:
-            permitido, motivo = verificador.validarUrl(usuario, password, url)
+        if self.server.verificador.kerberus_activado:
+            permitido, motivo = self.server.verificador.validarUrl(usuario,
+            password, url)
             if not permitido:
                 self.denegar(motivo, url)
                 return False
@@ -323,7 +318,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
             self.connection.close()
 
     def _read_write(self, soc, max_idling=20, local=False):
-        #Revisar esta funcion!!!!!! tira el problema 10053 de socket
+        #FIXME: Revisar esta funcion!!!!!! tira el problema 10053 de socket
         iw = [self.connection, soc]
         local_data = ""
         ow = []
@@ -376,6 +371,7 @@ class ThreadingHTTPServer(SocketServer.ThreadingMixIn,
         BaseHTTPServer.HTTPServer.__init__(self, server_address,
                                             RequestHandlerClass)
         self.logger = logger
+        self.verificador = consultor.Consultor()
 
 
 def handler(signo, frame):

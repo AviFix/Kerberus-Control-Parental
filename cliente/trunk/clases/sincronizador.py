@@ -92,7 +92,6 @@ class Sincronizador:
         self.recargar_todos_los_dominios = False
 
     def __del__(self):
-       #TODO: Tambien deberia informar que se cerror la sesion
         self.conexion_db.close()
         modulo_logger.log(logging.DEBUG,
             "Deteniendo el demonio de sincronizacion")

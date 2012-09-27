@@ -30,6 +30,8 @@ class Servidor:
     def __init__(self):
         self.listaDeServidores = []
         for i in range(1, 100):
+            # FIXME: Deberia obtener esta lista desde el servidor, con un
+            # ranking para que desde el server se balance carga
             ip_new = "validador%s.kerberus.com.ar" % i
             port_new = 80
             server = [ip_new, port_new]

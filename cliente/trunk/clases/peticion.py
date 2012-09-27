@@ -54,7 +54,6 @@ class Peticion:
             return idUsuario, serverId, version, nombretitular, credencial
 
     def obtenerRespuesta(self, headers):
-        #FIXME: Si no obtiene respuesta, deberia buscar otro server
         if config.USAR_PROXY:
             if self.servidor.estaOnline(config.PROXY_IP, config.PROXY_PORT):
                 url_proxy = "http://%s:%s" % (config.PROXY_IP,
@@ -189,7 +188,6 @@ class Peticion:
         return respuesta
 
     def usuarioRegistrado(self, id, email):
-        #FIXME: Debe enviar id y email para verificar
         """Devuelve true o false"""
         headers = {"Peticion": "usuarioRegistrado", "ID": id, "Email": email}
         respuesta = self.obtenerRespuesta(headers)

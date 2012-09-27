@@ -234,11 +234,6 @@ class Usuario:
             self.recargarDominiosPublicamenteDenegados()
             self.recargarPeriodoDeActualizacion()
             self.ultimaRecargaDeDominios = tiempo_actual
-            # FIXME: no deberia ir esto aca, pero es para que la primera
-            # vez se use los dominios sincronizados.
-            # sino la primera vez self.dominios_publicamente_permitidos esta
-            # vacio, porque al momento de refrezcarse, todavia no se habian
-            # sincronizado los dominios.
             if len(self.dominios_publicamente_permitidos) == 0:
                 self.periodoDeActualizacionDB = 5
             modulo_logger.log(logging.INFO,
@@ -248,9 +243,6 @@ class Usuario:
     def validarRemotamente(self, url):
         """Consulta al servidor por la url, porque no pudo determinar
         su aptitud"""
-
-        #TODO: Esto deberia ser cada cierto tiempo, no cuando busque una
-        #      url no validada
         self.chequearEdadCaches()
         #
         modulo_logger.log(logging.INFO, "Validando remotamente: %s" % url)
