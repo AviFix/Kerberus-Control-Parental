@@ -2,84 +2,84 @@ LICENCIA FREEWARE - CONTRATO DE LICENCIA DE USUARIO FINAL
 SOFTWARE "KERBERUS - CONTROL PARENTAL"
 
 AVISO AL USUARIO:
-Por favor, lea cuidadosamente el presente contrato de licencia. Usando todo o una porci√≥n del software "Kerberus - Control parental" est√° aceptando todos y cada uno de los t√©rminos y condiciones de este contrato. Si no est√° de acuerdo con estos t√©rminos, no use este Software.
+Por favor, lea cuidadosamente el presente contrato de licencia. Usando todo o una porciÛn del software "Kerberus - Control parental" est· aceptando todos y cada uno de los tÈrminos y condiciones de este contrato. Si no est· de acuerdo con estos tÈrminos, no use este Software.
  
 1. DEFINICIONES
 
-Dentro de este contrato, la siguiente terminolog√≠a tendr√° el significado aqu√≠ indicado, aplic√°ndose tanto a la forma singular como plural de los t√©rminos a definir:
+Dentro de este contrato, la siguiente terminologÌa tendr· el significado aquÌ indicado, aplic·ndose tanto a la forma singular como plural de los tÈrminos a definir:
 
-"Licenciante" significa "KERBERUS S.R.L.", una sociedad de responsabilidad limitada, con domicilio legal en calle Urquiza N¬∞ 2235, Dpto. 10, de la ciudad de Santa Fe, C√≥digo Postal S3000FFE, provincia de Santa Fe, Rep√∫blica Argentina, creada y regida seg√∫n las leyes de ese pa√≠s.
+"Licenciante" significa "KERBERUS S.R.L.", una sociedad de responsabilidad limitada, con domicilio legal en calle Urquiza N∞ 2235, Dpto. 10, de la ciudad de Santa Fe, CÛdigo Postal S3000FFE, provincia de Santa Fe, Rep˙blica Argentina, creada y regida seg˙n las leyes de ese paÌs.
 
 "Concesionario" significa Usted y su grupo familiar, a menos que se indique de otra forma.
 
-"Software" significa: (a) todo los contenidos de los archivos, disco(s), CD-ROM(s) o cualquier otro medio del cual este contrato est√© previsto, incluyendo pero no limitando a: (1) informaci√≥n de registraci√≥n, (2) material o archivos explicativos relacionados ("Documentaci√≥n"); y (3) archivos de configuraci√≥n, ejecuci√≥n y ejemplos de c√≥digo del Software (de existir); y (b) mejoras, versiones modificadas, adiciones y copias del Software, de haberlas, licenciadas a Usted por el Licenciante  (colectivamente, "Actualizaciones").
+"Software" significa: (a) todo los contenidos de los archivos, disco(s), CD-ROM(s) o cualquier otro medio del cual este contrato estÈ previsto, incluyendo pero no limitando a: (1) informaciÛn de registraciÛn, (2) material o archivos explicativos relacionados ("DocumentaciÛn"); y (3) archivos de configuraciÛn, ejecuciÛn y ejemplos de cÛdigo del Software (de existir); y (b) mejoras, versiones modificadas, adiciones y copias del Software, de haberlas, licenciadas a Usted por el Licenciante  (colectivamente, "Actualizaciones").
 
-"Uso", "Usar" o "Utilizar" significa acceder, instalar, descargar, copiar o cualquier otro beneficio obtenido de usar las funcionalidades del Software de acuerdo con la Documentaci√≥n.
+"Uso", "Usar" o "Utilizar" significa acceder, instalar, descargar, copiar o cualquier otro beneficio obtenido de usar las funcionalidades del Software de acuerdo con la DocumentaciÛn.
 
-"Sistema" significa Windows OS, GNU/Linux o Mac OSX, sea el existente en una computadora personal y/o en cualquier m√°quina virtual.
+"Sistema" significa Windows OS, GNU/Linux o Mac OSX, sea el existente en una computadora personal y/o en cualquier m·quina virtual.
 
  
 2. LICENCIA DE USO GENERAL
 
-Se le concede a Ud. una Licencia de Uso no exclusiva del Software descargado para cualquier prop√≥sito por un per√≠odo de tiempo ilimitado. El producto de software bajo esta Licencia est√° provisto gratuitamente. Si bien no se efect√∫a transacci√≥n monetaria por la licencia de uso de este software, eso no significa que no existan condiciones para el uso de dicho software:
+Se le concede a Ud. una Licencia de Uso no exclusiva del Software descargado para cualquier propÛsito por un perÌodo de tiempo ilimitado. El producto de software bajo esta Licencia est· provisto gratuitamente. Si bien no se efect˙a transacciÛn monetaria por la licencia de uso de este software, eso no significa que no existan condiciones para el uso de dicho software:
 
-2.1. El Software podr√° ser instalado y Utilizado por el Concesionario para cualquier prop√≥sito legal.
+2.1. El Software podr· ser instalado y Utilizado por el Concesionario para cualquier propÛsito legal.
 
-2.2. El Software podr√° ser instalado y Utilizado por el Concesionario en cualquier cantidad de Sistemas, pero s√≥lo dentro de un √°mbito dom√©stico y privado. Esta prohibida la utilizaci√≥n del Software con fines comerciales, o en entidades o empresas sea que tengan o no fines de lucro, o en entidades educativas p√∫blicas y privadas, salvo expresa autorizaci√≥n por escrito del Licenciante.
+2.2. El Software podr· ser instalado y Utilizado por el Concesionario en cualquier cantidad de Sistemas, pero sÛlo dentro de un ·mbito domÈstico y privado. Esta prohibida la utilizaciÛn del Software con fines comerciales, o en entidades o empresas sea que tengan o no fines de lucro, o en entidades educativas p˙blicas y privadas, salvo expresa autorizaciÛn por escrito del Licenciante.
 
-2.3. El Software podr√° ser copiado y distribuido bajo la condici√≥n de que el copyright y su garant√≠a se mantengan intactas, y el Concesionario no cobre dinero o matr√≠culas por el producto de Software, sin excepciones.
+2.3. El Software podr· ser copiado y distribuido bajo la condiciÛn de que el copyright y su garantÌa se mantengan intactas, y el Concesionario no cobre dinero o matrÌculas por el producto de Software, sin excepciones.
 
-2.4. El Concesionario no tendr√° ning√∫n derecho de propiedad de o sobre el Software. El Concesionario reconoce y est√° de acuerdo de que el Licenciante retiene todos los copyrights y cualquier otro derecho, incluido el de propiedad, de y sobre el Software.
+2.4. El Concesionario no tendr· ning˙n derecho de propiedad de o sobre el Software. El Concesionario reconoce y est· de acuerdo de que el Licenciante retiene todos los copyrights y cualquier otro derecho, incluido el de propiedad, de y sobre el Software.
 
-2.5. El Uso en el √°mbito de esta Licencia es gratuito y ninguna regal√≠a o matr√≠cula de licencia deber√° ser abonada por el Concesionario.
+2.5. El Uso en el ·mbito de esta Licencia es gratuito y ninguna regalÌa o matrÌcula de licencia deber· ser abonada por el Concesionario.
  
 
 3. DERECHOS DE PROPIEDAD INTELECTUAL
 
-3.1 Esta Licencia no transmite ning√∫n derecho intelectual sobre el Software. El Software y cualquiera de las copias que el Concesionario est√© autorizado por el Licenciante a realizar son  propiedad intelectual del Licenciante y le pertenecen.
+3.1 Esta Licencia no transmite ning˙n derecho intelectual sobre el Software. El Software y cualquiera de las copias que el Concesionario estÈ autorizado por el Licenciante a realizar son  propiedad intelectual del Licenciante y le pertenecen.
 
-3.2 El Software est√° protegido por copyright, por Leyes de Derecho de Autor y por disposiciones de tratados internacionales.
+3.2 El Software est· protegido por copyright, por Leyes de Derecho de Autor y por disposiciones de tratados internacionales.
 
-3.3 Cualquier copia que el Concesionario est√© permitido a realizar de conformidad con este Acuerdo deber√° contener el mismo copyright y cualquier otro anuncio de propiedad que aparezca sobre o en el Software.
+3.3 Cualquier copia que el Concesionario estÈ permitido a realizar de conformidad con este Acuerdo deber· contener el mismo copyright y cualquier otro anuncio de propiedad que aparezca sobre o en el Software.
 
-3.4 La estructura, organizaci√≥n y c√≥digo del Software son secreto comercial e informaci√≥n confidencial del Licenciante. El Concesionario acuerda no descompilar, desmontar o de ninguna otra forma descubrir el c√≥digo fuente del Software.
+3.4 La estructura, organizaciÛn y cÛdigo del Software son secreto comercial e informaciÛn confidencial del Licenciante. El Concesionario acuerda no descompilar, desmontar o de ninguna otra forma descubrir el cÛdigo fuente del Software.
 
-3.5 Cualquier intento de ingenier√≠a invertida, copia, clonaci√≥n, modificaci√≥n o alteraci√≥n de cualquier manera al programa instalador sin la aprobaci√≥n espec√≠fica del Licenciante est√°n estrictamente prohibidos. El Concesionario no est√° autorizado para usar ning√∫n plug-in o adherido que permita salvarle modificaciones a un archivo con software licenciado y distribuido por el Licenciante.
+3.5 Cualquier intento de ingenierÌa invertida, copia, clonaciÛn, modificaciÛn o alteraciÛn de cualquier manera al programa instalador sin la aprobaciÛn especÌfica del Licenciante est·n estrictamente prohibidos. El Concesionario no est· autorizado para usar ning˙n plug-in o adherido que permita salvarle modificaciones a un archivo con software licenciado y distribuido por el Licenciante.
 
-3.6 Cualquier informaci√≥n suministrada por el Licenciante u obtenida por el Concesionario, como a continuaci√≥n se permite, podr√° ser usada √∫nicamente por el Concesionario con el fin descrito aqu√≠ y no podr√° divulgarse a ning√∫n tercero o usado para crear ning√∫n software que sea en substancia similar al expresado por el Software.
+3.6 Cualquier informaciÛn suministrada por el Licenciante u obtenida por el Concesionario, como a continuaciÛn se permite, podr· ser usada ˙nicamente por el Concesionario con el fin descrito aquÌ y no podr· divulgarse a ning˙n tercero o usado para crear ning˙n software que sea en substancia similar al expresado por el Software.
 
-3.7 Las Marcas deber√°n ser utilizadas de acuerdo con la pr√°ctica de marcas aceptada, incluyendo identificaci√≥n de los propietarios de dichas marcas. Las marcas podr√°n ser utilizadas solamente para identificar cualquier salida impresa del Software y dicho uso de las marcas no otorga al Concesionario ning√∫n tipo de propiedad de y para ellas.
+3.7 Las Marcas deber·n ser utilizadas de acuerdo con la pr·ctica de marcas aceptada, incluyendo identificaciÛn de los propietarios de dichas marcas. Las marcas podr·n ser utilizadas solamente para identificar cualquier salida impresa del Software y dicho uso de las marcas no otorga al Concesionario ning˙n tipo de propiedad de y para ellas.
 
-3.8 Este contrato de licencia es v√°lido solamente respecto del Software en su versi√≥n ... (Realease del 01/02/2012 9:00:00 AM GMT-3). No da derecho alguno al Concesionario para el Uso sobre versiones posteriores, ni garantiza la funcionalidad del Software una vez que exista otra versi√≥n del Software de disponibilidad general. En ese caso, queda a criterio del Concesionario el obtener la nueva versi√≥n, la que estar√° sujeta a su contrato de licencia respectivo.
+3.8 Este contrato de licencia es v·lido solamente respecto del Software en su versiÛn ... (Realease del 01/02/2012 9:00:00 AM GMT-3). No da derecho alguno al Concesionario para el Uso sobre versiones posteriores, ni garantiza la funcionalidad del Software una vez que exista otra versiÛn del Software de disponibilidad general. En ese caso, queda a criterio del Concesionario el obtener la nueva versiÛn, la que estar· sujeta a su contrato de licencia respectivo.
 
-4. GARANT√çA
+4. GARANTÕA
 
 4.1 El Licenciante garantiza que:
 
-4.1.1 Posee propiedad sobre el Software y su documentaci√≥n y/o est√° en posesi√≥n de los derechos y licencias v√°lidas que apoyan los t√©rminos de este Acuerdo;
+4.1.1 Posee propiedad sobre el Software y su documentaciÛn y/o est· en posesiÛn de los derechos y licencias v·lidas que apoyan los tÈrminos de este Acuerdo;
 
-4.1.2 Al leal saber y entender del Licenciante, el Software no infringe o viola ning√∫n derecho de propiedad intelectual de ning√∫n tercero;
+4.1.2 Al leal saber y entender del Licenciante, el Software no infringe o viola ning˙n derecho de propiedad intelectual de ning˙n tercero;
 
-4.1.3 El Software no contiene ning√∫n tipo de puerta trasera, bomba de tiempo, dispositivo de autoeliminaci√≥n o cualquier otra rutina intencionalmente dise√±ada por el Licenciante para inhabilitar un programa de computadora, o instrucciones que alteren, destruyan o inhiban el entorno de procesamiento.
+4.1.3 El Software no contiene ning˙n tipo de puerta trasera, bomba de tiempo, dispositivo de autoeliminaciÛn o cualquier otra rutina intencionalmente diseÒada por el Licenciante para inhabilitar un programa de computadora, o instrucciones que alteren, destruyan o inhiban el entorno de procesamiento.
 
-4.2 Exceptuando aquellas garant√≠as especificadas en la secci√≥n 4.1 arriba, el Software est√° siendo entregado "COMO ES" y el Licenciante no ofrece ninguna garant√≠a en cuanto a su uso o el rendimiento del mismo.
+4.2 Exceptuando aquellas garantÌas especificadas en la secciÛn 4.1 arriba, el Software est· siendo entregado "COMO ES" y el Licenciante no ofrece ninguna garantÌa en cuanto a su uso o el rendimiento del mismo.
 
-El Concesionario declara conocer que el Software se encuentra en pleno desarrollo, que la presente es una versi√≥n de prueba -versi√≥n beta-, que es posible que sea inestable, y que esta destinada a su distribuci√≥n y uso con el s√≥lo fin de corregir posibles errores antes del lanzamiento de la versi√≥n final -versi√≥n de disponibilidad general-. Por lo tanto, el Concesionario asume los riesgos propios de esta situaci√≥n, como por ejemplo y sin limitarse a los derivados de: (1) errores en la programaci√≥n del Software; (2) errores en la compilaci√≥n del Software; (3) errores y/o fallas en el funcionamiento del Software. 
+El Concesionario declara conocer que el Software se encuentra en pleno desarrollo, que la presente es una versiÛn de prueba -versiÛn beta-, que es posible que sea inestable, y que esta destinada a su distribuciÛn y uso con el sÛlo fin de corregir posibles errores antes del lanzamiento de la versiÛn final -versiÛn de disponibilidad general-. Por lo tanto, el Concesionario asume los riesgos propios de esta situaciÛn, como por ejemplo y sin limitarse a los derivados de: (1) errores en la programaciÛn del Software; (2) errores en la compilaciÛn del Software; (3) errores y/o fallas en el funcionamiento del Software. 
 
 El Licenciante y sus proveedores no garantizan ni pueden garantizar el rendimiento o resultados que el Concesionario pueda obtener usando el Software. El riesgo que surja del uso o funcionamiento del Software lo asume pura y exclusivamente el Concesionario.
 
-El Licenciante no da ninguna garant√≠a, expresa o impl√≠cita, de que (1) el Software ser√° de calidad satisfactoria, adecuado para alg√∫n prop√≥sito particular o para cualquier uso particular dentro de condiciones espec√≠ficas, a pesar de que dicha finalidad, uso o condici√≥n pueda ser conocida por el Licenciante; o (2) que el Software operar√° libre de errores o sin interrupci√≥n o que cualquier error ser√° corregido.
+El Licenciante no da ninguna garantÌa, expresa o implÌcita, de que (1) el Software ser· de calidad satisfactoria, adecuado para alg˙n propÛsito particular o para cualquier uso particular dentro de condiciones especÌficas, a pesar de que dicha finalidad, uso o condiciÛn pueda ser conocida por el Licenciante; o (2) que el Software operar· libre de errores o sin interrupciÛn o que cualquier error ser· corregido.
 
  
-5. LIMITACI√ìN DE RESPONSABILIDADES
+5. LIMITACI”N DE RESPONSABILIDADES
 
-En ninguna circunstancia el Licenciante o sus proveedores ser√°n responsables por cualquier da√±o, reclamo o costo cualquiera que sea o cualquier da√±o consecuente, indirecto o incidental, o ninguna p√©rdida, incluso si el Licenciante ha sido notificado de la posibilidad de dicha p√©rdida, da√±o, reclamo o costo realizado por cualquier tercero.
+En ninguna circunstancia el Licenciante o sus proveedores ser·n responsables por cualquier daÒo, reclamo o costo cualquiera que sea o cualquier daÒo consecuente, indirecto o incidental, o ninguna pÈrdida, incluso si el Licenciante ha sido notificado de la posibilidad de dicha pÈrdida, daÒo, reclamo o costo realizado por cualquier tercero.
 
-En ninguna circunstancia el Concesionario ser√° responsable para con el Licenciante bajo la condici√≥n de que el Concesionario cumpla con todos los t√©rminos y condiciones establecidos en esta Licencia.
+En ninguna circunstancia el Concesionario ser· responsable para con el Licenciante bajo la condiciÛn de que el Concesionario cumpla con todos los tÈrminos y condiciones establecidos en esta Licencia.
 
  
-6. CLAUSULAS DE NO-RESCINCI√ìN
+6. CLAUSULAS DE NO-RESCINCI”N
 
-Si alguna porci√≥n de este contrato se considera inaplicable, el resto se mantendr√° v√°lido. Esto significa que si una secci√≥n del contrato no es permitida por ley, el resto del contrato sigue en vigor.  El no ejercicio de alguno de los derechos bajo este contrato por alguna de las partes, no constituir√° una renuncia de (1) ning√∫n otro t√©rmino o condici√≥n de este contrato, o (2) alg√∫n derecho en cualquier momento posterior a exigir el cumplimiento exacto y estricto de los t√©rminos de este contrato.
+Si alguna porciÛn de este contrato se considera inaplicable, el resto se mantendr· v·lido. Esto significa que si una secciÛn del contrato no es permitida por ley, el resto del contrato sigue en vigor.  El no ejercicio de alguno de los derechos bajo este contrato por alguna de las partes, no constituir· una renuncia de (1) ning˙n otro tÈrmino o condiciÛn de este contrato, o (2) alg˙n derecho en cualquier momento posterior a exigir el cumplimiento exacto y estricto de los tÈrminos de este contrato.
 
-¬© 2012 Kerberus S.R.L. Todos los Derechos Reservados.
+© 2012 Kerberus S.R.L. Todos los Derechos Reservados.
