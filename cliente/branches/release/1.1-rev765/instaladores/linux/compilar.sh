@@ -4,6 +4,8 @@ echo "   - Limpiando directorios..."
 [ -d ../cliente/dist ] && rm -r ../cliente/dist
 [ -d ../sincronizadorCliente/build ] && rm -r ../sincronizadorCliente/build
 [ -d ../sincronizadorCliente/dist ] && rm -r ../sincronizadorCliente/dist
+[ -d ../desinstalador/build ] && rm -r ../desinstalador/build
+[ -d ../desinstalador/dist ] && rm -r ../desinstalador/dist
 
 echo "   - configurando pyinstaller..."
 python ../common/pyinstaller-1.5.1/Configure.py 2> /dev/null 1> /dev/null
@@ -17,6 +19,8 @@ echo "   - compilando cliente..."
 python ../common/pyinstaller-1.5.1/Build.py -y ./cliente/cliente.spec > /dev/null
 echo "   - compilando sincronizador..."
 python ../common/pyinstaller-1.5.1/Build.py -y ./sincronizadorCliente/sincronizadorCliente.spec > /dev/null
+echo "   - compilando desinstalador..."
+python ../common/pyinstaller-1.5.1/Build.py -y ./desinstalador/desinstalador.spec > /dev/null
 
 if [ ${SETEADO_ENTORNO} ]; then
           echo "   - Volviendo al entorno de desarrollo..."
@@ -30,3 +34,7 @@ cd ../../
 cd sincronizadorCliente/dist/
 tar cvfz ../../payload/sincronizador.tar.gz sincronizadorCliente > /dev/null
 cd ../../
+cd desinstalador/dist/
+tar cvfz ../../payload/desinstalador.tar.gz desinstalador > /dev/null
+cd ../../
+

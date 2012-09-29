@@ -3,11 +3,11 @@ PATH_COMMON=/usr/share/kerberus
 CONFIG_DIR=/etc/kerberus
 INIT_DIR=/etc/init.d
 
-if [ -f ${PATH_COMMON}/uninstaller ]; then
+if [ -f ${PATH_COMMON}/desinstalador/kerberus-uninstall ]; then
   echo "Kerberus ya se encuentra instalado, desea desinstalarlo? [y/N]"
   read respuesta
   if [ "${respuesta}" = "y" ]; then
-    sh ${PATH_COMMON}/uninstaller
+    ${PATH_COMMON}/desinstalador/kerberus-uninstall
   fi
   exit 0
 fi
@@ -42,6 +42,7 @@ mkdir -p ${CONFIG_DIR}
 
 tar xvfz ./cliente.tar.gz -C ${PATH_COMMON} > /dev/null
 tar xvfz ./sincronizador.tar.gz -C ${PATH_COMMON} > /dev/null
+tar xvfz ./desinstalador.tar.gz -C ${PATH_COMMON} > /dev/null
 cp ./confspec.ini ${PATH_COMMON}
 cp ./cliente.conf ${CONFIG_DIR}
 cp ./kerberus-cliented ${INIT_DIR}/
