@@ -1,0 +1,10 @@
+('./desinstalador/build/pyi.linux2/uninstall/kerberus-uninstall',
+ 0,
+ False,
+ None,
+ None,
+ [],
+ False,
+ True,
+ 0,
+ 1348953471)

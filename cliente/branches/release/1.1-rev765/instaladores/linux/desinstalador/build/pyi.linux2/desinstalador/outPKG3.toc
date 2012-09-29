@@ -1,0 +1,12 @@
+('./desinstalador/build/pyi.linux2/desinstalador/outPKG3.pkg',
+ {'BINARY': 1,
+  'DATA': 1,
+  'EXECUTABLE': 1,
+  'EXTENSION': 1,
+  'PYMODULE': 1,
+  'PYSOURCE': 1},
+ [('outPYZ1.pyz', './desinstalador/build/pyi.linux2/desinstalador/outPYZ1.pyz', 'PYZ'), ('iu', '/home/mboscovich/proyectos/control_parental/cliente/branches/release/1.1-rev765/instaladores/common/pyinstaller-1.5.1/iu.pyc', 'PYMODULE'), ('struct', '/usr/lib/python2.7/struct.pyc', 'PYMODULE'), ('archive', '/home/mboscovich/proyectos/control_parental/cliente/branches/release/1.1-rev765/instaladores/common/pyinstaller-1.5.1/archive.pyc', 'PYMODULE'), ('_mountzlib', '../common/pyinstaller-1.5.1/support/_mountzlib.py', 'PYSOURCE'), ('useUnicode', '../common/pyinstaller-1.5.1/support/useUnicode.py', 'PYSOURCE'), ('pyi_rth_qt4plugins', '../common/pyinstaller-1.5.1/support/rthooks/pyi_rth_qt4plugins.py', 'PYSOURCE'), ('uninstall', '../../password/uninstall.py', 'PYSOURCE')],
+ 1,
+ False,
+ True,
+ 0)
