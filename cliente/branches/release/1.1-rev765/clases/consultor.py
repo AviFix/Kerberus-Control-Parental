@@ -50,7 +50,16 @@ class Consultor:
         return re.match(".*\.(gif|jpeg|jpg|png|js|css|swf|ico|json|mp3|wav|"\
         "rss|rar|zip|pdf|xml)$", url)
 
+    def urlBienFormada(self, url):
+        url = url.lower()
+        return re.match(".*\..*/.*", url)
+
     def validarUrl(self, username, password, url):
+        if not self.urlBienFormada(url):
+            mensaje = "URL mal formada"
+            modulo_logger.log(logging.DEBUG, mensaje)
+            return True, mensaje
+
         #TODO: No se si esto esta bien, revisar
         if "kerberus.com.ar" in url:
             mensaje = "Consulta a kerberus"
@@ -67,6 +76,12 @@ class Consultor:
             return True, mensaje
             if config.DEBUG_IS_ADMIN:
                 modulo_logger.log(logging.INFO, mensaje)
+
+        elif usuario.dominioDenegado(url):
+            mensaje = "Dominio denegado: " + url
+            if config.DEBUG_DOM_DENG:
+                modulo_logger.log(logging.INFO, mensaje)
+            return False, mensaje
 
         elif usuario.dominioDenegado(url):
             mensaje = "Dominio denegado: " + url
