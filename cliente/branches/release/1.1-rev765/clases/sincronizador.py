@@ -89,8 +89,6 @@ class Sincronizador:
         modulo_logger.log(logging.DEBUG,
             "Ultima recarga completa: %s" % self.ultima_recarga_completa)
 
-        self.recargar_todos_los_dominios = False
-
     def __del__(self):
         self.conexion_db.close()
         modulo_logger.log(logging.DEBUG,
