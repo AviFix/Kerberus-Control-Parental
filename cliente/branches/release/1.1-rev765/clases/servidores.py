@@ -6,7 +6,7 @@ import socket
 import sys
 import urllib2
 import time
-
+import sqlite3
 
 #Modulos propios
 sys.path.append('../conf')
@@ -28,16 +28,110 @@ class ServidorError(Exception):
 class Servidor:
 
     def __init__(self):
-        self.listaDeServidores = []
+        # Los servidores default son aquellos que no son obtenidos desde
+        # un server real por medio de una peticion.
+        self.listaDeServidoresDefault = []
+
+        # Este es el servidor seteado en el archivo de configuracion
+        servidor_config = [config.SERVER_IP, config.SERVER_PORT]
+        self.listaDeServidoresDefault.append(servidor_config)
+
         for i in range(1, 100):
-            # FIXME: Deberia obtener esta lista desde el servidor, con un
-            # ranking para que desde el server se balance carga
             ip_new = "validador%s.kerberus.com.ar" % i
             port_new = 80
             server = [ip_new, port_new]
-            self.listaDeServidores.append(server)
+            self.listaDeServidoresDefault.append(server)
+
+        # Me conecto para descargar la lista de servidores
+        self.obtenerRankingServidores()
+
+    def obtenerDatosUsuario(self):
+        try:
+            conexion_db = sqlite3.connect(config.PATH_DB)
+            cursor = conexion_db.cursor()
+            idUsuario, serverId, version, nombretitular, credencial = \
+                cursor.execute('select id, serverid, version, nombretitular '\
+                ', credencial from instalacion').fetchone()
+            cursor.close()
+
+            return idUsuario, serverId, version, nombretitular, credencial
+
+        except sqlite3.OperationalError, msg:
+            modulo_logger.log(logging.ERROR, "No se pudo obtener el id de "\
+            "instalacion.\nError: %s" % msg)
+            idUsuario = 0
+            version = 0
+            nombretitular = ''
+            serverId = 0
+            credencial = ''
+            return idUsuario, serverId, version, nombretitular, credencial
+
+    def obtenerRankingServidores(self):
+        headers = []
+        headers['Peticion'] = "obtenerServidores"
+
+        if config.USAR_PROXY:
+            if self.estaOnline(config.PROXY_IP, config.PROXY_PORT):
+                url_proxy = "http://%s:%s" % (config.PROXY_IP,
+                    config.PROXY_PORT)
+                proxy = {'http': url_proxy, 'https': url_proxy}
+            else:
+                modulo_logger.log(logging.ERROR, "El proxy no esta escuchando"
+                " en %s:%s por lo que no se utilizara" %
+                (config.PROXY_IP, config.PROXY_PORT,))
+                proxy = {}
+        else:
+            proxy = {}
+        proxy_handler = urllib2.ProxyHandler(proxy)
+        opener = urllib2.build_opener(proxy_handler)
+        urllib2.install_opener(opener)
+
+        # Agrego los datos particulares del cliente
+        userid, serverid, version, nombretitular, credencial = \
+            self.obtenerDatosUsuario()
+        headers['UserID'] = userid
+        headers['ServerID'] = serverid
+        headers['Version'] = version
+        headers['Credencial'] = credencial
+        headers['Nombre'] = urllib2.quote(nombretitular.encode('utf-8'))
+
+        # Esto es para que en el caso de que no pueda descargar la lista de
+        # servidores, utilice los servidores default (por ejemplo antes de
+        # registrarse).
+        self.listaDeServidores = self.listaDeServidoresDefault
+
+        for ip, puerto in self.listaDeServidoresDefault:
+            if self.estaOnline(ip, puerto):
+                servidor = "http://%s:%s" % (ip, puerto)
+                try:
+                    req = urllib2.Request(servidor, headers=headers)
+                    timeout = 40
+                    respuesta = urllib2.urlopen(req, timeout=timeout).read()
+                    modulo_logger.log(logging.DEBUG,
+                                        "Respuesta: %s" % respuesta)
+                    if respuesta:
+                        # Respuesta es una lista separada por retorno de carro
+                        # de la forma IP:PUERTO
+                        self.listaDeServidores = []
+                        for servidor in respuesta:
+                            if ":" in servidor:
+                                ip, puerto = servidor.split(":")
+                                self.listaDeServidores.append([ip, puerto])
+                        modulo_logger.log(logging.DEBUG, "Se obtuvo "
+                        "correctamente la lista de servidores disponibles.\n"
+                        "Lista de Servidores:\n"
+                        "%s" % respuesta)
+                        break
+                except urllib2.URLError as error:
+                    modulo_logger.log(logging.ERROR, "Error al conectarse a %s"
+                    ", peticion: %s . ERROR: %s" % (self.servidor,
+                    headers['Peticion'], error))
 
     def estaRespondiendo(self, ip, port, userid, serverid):
+        if not userid and serverid:
+            userid, serverid, version, nombretitular, credencial = \
+            self.obtenerDatosUsuario()
+
         server = "http://%s:%s" % (ip, port)
         headers = {"UserID": userid, "ServerID": serverid,
         "Peticion": "estaRespondiendo"}
@@ -84,11 +178,11 @@ class Servidor:
             (ip, port,))
             return False
 
-    def obtenerServidor(self, ip=False, port=False, userID=1, serverID=-1):
-        servers = [[ip, port]] + self.listaDeServidores
+    def obtenerServidor(self, ip=False, port=False, userID=False,
+    serverID=False):
         dormir_por = 5
         while True:
-            for ip, port in servers:
+            for ip, port in self.listaDeServidores:
                 if self.estaRespondiendo(ip, port, userID, serverID):
                     modulo_logger.log(logging.INFO, "Utilizando el servidor "\
                     "de validacion %s:%s" % (ip, port,))
