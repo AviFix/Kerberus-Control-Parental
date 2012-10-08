@@ -128,7 +128,7 @@ class Servidor:
 
                 except urllib2.URLError as error:
                     modulo_logger.log(logging.ERROR, "Error al conectarse a %s"
-                    ", peticion: %s . ERROR: %s" % (self.servidor,
+                    ", peticion: %s . ERROR: %s" % (servidor,
                     headers['Peticion'], error))
 
     def estaRespondiendo(self, ip, port, userid, serverid):
