@@ -1,0 +1,8 @@
+#Genera archivo po
+xgettext --default-domain=helloworld --output=locale/en/kerberus.po *.py
+
+# Compila el archivo
+msgfmt --output-file=locale/en/LC_MESSAGES/kerberus.mo locale/es/kerberus.po
+
+# Actualizar las traducciones
+msgmerge --output-file=locale/es/kerberus.po locale/en/kerberus.po locale/es/kerberus_traducciones2.po
