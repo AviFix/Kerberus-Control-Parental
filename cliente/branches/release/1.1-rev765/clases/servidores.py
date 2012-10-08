@@ -50,14 +50,14 @@ class Servidor:
             conexion_db = sqlite3.connect(config.PATH_DB)
             cursor = conexion_db.cursor()
             idUsuario, serverId, version, nombretitular, credencial = \
-                cursor.execute('select id, serverid, version, nombretitular '\
+                cursor.execute('select id, serverid, version, nombretitular '
                 ', credencial from instalacion').fetchone()
             cursor.close()
 
             return idUsuario, serverId, version, nombretitular, credencial
 
         except sqlite3.OperationalError, msg:
-            modulo_logger.log(logging.ERROR, "No se pudo obtener el id de "\
+            modulo_logger.log(logging.ERROR, "No se pudo obtener el id de "
             "instalacion.\nError: %s" % msg)
             idUsuario = 0
             version = 0
@@ -67,7 +67,7 @@ class Servidor:
             return idUsuario, serverId, version, nombretitular, credencial
 
     def obtenerRankingServidores(self):
-        headers = []
+        headers = {}
         headers['Peticion'] = "obtenerServidores"
 
         if config.USAR_PROXY:
@@ -113,7 +113,7 @@ class Servidor:
                         # Respuesta es una lista separada por retorno de carro
                         # de la forma IP:PUERTO
                         self.listaDeServidores = []
-                        for servidor in respuesta:
+                        for servidor in respuesta.split('\n'):
                             if ":" in servidor:
                                 ip, puerto = servidor.split(":")
                                 self.listaDeServidores.append([ip, puerto])
@@ -122,6 +122,10 @@ class Servidor:
                         "Lista de Servidores:\n"
                         "%s" % respuesta)
                         break
+                    else:
+                        modulo_logger.log(logging.DEBUG, "No se obtuvo "
+                        "la lista de servidores disponibles!!!.\n")
+
                 except urllib2.URLError as error:
                     modulo_logger.log(logging.ERROR, "Error al conectarse a %s"
                     ", peticion: %s . ERROR: %s" % (self.servidor,
@@ -140,13 +144,13 @@ class Servidor:
             if self.estaOnline(config.PROXY_IP, config.PROXY_PORT):
                 url_proxy = "http://%s:%s" % \
                             (config.PROXY_IP, config.PROXY_PORT)
-                modulo_logger.log(logging.DEBUG, "Conectando a %s, por medio "\
-                "del proxy %s , para realizar la solicitud: %s" % \
+                modulo_logger.log(logging.DEBUG, "Conectando a %s, por medio "
+                "del proxy %s , para realizar la solicitud: %s" %
                 (server, url_proxy, headers['Peticion']))
                 proxy = {'http': url_proxy, 'https': url_proxy}
             else:
-                modulo_logger.log(logging.ERROR, "El proxy no esta escuchando"\
-                " en %s:%s por lo que no se utilizara" % \
+                modulo_logger.log(logging.ERROR, "El proxy no esta escuchando"
+                " en %s:%s por lo que no se utilizara" %
                 (config.PROXY_IP, config.PROXY_PORT,))
                 proxy = {}
         else:
@@ -160,7 +164,7 @@ class Servidor:
             modulo_logger.log(logging.DEBUG, "Respuesta: %s" % respuesta)
             return (respuesta == 'Online')
         except urllib2.URLError as error:
-            modulo_logger.log(logging.ERROR, "Error al conectarse a %s, "\
+            modulo_logger.log(logging.ERROR, "Error al conectarse a %s, "
             "peticion: %s . ERROR: %s" % (server, headers['Peticion'], error))
             return False
 
@@ -174,7 +178,7 @@ class Servidor:
             s.shutdown(2)
             return True
         except:
-            modulo_logger.log(logging.ERROR, "No hay conexion a %s:%s" % \
+            modulo_logger.log(logging.ERROR, "No hay conexion a %s:%s" %
             (ip, port,))
             return False
 
@@ -184,14 +188,14 @@ class Servidor:
         while True:
             for ip, port in self.listaDeServidores:
                 if self.estaRespondiendo(ip, port, userID, serverID):
-                    modulo_logger.log(logging.INFO, "Utilizando el servidor "\
+                    modulo_logger.log(logging.INFO, "Utilizando el servidor "
                     "de validacion %s:%s" % (ip, port,))
                     return ip, port
                 else:
-                    modulo_logger.log(logging.INFO, "El servidor de "\
+                    modulo_logger.log(logging.INFO, "El servidor de "
                     "validacion %s:%s no responde" % (ip, port,))
 
-            modulo_logger.log(logging.CRITICAL, "No se pudo obtener ningun"\
+            modulo_logger.log(logging.CRITICAL, "No se pudo obtener ningun"
             " servidor de validacion!, durmiendo por: %s" % dormir_por)
             time.sleep(dormir_por)
             dormir_por = dormir_por + 5

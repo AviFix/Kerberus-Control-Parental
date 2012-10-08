@@ -1,4 +1,3 @@
-# * hacer que se descargue desde el servidor la lista de servidores disponibles
 # * La pagina de sitio denegado tiene que estar en el server, no en el cliente.
 # * utilizar HTTPS
 # * Hacer actualizador para linux.

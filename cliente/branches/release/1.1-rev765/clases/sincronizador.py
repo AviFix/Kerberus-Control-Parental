@@ -34,6 +34,7 @@ class Sincronizador:
     def __init__(self):
         self.registrador = registrar.Registradores()
         self.recienRegistrado = False
+        self.recargar_todos_los_dominios = False
 
         registradoLocalmente = self.registrador.checkRegistradoLocalmente()
         if not registradoLocalmente:
@@ -82,7 +83,7 @@ class Sincronizador:
         modulo_logger.log(logging.DEBUG,
             "Periodo de actualizacion: %s segundos" % self.periodo_expiracion)
         modulo_logger.log(logging.DEBUG,
-            "Periodo de recarga completa: %s segundos" % \
+            "Periodo de recarga completa: %s segundos" %
             self.periodo_recarga_completa)
         modulo_logger.log(logging.DEBUG,
             "Ultima actualizacion: %s" % self.ultima_actualizacion)
