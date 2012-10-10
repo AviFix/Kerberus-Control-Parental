@@ -101,8 +101,11 @@ class AdministradorDeUsuarios:
                 cursor.close()
                 conexion_db.commit()
             except sqlite3.OperationalError, msg:
+                cursor.close()
+                conexion_db.rollback()
                 self.modulo_logger.log(logging.ERROR, "No se pudo obtener la pass"\
                 " para notificarla.\nError: %s" % msg)
+
 
         def setPassword(self, usuario, password):
             password_md5 = self.md5sum(password)

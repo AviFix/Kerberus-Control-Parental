@@ -68,7 +68,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 
     def responderAlCliente(self, mensaje):
         tamano = len(mensaje)
-        self.wfile.write(self.protocol_version + \
+        self.wfile.write(self.protocol_version +
             " 200 Connection established\r\n")
         self.wfile.write("Content-Type: text/html\r\n")
         self.wfile.write(" Content-Length: %s\r\n" % tamano)
@@ -99,18 +99,18 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 
             if respuesta == 'Recordada':
                 msj = u'Estimado usuario,<br><br>Le hemos enviado un e-mail '\
-                'a su cuenta de correo %s con la password de administrador de '\
-                'kerberus.' % (email)
+                'a su cuenta de correo %s con la password de administrador de'\
+                ' kerberus.' % (email)
             else:
-                msj = u'Estimado usuario,<br><br>Ya hemos enviado un e-mail a '\
-                'su cuenta de correo %s con la password de administrador de '\
+                msj = u'Estimado usuario,<br><br>Ya hemos enviado un e-mail a'\
+                ' u cuenta de correo %s con la password de administrador de '\
                 'kerberus.' % (email)
             msg = mensaje.recordarPassword(msj)
             self.responderAlCliente(msg)
 
     def redirigirDesbloqueado(self, url):
-        msg = "<html><head><meta HTTP-EQUIV=\"REFRESH\" content=\"0; url=%s\">"\
-        "</head></html>" % url
+        msg = "<html><head><meta HTTP-EQUIV=\"REFRESH\" content=\"0; url=%s\""\
+        "></head></html>" % url
         self.responderAlCliente(msg)
 
     def passwordErronea(self):
@@ -120,7 +120,8 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 
     def cambioPassPasswordErronea(self):
         mensaje = mensajesHtml.MensajesHtml(config.PATH_TEMPLATES)
-        msg = mensaje.cambiarPassword('Password incorrecta!', 'password_actual')
+        msg = mensaje.cambiarPassword('Password incorrecta!',
+                                        'password_actual')
         self.responderAlCliente(msg)
 
     def passwordCambiadaCorrectamente(self):
@@ -167,7 +168,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
             if self._connect_to(self.path, soc):
-                self.wfile.write(self.protocol_version + \
+                self.wfile.write(self.protocol_version +
                     " 200 Connection established\r\n")
                 self.wfile.write("Proxy-agent: %s\r\n" % self.version_string())
                 self.wfile.write("\r\n")

@@ -102,7 +102,7 @@ class Servidor:
 
         for ip, puerto in self.listaDeServidoresDefault:
             if self.estaOnline(ip, puerto):
-                servidor = "http://%s:%s" % (ip, puerto)
+                servidor = "https://%s:%s" % (ip, puerto)
                 try:
                     req = urllib2.Request(servidor, headers=headers)
                     timeout = 40
@@ -136,7 +136,7 @@ class Servidor:
             userid, serverid, version, nombretitular, credencial = \
             self.obtenerDatosUsuario()
 
-        server = "http://%s:%s" % (ip, port)
+        server = "https://%s:%s" % (ip, port)
         headers = {"UserID": userid, "ServerID": serverid,
         "Peticion": "estaRespondiendo"}
 
