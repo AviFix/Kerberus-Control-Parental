@@ -1,4 +1,4 @@
-from PyQt4 import QtGui, QtCore
+from PyQt4 import QtGui
 import sys
 
 sys.path.append('conf')
@@ -11,10 +11,13 @@ import time
 import config
 
 app = QtGui.QApplication(sys.argv)
-myapp = pedirUsuario.formularioUsuario('Desinstalar Kerberus', 'Ingrese la password de administrador de Kerberus \n(la que ingreso al momento de instalarlo)')
+myapp = pedirUsuario.formularioUsuario('Desinstalar Kerberus',
+        'Ingrese la password de administrador de Kerberus \n'
+        '(la que ingreso al momento de instalarlo)')
 myapp.show()
 app.exec_()
-desinstalar=myapp.verificado
+desinstalar = myapp.verificado
+
 if desinstalar:
     reg = registrar.Registradores()
     reg.eliminarRemotamente()
@@ -25,11 +28,12 @@ if desinstalar:
     else:
         import _winreg
         key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\kerberus')
-        path_common = _winreg.QueryValueEx(key,'kerberus-common')[0]
-        origen = path_common +'\kcpwu.dat'
-        desinstalador = path_common +'\kcpwu.exe'
+        path_common = _winreg.QueryValueEx(key, 'kerberus-common')[0]
+        origen = path_common + '\kcpwu.dat'
+        desinstalador = path_common + '\kcpwu.exe'
         comando = "move \"%s\" \"%s\"" % (origen, desinstalador)
-        subprocess.Popen(comando,stdout=subprocess.PIPE, shell=True)
+        subprocess.Popen(comando, stdout=subprocess.PIPE, shell=True)
+        time.sleep(1)
         subprocess.call(desinstalador)
 
 
