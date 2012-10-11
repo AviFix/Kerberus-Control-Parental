@@ -1,4 +1,3 @@
-# * Envia un recordatorio de contraseña ni bien se registra
 # * La pagina de sitio denegado tiene que estar en el server, no en el cliente.
 # * Hacer actualizador para linux.
 # * Internacionalizacion
