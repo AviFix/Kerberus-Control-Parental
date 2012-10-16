@@ -13,12 +13,9 @@ import signal
 import threading
 from types import FrameType, CodeType
 import ftplib
-#import base64
-#import platform
+import base64
 import os
-#import time
 import logging
-#from PyQt4 import QtGui
 
 sys.path.append('clases')
 sys.path.append('conf')
@@ -136,9 +133,24 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
             'password_nueva1')
         self.responderAlCliente(msg)
 
+    #def denegar(self, motivo, url):
+        #mensaje = mensajesHtml.MensajesHtml(config.PATH_TEMPLATES)
+        #msg = mensaje.denegarSitio(url)
+        #self.responderAlCliente(msg)
+
     def denegar(self, motivo, url):
-        mensaje = mensajesHtml.MensajesHtml(config.PATH_TEMPLATES)
-        msg = mensaje.denegarSitio(url)
+        motivo_b64 = base64.b64encode(motivo)
+        url_b64 = base64.b64enncode(url)
+        msg = ("<html><head><title>Sitio Denegado</title>"
+                "<meta http-equiv=\"REFRESH\" content=\"0;"
+                "url=http://denegado.kerberus.com.ar/%(motivo)s/%(url)s"
+                "\" ></head> <body ></body> </html>"
+                % {'motivo':motivo, 'url':url})
+
+        self.server.logger.log(
+                logging.DEBUG,
+                "Sitio %(url)s DENEGADO, motivo: %(motivo)"
+                % {'url': url, 'motivo': motivo})
         self.responderAlCliente(msg)
 
     def handle(self):
