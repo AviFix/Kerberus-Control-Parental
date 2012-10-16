@@ -140,17 +140,17 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 
     def denegar(self, motivo, url):
         motivo_b64 = base64.b64encode(motivo)
-        url_b64 = base64.b64enncode(url)
+        url_b64 = base64.b64encode(url)
         msg = ("<html><head><title>Sitio Denegado</title>"
                 "<meta http-equiv=\"REFRESH\" content=\"0;"
-                "url=http://denegado.kerberus.com.ar/%(motivo)s/%(url)s"
+                "url=http://denegado.kerberus.com.ar/%(url)s/%(motivo)s"
                 "\" ></head> <body ></body> </html>"
-                % {'motivo':motivo, 'url':url})
+                % {'motivo':motivo_b64, 'url':url_b64})
 
         self.server.logger.log(
                 logging.DEBUG,
-                "Sitio %(url)s DENEGADO, motivo: %(motivo)"
-                % {'url': url, 'motivo': motivo})
+                "Sitio %(url)s DENEGADO, motivo: %(motivo)s"
+                % {'motivo': motivo,'url': url})
         self.responderAlCliente(msg)
 
     def handle(self):
