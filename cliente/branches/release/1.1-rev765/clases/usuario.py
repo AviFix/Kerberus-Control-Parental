@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+    # -*- coding: utf-8 -*-
 #
 """Modulo que carga la configuracion particular del usuario ingresado"""
 
@@ -25,7 +25,6 @@ class Usuario:
     def __init__(self, usuario):
         modulo_logger.log(logging.INFO, "Conectado como usuario: %s" % usuario)
         self.nombre = usuario
-        self.peticionRemota = peticion.Peticion()
         conexion = sqlite3.connect(config.PATH_DB)
         self.cursor = conexion.cursor()
         self.id, self.es_admin = self.getUserIdAndAdmin(usuario)
@@ -220,8 +219,9 @@ class Usuario:
             self.buffer_denegadas = []
 
     def recargarPeriodoDeActualizacion(self):
+        peticionRemota = peticion.Peticion()
         self.periodoDeActualizacionDB = \
-                self.peticionRemota.obtenerPeriodoDeActualizacion()
+                peticionRemota.obtenerPeriodoDeActualizacion()
         modulo_logger.log(logging.INFO,
             "Periodo de actualizacion de la DB obtenido: %s" % \
             self.periodoDeActualizacionDB)
@@ -246,5 +246,6 @@ class Usuario:
         self.chequearEdadCaches()
         #
         modulo_logger.log(logging.INFO, "Validando remotamente: %s" % url)
-        permitido, mensaje = self.peticionRemota.validarUrl(url)
+        peticionRemota = peticion.Peticion()
+        permitido, mensaje = peticionRemota.validarUrl(url)
         return permitido, mensaje

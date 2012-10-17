@@ -25,10 +25,10 @@ if [ -f payload/kerberus.db ]; then
 fi
 sqlite3  payload/kerberus.db < ../../cliente.sql
 
-if [ -f payload/licencia.txt ]; then
-  rm payload/licencia.txt
-fi
-cp ../windows/ArchivosDefault/licencia.txt payload/licencia.txt
+#if [ -f payload/licencia.txt ]; then
+#  rm payload/licencia.txt
+#fi
+#cp ../windows/ArchivosDefault/licencia.txt payload/licencia.txt
 
 echo "- Copiando templates..."
 cp ../../templates/* payload/templates/
