@@ -136,7 +136,8 @@ File   desinstalador\dist\uninstall\*.*
 SetOutPath $INSTDIR\$VERSION\templates
 File   ..\..\templates\*.*
 
-
+SetOutPath $INSTDIR\$VERSION	
+File   migrador\dist\migrador\*.*
 
 ; Doy permisos
 AccessControl::GrantOnFile \
@@ -187,6 +188,8 @@ writeRegDWord HKCU "Software\Policies\Google\Chrome" "HomepageIsNewTabPage" 0
 
 
 CopyFiles /SILENT $ANTERIOR_INSTALLDIR\kerberus.db $INSTDIR\$VERSION\kerberus.db
+
+ExecWait '"$INSTDIR\$VERSION\migrador.exe"'
 
 ; Modifico las variables, porque en teoria ya se copio todo
 
