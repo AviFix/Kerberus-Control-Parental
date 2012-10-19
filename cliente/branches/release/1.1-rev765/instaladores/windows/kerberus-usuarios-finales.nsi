@@ -124,36 +124,6 @@ done:
 
 FunctionEnd
 
-##########################
-
-# default section start
-;section
-
-; Check to see if already installed
-;  ReadRegStr $R0 HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus" "UninstallString"
-;  strCmp $R0 "Kerberus-control-parental" +1
-;  Abort "Kerberus ya se encuentra instalado. Desinstale la version previa."
-;  return
-
-
-    # call userInfo plugin to get user info.  The plugin puts the result in the stack
-;    userInfo::getAccountType
-
-    # pop the result from the stack into $0
-;    pop $0
-
-    # compare the result with the string "Admin" to see if the user is admin.
-    # If match, jump 3 lines down.
-;    strCmp $0 "Admin" +3
-
-    # if there is not a match, print message and return
-;    messageBox MB_OK "Debe tener Permisos de Administrador para instalar Kerberus: $0"
-;    return
-
-# default section end
-;sectionEnd
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Install settings                                                    ;
 ; En esta seccin aadimos los ficheros que forman nuestra aplicacin ;
@@ -227,9 +197,6 @@ writeRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Run" \
 WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Run" \
 "checkNavs" "$INSTDIR\$VERSION\checkNavs\navegadores.exe"
 
-;writeRegDword HKCU "SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" \
-;"ProxySettingsPerUser" 0
-
 writeRegDWord HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
 "MigrateProxy" 1
 
@@ -242,7 +209,6 @@ writeRegDWord HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings"
 writeRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
 "ProxyServer" "127.0.0.1:8080"
 
-
 writeRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
 "ProxyOverride" "127.0.0.1,localhost"
 
@@ -251,14 +217,6 @@ writeRegStr HKCU "Software\Policies\Google\Chrome" "HomepageLocation" "http://in
 writeRegStr HKCU "Software\Policies\Google\Chrome" "ProxyMode" "system"
 writeRegStr HKCU "Software\Policies\Google\Chrome" "DefaultSearchProviderSearchURL" "http://inicio.kerberus.com.ar/buscador.php?cx=partner-pub-5233852436544664%3A0998292818&ie=UTF-8&sa=Search&q={searchTerms}"
 writeRegDWord HKCU "Software\Policies\Google\Chrome" "HomepageIsNewTabPage" 0
-
-
-; Make the directory "$INSTDIR\$VERSION\database" read write accessible by all users
-;AccessControl::GrantOnFile \
-;"$COMMONFILES\kerberus" "(BU)" "GenericRead + GenericWrite + AddFile"
-
-;SimpleSC::InstallService "kerberus-daemon" "kerberus Daemon Service" "16" "2" "$INSTDIR\$VERSION\client\cliente.exe" "" "" ""
-;SimpleSC::InstallService "kerberus-sync" "kerberus sync Service" "16" "2" "$INSTDIR\$VERSION\sync\sincronizadorCliente.exe" "" "" ""
 
 
 ExecWait '"$INSTDIR\$VERSION\sync\sincronizadorCliente.exe"'
