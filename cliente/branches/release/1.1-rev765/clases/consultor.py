@@ -67,7 +67,7 @@ class Consultor:
             return True, mensaje
 
         if not self.usuarios.usuario_valido(username, password):
-            return False, "Usuario no valido %s : %s" % (username, password, )
+            return False, "Usuario no valido"
 
         usuario = self.usuarios.obtenerUsuario(username)
         self.inicio = time.time()
@@ -78,31 +78,25 @@ class Consultor:
                 modulo_logger.log(logging.INFO, mensaje)
 
         elif usuario.dominioDenegado(url):
-            mensaje = "Dominio denegado: " + url
-            if config.DEBUG_DOM_DENG:
-                modulo_logger.log(logging.INFO, mensaje)
-            return False, mensaje
-
-        elif usuario.dominioDenegado(url):
-            mensaje = "Dominio denegado: " + url
+            mensaje = "Dominio no permitido."
             if config.DEBUG_DOM_DENG:
                 modulo_logger.log(logging.INFO, mensaje)
             return False, mensaje
 
         elif usuario.dominioPermitido(url):
-            mensaje = "Dominio permitido: " + url
+            mensaje = "Dominio permitido"
             if config.DEBUG_DOM_PERM:
                 modulo_logger.log(logging.INFO, mensaje)
             return True, mensaje
 
         elif usuario.dominioPublicamentePermitido(url):
-            mensaje = "Dominio publicamente permitido: " + url
+            mensaje = "Dominio permitido"
             if config.DEBUG_DOM_PUB_PERM:
                 modulo_logger.log(logging.INFO, mensaje)
             return True, mensaje
 
         elif usuario.dominioPublicamenteDenegado(url):
-            mensaje = "Dominio publicamente denegado: " + url
+            mensaje = "Dominio denegado: "
             if config.DEBUG_DOM_PUB_DENG:
                 modulo_logger.log(logging.INFO, mensaje)
             return False, mensaje

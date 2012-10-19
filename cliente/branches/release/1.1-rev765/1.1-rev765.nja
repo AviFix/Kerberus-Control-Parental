@@ -10,6 +10,8 @@
   "programParams": "", 
   "PYTHONPATH": "", 
   "supported-extensions": [
+    ".sql", 
+    ".nsi", 
     ".py", 
     ".html", 
     ".jpg", 
