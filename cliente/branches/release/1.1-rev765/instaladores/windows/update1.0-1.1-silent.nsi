@@ -1,7 +1,8 @@
 ;--------------------------------
 ;Include Modern UI
+!include "nsProcess.nsh"
+!include "MUI.nsh"
 
-  !include "MUI.nsh"
 ;Seleccionamos el algoritmo de compresin utilizado para comprimir nuestra aplicacin
 SetCompressor lzma
 
@@ -46,7 +47,7 @@ SetCompressor lzma
 ; Configuracin General ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Nombre del instalador
-OutFile update1.0-1.1.exe
+OutFile update.exe
 
 ;Aqu comprobamos que en la versin Inglesa se muestra correctamente el mensaje:
 ;Welcome to the $Name Setup Wizard
@@ -100,7 +101,6 @@ Function .onInit
   ;podria ser definida en el compilador
   Var /GLOBAL VERSION
   StrCpy $VERSION "1.1"
-  
 FunctionEnd
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -189,9 +189,12 @@ writeRegDWord HKCU "Software\Policies\Google\Chrome" "HomepageIsNewTabPage" 0
 
 CopyFiles /SILENT $ANTERIOR_INSTALLDIR\kerberus.db $INSTDIR\$VERSION\kerberus.db
 
-ExecWait '"$INSTDIR\$VERSION\migrador.exe"'
+ExecWait '"$INSTDIR\$VERSION\migrador.exe"' $R0
+StrCmp $R0 0 +3 0
+MessageBox MB_OK|MB_ICONEXCLAMATION "Hubo un error en el cliente de kerberus. Por favor reinicie su PC."
+Abort
 
-; Modifico las variables, porque en teoria ya se copio todo
+; Modifico las variables, porque en teoria ya se copio todo y se hizo ok la migracion
 
 WriteRegStr HKCU "Software\Kerberus" "InstallDir" $INSTDIR\$VERSION
 
@@ -211,6 +214,20 @@ WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Run" \
 WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus" \
 "UninstallString" '"$INSTDIR\$VERSION\uninstall.exe"'
 
+; cierro el cliente y el sincronizador de la version anterior y lanzo los nuevos
+
+${nsProcess::KillProcess} "cliente.exe" $R0
+StrCmp $R0 0 +3 0
+MessageBox MB_OK|MB_ICONEXCLAMATION "Hubo un error en el cliente de kerberus. Por favor reinicie su PC."
+Abort
+Exec '"$INSTDIR\$VERSION\client\cliente.exe"'
+
+${nsProcess::KillProcess} "sincronizadorCliente.exe" $R0
+StrCmp $R0 0 +3 0
+MessageBox MB_OK|MB_ICONEXCLAMATION "Hubo un error en el cliente de kerberus. Por favor reinicie su PC."
+Abort
+Exec '"$INSTDIR\$VERSION\sync\sincronizadorCliente.exe"'
+
 SectionEnd
 
 
@@ -220,7 +237,7 @@ SectionEnd
 ;;;;;;;;;;;;;;;;;;;;;;
 
 
-!include "nsProcess.nsh"
+
 
 Function un.onInit
 

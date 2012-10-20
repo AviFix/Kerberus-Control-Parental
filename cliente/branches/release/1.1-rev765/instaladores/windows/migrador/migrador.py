@@ -1,5 +1,6 @@
 import sqlite3
 import hashlib
+import sys
 
 try:
     conexion = sqlite3.connect('kerberus.db')
@@ -16,4 +17,6 @@ try:
         conexion.commit()
         conexion.close()
 except:
-    pass
+        sys.exit(1)
+
+sys.exit(0)
