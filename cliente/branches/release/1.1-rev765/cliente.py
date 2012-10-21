@@ -368,6 +368,8 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
     do_POST = do_GET
     do_PUT = do_GET
     do_DELETE = do_GET
+    do_OPTIONS = do_GET
+    do_TRACE = do_GET
 
     def log_message(self, format, *args):
         self.server.logger.log(logging.DEBUG, "%s %s", self.address_string(),
