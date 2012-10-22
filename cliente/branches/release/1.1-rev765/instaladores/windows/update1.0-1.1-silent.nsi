@@ -216,21 +216,19 @@ WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus" 
 
 ; cierro el cliente y el sincronizador de la version anterior y lanzo los nuevos
 
-${nsProcess::KillProcess} "cliente.exe" $R0
-StrCmp $R0 0 +3 0
-MessageBox MB_OK|MB_ICONEXCLAMATION "Hubo un error en el cliente de kerberus. Por favor reinicie su PC."
-Abort
-Exec '"$INSTDIR\$VERSION\client\cliente.exe"'
-
 ${nsProcess::KillProcess} "sincronizadorCliente.exe" $R0
 StrCmp $R0 0 +3 0
-MessageBox MB_OK|MB_ICONEXCLAMATION "Hubo un error en el cliente de kerberus. Por favor reinicie su PC."
+MessageBox MB_OK|MB_ICONEXCLAMATION "Hubo un error. Por favor reinicie su PC."
 Abort
 Exec '"$INSTDIR\$VERSION\sync\sincronizadorCliente.exe"'
 
+${nsProcess::KillProcess} "cliente.exe" $R0
+StrCmp $R0 0 +3 0
+MessageBox MB_OK|MB_ICONEXCLAMATION "Hubo un error. Por favor reinicie su PC."
+Abort
+Exec '"$INSTDIR\$VERSION\client\cliente.exe"'
+
 SectionEnd
-
-
 
 ;;;;;;;;;;;;;;;;;;;;;;
 ; Uninstall settings ;
