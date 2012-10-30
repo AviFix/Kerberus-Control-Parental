@@ -96,12 +96,12 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 
             if respuesta == 'Recordada':
                 msj = u'Estimado usuario,<br><br>Le hemos enviado un e-mail '\
-                'a su cuenta de correo %s con la password de administrador de'\
-                ' kerberus.' % (email)
+                u'a su cuenta de correo %s con la contraseña de administrador '\
+                u'de Kerberus.' % (email)
             else:
                 msj = u'Estimado usuario,<br><br>Ya hemos enviado un e-mail a'\
-                ' u cuenta de correo %s con la password de administrador de '\
-                'kerberus.' % (email)
+                u' su cuenta de correo %s con la contraseña de administrador '\
+                u'de Kerberus.' % (email)
             msg = mensaje.recordarPassword(msj)
             self.responderAlCliente(msg)
 
@@ -112,24 +112,24 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 
     def passwordErronea(self):
         mensaje = mensajesHtml.MensajesHtml(config.PATH_TEMPLATES)
-        msg = mensaje.pedirPassword('Password incorrecta!')
+        msg = mensaje.pedirPassword(u'Contraseña incorrecta!')
         self.responderAlCliente(msg)
 
     def cambioPassPasswordErronea(self):
         mensaje = mensajesHtml.MensajesHtml(config.PATH_TEMPLATES)
-        msg = mensaje.cambiarPassword('Password incorrecta!',
+        msg = mensaje.cambiarPassword(u'Contraseña incorrecta!',
                                         'password_actual')
         self.responderAlCliente(msg)
 
     def passwordCambiadaCorrectamente(self):
         mensaje = mensajesHtml.MensajesHtml(config.PATH_TEMPLATES)
         msg = mensaje.passwordCambiadaCorrectamente(
-            'Password cambiada correctamente!')
+            u'Contraseña cambiada correctamente!')
         self.responderAlCliente(msg)
 
     def cambioPassPasswordNoCoinciden(self):
         mensaje = mensajesHtml.MensajesHtml(config.PATH_TEMPLATES)
-        msg = mensaje.cambiarPassword('Las passwords no coinciden!',
+        msg = mensaje.cambiarPassword(u'Las contraseñas no coinciden!',
             'password_nueva1')
         self.responderAlCliente(msg)
 
@@ -405,8 +405,8 @@ def main():
     ProxyHandler.protocol = "HTTP/1.1"
     httpd = ThreadingHTTPServer(server_address, ProxyHandler, logger)
     sa = httpd.socket.getsockname()
-    print 'Kerberus - Cliente Activo, atendiendo en %s puerto %s' % (sa[0],
-        sa[1])
+    logger.log(logging.DEBUG,
+        'Kerberus - Cliente Activo, atendiendo en %s puerto %s' % (sa[0], sa[1]))
     req_count = 0
     while not run_event.isSet():
         try:

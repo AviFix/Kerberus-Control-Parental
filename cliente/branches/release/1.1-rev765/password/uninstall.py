@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 from PyQt4 import QtGui
 import sys
 
@@ -12,8 +14,8 @@ import config
 
 app = QtGui.QApplication(sys.argv)
 myapp = pedirUsuario.formularioUsuario('Desinstalar Kerberus',
-        'Ingrese la password de administrador de Kerberus \n'
-        '(la que ingreso al momento de instalarlo)')
+        u'Ingrese la contraseña de administrador de Kerberus \n'
+        u'(la que ingreso al momento de instalarlo)')
 myapp.show()
 app.exec_()
 desinstalar = myapp.verificado
