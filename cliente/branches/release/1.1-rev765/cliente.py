@@ -207,10 +207,17 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
             url = url.replace('!DeshabilitarFiltrado!', '')
             if self.server.verificador.kerberus_activado:
                 if self.command == 'POST':
-                    content_len = int(self.headers.getheader('content-length'))
-                    post_body = self.rfile.read(content_len)
-                    password = post_body.split("=")[1]
-                    password = unicode(urllib2.unquote(password), 'utf-8')
+                    try:
+                        content_len = int(self.headers.getheader('content-length'))
+                        post_body = self.rfile.read(content_len)
+                        password = post_body.split("=")[1]
+                        password = unicode(urllib2.unquote(password), 'utf-8')
+                    except:
+                        self.server.logger.log(logging.ERROR,
+                            'Hubo un error al obtener la password de '
+                            'administrador de kerberus!')
+                        password = ''
+
                     usuario_admin = self.validarPassword(password)
                     if usuario_admin:
                         self.server.verificador.kerberus_activado = False
@@ -227,17 +234,24 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         if "!CambiarPassword!" in url:
             url = url.replace('!CambiarPassword!', '')
             if self.command == 'POST':
-                content_len = int(self.headers.getheader('content-length'))
-                post_body = self.rfile.read(content_len)
-                password_actual = post_body.split("&")[0].split("=")[1]
-                password_nueva1 = post_body.split("&")[1].split("=")[1]
-                password_nueva2 = post_body.split("&")[2].split("=")[1]
-                password_actual = unicode(urllib2.unquote(password_actual),
-                                            'utf-8')
-                password_nueva1 = unicode(urllib2.unquote(password_nueva1),
-                                            'utf-8')
-                password_nueva2 = unicode(urllib2.unquote(password_nueva2),
-                                            'utf-8')
+                try:
+                    content_len = int(self.headers.getheader('content-length'))
+                    post_body = self.rfile.read(content_len)
+                    password_actual = post_body.split("&")[0].split("=")[1]
+                    password_nueva1 = post_body.split("&")[1].split("=")[1]
+                    password_nueva2 = post_body.split("&")[2].split("=")[1]
+                    password_actual = unicode(urllib2.unquote(password_actual),
+                                                'utf-8')
+                    password_nueva1 = unicode(urllib2.unquote(password_nueva1),
+                                                'utf-8')
+                    password_nueva2 = unicode(urllib2.unquote(password_nueva2),
+                                                'utf-8')
+                except:
+                    self.server.logger.log(logging.ERROR,
+                        'Hubo un error al obtener los datos para hacer '
+                        'el cambio de password de administrador de kerberus!')
+                    password_actual = ''
+
                 usuario_admin = self.validarPassword(password_actual)
                 if usuario_admin:
                     if password_nueva1 != password_nueva2:
@@ -261,8 +275,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 
         #FIXME: Esto deberia ser un header no por url
         if "http://inicio.kerberus.com.ar" in url and \
-            self.server.verificador.kerberus_activado and \
-            "denegado.php" not in url:
+            self.server.verificador.kerberus_activado:
             url = url + "?kerberus_activado=1"
 
         if self.server.verificador.kerberus_activado:
@@ -286,7 +299,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         try:
             if scm == 'http':
                 if self._connect_to(netloc, soc):
-                    self.log_request()
+                    #self.log_request()
                     try:
                         self.server.logger.log(logging.DEBUG,
                             "Enviando: %s %s %s\r\n" % (self.command,
@@ -316,7 +329,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                         user, passwd = "anonymous", None
                 else:
                     user, passwd = "anonymous", None
-                self.log_request()
+                #self.log_request()
                 try:
                     ftp = ftplib.FTP(netloc)
                     ftp.login(user, passwd)
