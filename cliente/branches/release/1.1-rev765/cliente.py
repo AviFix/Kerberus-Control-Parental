@@ -349,13 +349,20 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         local_data = ""
         ow = []
         count = 0
+        timeout = 3
         while 1:
             count += 1
-            (ins, _, exs) = select.select(iw, ow, iw, 3)
+            # ins: sockets legibles.
+            # exs: se produjo una excepcion en algun socket
+            # iw: sockets desde donde se leerean datos.
+            # ow: sockets donde se escribirán datos.
+            (ins, _, exs) = select.select(iw, ow, iw, timeout)
             if exs:
                 break
             if ins:
                 for i in ins:
+                    # soc: destino de la conexion.
+                    # self.connection: cliente
                     if i is soc:
                         out = self.connection
                     else:
