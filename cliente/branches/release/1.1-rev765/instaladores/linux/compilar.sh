@@ -7,8 +7,6 @@ echo "   - Limpiando directorios..."
 [ -d ../desinstalador/build ] && rm -r ../desinstalador/build
 [ -d ../desinstalador/dist ] && rm -r ../desinstalador/dist
 
-echo "   - configurando pyinstaller..."
-python ../common/pyinstaller-1.5.1/Configure.py 2> /dev/null 1> /dev/null
 grep ENTORNO_DE_DESARROLLO=True ../../conf/config.py > /dev/null
 if [ ${?} -eq 0 ];then
 	echo "   - Seteando entorno en produccion..."
@@ -16,11 +14,11 @@ if [ ${?} -eq 0 ];then
 	SETEADO_ENTORNO=true 
 fi
 echo "   - compilando cliente..."
-python ../common/pyinstaller-1.5.1/Build.py -y ./cliente/cliente.spec > /dev/null
+python ../common/pyinstaller-2.0/pyinstaller.py -y --log-level=ERROR ./cliente/cliente.spec
 echo "   - compilando sincronizador..."
-python ../common/pyinstaller-1.5.1/Build.py -y ./sincronizadorCliente/sincronizadorCliente.spec > /dev/null
+python ../common/pyinstaller-2.0/pyinstaller.py -y --log-level=ERROR ./sincronizadorCliente/sincronizadorCliente.spec
 echo "   - compilando desinstalador..."
-python ../common/pyinstaller-1.5.1/Build.py -y ./desinstalador/desinstalador.spec > /dev/null
+python ../common/pyinstaller-2.0/pyinstaller.py -y --log-level=ERROR ./desinstalador/desinstalador.spec
 
 if [ ${SETEADO_ENTORNO} ]; then
           echo "   - Volviendo al entorno de desarrollo..."
