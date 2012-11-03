@@ -92,13 +92,20 @@ class Peticion:
                     modulo_logger.log(logging.DEBUG,
                                         "Respuesta: %s" % respuesta)
                     return respuesta
+                else:
+                    self.server_ip, self.server_port = \
+                        self.servidor.obtenerServidor(self.server_ip,
+                        self.server_port, self.userid)
+                    self.server_sync = "%s:%s" % (self.server_ip, self.server_port)
+                    modulo_logger.log(logging.INFO, "Se cambia al servidor "
+                    "%(server)s " % self.server_sync)
             except urllib2.URLError as error:
                 modulo_logger.log(logging.ERROR, "Error al conectarse a %s, "
                 "peticion: %s . ERROR: %s" % (self.server_sync,
                 headers['Peticion'], error))
                 self.server_ip, self.server_port = \
                     self.servidor.obtenerServidor(self.server_ip,
-                    self.server_ip, self.userid)
+                    self.server_port, self.userid)
                 self.server_sync = "%s:%s" % (self.server_ip, self.server_port)
                 modulo_logger.log(logging.INFO, "Se cambia al servidor "
                 "%(server)s " % self.server_sync)

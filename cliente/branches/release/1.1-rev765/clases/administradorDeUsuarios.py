@@ -54,7 +54,11 @@ class AdministradorDeUsuarios:
             self.usuarios_ya_validados_pass = []
 
         def md5sum(self, t):
-            return hashlib.md5(t.encode('utf-8')).hexdigest()
+            try:
+                return hashlib.md5(t.encode('utf-8')).hexdigest()
+            except:
+                modulo_logger.log(logging.ERROR, 'No se puedo generar el md5'
+                    ' de %s' % t)
 
         def passwordSeteada(self, usuario):
             conexion = sqlite3.connect(config.PATH_DB)

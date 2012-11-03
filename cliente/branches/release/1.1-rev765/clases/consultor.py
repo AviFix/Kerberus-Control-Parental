@@ -31,17 +31,6 @@ class ConsultorError(Exception):
 class Consultor:
     def __init__(self):
         self.primerUrl = True
-#        servers=servidores.Servidor()
-#        ip,port = servers.obtenerServidor(config.SERVER_IP,config.SERVER_PORT)
-#        if ip and port:
-#            self.kerberus_activado=True
-#            modulo_logger.log(logging.DEBUG, \
-#                            "Activando el filtrado de Kerberus")
-#        else:
-#            modulo_logger.log(logging.ERROR,
-#                    "No se pudo obtener ningun servidor kerberus, por lo "\
-#                    "que el filtrado se deshabilita")
-#            self.kerberus_activado=False
         self.kerberus_activado = True
         self.usuarios = administradorDeUsuarios.AdministradorDeUsuarios()
 
