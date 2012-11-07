@@ -8,7 +8,7 @@ Por favor, lea cuidadosamente el presente contrato de licencia. Usando todo o un
 
 Dentro de este contrato, la siguiente terminología tendrá el significado aquí indicado, aplicándose tanto a la forma singular como plural de los términos a definir:
 
-"Licenciante" significa "KERBERUS S.R.L.", una sociedad de responsabilidad limitada, con domicilio legal en calle Urquiza N° 2235, Dpto. 10, de la ciudad de Santa Fe, Código Postal S3000FFE, provincia de Santa Fe, República Argentina, creada y regida según las leyes de ese país.
+"Licenciante" significa "KERBERUS S.H", una sociedad de hecho, con domicilio legal en calle Urquiza N° 2235, Dpto. 10, de la ciudad de Santa Fe, Código Postal S3000FFE, provincia de Santa Fe, República Argentina, creada y regida según las leyes de ese país.
 
 "Concesionario" significa Usted y su grupo familiar, a menos que se indique de otra forma.
 
@@ -50,7 +50,8 @@ Se le concede a Ud. una Licencia de Uso no exclusiva del Software descargado par
 
 3.7 Las Marcas deberán ser utilizadas de acuerdo con la práctica de marcas aceptada, incluyendo identificación de los propietarios de dichas marcas. Las marcas podrán ser utilizadas solamente para identificar cualquier salida impresa del Software y dicho uso de las marcas no otorga al Concesionario ningún tipo de propiedad de y para ellas.
 
-3.8 Este contrato de licencia es válido solamente respecto del Software en su versión ... (Realease del 01/02/2012 9:00:00 AM GMT-3). No da derecho alguno al Concesionario para el Uso sobre versiones posteriores, ni garantiza la funcionalidad del Software una vez que exista otra versión del Software de disponibilidad general. En ese caso, queda a criterio del Concesionario el obtener la nueva versión, la que estará sujeta a su contrato de licencia respectivo.
+3.8 Este contrato de licencia es válido solamente respecto del Software en su
+versión ... (Realease del 07/11/2012 9:00:00 AM GMT-3). No da derecho alguno al Concesionario para el Uso sobre versiones posteriores, ni garantiza la funcionalidad del Software una vez que exista otra versión del Software de disponibilidad general. En ese caso, queda a criterio del Concesionario el obtener la nueva versión, la que estará sujeta a su contrato de licencia respectivo.
 
 4. GARANTÍA
 
@@ -60,7 +61,8 @@ Se le concede a Ud. una Licencia de Uso no exclusiva del Software descargado par
 
 4.1.2 Al leal saber y entender del Licenciante, el Software no infringe o viola ningún derecho de propiedad intelectual de ningún tercero;
 
-4.1.3 El Software no contiene ningún tipo de puerta trasera, bomba de tiempo, dispositivo de autoeliminación o cualquier otra rutina intencionalmente diseñada por el Licenciante para inhabilitar un programa de computadora, o instrucciones que alteren, destruyan o inhiban el entorno de procesamiento.
+4.1.3 El Software no contiene ningún tipo de puerta trasera, bomba de tiempo, dispositivo de autoeliminación o cualquier otra rutina intencionalmente diseñada por el Licenciante para inhabilitar un programa de computadora, o instrucciones
+que alteren, destruyan o inhiban el entorno de procesamiento de forma intencional.
 
 4.2 Exceptuando aquellas garantías especificadas en la sección 4.1 arriba, el Software está siendo entregado "COMO ES" y el Licenciante no ofrece ninguna garantía en cuanto a su uso o el rendimiento del mismo.
 
@@ -82,4 +84,4 @@ En ninguna circunstancia el Concesionario será responsable para con el Licencian
 
 Si alguna porción de este contrato se considera inaplicable, el resto se mantendrá válido. Esto significa que si una sección del contrato no es permitida por ley, el resto del contrato sigue en vigor.  El no ejercicio de alguno de los derechos bajo este contrato por alguna de las partes, no constituirá una renuncia de (1) ningún otro término o condición de este contrato, o (2) algún derecho en cualquier momento posterior a exigir el cumplimiento exacto y estricto de los términos de este contrato.
 
-© 2012 Kerberus S.R.L. Todos los Derechos Reservados.
+© 2012 Kerberus S.H. Todos los Derechos Reservados.
