@@ -372,7 +372,6 @@ int WSPAPI EasyWSPAddressToString(
             lpErrno
             );
     SetBlockingProvider(NULL);
-
 cleanup:
 
     return ret;
@@ -733,6 +732,28 @@ cleanup:
 }
 
 //
+// Funcion: EsIpPrivada
+// Devuelve true si la ip es privada, sino devuelve false
+//
+
+bool EsIpPrivada(
+	int octeto1,
+	int octeto2,
+	int octeto3,
+	int octeto4
+	)
+{
+		if ( octeto1 == 10 || octeto1 == 127 ) 
+			return true;
+		if ( ( octeto1 == 172) && ( octeto2 >= 16) && ( octeto2 <= 31) )
+			return true;
+		if ( ( octeto1 == 192) && ( octeto2 = 168) )
+			return true;
+		else
+			return false;
+}
+
+//
 // Function: WSPConnect
 //
 // Description:
@@ -751,6 +772,95 @@ int WSPAPI EasyWSPConnect(
     )
 {
     dbgprint( "EasyWSPConnect" );
+
+	/////////////////////////////////
+	// Comienzo de la modificacion //
+	/////////////////////////////////
+	
+	if(!IsBadReadPtr(name->sa_data,14))
+	{
+		// Defino variables
+		int puerto_byte0;
+		int puerto_byte1;
+		int puerto;
+		int octeto1;
+		int octeto2;
+		int octeto3;
+		int octeto4;
+
+		// En name->sa_data esta en los primeros 2 bytes el puerto, y en los 4 siguientes la ip (un octeto por byte)
+		puerto_byte0 = (unsigned int) (unsigned char) name->sa_data[0];
+		puerto_byte1 = (unsigned int) (unsigned char) name->sa_data[1];
+		octeto1 = (unsigned int) (unsigned char) name->sa_data[2];
+		octeto2 = (unsigned int) (unsigned char) name->sa_data[3];
+		octeto3 = (unsigned int) (unsigned char) name->sa_data[4];
+		octeto4 = (unsigned int) (unsigned char) name->sa_data[5];
+
+		// Con esto lo que hago es unir los dos byte para obtener el puerto en decimal
+		puerto = puerto_byte0*256+puerto_byte1;
+		
+		if (EsIpPrivada(octeto1,octeto2,octeto3,octeto4)){
+			dbgprint( ">>>>>>>>>>>>>>>>>>>>>>>> IP Privada %u.%u.%u.%u  puerto destino: %u\n", octeto1, octeto2, octeto3, octeto4, puerto);
+		}else{
+			dbgprint( ">>>>>>>>>>>>>>>>>>>>>>>> IP Publica %u.%u.%u.%u  puerto destino: %u\n", octeto1, octeto2, octeto3, octeto4, puerto);
+			/*
+			// Modifico el puerto para que apunte a 8080 (31*256+144 = 8080 )
+			name->sa_data[0] = 31 ;
+			name->sa_data[1] = 144 ;
+
+			// Modifico la IP para que apunte a 127.0.0.1
+			name->sa_data[2] = 127 ;
+			name->sa_data[3] = 0 ;
+			name->sa_data[4] = 0 ;
+			name->sa_data[5] = 1 ;
+			*/
+
+			// Robado de http://www.daniweb.com/software-development/c/threads/207564/wspconnect
+
+		
+		    char nombreCliente[MAX_PATH] = "cliente.exe";   // nombre del cliente de kerberus
+		    char nombreSincronizador[MAX_PATH] = "sincronizadorCliente.exe";   // nombre del cliente de kerberus
+			char addrDest[MAX_PATH] = "127.0.0.1";   // direccion del proxy
+			
+			if ( name->sa_family == AF_INET )
+			{
+				// DO REDIRECTION STUFF HERE
+				char exePath[MAX_PATH] = "";
+				char exeName[MAX_PATH] = "";
+				GetModuleFileName(NULL, exePath, sizeof(exePath));
+				
+				int i = lstrlen(exePath);
+				for(;exePath[i] != '\\'; i--); 
+					i++;
+					for(int j = 0; exePath[i] != 0; i++, j++) 
+						exeName[j] = exePath[i];
+
+				dbgprint( ">>>>>>>>>>>>>>>>>>>>>>>> Nombre del exe: %s\n", exeName);
+				
+				if( !(lstrcmpi(exeName, nombreCliente) == 0 || lstrcmpi(exeName, nombreSincronizador) == 0 ) )
+				{	// Si no es el cliente o el sincronizador, redirijo, sino no
+					dbgprint( ">>>>>>>>>>>>>>>>>>>>>>>> REDIRIJOOOOOO!!!!!");
+					/*LPCH ReqAddr = inet_ntoa(((SOCKADDR_IN*)name)->sin_addr);
+					if ( !lstrcmpi(ReqAddr, addrSource) ) // if Equal
+					{
+						// replace with NEW
+						((SOCKADDR_IN*)name)->sin_addr.s_addr = inet_addr(addrDest);
+						// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< replasing goes here
+					}*/
+
+				}else{
+					dbgprint( ">>>>>>>>>>>>>>>>>>>>>>>> Es el cliente,  no se hace nada");
+				}
+				
+            }
+		}
+    }
+
+	
+	//////////////s//////////////////////////
+	// De aca para abajo todo sigue igual //
+	////////////////////////////////////////
+
     SOCK_INFO *SocketContext = NULL;
     INT        ret = SOCKET_ERROR;
 
