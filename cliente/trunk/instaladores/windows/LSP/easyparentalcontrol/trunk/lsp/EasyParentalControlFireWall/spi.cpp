@@ -819,9 +819,10 @@ int WSPAPI EasyWSPConnect(
 
 		
 		    char nombreCliente[MAX_PATH] = "cliente.exe";   // nombre del cliente de kerberus
-		    char nombreSincronizador[MAX_PATH] = "sincronizadorCliente.exe";   // nombre del cliente de kerberus
-			char addrDest[MAX_PATH] = "127.0.0.1";   // direccion del proxy
-			
+		    char nombreSincronizador[MAX_PATH] = "sincronizadorCliente.exe";   // nombre del cliente de kerberus	
+			char IpProxy[MAX_PATH] = "127.0.0.1";   // direccion del proxy
+			char PuertoProxy[MAX_PATH] = 8080;  
+
 			if ( name->sa_family == AF_INET )
 			{
 				// DO REDIRECTION STUFF HERE
@@ -840,11 +841,12 @@ int WSPAPI EasyWSPConnect(
 				if( !(lstrcmpi(exeName, nombreCliente) == 0 || lstrcmpi(exeName, nombreSincronizador) == 0 ) )
 				{	// Si no es el cliente o el sincronizador, redirijo, sino no
 					dbgprint( ">>>>>>>>>>>>>>>>>>>>>>>> REDIRIJOOOOOO!!!!!");
-					/*LPCH ReqAddr = inet_ntoa(((SOCKADDR_IN*)name)->sin_addr);
+					/*LPCH ReqAddr = inet_ntoip(((SOCKADDR_IN*)name)->sin_addr);
 					if ( !lstrcmpi(ReqAddr, addrSource) ) // if Equal
 					{
 						// replace with NEW
 						((SOCKADDR_IN*)name)->sin_addr.s_addr = inet_addr(addrDest);
+						((SOCKADDR_IN*)name)->sin_port = 8080;
 						// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< replasing goes here
 					}*/
 
