@@ -732,11 +732,11 @@ cleanup:
 }
 
 //
-// Funcion: EsIpPrivada
-// Devuelve true si la ip es privada, sino devuelve false
+// Funcion: EsIpPublica
+// Devuelve true si la ip es publica, sino devuelve false
 //
 
-bool EsIpPrivada(
+bool EsIpPublica(
 	int octeto1,
 	int octeto2,
 	int octeto3,
@@ -744,13 +744,13 @@ bool EsIpPrivada(
 	)
 {
 		if ( octeto1 == 10 || octeto1 == 127 ) 
-			return true;
-		if ( ( octeto1 == 172) && ( octeto2 >= 16) && ( octeto2 <= 31) )
-			return true;
-		if ( ( octeto1 == 192) && ( octeto2 = 168) )
-			return true;
-		else
 			return false;
+		if ( ( octeto1 == 172) && ( octeto2 >= 16) && ( octeto2 <= 31) )
+			return false;
+		if ( ( octeto1 == 192) && ( octeto2 = 168) )
+			return false;
+		else
+			return true;
 }
 
 //
@@ -795,71 +795,57 @@ int WSPAPI EasyWSPConnect(
 		octeto2 = (unsigned int) (unsigned char) name->sa_data[3];
 		octeto3 = (unsigned int) (unsigned char) name->sa_data[4];
 		octeto4 = (unsigned int) (unsigned char) name->sa_data[5];
-
 		// Con esto lo que hago es unir los dos byte para obtener el puerto en decimal
 		puerto = puerto_byte0*256+puerto_byte1;
-		
-		if (EsIpPrivada(octeto1,octeto2,octeto3,octeto4)){
-			dbgprint( ">>>>>>>>>>>>>>>>>>>>>>>> IP Privada %u.%u.%u.%u  puerto destino: %u\n", octeto1, octeto2, octeto3, octeto4, puerto);
-		}else{
-			dbgprint( ">>>>>>>>>>>>>>>>>>>>>>>> IP Publica %u.%u.%u.%u  puerto destino: %u\n", octeto1, octeto2, octeto3, octeto4, puerto);
-			/*
-			// Modifico el puerto para que apunte a 8080 (31*256+144 = 8080 )
-			name->sa_data[0] = 31 ;
-			name->sa_data[1] = 144 ;
 
-			// Modifico la IP para que apunte a 127.0.0.1
-			name->sa_data[2] = 127 ;
-			name->sa_data[3] = 0 ;
-			name->sa_data[4] = 0 ;
-			name->sa_data[5] = 1 ;
-			*/
-
-			// Robado de http://www.daniweb.com/software-development/c/threads/207564/wspconnect
-
-		
+		if (EsIpPublica(octeto1,octeto2,octeto3,octeto4) && name->sa_family == AF_INET && puerto == 80 )
+		{
+			// Robado de http://www.daniweb.com/software-development/c/threads/207564/wspconnect		
 		    char nombreCliente[MAX_PATH] = "cliente.exe";   // nombre del cliente de kerberus
 		    char nombreSincronizador[MAX_PATH] = "sincronizadorCliente.exe";   // nombre del cliente de kerberus	
 			char IpProxy[MAX_PATH] = "127.0.0.1";   // direccion del proxy
-			char PuertoProxy[MAX_PATH] = 8080;  
+			unsigned short PuertoProxy = 8080;  		
 
-			if ( name->sa_family == AF_INET )
-			{
-				// DO REDIRECTION STUFF HERE
-				char exePath[MAX_PATH] = "";
-				char exeName[MAX_PATH] = "";
-				GetModuleFileName(NULL, exePath, sizeof(exePath));
+			dbgprint( ">>>> IP Publica %u.%u.%u.%u  puerto destino: %u\n", octeto1, octeto2, octeto3, octeto4, puerto);
+			char exePath[MAX_PATH] = "";
+			char exeName[MAX_PATH] = "";
+			GetModuleFileName(NULL, exePath, sizeof(exePath));
 				
-				int i = lstrlen(exePath);
-				for(;exePath[i] != '\\'; i--); 
-					i++;
-					for(int j = 0; exePath[i] != 0; i++, j++) 
-						exeName[j] = exePath[i];
+			int i = lstrlen(exePath);
+			for(;exePath[i] != '\\'; i--); 
+				i++;
+				for(int j = 0; exePath[i] != 0; i++, j++) 
+					exeName[j] = exePath[i];
 
-				dbgprint( ">>>>>>>>>>>>>>>>>>>>>>>> Nombre del exe: %s\n", exeName);
+			dbgprint( ">>>> Nombre del exe: %s\n", exeName);
 				
-				if( !(lstrcmpi(exeName, nombreCliente) == 0 || lstrcmpi(exeName, nombreSincronizador) == 0 ) )
-				{	// Si no es el cliente o el sincronizador, redirijo, sino no
-					dbgprint( ">>>>>>>>>>>>>>>>>>>>>>>> REDIRIJOOOOOO!!!!!");
-					/*LPCH ReqAddr = inet_ntoip(((SOCKADDR_IN*)name)->sin_addr);
-					if ( !lstrcmpi(ReqAddr, addrSource) ) // if Equal
-					{
-						// replace with NEW
-						((SOCKADDR_IN*)name)->sin_addr.s_addr = inet_addr(addrDest);
-						((SOCKADDR_IN*)name)->sin_port = 8080;
-						// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< replasing goes here
-					}*/
+			if( !(lstrcmpi(exeName, nombreCliente) == 0 || lstrcmpi(exeName, nombreSincronizador) == 0 ) )
+			{	// Si no es el cliente o el sincronizador, redirijo, sino no
+				dbgprint( ">>>> REDIRIJOOOOOO!!!!!");
+				//LPCH ReqAddr = inet_ntoip(((SOCKADDR_IN*)name)->sin_addr);
+				// redirijo al cliente de kerberus
+				((SOCKADDR_IN*)name)->sin_addr.s_addr = inet_addr(IpProxy);
+				((SOCKADDR_IN*)name)->sin_port = htons(PuertoProxy);
 
-				}else{
-					dbgprint( ">>>>>>>>>>>>>>>>>>>>>>>> Es el cliente,  no se hace nada");
-				}
-				
-            }
+				// En name->sa_data esta en los primeros 2 bytes el puerto, y en los 4 siguientes la ip (un octeto por byte)
+				puerto_byte0 = (unsigned int) (unsigned char) name->sa_data[0];
+				puerto_byte1 = (unsigned int) (unsigned char) name->sa_data[1];
+				octeto1 = (unsigned int) (unsigned char) name->sa_data[2];
+				octeto2 = (unsigned int) (unsigned char) name->sa_data[3];
+				octeto3 = (unsigned int) (unsigned char) name->sa_data[4];
+				octeto4 = (unsigned int) (unsigned char) name->sa_data[5];
+				// Con esto lo que hago es unir los dos byte para obtener el puerto en decimal
+				puerto = puerto_byte0*256+puerto_byte1;
+				dbgprint( ">>>> IP Modificada: %u.%u.%u.%u  puerto destino: %u\n", octeto1, octeto2, octeto3, octeto4, puerto);
+
+			}else{
+				dbgprint( ">>>> Es el cliente,  no se hace nada");
+			}	
+		}else{
+			dbgprint( ">>>> No se aplica la redireccion, IP: %u.%u.%u.%u  puerto destino: %u\n", octeto1, octeto2, octeto3, octeto4, puerto);
 		}
-    }
-
-	
-	//////////////s//////////////////////////
+	}
+	////////////////////////////////////////
 	// De aca para abajo todo sigue igual //
 	////////////////////////////////////////
 
