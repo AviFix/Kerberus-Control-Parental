@@ -193,7 +193,23 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         return adminUsers.usuario_valido('admin', password)
 
     def do_GET(self):
-        url = self.path
+        modoDeConexion = self.headers.getheader('Proxy-Connection',
+                                                'Transparente')
+        hostDestino = self.headers.getheader('Host')
+
+        if modoDeConexion == 'Transparente':
+            url = "http://" + hostDestino + self.path
+            modo = "Transparente"
+
+        else:
+            url = self.path
+            modo = "Proxy"
+
+        self.server.logger.log(
+                logging.DEBUG,
+                "Modo de conexión: %(modo)s , URL: %(url)s"
+                % {'modo': modo ,'url': url})
+
 #        if self.server.verificador.primerUrl:
 #            self.server.verificador.primerUrl=False
 #            if "kerberus.com.ar" not in url:
