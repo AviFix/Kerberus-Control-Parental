@@ -11,6 +11,9 @@ SetCompressor lzma
 ;Esta macro debe colocarse en esta posicin del script sino no funcionara
   !define mui_abortwarning
 
+; Iconos
+  !define MUI_ICON "kerby.ico"
+  !define MUI_UNICON "kerby.ico"
 
 
 

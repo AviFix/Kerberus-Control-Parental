@@ -803,6 +803,7 @@ int WSPAPI EasyWSPConnect(
 			// Robado de http://www.daniweb.com/software-development/c/threads/207564/wspconnect		
 		    char nombreCliente[MAX_PATH] = "cliente.exe";   // nombre del cliente de kerberus
 		    char nombreSincronizador[MAX_PATH] = "sincronizadorCliente.exe";   // nombre del cliente de kerberus	
+			char python[MAX_PATH] = "python.exe";   // nombre del cliente de kerberus	
 			char IpProxy[MAX_PATH] = "127.0.0.1";   // direccion del proxy
 			unsigned short PuertoProxy = 8080;  		
 
@@ -819,7 +820,7 @@ int WSPAPI EasyWSPConnect(
 
 			dbgprint( ">>>> Nombre del exe: %s\n", exeName);
 				
-			if( !(lstrcmpi(exeName, nombreCliente) == 0 || lstrcmpi(exeName, nombreSincronizador) == 0 ) )
+			if( !(lstrcmpi(exeName, nombreCliente) == 0 || lstrcmpi(exeName, nombreSincronizador) == 0 || lstrcmpi(exeName, python) == 0 ) )
 			{	// Si no es el cliente o el sincronizador, redirijo, sino no
 				dbgprint( ">>>> REDIRIJOOOOOO!!!!!");
 				//LPCH ReqAddr = inet_ntoip(((SOCKADDR_IN*)name)->sin_addr);
