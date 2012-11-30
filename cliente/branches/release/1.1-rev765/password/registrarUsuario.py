@@ -119,7 +119,7 @@ class ConclusionPage(QWizardPage):
         registrador=registrar.Registradores()
         registrador.registrarLocalmente(nombre,email,password)
         titulo=u'Fin de la configuración'
-        mensaje=u'Estimado %s,\n\nHemos registrado sus contraseña '\
+        mensaje=u'Estimado %s,\n\nHemos registrado su contraseña '\
             u'correctamente.\nLe enviaremos un correo electrónico con la misma'\
             u' a %s de modo que la pueda tener presente.\n\n\nGracias por '\
             u'utilizar Kerberus Control Parental!' % (nombre, email)
@@ -194,7 +194,7 @@ class RegistrarUsuario:
         page = RegistrationPage()
         page.setTitle("Registro")
         label = QLabel(u'Ingrese su nombre y dirección de correo electrónico,'
-            u' de modo que \npodamos recordarle la contraseña que ingreso en el'
+            u' de modo que \npodamos recordarle la contraseña que ingresó en el'
             u' paso anterior, \nen caso de que la olvide.\n')
 
         nameLabel = QLabel("Nombre:")

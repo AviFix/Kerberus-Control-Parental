@@ -9,7 +9,8 @@ exe = EXE(pyz,
           debug=False,
           strip=False,
           upx=True,
-          console=0 )
+          console=0,
+          icon='../kerby.ico' )
 coll = COLLECT( exe,
                a.binaries,
                a.zipfiles,

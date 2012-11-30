@@ -199,15 +199,15 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 
         if modoDeConexion == 'Transparente':
             url = "http://" + hostDestino + self.path
-            modo = "Transparente"
+            modo = "TRANSPARENTE"
 
         else:
             url = self.path
-            modo = "Proxy"
+            modo = "PROXY"
 
         self.server.logger.log(
                 logging.DEBUG,
-                "Modo de conexión: %(modo)s , URL: %(url)s"
+                "Modo de conexion: %(modo)s , URL: %(url)s"
                 % {'modo': modo ,'url': url})
 
 #        if self.server.verificador.primerUrl:
@@ -400,12 +400,54 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
             return local_data
         return None
 
+    # Estos son todos los metodos http que encontre (estandares o no)
     do_HEAD = do_GET
     do_POST = do_GET
     do_PUT = do_GET
     do_DELETE = do_GET
     do_OPTIONS = do_GET
     do_TRACE = do_GET
+    do_PATCH=do_GET
+    do_LINK=do_GET
+    do_UNLINK=do_GET
+    do_PROPFIND=do_GET
+    do_PROPPATCH=do_GET
+    do_MKCOL=do_GET
+    do_COPY=do_GET
+    do_MOVE=do_GET
+    do_LOCK=do_GET
+    do_UNLOCK=do_GET
+    do_VERSION_CONTROL=do_GET
+    do_REPORT=do_GET
+    do_CHECKOUT=do_GET
+    do_CHECKIN=do_GET
+    do_UNCHECKOUT=do_GET
+    do_MKWORKSPACE=do_GET
+    do_UPDATE=do_GET
+    do_LABEL=do_GET
+    do_MERGE=do_GET
+    do_BASELINE_CONTROL=do_GET
+    do_MKACTIVITY=do_GET
+    do_ORDERPATCH=do_GET
+    do_ACL=do_GET
+    do_MKREDIRECTREF=do_GET
+    do_UPDATEREDIRECTREF=do_GET
+    do_MKCALENDAR=do_GET
+    do_SEARCH=do_GET
+    do_BIND=do_GET
+    do_UNBIND=do_GET
+    do_REBIND=do_GET
+    do_BCOPY=do_GET
+    do_BDELETE=do_GET
+    do_BMOVE=do_GET
+    do_BPROPFIND=do_GET
+    do_BPROPPATCH=do_GET
+    do_NOTIFY=do_GET
+    do_POLL=do_GET
+    do_SUBSCRIBE=do_GET
+    do_UNSUBSCRIBE=do_GET
+    do_X_MS_ENUMATTS=do_GET
+
 
     def log_message(self, format, *args):
         self.server.logger.log(logging.DEBUG, "%s %s", self.address_string(),
