@@ -89,7 +89,6 @@
 #include "instlsp.h"
 
 
-
 struct InstLspArgs
 {
 	char				*lpszProgramName;
@@ -304,6 +303,29 @@ bool ParseArgs(
 	return true;
 }
 
+// Agregado por mi
+int find_substr(char *listPointer, char *itemPointer);
+
+int find_substr(char *listPointer, char *itemPointer)
+{
+  int t;
+  char *p, *p2;
+
+  for(t=0; listPointer[t]; t++) {
+    p = &listPointer[t];
+    p2 = itemPointer;
+
+    while(*p2 && *p2==*p) {
+      p++;
+      p2++;
+    }
+    if(!*p2) return t; /* 1st return */
+  }
+   return -1; /* 2nd return */
+}
+
+//
+
 void main1(
 	InstLspArgs& args,
 	LPWSAPROTOCOL_INFOW& pProtocolInfo,
@@ -422,10 +444,19 @@ void main1(
 
             // Get the catalog IDs for all existing providers
             args.dwCatalogIdArrayCount = 0 ;
+			//
+			char protocolo[100];
+			//
             for(i=0; i < iTotalProtocols ;i++)
             {
                 if ( LAYERED_PROTOCOL != pProtocolInfo[ i ].ProtocolChain.ChainLen )
                 {
+					strcpy(protocolo,pProtocolInfo[ i ].szProtocol);
+					if ( strstr(protocolo, "MSAFD Tcpip") != -1 ){
+						printf("Detectado como TCPIP: %S - ID: %d\n", pProtocolInfo[ i ].szProtocol, pProtocolInfo[ i ].dwCatalogEntryId);
+					}else{
+					printf("Agregando protocolo: %S - ID: %d\n", pProtocolInfo[ i ].szProtocol, pProtocolInfo[ i ].dwCatalogEntryId);
+					}
                     args.pdwCatalogIdArray[ args.dwCatalogIdArrayCount++ ] = pProtocolInfo[ i ].dwCatalogEntryId;
                 }
             }
