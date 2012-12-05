@@ -424,21 +424,18 @@ void main1(
             args.dwCatalogIdArrayCount = 0 ;
 
 	    // Agregado por mi
-	    const wchar_t protocoloTCPIP = "[TCP/IP]";
+	    const wchar_t* protocoloTCPIP = L"[TCP/IP]";
 	    //
 
             for(i=0; i < iTotalProtocols ;i++)
             {
                 if ( LAYERED_PROTOCOL != pProtocolInfo[ i ].ProtocolChain.ChainLen )
                 {
-			// Agregado por  mi					
-			if ( wcsstr(pProtocolInfo[ i ].szProtocol, protocoloTCPIP ) != NULL ){
-				printf("Detectado como TCPIP: %S - ID: %d\n", pProtocolInfo[ i ].szProtocol, pProtocolInfo[ i ].dwCatalogEntryId);
-			}else{
-				printf("Agregando protocolo: %S - ID: %d\n", pProtocolInfo[ i ].szProtocol, pProtocolInfo[ i ].dwCatalogEntryId);
-			}
-			//
-                    	args.pdwCatalogIdArray[ args.dwCatalogIdArrayCount++ ] = pProtocolInfo[ i ].dwCatalogEntryId;
+					// Agregado por  mi					
+					if ( wcsstr(pProtocolInfo[ i ].szProtocol, protocoloTCPIP ) != NULL ){
+						printf("Detectado el protocolo TCP-IP en: %S - ID: %d\n, agregando", pProtocolInfo[ i ].szProtocol, pProtocolInfo[ i ].dwCatalogEntryId);
+						args.pdwCatalogIdArray[ args.dwCatalogIdArrayCount++ ] = pProtocolInfo[ i ].dwCatalogEntryId;
+					}
                 }
             }
 
@@ -563,7 +560,7 @@ void main1(
 
 int _cdecl main(int argc, char *argv[])
 {
-	System::String^ str = "Hello World";
+	System::String^ str = "Instalando KLSP (Kerberus LSP)";
     System::Console::WriteLine(str);
 	InstLspArgs args;
 	if (!ParseArgs(argc,argv,args))

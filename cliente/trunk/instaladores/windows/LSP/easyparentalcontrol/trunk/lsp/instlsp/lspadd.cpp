@@ -119,7 +119,7 @@ InstallLsp(
         goto cleanup;
     }
 
-    printf("LSP name is '%S'\n", wszLspName);
+    printf(". El nombre del LSP es '%S'\n", wszLspName);
 
     // Retrieve the GUID under which the LSP is to be installed
     RetrieveLspGuid( lpszLspPathAndFile, &ProviderBaseGuid );
