@@ -85,7 +85,7 @@ class Consultor:
             return True, mensaje
 
         elif usuario.dominioPublicamenteDenegado(url):
-            mensaje = "Dominio denegado: "
+            mensaje = "Dominio denegado"
             if config.DEBUG_DOM_PUB_DENG:
                 modulo_logger.log(logging.INFO, mensaje)
             return False, mensaje
