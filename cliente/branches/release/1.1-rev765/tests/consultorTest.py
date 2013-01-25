@@ -21,7 +21,7 @@ class verificadorUrls(unittest.TestCase):
     urls_aceptadas = ("http://www.wikipedia.org/", "http://www.google.com/")
     urls_denegadas = ("http://www.cuantosexo.com/", )
     urls_publicamente_permitidas = ("http://www.hotmail.com/",
-        "http://www.mercadolibre.com.ar", "http://www.google.com/")
+        "http://www.mercadolibre.com.ar/", "http://www.google.com/")
     urls_publicamente_denegadas = ("http://www.tiava.com/", )
     verificador = consultor.Consultor()
     #verificador.setLogger(logging)
@@ -82,9 +82,7 @@ class verificadorUrls(unittest.TestCase):
                                     url
                                     )
             self.assertFalse(respuesta)
-            self.assertEqual(mensaje,
-            "URL: %s <br>Motivo: Dominio publicamente denegado en el servidor"
-            % url)
+            self.assertEqual(mensaje, "Dominio denegado")
 
     def test7ChequearUrlsPublicamenteAceptadas(self):
         """Verifica que se acepten y reconozcan como tales los
@@ -96,8 +94,7 @@ class verificadorUrls(unittest.TestCase):
                                     url
                                     )
             self.assertTrue(respuesta)
-            self.assertEqual(mensaje,
-                "Dominio publicamente permitido: %s" % url)
+            self.assertEqual(mensaje, "Dominio permitido")
 
 if __name__ == '__main__':
     unittest.main()

@@ -17,9 +17,9 @@ import config
 
 
 class verificadorUsuarios(unittest.TestCase):
-    username = 'test_user'
-    password = 'test'
-    adminuser = 'test_admin'
+    username = 'NoBody'
+    password = 'abril22'
+    adminuser = 'admin'
 
     def testUserAdmin(self):
         """Prueba que si se le pasa el usuario test_admin,
@@ -123,14 +123,14 @@ class verificadorUsuarios(unittest.TestCase):
         usuarioPrueba = usuario.Usuario(self.username)
         url = "http://urldeprueba.com/prueba"
         cursor.execute(
-        'insert into dominios_publicamente_denegados(url,tipo) values (?,?)',
-        (url, 1, )
+        'insert into dominios_publicamente_denegados(url) values (?)',
+        (url,)
         )
         conexion.commit()
         usuarioPrueba.recargarDominiosPublicamenteDenegados()
         cursor.execute(
-        'delete from dominios_publicamente_denegados where url=? and tipo=?',
-        (url, 1, )
+        'delete from dominios_publicamente_denegados where url=?',
+        (url,)
         )
         conexion.commit()
         conexion.close()
@@ -144,14 +144,14 @@ class verificadorUsuarios(unittest.TestCase):
         usuarioPrueba = usuario.Usuario(self.username)
         url = "http://urldeprueba.com/prueba"
         cursor.execute(
-        'insert into dominios_publicamente_permitidos(url,tipo) values (?,?)',
-        (url, 1, )
+        'insert into dominios_publicamente_permitidos(url) values (?)',
+        (url,)
         )
         conexion.commit()
         usuarioPrueba.recargarDominiosPublicamentePermitidos()
         cursor.execute(
-        'delete from dominios_publicamente_permitidos where url=? and tipo=?',
-        (url, 1, )
+        'delete from dominios_publicamente_permitidos where url=?',
+        (url,)
         )
         conexion.commit()
         conexion.close()
@@ -329,25 +329,25 @@ class verificadorUsuarios(unittest.TestCase):
         conexion.commit()
         conexion.close()
 
-    def testConexionAlServidor(self):
-        """Se puede conectar al servidor"""
-        usuarioPrueba = usuario.Usuario(self.username)
-        url = "http://www.google.com"
-        respuesta, mensaje = usuarioPrueba.validarRemotamente(url)
-        self.assertTrue(respuesta)
+    #def testConexionAlServidor(self):
+        #"""Se puede conectar al servidor"""
+        #usuarioPrueba = usuario.Usuario(self.username)
+        #url = "http://www.google.com"
+        #respuesta, mensaje = usuarioPrueba.validarRemotamente(url)
+        #self.assertTrue(respuesta)
 
-    def testFallaDeConexionAlServidor(self):
-        """Identifica cuando no se puede conectar al servidor"""
-        usuarioPrueba = usuario.Usuario(self.username)
-        url = "http://www.google.com"
-        #cambio el puerto del server, asi patea
-        puerto_aux = config.SERVER_PORT
-        config.SERVER_PORT = "1000"
-        respuesta, mensaje = usuarioPrueba.validarRemotamente(url)
-        self.assertFalse(respuesta)
-        self.assertEqual(mensaje, "No hay conexion al servidor. ")
-        # vuelvo el puerto como estaba
-        config.SERVER_PORT = puerto_aux
+    #def testFallaDeConexionAlServidor(self):
+        #"""Identifica cuando no se puede conectar al servidor"""
+        #usuarioPrueba = usuario.Usuario(self.username)
+        #url = "http://www.google.com"
+        ##cambio el puerto del server, asi patea
+        #puerto_aux = config.SERVER_PORT
+        #config.SERVER_PORT = "1000"
+        #respuesta, mensaje = usuarioPrueba.validarRemotamente(url)
+        #self.assertFalse(respuesta)
+        #self.assertEqual(mensaje, "No hay conexion al servidor. ")
+        ## vuelvo el puerto como estaba
+        #config.SERVER_PORT = puerto_aux
 
     def testValidacionRemota(self):
         """El servidor valida correctamente las urls permitidas"""
