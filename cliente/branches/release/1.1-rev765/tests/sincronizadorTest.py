@@ -22,6 +22,8 @@ config.PATH_DB = 'kerberus-test.db'
 
 
 class verificadorDeSincronizacion(unittest.TestCase):
+        global sync
+        sync = sincronizador.Sincronizador()
 
         def test1SincronizacionDeDominios(self):
             """Verificacion de sincronizacion de dominios publicamente """\
@@ -35,7 +37,6 @@ class verificadorDeSincronizacion(unittest.TestCase):
             conexion_db.commit()
 
             # Pido la sincronizacion
-            sync = sincronizador.Sincronizador()
             sync.sincronizarDominiosDenegados()
             sync.sincronizarDominiosPermitidos()
             cantidadDominiosPermitidos = cursor.execute(

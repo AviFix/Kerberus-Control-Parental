@@ -12,25 +12,29 @@ import time
 sys.path.append('../clases')
 sys.path.append('../config')
 
-import usuario
-import config
 
+from usuario import Usuario, config, peticion
+
+# Seteo el path a la base utilizada para los tests
+config.PATH_DB = "kerberus-test.db"
+config.SERVER_IP = "127.0.0.1"
+config.SERVER_PORT = 443
 
 class verificadorUsuarios(unittest.TestCase):
-    username = 'NoBody'
-    password = 'abril22'
-    adminuser = 'admin'
+    username = 'test_user'
+    password = 'test'
+    adminuser = 'test_admin'
 
     def testUserAdmin(self):
         """Prueba que si se le pasa el usuario test_admin,
         devuelva que es admin"""
-        usuarioAdmin = usuario.Usuario(self.adminuser)
+        usuarioAdmin = Usuario(self.adminuser)
         self.assertTrue(usuarioAdmin.es_admin)
 
     def testUserNoAdmin(self):
         """Prueba que si se le pasa el usuario test_user,
         devuelva que NO es admin"""
-        usuarioNoAdmin = usuario.Usuario(self.username)
+        usuarioNoAdmin = Usuario(self.username)
         self.assertFalse(usuarioNoAdmin.es_admin)
 
     def testRecargaCacheDenegadas(self):
@@ -44,7 +48,7 @@ class verificadorUsuarios(unittest.TestCase):
             (url, hora_url, )
             )
         conexion.commit()
-        usuarioPrueba = usuario.Usuario(self.username)
+        usuarioPrueba = Usuario(self.username)
         usuarioPrueba.recargarCacheDenegadas()
         cursor.execute(
             'delete from cache_urls_denegadas where url=? and hora=?',
@@ -65,7 +69,7 @@ class verificadorUsuarios(unittest.TestCase):
             (url, hora_url, )
             )
         conexion.commit()
-        usuarioPrueba = usuario.Usuario(self.username)
+        usuarioPrueba = Usuario(self.username)
         usuarioPrueba.recargarCacheAceptadas()
         cursor.execute(
             'delete from cache_urls_aceptadas where url=? and hora=?',
@@ -79,7 +83,7 @@ class verificadorUsuarios(unittest.TestCase):
         """Prueba la recarga de los dominios permitidos"""
         conexion = sqlite3.connect(config.PATH_DB)
         cursor = conexion.cursor()
-        usuarioPrueba = usuario.Usuario(self.username)
+        usuarioPrueba = Usuario(self.username)
         url = "http://urldeprueba.com/prueba"
         cursor.execute(
             'insert into dominios_permitidos(url,usuario) values (?,?)',
@@ -99,7 +103,7 @@ class verificadorUsuarios(unittest.TestCase):
         """Prueba la recarga de los dominios denegados"""
         conexion = sqlite3.connect(config.PATH_DB)
         cursor = conexion.cursor()
-        usuarioPrueba = usuario.Usuario(self.username)
+        usuarioPrueba = Usuario(self.username)
         url = "http://urldeprueba.com/prueba"
         cursor.execute(
             'insert into dominios_denegados(url,usuario) values (?,?)',
@@ -120,7 +124,7 @@ class verificadorUsuarios(unittest.TestCase):
         conexion = sqlite3.connect(config.PATH_DB)
         cursor = conexion.cursor()
         #hora_url = time.time()
-        usuarioPrueba = usuario.Usuario(self.username)
+        usuarioPrueba = Usuario(self.username)
         url = "http://urldeprueba.com/prueba"
         cursor.execute(
         'insert into dominios_publicamente_denegados(url) values (?)',
@@ -141,7 +145,7 @@ class verificadorUsuarios(unittest.TestCase):
         conexion = sqlite3.connect(config.PATH_DB)
         cursor = conexion.cursor()
         #hora_url = time.time()
-        usuarioPrueba = usuario.Usuario(self.username)
+        usuarioPrueba = Usuario(self.username)
         url = "http://urldeprueba.com/prueba"
         cursor.execute(
         'insert into dominios_publicamente_permitidos(url) values (?)',
@@ -162,7 +166,7 @@ class verificadorUsuarios(unittest.TestCase):
         conexion = sqlite3.connect(config.PATH_DB)
         cursor = conexion.cursor()
         #hora_url=time.time()
-        usuarioPrueba = usuario.Usuario(self.username)
+        usuarioPrueba = Usuario(self.username)
         url = "http://urldeprueba.com/prueba"
         dominio = "urldeprueba.com"
         cursor.execute(
@@ -184,7 +188,7 @@ class verificadorUsuarios(unittest.TestCase):
         conexion = sqlite3.connect(config.PATH_DB)
         cursor = conexion.cursor()
         #hora_url=time.time()
-        usuarioPrueba = usuario.Usuario(self.username)
+        usuarioPrueba = Usuario(self.username)
         url = "http://urldeprueba.com/prueba"
         dominio = "urldeprueba.com"
         cursor.execute(
@@ -205,7 +209,7 @@ class verificadorUsuarios(unittest.TestCase):
         """Se reconocen los dominios denegados locales"""
         conexion = sqlite3.connect(config.PATH_DB)
         cursor = conexion.cursor()
-        usuarioPrueba = usuario.Usuario(self.username)
+        usuarioPrueba = Usuario(self.username)
         url = "http://urldeprueba.com/prueba"
         cursor.execute(
             'insert into dominios_denegados(url,usuario) values (?,?)',
@@ -225,7 +229,7 @@ class verificadorUsuarios(unittest.TestCase):
         """Se reconocen los dominios permitidos locales"""
         conexion = sqlite3.connect(config.PATH_DB)
         cursor = conexion.cursor()
-        usuarioPrueba = usuario.Usuario(self.username)
+        usuarioPrueba = Usuario(self.username)
         url = "http://urldeprueba.com/prueba"
         cursor.execute(
             'insert into dominios_permitidos(url,usuario) values (?,?)',
@@ -252,7 +256,7 @@ class verificadorUsuarios(unittest.TestCase):
             (url, hora_url, )
             )
         conexion.commit()
-        usuarioPrueba = usuario.Usuario(self.username)
+        usuarioPrueba = Usuario(self.username)
         usuarioPrueba.recargarCacheAceptadas()
         cursor.execute(
             'delete from cache_urls_aceptadas where url=? and hora=?',
@@ -273,7 +277,7 @@ class verificadorUsuarios(unittest.TestCase):
             (url, hora_url, )
             )
         conexion.commit()
-        usuarioPrueba = usuario.Usuario(self.username)
+        usuarioPrueba = Usuario(self.username)
         usuarioPrueba.recargarCacheDenegadas()
         cursor.execute(
             'delete from cache_urls_denegadas where url=? and hora=?',
@@ -289,7 +293,7 @@ class verificadorUsuarios(unittest.TestCase):
         cursor = conexion.cursor()
         #hora_url = time.time()
         url = "http://urldepruebaapersisitir.com/persistir/url"
-        usuarioPrueba = usuario.Usuario(self.username)
+        usuarioPrueba = Usuario(self.username)
 
         for i in range(0, config.MAX_CACHE_URLS_ACEPTADAS + 1):
             usuarioPrueba.persistirACacheAceptadas(url + str(i))
@@ -312,7 +316,7 @@ class verificadorUsuarios(unittest.TestCase):
         cursor = conexion.cursor()
         #hora_url=time.time()
         url = "http://urldepruebaapersisitir.com/persistir/url"
-        usuarioPrueba = usuario.Usuario(self.username)
+        usuarioPrueba = Usuario(self.username)
 
         for i in range(0, config.MAX_CACHE_URLS_DENEGADAS + 1):
             usuarioPrueba.persistirACacheDenegadas(url + str(i))
@@ -351,7 +355,7 @@ class verificadorUsuarios(unittest.TestCase):
 
     def testValidacionRemota(self):
         """El servidor valida correctamente las urls permitidas"""
-        usuarioPrueba = usuario.Usuario(self.username)
+        usuarioPrueba = Usuario(self.username)
         url = "http://www.google.com"
         respuesta, mensaje = usuarioPrueba.validarRemotamente(url)
         self.assertTrue(respuesta)
@@ -359,7 +363,7 @@ class verificadorUsuarios(unittest.TestCase):
 
     def testRechazoRemota(self):
         """El servidor rechaza correctamente las urls denegadas"""
-        usuarioPrueba = usuario.Usuario(self.username)
+        usuarioPrueba = Usuario(self.username)
         url = "http://www.redtube.net"
         respuesta, mensaje = usuarioPrueba.validarRemotamente(url)
         self.assertFalse(respuesta)

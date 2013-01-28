@@ -33,19 +33,19 @@ class modificadoresUrls(unittest.TestCase):
                     )
 
     def test2DeteccionCorrectaDeSafeSearch(self):
-        """Verifica que se detecten correctamente los navegadores que
+        """Verifica que se detecten correctamente los buscadores que
         soportan SafeSearch"""
         for buscador, url, agregado in self.buscadores_con_SafeSearch:
             self.assertTrue(self.verificador.soportaSafeSearch(url))
 
-    def test3NavegadoresSinSafeSearch(self):
-        """Verifica que no se detecte el safesearch en navegadores
+    def test3BuscadoresSinSafeSearch(self):
+        """Verifica que no se detecte el safesearch en buscadores
         que no lo tienen"""
         for buscadores, url in self.buscadores_sin_SafeSearch:
             self.assertFalse(self.verificador.soportaSafeSearch(url))
 
     def test4ForzadoDeSafeSearch(self):
-        """Verifica que para cada navegador con soporte de safesearch,
+        """Verifica que para cada buscador con soporte de safesearch,
         se le agregue lo correcto para forzarlo"""
         for buscador, url, agregado in self.buscadores_con_SafeSearch:
             self.assertEqual(
@@ -54,7 +54,7 @@ class modificadoresUrls(unittest.TestCase):
                 )
 
     def test5NoSeFuerzaSafeSearch(self):
-        """Verifica que para cada navegador que NO soporte de safesearch,
+        """Verifica que para cada buscador que NO soporte de safesearch,
         No se le agregue safesearch"""
         for buscador, url in self.buscadores_sin_SafeSearch:
             self.assertEqual(self.verificador.agregarSafeSearch(url), url)

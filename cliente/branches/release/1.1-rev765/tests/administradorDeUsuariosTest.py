@@ -8,18 +8,14 @@ import unittest
 
 # Modulos propios
 sys.path.append('../clases')
-sys.path.append('../conf')
 
-import administradorDeUsuarios
-import config
+from administradorDeUsuarios import AdministradorDeUsuarios, config
 
-
-# Sobreescribo la variable global de la base para que use la de prueba
-config.PATH_DB = 'kerberus-test.db'
-
+# Seteo el path a la base utilizada para los tests
+config.PATH_DB = "kerberus-test.db"
 
 class loginDeUsuarios(unittest.TestCase):
-        admDeUsuarios = administradorDeUsuarios.AdministradorDeUsuarios()
+        admDeUsuarios = AdministradorDeUsuarios()
 
         def   test1LoginDeUsuario(self):
             """El usuario test_user debe existir en la base de datos"""
@@ -44,7 +40,7 @@ class loginDeUsuarios(unittest.TestCase):
         def test6ExisteAdmin(self):
             """El usuario admin debe existir en la base de datos"""
             self.assertTrue(
-                self.admDeUsuarios.usuario_valido('admin', 'perico')
+                self.admDeUsuarios.usuario_valido('admin', 'test')
                 )
 
         def test7PermitirNoLogin(self):

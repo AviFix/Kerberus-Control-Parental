@@ -9,8 +9,12 @@ import logging
 
 # Modulos propios
 sys.path.append('../clases')
-import consultor
+from consultor import Consultor, config
 
+# Seteo el path a la base utilizada para los tests
+config.PATH_DB = "kerberus-test.db"
+config.SERVER_IP = "127.0.0.1"
+config.SERVER_PORT = 443
 
 class verificadorUrls(unittest.TestCase):
     extensiones_exceptuadas = (".gif", ".jpeg", ".jpg", ".png", ".js", ".css",
@@ -23,11 +27,10 @@ class verificadorUrls(unittest.TestCase):
     urls_publicamente_permitidas = ("http://www.hotmail.com/",
         "http://www.mercadolibre.com.ar/", "http://www.google.com/")
     urls_publicamente_denegadas = ("http://www.tiava.com/", )
-    verificador = consultor.Consultor()
-    #verificador.setLogger(logging)
-    username = 'NoBody'
-    password = 'abril22'
-    adminuser = 'admin'
+    verificador = Consultor()
+    username = 'test_user'
+    password = 'test'
+    adminuser = 'test_admin'
 
     def test1VerificarExtensionesExceptuadas(self):
         """Verificar que se exceptuen las extensiones no analizables

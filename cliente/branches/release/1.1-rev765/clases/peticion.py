@@ -96,7 +96,10 @@ class Peticion:
                     self.server_ip, self.server_port = \
                         self.servidor.obtenerServidor(self.server_ip,
                         self.server_port, self.userid)
-                    self.server_sync = "%s:%s" % (self.server_ip, self.server_port)
+                    self.server_sync = "%s:%s" % (
+                                                    self.server_ip,
+                                                    self.server_port
+                                                    )
                     modulo_logger.log(logging.INFO, "Se cambia al servidor "
                     "%(server)s " % self.server_sync)
             except urllib2.URLError as error:
