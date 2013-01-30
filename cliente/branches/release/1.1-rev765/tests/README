@@ -1,0 +1,8 @@
+- Para correr estos test, se debe contar con una version del server instalada localmente, y que este corriendo la base de datos 'base-server-para-correr-tests.sql' que se encuentra dentro de la carpeta del servidor.
+
+- Es recomendable que el nro de nodo sea distinto de los que estan en produccion.
+
+- También debe estar la variable ENTORNO_DE_DESARROLLO = True en el archivo
+config.py del cliente.
+
+

@@ -64,7 +64,7 @@ class verificadorDeSincronizacion(unittest.TestCase):
             idServer = int(idServer)
             pedido.userid = idUsuario
             pedido.serverid = idServer
-            self.assertTrue(idServer == 1 and idUsuario > 0)
+            self.assertTrue(idServer > 0 and idUsuario > 0)
 
         def test6EliminacionDeusuario(self):
             """Eliminacion correcta de un usuario"""

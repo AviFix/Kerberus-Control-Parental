@@ -85,7 +85,6 @@ class verificadorUrls(unittest.TestCase):
                                     url
                                     )
             self.assertFalse(respuesta)
-            self.assertEqual(mensaje, "Dominio denegado")
 
     def test7ChequearUrlsPublicamenteAceptadas(self):
         """Verifica que se acepten y reconozcan como tales los
@@ -97,7 +96,6 @@ class verificadorUrls(unittest.TestCase):
                                     url
                                     )
             self.assertTrue(respuesta)
-            self.assertEqual(mensaje, "Dominio permitido")
 
 if __name__ == '__main__':
     unittest.main()
