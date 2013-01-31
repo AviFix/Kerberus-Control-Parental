@@ -11,19 +11,13 @@ import sqlite3
 
 # Modulos propios
 sys.path.append('../clases')
-sys.path.append('../conf')
 
-import sincronizador
-import config
-
-
-# Sobreescribo la variable global de la base para que use la de prueba
-config.PATH_DB = 'kerberus-test.db'
+from sincronizador import Sincronizador, config
 
 
 class verificadorDeSincronizacion(unittest.TestCase):
         global sync
-        sync = sincronizador.Sincronizador()
+        sync = Sincronizador()
 
         def test1SincronizacionDeDominios(self):
             """Verificacion de sincronizacion de dominios publicamente """\
@@ -50,15 +44,6 @@ class verificadorDeSincronizacion(unittest.TestCase):
                 cantidadDominiosPermitidos > 0 and
                 cantidadDominiosDenegados > 0
                 )
-        @unittest.skip("Falta implementar")
-        def test2CambioDePassword(self):
-            """Verifica si se informa el cambio de password a los servidores"""
-            pass
-
-        @unittest.skip("Falta implementar")
-        def test3DescargarVersionNuevaCliente(self):
-            """Verifica si se Descarga una nueva version del cliente"""
-            pass
 
 if __name__ == '__main__':
     unittest.main()

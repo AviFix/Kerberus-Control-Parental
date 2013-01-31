@@ -9,12 +9,12 @@ import unittest
 # Modulos propios
 sys.path.append('../clases')
 
-from administradorDeUsuarios import AdministradorDeUsuarios, config
+from administradorDeUsuarios import AdministradorDeUsuarios
 
-# Seteo el path a la base utilizada para los tests
-config.PATH_DB = "kerberus-test.db"
 
 class loginDeUsuarios(unittest.TestCase):
+        """Clase encargada de realizar los test sobre el modulo """\
+        """ administradorDeUsuarios.py"""
         admDeUsuarios = AdministradorDeUsuarios()
 
         def   test1LoginDeUsuario(self):

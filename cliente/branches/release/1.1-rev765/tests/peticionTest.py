@@ -11,16 +11,11 @@ sys.path.append('../clases')
 
 from peticion import Peticion, config
 
-# Seteo el path a la base utilizada para los tests
-config.PATH_DB = "kerberus-test.db"
 
 class verificadorDeSincronizacion(unittest.TestCase):
 
         global pedido
         pedido = Peticion()
-        pedido.server_ip = "127.0.0.1"
-        pedido.server_port = 443
-        pedido.server_sync = "%s:%s" % ("127.0.0.1", 443)
 
         def test1ObtenerPeriodoDeActualizacion(self):
             """Verifica si obtiene el periodo de actualizacion"""

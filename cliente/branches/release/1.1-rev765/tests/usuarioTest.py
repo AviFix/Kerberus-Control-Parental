@@ -10,10 +10,9 @@ import time
 
 # Modulos propios
 sys.path.append('../clases')
-sys.path.append('../config')
 
 
-from usuario import Usuario, config, peticion
+from usuario import Usuario, config
 
 
 class verificadorUsuarios(unittest.TestCase):

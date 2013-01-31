@@ -5,24 +5,16 @@
 # Modulos externos
 import sys
 import unittest
-import sqlite3
 
 # Modulos propios
 sys.path.append('../clases')
-sys.path.append('../conf')
 
-import peticion
-import config
-
-
-# Sobreescribo la variable global de la base para que use la de prueba
-config.PATH_DB = 'kerberus-test.db'
-
+from peticion import Peticion
 
 class verificadorDeSincronizacion(unittest.TestCase):
-
+        """clase que contiene los tests de servidores.py"""
         global pedido
-        pedido = peticion.Peticion()
+        pedido = Peticion()
 
         @unittest.skip("Falta implementar")
         def test1VerificarNuevaVersion(self):
@@ -37,19 +29,10 @@ class verificadorDeSincronizacion(unittest.TestCase):
         def test3obtenerHoraServidor(self):
             """Verifica si se obtiene la hora del servidor"""
             import time
-            hora_actual = hora = time.time()
+            hora_actual = time.time()
             respuesta = pedido.obtenerHoraServidor()
             self.assertTrue(hora_actual <= respuesta)
 
-        @unittest.skip("Falta implementar")
-        def test4RegistrarUsuario(self):
-            """Prueba de registro un usuario"""
-            pass
-
-        @unittest.skip("Falta implementar")
-        def test5EliminacionDeusuario(self):
-            """Eliminacion correcta de usuario"""
-            pass
 
 if __name__ == '__main__':
     unittest.main()

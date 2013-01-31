@@ -5,16 +5,14 @@
 # Modulos externos
 import sys
 import unittest
-import logging
+
+
 
 # Modulos propios
 sys.path.append('../clases')
-from consultor import Consultor, config
 
-# Seteo el path a la base utilizada para los tests
-config.PATH_DB = "kerberus-test.db"
-config.SERVER_IP = "127.0.0.1"
-config.SERVER_PORT = 443
+from consultor import Consultor
+
 
 class verificadorUrls(unittest.TestCase):
     extensiones_exceptuadas = (".gif", ".jpeg", ".jpg", ".png", ".js", ".css",
