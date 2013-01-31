@@ -35,14 +35,14 @@ class verificadorDeSincronizacion(unittest.TestCase):
             config.PLATAFORMA = 'Windows'
             actualizacion, md5 = pedido.chequearActualizaciones()
             self.assertTrue(actualizacion is not None and
-                            md5 == '52199ce5ebc8fd6934f033d986d35fd7')
+                            md5 == 'c5be3da770e081536a3f68f087a6cff0')
         def test4VerificarNuevaVersionParaLinux(self):
             """Verifica si se le informa de una nueva version si la """
             """plataforma es Linux"""
             config.PLATAFORMA = 'Linux'
             actualizacion, md5 = pedido.chequearActualizaciones()
             self.assertTrue(actualizacion is not None and
-                            md5 == '52199ce5ebc8fd6934f033d986d35fd7')
+                            md5 == 'c5be3da770e081536a3f68f087a6cff0'
 
         def test5RegistrarUsuario(self):
             """Prueba de registro de un usuario"""

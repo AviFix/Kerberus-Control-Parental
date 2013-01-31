@@ -5,3 +5,7 @@
 - También debe estar la variable ENTORNO_DE_DESARROLLO = True en el archivo
 config.py del cliente.
 
+- El apache local debe publicar el archivo test-kerberus.html en http://localhost/test-kerberus.html (este archivo se usa para testear la correcta descarga de las actualizaciones).
+
+
+
