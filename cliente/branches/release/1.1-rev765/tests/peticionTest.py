@@ -44,7 +44,18 @@ class verificadorDeSincronizacion(unittest.TestCase):
             self.assertTrue(actualizacion is not None and
             md5 == 'c5be3da770e081536a3f68f087a6cff0')
 
-        def test5RegistrarUsuario(self):
+        def test5UsuarioRegistrado(self):
+            """Verifica que el usuario este registrado en el server"""
+            id = 1
+            email = 'maximiliano@boscovich.com.ar'
+            respuesta = pedido.usuarioRegistrado(id, email)
+
+        def test6RecordarPassword(self):
+            """Test de recordar password"""
+            respuesta = pedido.recordarPassword()
+            self.assertTrue(respuesta == 'Recordada')
+
+        def test7RegistrarUsuario(self):
             """Prueba de registro de un usuario"""
             nombre = 'prueba'
             email = 'maximiliano@boscovich.com.ar'
@@ -61,12 +72,31 @@ class verificadorDeSincronizacion(unittest.TestCase):
             pedido.serverid = idServer
             self.assertTrue(idServer > 0 and idUsuario > 0)
 
-        def test6EliminacionDeusuario(self):
+        def test8InformarNuevaPassword(self):
+            """Test de cambio de password"""
+            respuesta = pedido.informarNuevaPassword('test')
+            self.assertTrue(respuesta == 'Informada')
+
+        #@unittest.skip("Falta implementar")
+        def test9EliminacionDeusuario(self):
             """Eliminacion correcta de un usuario"""
             pedido.credencial = '098f6bcd4621d373cade4e832627b4f6'
             pedido.eliminarUsuario()
 
+        def test10ObtenerDatos(self):
+            """Obtencion correcta de los datos de usuario"""
+            idUsuario, serverId, version, nombretitular, credencial = \
+            pedido.obtenerDatos()
+            self.assertTrue(idUsuario == 1)
+            self.assertTrue(serverId == 3)
+            self.assertTrue(version == "1.1")
+            self.assertTrue(nombretitular == "Usuario de Desarrollo")
+            self.assertTrue(credencial == "098f6bcd4621d373cade4e832627b4f6")
 
+        def test11ObtenerPeriodoDeRecargaCompleta(self):
+            """Verifica si obtiene el periodo de recarga completa"""
+            respuesta = pedido.obtenerPeriodoDeRecargaCompleta()
+            self.assertFalse(respuesta == 60)
 
 if __name__ == '__main__':
     unittest.main()
