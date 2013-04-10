@@ -1,4 +1,5 @@
 #!/bin/bash
+
 echo "   - Limpiando directorios..."
 [ -d ../cliente/build ] && rm -r ../cliente/build
 [ -d ../cliente/dist ] && rm -r ../cliente/dist
@@ -24,15 +25,3 @@ if [ ${SETEADO_ENTORNO} ]; then
           echo "   - Volviendo al entorno de desarrollo..."
           sed -i s/ENTORNO_DE_DESARROLLO=False/ENTORNO_DE_DESARROLLO=True/g  ../../conf/config.py
 fi
-
-echo "   - Generando archivo payload..."
-cd cliente/dist/
-tar cvfz ../../payload/cliente.tar.gz cliente > /dev/null
-cd ../../
-cd sincronizadorCliente/dist/
-tar cvfz ../../payload/sincronizador.tar.gz sincronizadorCliente > /dev/null
-cd ../../
-cd desinstalador/dist/
-tar cvfz ../../payload/desinstalador.tar.gz desinstalador > /dev/null
-cd ../../
-
