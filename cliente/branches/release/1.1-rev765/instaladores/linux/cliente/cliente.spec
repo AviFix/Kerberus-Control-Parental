@@ -5,7 +5,7 @@ pyz = PYZ(a.pure)
 exe = EXE(pyz,
           a.scripts,
           exclude_binaries=1,
-          name=os.path.join('build/pyi.linux2/cliente', 'kerberus-cliente'),
+          name=os.path.join('build/pyi.linux2/cliente', 'kerberus'),
           debug=False,
           strip=False,
           upx=True,

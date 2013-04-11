@@ -11,7 +11,7 @@
 # Description:       Filtro de contenido web.
 ### END INIT INFO
 
-DAEMON_NAME="kerberus-cliente"
+DAEMON_NAME="kerberus"
 PATH_DAEMON=/usr/share/kerberus/cliente
 DAEMON=${PATH_DAEMON}/${DAEMON_NAME}
 PID=`ps ax|grep ${DAEMON}|grep -v "grep"|tail -n 1|awk '{ print $1 }'`
