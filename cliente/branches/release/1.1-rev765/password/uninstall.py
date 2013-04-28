@@ -29,11 +29,16 @@ if desinstalar:
         subprocess.call(desinstalador)
     else:
         import _winreg
-        key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\kerberus')
+        try:
+            key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\kerberus')
+        except WindowsError:
+            key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\kerberus')
+        except:
+            print "Error al leer la clave del registro kerberus-common"
         path_common = _winreg.QueryValueEx(key, 'kerberus-common')[0]
         origen = path_common + '\kcpwu.dat'
         desinstalador = path_common + '\kcpwu.exe'
-        comando = "move \"%s\" \"%s\"" % (origen, desinstalador)
+        comando = "copy /Y \"%s\" \"%s\"" % (origen, desinstalador)
         subprocess.Popen(comando, stdout=subprocess.PIPE, shell=True)
         time.sleep(1)
         subprocess.call(desinstalador)

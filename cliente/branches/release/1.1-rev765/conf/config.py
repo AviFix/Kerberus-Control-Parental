@@ -62,7 +62,16 @@ else:
     else:
         import _winreg
 #        import subprocess
-        key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\kerberus')
+        try:
+            key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\kerberus')
+        except WindowsError:
+            try:
+                key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\kerberus')
+            except:
+                logger.log(logging.ERROR, "No se pudo leer la clave del registro kerberus-common")
+        except:
+            logger.log(logging.ERROR, "No se pudo leer la clave del registro kerberus-common")
+
         PATH_COMMON = _winreg.QueryValueEx(key, 'kerberus-common')[0]
         archivo_de_configuracion = PATH_COMMON + '\cliente.conf'
         archivo_de_spec = PATH_COMMON + '\confspec.ini'

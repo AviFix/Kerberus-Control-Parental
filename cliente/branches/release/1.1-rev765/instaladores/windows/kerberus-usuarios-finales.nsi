@@ -192,13 +192,13 @@ WriteRegStr HKCU "Software\Kerberus" "Version" "$VERSION"
 WriteRegStr HKCU "Software\Kerberus" "kerberus-common" "$INSTDIR\$VERSION"
 
 writeRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Run" \
-"Kerberus-client" "$INSTDIR\$VERSION\client\cliente.exe"
+"Kerberus-client" "$INSTDIR\$VERSION\client\kerberus.exe"
 
 writeRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Run" \
-"Kerberus-sync" "$INSTDIR\$VERSION\sync\sincronizadorCliente.exe"
+"Kerberus-sync" "$INSTDIR\$VERSION\sync\kerberus-sync.exe"
 
 WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Run" \
-"checkNavs" "$INSTDIR\$VERSION\checkNavs\navegadores.exe"
+"checkNavs" "$INSTDIR\$VERSION\checkNavs\kerberus-nav.exe"
 
 writeRegDWord HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
 "MigrateProxy" 1
@@ -210,7 +210,7 @@ writeRegDWord HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings"
 "ProxyHttp1.1" 1
 
 writeRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
-"ProxyServer" "127.0.0.1:8080"
+"ProxyServer" "127.0.0.1:4200"
 
 writeRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
 "ProxyOverride" "127.0.0.1,localhost"
@@ -222,7 +222,7 @@ writeRegStr HKCU "Software\Policies\Google\Chrome" "DefaultSearchProviderSearchU
 writeRegDWord HKCU "Software\Policies\Google\Chrome" "HomepageIsNewTabPage" 0
 
 
-ExecWait '"$INSTDIR\$VERSION\sync\sincronizadorCliente.exe"'
+ExecWait '"$INSTDIR\$VERSION\sync\kerberus-sync.exe"'
 
 MessageBox MB_YESNO|MB_ICONQUESTION "Es necesario reiniciar para completar la instalacion. Desea reiniciar ahora?" IDNO +2
 	reboot
