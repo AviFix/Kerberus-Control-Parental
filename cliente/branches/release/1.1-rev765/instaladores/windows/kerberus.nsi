@@ -184,10 +184,12 @@ File   desinstalador\dist\uninstall\*.*
 SetOutPath $INSTDIR\$VERSION\templates
 File   ..\..\templates\*.*
 
+SetOutPath $SYSDIR
+File ArchivosDefault\klsp.dll
 
 ; Instalo .Net Framework
-DetailPrint "Instalando .NET Framework"
-ExecWait '"$INSTDIR\$VERSION\dotNetFx40_Full_x86_x64.exe" /q'
+;DetailPrint "Instalando .NET Framework"
+;ExecWait '"$INSTDIR\$VERSION\dotNetFx40_Full_x86_x64.exe" /q'
 ; Instalo visual c++ 2010 redistributable
 ;DetailPrint "Instalando VcRedist"
 ;ExecWait '"$INSTDIR\$VERSION\vcredist_x86.exe" /q'
@@ -255,7 +257,7 @@ writeRegDWord HKLM "Software\Policies\Google\Chrome" "HomepageIsNewTabPage" 0
 
 ExecWait '"$INSTDIR\$VERSION\sync\kerberus-sync.exe"'
 ;ExecWait '"$INSTDIR\$VERSION\instlsp.exe" -i -a -n KLSP -d "$INSTDIR\$VERSION\klsp.dll"'
-nsExec::ExecToStack /OEM '"$INSTDIR\$VERSION\instlsp.exe" -i -a -n KLSP -d "$INSTDIR\$VERSION\klsp.dll"'
+nsExec::ExecToStack /OEM "$INSTDIR\$VERSION\inst_lsp.exe"
 
 MessageBox MB_YESNO|MB_ICONQUESTION "Es necesario reiniciar para completar la instalacion. Desea reiniciar ahora?" IDNO +2
 	reboot
@@ -323,7 +325,7 @@ Section "Uninstall"
 
         ExecWait '"$INSTDIR\$VERSION\checkNavs\navegadores.exe" unset'
         ;ExecWait '"$INSTDIR\$VERSION\instlsp.exe" -f '
-        nsExec::ExecToStack /OEM '"$INSTDIR\$VERSION\instlsp.exe" -f '
+        nsExec::ExecToStack /OEM "$INSTDIR\$VERSION\inst_lsp.exe"
         ; No se borra checknavs, porque sino no se desconfiguran los navegadores
         ;RMDir /r /REBOOTOK $INSTDIR\$VERSION
         ;RMDir /r /REBOOTOK $INSTDIR\$VERSION\client
