@@ -174,15 +174,16 @@ InstallNewChain(
                 LayeredProviderCatalogId;
             ProtocolChainProtoInfo.ProtocolChain.ChainEntries[1] =
                 BaseProtocolInfoBuff->dwCatalogEntryId;
-	    // Agregado por mi
-	    const wchar_t* protocoloTCPIP = L"[TCP/IP]";
-            // Agregado por  mi					
-            if ( wcsstr(ProtocolChainProtoInfo.szProtocol, protocoloTCPIP ) != NULL ){
-                    printf("Detectado el protocolo TCP-IP en: %S - ID: %d\n, agregando", ProtocolChainProtoInfo.szProtocol, ProtocolChainProtoInfo.dwCatalogEntryId);
-           
 	    
-            
-            
+	    // Agregado por mi
+	    
+	    const wchar_t* protocoloTCPIP = L"[TCP/IP]";
+	    const wchar_t* protocoloUDPIP = L"[UDP/IP]";
+            // Me fijo si es TCP o UDP, si es asi lo agrego para que se instale
+	    // sobre este el LSP
+	    if (( wcsstr(ProtocolChainProtoInfo.szProtocol, protocoloTCPIP ) != NULL ) || (wcsstr(ProtocolChainProtoInfo.szProtocol, protocoloUDPIP ) != NULL)){
+              printf("Detectado protocolo TCP-IP o UDP-IP en: %S - ID: %d\n, agregando", ProtocolChainProtoInfo.szProtocol, ProtocolChainProtoInfo.dwCatalogEntryId);
+           
             //
             ReturnCode = WSCInstallProvider(
                 &NewChainId,
