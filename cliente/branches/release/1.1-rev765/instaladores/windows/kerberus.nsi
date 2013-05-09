@@ -251,7 +251,7 @@ WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" \
 ; Seteando google chrome, sacado de http://www.chromium.org/administrators/policy-list-3
 writeRegStr HKLM "Software\Policies\Google\Chrome" "HomepageLocation" "http://inicio.kerberus.com.ar"
 writeRegStr HKLM "Software\Policies\Google\Chrome" "ProxyMode" "system"
-writeRegStr HKLM "Software\Policies\Google\Chrome" "DefaultSearchProviderSearchURL" "http://inicio.kerberus.com.ar/buscador.php?cx=partner-pub-5233852436544664%3A0998292818&ie=UTF-8&sa=Search&q={searchTerms}"
+;writeRegStr HKLM "Software\Policies\Google\Chrome" "DefaultSearchProviderSearchURL" "http://inicio.kerberus.com.ar/buscador.php?cx=partner-pub-5233852436544664%3A0998292818&ie=UTF-8&sa=Search&q={searchTerms}"
 writeRegDWord HKLM "Software\Policies\Google\Chrome" "HomepageIsNewTabPage" 0
 
 
@@ -320,7 +320,7 @@ Section "Uninstall"
         ;DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyOverride"
         DeleteRegValue HKLM "Software\Policies\Google\Chrome" "HomepageLocation"
         DeleteRegValue HKLM "Software\Policies\Google\Chrome" "system"
-        DeleteRegValue HKLM "Software\Policies\Google\Chrome" "DefaultSearchProviderSearchURL"
+        ;DeleteRegValue HKLM "Software\Policies\Google\Chrome" "DefaultSearchProviderSearchURL"
         DeleteRegValue HKLM "Software\Policies\Google\Chrome" "HomepageIsNewTabPage"
 
         ExecWait '"$INSTDIR\$VERSION\checkNavs\navegadores.exe" unset'
