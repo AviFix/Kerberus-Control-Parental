@@ -164,11 +164,11 @@ class RegistrarUsuario:
 
         password1Label = QLabel(u'Contraseña:')
         password1LineEdit = QLineEdit()
-        password1LineEdit.setEchoMode(QLineEdit.PasswordEchoOnEdit)
+        password1LineEdit.setEchoMode(QLineEdit.Password)
 
         password2Label = QLabel(u'Reingrese la contraseña:')
         password2LineEdit = QLineEdit()
-        password2LineEdit.setEchoMode(QLineEdit.PasswordEchoOnEdit)
+        password2LineEdit.setEchoMode(QLineEdit.Password)
 
         mensajeErrorLabel = QLabel("Ingrese")
 

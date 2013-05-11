@@ -57,11 +57,11 @@ echo "Configurando kerberus para el/los usuarios:"
 for user_home in /home/*;
 do 
   	# seteando sistema
-  	if [ -d ${user_home} ] && [ -d ${user_home}/.gconf ];then
-	  usuario=`echo $user_home|cut -f 3 -d "/"`
-	  echo " - ${usuario}"
-	  su - ${usuario} -c "sh ${PATH_COMMON}/setProxy.sh set localhost 8080" > /dev/null 2> /dev/null
-	fi
+  	#if [ -d ${user_home} ] && [ -d ${user_home}/.gconf ];then
+	#  usuario=`echo $user_home|cut -f 3 -d "/"`
+	#  echo " - ${usuario}"
+	#  su - ${usuario} -c "sh ${PATH_COMMON}/setProxy.sh set localhost 8080" > /dev/null 2> /dev/null
+	#fi
 
 	# seteando Google Chrome
 	# chromiun
