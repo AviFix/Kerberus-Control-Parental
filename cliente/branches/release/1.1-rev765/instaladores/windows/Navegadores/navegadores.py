@@ -39,12 +39,25 @@ class navegadores:
             return False
 
     def setNavegadores(self):
-        self.setFirefox()
-        self.setIE()
+        try:
+            self.setURLFirefox()
+        except:
+            print "ERROR seteando la URL de firefox"
+        try:
+            self.setURLIE()
+        except:
+            print "ERROR seteando la URL de Internet Explorer"
+
 
     def unsetNavegadores(self):
-        self.unsetFirefox()
-        self.unsetIE()
+        try:
+            self.unsetURLFirefox()
+        except:
+            print "ERROR desseteando la URL de firefox"
+        try:
+            self.unsetURLIE()
+        except:
+            print "ERROR desseteando la URL de Internet Explorer"
 
     def estaFirefoxInstalado(self):
         try:
@@ -116,6 +129,21 @@ class navegadores:
                     print "No esta Seteado Firefox, perfil: %s" % perfil
                     return False
 
+    def estaSeteadaURLFirefox(self, perfil):
+            archivo_config="%s\\prefs.js" % perfil
+            if os.path.isfile(archivo_config):
+                archivo = open(archivo_config,'r')
+                urlSeteada = False
+                for linea in archivo.readlines():
+                    if "inicio.kerberus.com.ar" in linea:
+                        urlSeteada = True
+                if urlSeteada:
+                    print "Esta Seteada la URL de Firefox, perfil: %s" % perfil
+                    return True
+                else:
+                    print "No esta Seteada la URL de Firefox, perfil: %s" % perfil
+                    return False
+
     def setFirefox(self):
         if self.estaFirefoxInstalado():
             for perfil in self.getFirefoxProfiles(os.environ['USERNAME']):
@@ -140,6 +168,23 @@ class navegadores:
                         archivo_destino.close()
                         print "Se termino de setear firefox para el perfil %s" % perfil
 
+    def setURLFirefox(self):
+        if self.estaFirefoxInstalado():
+            for perfil in self.getFirefoxProfiles(os.environ['USERNAME']):
+                if not self.estaSeteadaURLFirefox(perfil):
+                        print "seteando el perfil %s" % perfil
+                        key = _winreg.OpenKey(self.hkey_constante, r'Software\kerberus')
+                        path_common_kerberus = _winreg.QueryValueEx(key,'kerberus-common')[0]
+                        mozilla_config_file="%s\\user.js" % path_common_kerberus
+                        destino = "%s\\user.js" % perfil
+                        archivo_origen = open(mozilla_config_file, 'r')
+                        archivo_destino = open(destino,'w')
+                        for linea in archivo_origen.readlines():
+                            archivo_destino.write(linea)
+                        archivo_origen.close()
+                        archivo_destino.close()
+                        print "Se termino de setear firefox para el perfil %s" % perfil
+
     def unsetFirefox(self):
         if self.estaFirefoxInstalado():
             print "Desconfigurando firefox..."
@@ -159,6 +204,19 @@ class navegadores:
                     for linea in nuevo:
                         archivo.write(linea)
                     archivo.close()
+                    archivo_user = "%s\\user.js" % perfil
+                    if os.path.isfile(archivo_user):
+                        os.remove(archivo_user)
+                    print "Se termino de dessetear firefox para el perfil %s" % perfil
+        else:
+            print "No esta instalado firefox"
+
+    def unsetURLFirefox(self):
+        if self.estaFirefoxInstalado():
+            print "Desconfigurando firefox..."
+            for perfil in self.getFirefoxProfiles(os.environ['USERNAME']):
+                if self.estaSeteadoFirefox(perfil):
+                    print "desseteando el perfil %s" % perfil
                     archivo_user = "%s\\user.js" % perfil
                     if os.path.isfile(archivo_user):
                         os.remove(archivo_user)
@@ -218,6 +276,19 @@ class navegadores:
             #except:
             #    print "Problema seteando IE"
 
+
+    def setURLIE(self):
+        print "Seteando URL Internet Explorer"
+        key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Internet Explorer\Main',0,_winreg.KEY_SET_VALUE)
+        _winreg.SetValueEx(key,"Start Page",0,_winreg.REG_SZ, r'http://inicio.kerberus.com.ar')
+        _winreg.CloseKey(key)
+
+    def unsetURLIE(self):
+        print "Desseteando URL Internet Explorer"
+        key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Internet Explorer\Main',0,_winreg.KEY_SET_VALUE)
+        _winreg.SetValueEx(key,"Start Page",0,_winreg.REG_SZ, r'http://www.google.com')
+        _winreg.CloseKey(key)
+
     def unsetIE(self):
         if self.estaSeteadoIE():
         #try:
@@ -255,12 +326,16 @@ class navegadores:
 
 if __name__ == '__main__':
     navs=navegadores()
+    if "unset" in sys.argv:
+        navs.unsetNavegadores()
+        sys.exit(0)
+
+    if "set" in sys.argv:
+        navs.setNavegadores()
+        sys.exit(0)
+
     if navs.estaInstaladoKerberus():
         navs.setNavegadores()
     else:
         navs.unsetNavegadores()
-    #if "unset" in sys.argv:
-        #navs.unsetNavegadores()
-    #else:
-        #navs.setNavegadores()
     sys.exit(0)

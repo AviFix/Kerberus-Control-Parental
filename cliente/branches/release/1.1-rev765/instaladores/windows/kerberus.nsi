@@ -4,6 +4,8 @@
   !include "MUI2.nsh"
 ;Seleccionamos el algoritmo de compresión utilizado para comprimir nuestra aplicación
 SetCompressor lzma
+; Agrego el soporte para detectar 32 o 64bits
+!include x64.nsh
 
 ;--------------------------------
 ;Con esta opción alertamos al usuario cuando pulsa el botón cancelar y le pedimos confirmación para abortar
@@ -46,7 +48,7 @@ SetCompressor lzma
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;Nombre del instalador
-OutFile Kerberus-multiuser-1.1.exe
+OutFile Kerberus.exe
 
 ;Aquí comprobamos que en la versión Inglesa se muestra correctamente el mensaje:
 ;Welcome to the $Name Setup Wizard
@@ -118,6 +120,11 @@ sectionEnd
 ##########################
 # chequeo si esta instalado previamente
 Function .onInit
+
+  ${if} ${RunningX64}
+     MessageBox MB_OK|MB_ICONEXCLAMATION "Esta versión de Kerberus solo funciona en sistemas operativos de 32bits"
+     Abort 
+  ${endif}
   ;Verifico que sea administrador el usuario
   userInfo::getAccountType  
   pop $0
@@ -185,14 +192,9 @@ SetOutPath $INSTDIR\$VERSION\templates
 File   ..\..\templates\*.*
 
 SetOutPath $SYSDIR
-File ArchivosDefault\klsp.dll
+File /oname=klsp.dll ArchivosDefault\klsp32.dll
+ExecWait '"$INSTDIR\$VERSION\vcredist_x86.exe" /q'    
 
-; Instalo .Net Framework
-;DetailPrint "Instalando .NET Framework"
-;ExecWait '"$INSTDIR\$VERSION\dotNetFx40_Full_x86_x64.exe" /q'
-; Instalo visual c++ 2010 redistributable
-;DetailPrint "Instalando VcRedist"
-;ExecWait '"$INSTDIR\$VERSION\vcredist_x86.exe" /q'
 
 ; Doy permisos
 AccessControl::GrantOnFile \
@@ -233,6 +235,8 @@ writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" \
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" \
 "checkNavs" "$INSTDIR\$VERSION\checkNavs\kerberus-nav.exe"
 
+WriteRegStr HKLM "Software\Microsoft\Internet Explorer\Main" "Start Page" "http://inicio.kerberus.com.ar"
+
 ;writeRegDWord HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
 ;"MigrateProxy" 1
 
@@ -256,8 +260,10 @@ writeRegDWord HKLM "Software\Policies\Google\Chrome" "HomepageIsNewTabPage" 0
 
 
 ExecWait '"$INSTDIR\$VERSION\sync\kerberus-sync.exe"'
+ExecWait '"$INSTDIR\$VERSION\checkNavs\kerberus-nav.exe" set'
 ;ExecWait '"$INSTDIR\$VERSION\instlsp.exe" -i -a -n KLSP -d "$INSTDIR\$VERSION\klsp.dll"'
-nsExec::ExecToStack /OEM "$INSTDIR\$VERSION\inst_lsp.exe"
+
+nsExec::ExecToStack /OEM "$INSTDIR\$VERSION\inst_lsp32.exe"
 
 MessageBox MB_YESNO|MB_ICONQUESTION "Es necesario reiniciar para completar la instalacion. Desea reiniciar ahora?" IDNO +2
 	reboot
@@ -312,7 +318,8 @@ Section "Uninstall"
         DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus"
         DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Run" "Kerberus-client"
         DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Run" "Kerberus-sync"
-        ;DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Run" "checkNavs"
+        DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Run" "checkNavs"
+        writeRegStr HKLM "Software\Microsoft\Internet Explorer\Main" "Start Page" "http://www.google.com"
         ;DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "MigrateProxy"
         ;DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyEnable"
         ;DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyHttp1.1"
@@ -323,15 +330,16 @@ Section "Uninstall"
         ;DeleteRegValue HKLM "Software\Policies\Google\Chrome" "DefaultSearchProviderSearchURL"
         DeleteRegValue HKLM "Software\Policies\Google\Chrome" "HomepageIsNewTabPage"
 
-        ExecWait '"$INSTDIR\$VERSION\checkNavs\navegadores.exe" unset'
+        ExecWait '"$INSTDIR\$VERSION\checkNavs\kerberus-nav.exe" unset'
         ;ExecWait '"$INSTDIR\$VERSION\instlsp.exe" -f '
-        nsExec::ExecToStack /OEM "$INSTDIR\$VERSION\inst_lsp.exe"
+        nsExec::ExecToStack /OEM "$INSTDIR\$VERSION\inst_lsp32.exe"
         ; No se borra checknavs, porque sino no se desconfiguran los navegadores
         ;RMDir /r /REBOOTOK $INSTDIR\$VERSION
         ;RMDir /r /REBOOTOK $INSTDIR\$VERSION\client
         ;RMDir /r /REBOOTOK $INSTDIR\$VERSION\sync
         ;RMDir /r /REBOOTOK $INSTDIR\$VERSION\templates
         ;RMDir /REBOOTOK $INSTDIR\$VERSION\*.*
+        Delete /REBOOTOK $SYSDIR\klsp.dll
 
 MessageBox MB_YESNO|MB_ICONQUESTION "Es necesario reiniciar para completar la desinstalacion. Desea reiniciar ahora?" IDNO +2
 	reboot
