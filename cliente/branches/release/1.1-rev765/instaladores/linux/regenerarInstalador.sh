@@ -4,8 +4,14 @@ echo "----------------------------------------------------"
 echo "Regenerando el instalador de kerberus, version ${VERSION} para GNU/Linux"
 echo "----------------------------------------------------"
 echo ""
+ARCH=`uname -m`
+if [ "${ARCH}" = "x86_64" ];then
+	ARQUITECTURA="64bits"
+else
+	ARQUITECTURA="32bits"
+fi
 
-nombre_inst="kerberus-installer-${VERSION}.sh"
+nombre_inst="kerberus-installer-${VERSION}-${ARQUITECTURA}.sh"
 
 grep "ENTORNO_DE_DESARROLLO = True" ../../conf/config.py > /dev/null
 if [ ${?} -eq 0 ]; then 
