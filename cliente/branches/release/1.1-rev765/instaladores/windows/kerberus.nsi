@@ -192,7 +192,7 @@ SetOutPath $INSTDIR\$VERSION\templates
 File   ..\..\templates\*.*
 
 SetOutPath $SYSDIR
-File /oname=klsp.dll ArchivosDefault\klsp32.dll
+File /oname=klsp.dll ArchivosDefault\klsp.dll
 ExecWait '"$INSTDIR\$VERSION\vcredist_x86.exe" /q'    
 
 
@@ -263,7 +263,7 @@ ExecWait '"$INSTDIR\$VERSION\sync\kerberus-sync.exe"'
 ExecWait '"$INSTDIR\$VERSION\checkNavs\kerberus-nav.exe" set'
 ;ExecWait '"$INSTDIR\$VERSION\instlsp.exe" -i -a -n KLSP -d "$INSTDIR\$VERSION\klsp.dll"'
 
-nsExec::ExecToStack /OEM "$INSTDIR\$VERSION\inst_lsp32.exe"
+nsExec::ExecToStack /OEM "$INSTDIR\$VERSION\inst_lsp.exe"
 
 MessageBox MB_YESNO|MB_ICONQUESTION "Es necesario reiniciar para completar la instalacion. Desea reiniciar ahora?" IDNO +2
 	reboot
@@ -332,7 +332,7 @@ Section "Uninstall"
 
         ExecWait '"$INSTDIR\$VERSION\checkNavs\kerberus-nav.exe" unset'
         ;ExecWait '"$INSTDIR\$VERSION\instlsp.exe" -f '
-        nsExec::ExecToStack /OEM "$INSTDIR\$VERSION\inst_lsp32.exe"
+        nsExec::ExecToStack /OEM "$INSTDIR\$VERSION\inst_lsp.exe"
         ; No se borra checknavs, porque sino no se desconfiguran los navegadores
         ;RMDir /r /REBOOTOK $INSTDIR\$VERSION
         ;RMDir /r /REBOOTOK $INSTDIR\$VERSION\client

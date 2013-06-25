@@ -1,30 +1,30 @@
  klsp
 
- Timestamp is 51829303 (Thu May 02 13:23:31 2013)
+ Timestamp is 51a65d47 (Wed May 29 16:55:51 2013)
 
  Preferred load address is 10000000
 
  Start         Length     Name                   Class
- 0001:00000000 000071b0H .text                   CODE
+ 0001:00000000 00007340H .text                   CODE
  0002:00000000 0000018cH .idata$5                DATA
  0002:0000018c 00000004H .CRT$XCA                DATA
  0002:00000190 00000004H .CRT$XCZ                DATA
  0002:00000194 00000004H .CRT$XIA                DATA
  0002:00000198 00000004H .CRT$XIAA               DATA
  0002:0000019c 00000004H .CRT$XIZ                DATA
- 0002:000001a0 000006a8H .rdata                  DATA
- 0002:00000848 00000090H .rdata$r                DATA
- 0002:000008e0 00000004H .rdata$sxdata           DATA
- 0002:000008e4 00000004H .rtc$IAA                DATA
- 0002:000008e8 00000004H .rtc$IZZ                DATA
- 0002:000008ec 00000004H .rtc$TAA                DATA
- 0002:000008f0 00000004H .rtc$TZZ                DATA
- 0002:000008f8 000000a4H .xdata$x                DATA
- 0002:0000099c 00000078H .idata$2                DATA
- 0002:00000a14 00000014H .idata$3                DATA
- 0002:00000a28 0000018cH .idata$4                DATA
- 0002:00000bb4 000006aeH .idata$6                DATA
- 0002:00001270 00000046H .edata                  DATA
+ 0002:000001a0 000006f0H .rdata                  DATA
+ 0002:00000890 00000090H .rdata$r                DATA
+ 0002:00000920 00000004H .rdata$sxdata           DATA
+ 0002:00000924 00000004H .rtc$IAA                DATA
+ 0002:00000928 00000004H .rtc$IZZ                DATA
+ 0002:0000092c 00000004H .rtc$TAA                DATA
+ 0002:00000930 00000004H .rtc$TZZ                DATA
+ 0002:00000938 000000a4H .xdata$x                DATA
+ 0002:000009dc 00000078H .idata$2                DATA
+ 0002:00000a54 00000014H .idata$3                DATA
+ 0002:00000a68 0000018cH .idata$4                DATA
+ 0002:00000bf4 000006aeH .idata$6                DATA
+ 0002:000012b0 00000046H .edata                  DATA
  0003:00000000 000001a0H .data                   DATA
  0003:000001a0 000003f0H .bss                    DATA
 
@@ -130,118 +130,118 @@
  0001:00003680       ?SignalAsyncEvents@DSOCKET@@QAEXJ@Z 10004680 f   dsocket.obj
  0001:000036b0       ?WSPCloseSocket@DPROVIDER@@QAEHIPAH@Z 100046b0 f i dsocket.obj
  0001:000036f0       ??_GDSOCKET@@QAEPAXI@Z     100046f0 f i dsocket.obj
- 0001:00003730       ?GetAsyncWindow@@YAPAVDASYNCWINDOW@@XZ 10004730 f   spi.obj
- 0001:000037f0       ?existeClaveRegistro@@YAHPAD0@Z 100047f0 f   spi.obj
- 0001:00003890       ?EsIpPublica@@YA_NHHHH@Z   10004890 f   spi.obj
- 0001:000038e0       ?GetWorkerThread@@YAPAVDWORKERTHREAD@@XZ 100048e0 f   spi.obj
- 0001:000039a0       ?WSPAccept@@YGIIPAUsockaddr@@PAHP6GHPAU_WSABUF@@2PAU_QualityOfService@@322PAIK@ZK1@Z 100049a0 f   spi.obj
- 0001:00003b50       ?WSPAcceptEx@@YGHIIPAXKKKPAKPAU_OVERLAPPED@@@Z 10004b50 f   spi.obj
- 0001:00003cf0       ?WSPAddressToString@@YGHPAUsockaddr@@KPAU_WSAPROTOCOL_INFOW@@PA_WPAKPAH@Z 10004cf0 f   spi.obj
- 0001:00003d70       ?WSPAsyncSelect@@YGHIPAUHWND__@@IJPAH@Z 10004d70 f   spi.obj
- 0001:00003e10       ?WSPBind@@YGHIPBUsockaddr@@HPAH@Z 10004e10 f   spi.obj
- 0001:00003e80       ?WSPCancelBlockingCall@@YGHPAH@Z 10004e80 f   spi.obj
- 0001:00003ed0       ?WSPCleanup@@YGHPAH@Z      10004ed0 f   spi.obj
- 0001:00004020       ?WSPCloseSocket@@YGHIPAH@Z 10005020 f   spi.obj
- 0001:000040d0       ?WSPConnect@@YGHIPBUsockaddr@@HPAU_WSABUF@@1PAU_QualityOfService@@2PAH@Z 100050d0 f   spi.obj
- 0001:00004550       ?WSPDuplicateSocket@@YGHIKPAU_WSAPROTOCOL_INFOW@@PAH@Z 10005550 f   spi.obj
- 0001:00004610       ?WSPEnumNetworkEvents@@YGHIPAXPAU_WSANETWORKEVENTS@@PAH@Z 10005610 f   spi.obj
- 0001:00004680       ?WSPEventSelect@@YGHIPAXJPAH@Z 10005680 f   spi.obj
- 0001:000046f0       ?WSPGetOverlappedResult@@YGHIPAU_OVERLAPPED@@PAKH1PAH@Z 100056f0 f   spi.obj
- 0001:000047d0       ?WSPGetPeerName@@YGHIPAUsockaddr@@PAH1@Z 100057d0 f   spi.obj
- 0001:00004840       ?WSPGetQOSByName@@YGHIPAU_WSABUF@@PAU_QualityOfService@@PAH@Z 10005840 f   spi.obj
- 0001:000048b0       ?WSPGetSockName@@YGHIPAUsockaddr@@PAH1@Z 100058b0 f   spi.obj
- 0001:00004920       ?WSPGetSockOpt@@YGHIHHPADPAH1@Z 10005920 f   spi.obj
- 0001:00004990       ?WSPIoctl@@YGHIKPAXK0KPAKPAU_OVERLAPPED@@P6GXKK2K@ZPAU_WSATHREADID@@PAH@Z 10005990 f   spi.obj
- 0001:00004af0       ?WSPJoinLeaf@@YGIIPBUsockaddr@@HPAU_WSABUF@@1PAU_QualityOfService@@2KPAH@Z 10005af0 f   spi.obj
- 0001:00004c60       ?WSPListen@@YGHIHPAH@Z     10005c60 f   spi.obj
- 0001:00004cc0       ?WSPRecv@@YGHIPAU_WSABUF@@KPAK1PAU_OVERLAPPED@@P6GXKK2K@ZPAU_WSATHREADID@@PAH@Z 10005cc0 f   spi.obj
- 0001:00004ea0       ?WSPRecvDisconnect@@YGHIPAU_WSABUF@@PAH@Z 10005ea0 f   spi.obj
- 0001:00004f00       ?WSPRecvFrom@@YGHIPAU_WSABUF@@KPAK1PAUsockaddr@@PAHPAU_OVERLAPPED@@P6GXKK4K@ZPAU_WSATHREADID@@3@Z 10005f00 f   spi.obj
- 0001:000050f0       ?TransferUserFdSetToProviderFdSet@@YAHPAUfd_set@@0PAUSOCKETMAP@@PAH@Z 100060f0 f   spi.obj
- 0001:00005260       ?TransferProviderFdSetToUserFdSet@@YAHPAUfd_set@@0PAUSOCKETMAP@@PAH@Z 10006260 f   spi.obj
- 0001:00005320       ?WSPSelect@@YGHHPAUfd_set@@00PBUtimeval@@PAH@Z 10006320 f   spi.obj
- 0001:00005590       ?WSPSend@@YGHIPAU_WSABUF@@KPAKKPAU_OVERLAPPED@@P6GXKK2K@ZPAU_WSATHREADID@@PAH@Z 10006590 f   spi.obj
- 0001:00005770       ?WSPSendDisconnect@@YGHIPAU_WSABUF@@PAH@Z 10006770 f   spi.obj
- 0001:000057d0       ?WSPSendTo@@YGHIPAU_WSABUF@@KPAKKPBUsockaddr@@HPAU_OVERLAPPED@@P6GXKK3K@ZPAU_WSATHREADID@@PAH@Z 100067d0 f   spi.obj
- 0001:000059c0       ?WSPSetSockOpt@@YGHIHHPBDHPAH@Z 100069c0 f   spi.obj
- 0001:00005ab0       ?WSPShutdown@@YGHIHPAH@Z   10006ab0 f   spi.obj
- 0001:00005b10       ?WSPSocket@@YGIHHHPAU_WSAPROTOCOL_INFOW@@IKPAH@Z 10006b10 f   spi.obj
- 0001:00005ce0       ?WSPStringToAddress@@YGHPA_WHPAU_WSAPROTOCOL_INFOW@@PAUsockaddr@@PAH3@Z 10006ce0 f   spi.obj
- 0001:00005d60       _WSPStartup@76             10006d60 f   spi.obj
- 0001:00006000       ?WSPTransmitFile@@YGHIPAXKKPAU_OVERLAPPED@@PAU_TRANSMIT_FILE_BUFFERS@@K@Z 10007000 f   spi.obj
- 0001:00006120       ?WSPAccept@DPROVIDER@@QAEIIPAUsockaddr@@PAHP6GHPAU_WSABUF@@2PAU_QualityOfService@@322PAIK@ZK1@Z 10007120 f i spi.obj
- 0001:00006160       ?GetCatalogEntryId@DSOCKET@@QAEKXZ 10007160 f i spi.obj
- 0001:00006180       ?GetLocalProvider@DCATALOG@@QAEPAVPROTO_CATALOG_ITEM@@XZ 10007180 f i spi.obj
- 0001:000061a0       ?WSPAddressToString@DPROVIDER@@QAEHPAUsockaddr@@KPAU_WSAPROTOCOL_INFOW@@PA_WPAKPAH@Z 100071a0 f i spi.obj
- 0001:000061e0       ?WSPBind@DPROVIDER@@QAEHIPBUsockaddr@@HPAH@Z 100071e0 f i spi.obj
- 0001:00006220       ?WSPCancelBlockingCall@DPROVIDER@@QAEHPAH@Z 10007220 f i spi.obj
- 0001:00006250       ??_GDCATALOG@@QAEPAXI@Z    10007250 f i spi.obj
- 0001:00006280       ??_GDBUFFERMANAGER@@QAEPAXI@Z 10007280 f i spi.obj
- 0001:000062b0       ?WSPConnect@DPROVIDER@@QAEHIPBUsockaddr@@HPAU_WSABUF@@1PAU_QualityOfService@@2PAH@Z 100072b0 f i spi.obj
- 0001:00006300       ?WSPDuplicateSocket@DPROVIDER@@QAEHIKPAU_WSAPROTOCOL_INFOW@@PAH@Z 10007300 f i spi.obj
- 0001:00006340       ?WSPEnumNetworkEvents@DPROVIDER@@QAEHIPAXPAU_WSANETWORKEVENTS@@PAH@Z 10007340 f i spi.obj
- 0001:00006380       ?WSPEventSelect@DPROVIDER@@QAEHIPAXJPAH@Z 10007380 f i spi.obj
- 0001:000063c0       ?WSPGetPeerName@DPROVIDER@@QAEHIPAUsockaddr@@PAH1@Z 100073c0 f i spi.obj
- 0001:00006400       ?WSPGetQOSByName@DPROVIDER@@QAEHIPAU_WSABUF@@PAU_QualityOfService@@PAH@Z 10007400 f i spi.obj
- 0001:00006440       ?WSPGetSockName@DPROVIDER@@QAEHIPAUsockaddr@@PAH1@Z 10007440 f i spi.obj
- 0001:00006480       ?WSPGetSockOpt@DPROVIDER@@QAEHIHHPADPAH1@Z 10007480 f i spi.obj
- 0001:000064c0       ?WSPJoinLeaf@DPROVIDER@@QAEHIPBUsockaddr@@HPAU_WSABUF@@1PAU_QualityOfService@@2KPAH@Z 100074c0 f i spi.obj
- 0001:00006510       ?WSPListen@DPROVIDER@@QAEHIHPAH@Z 10007510 f i spi.obj
- 0001:00006550       ?WSPRecvDisconnect@DPROVIDER@@QAEHIPAU_WSABUF@@PAH@Z 10007550 f i spi.obj
- 0001:00006590       ?WSPSelect@DPROVIDER@@QAEHHPAUfd_set@@00PBUtimeval@@PAH@Z 10007590 f i spi.obj
- 0001:000065d0       ?WSPSendDisconnect@DPROVIDER@@QAEHIPAU_WSABUF@@PAH@Z 100075d0 f i spi.obj
- 0001:00006610       ?WSPSetSockOpt@DPROVIDER@@QAEHIHHPBDHPAH@Z 10007610 f i spi.obj
- 0001:00006650       ?WSPShutdown@DPROVIDER@@QAEHIHPAH@Z 10007650 f i spi.obj
- 0001:00006690       ?WSPSocket@DPROVIDER@@QAEHHHHPAU_WSAPROTOCOL_INFOW@@IKPAH@Z 10007690 f i spi.obj
- 0001:00006700       ?WSPStringToAddress@DPROVIDER@@QAEHPA_WHPAU_WSAPROTOCOL_INFOW@@PAUsockaddr@@PAH3@Z 10007700 f i spi.obj
- 0001:00006740       ?GetPreApiNotifyFP@@YAP6AHHPAXPADZZXZ 10007740 f   dthook.obj
- 0001:00006750       ?GetPostApiNotifyFP@@YAP6AHHPAXPADZZXZ 10007750 f   dthook.obj
- 0001:00006760       ?DTHookInitialize@@YAXXZ   10007760 f   dthook.obj
- 0001:000067b0       ?DTHookShutdown@@YAXXZ     100077b0 f   dthook.obj
- 0001:000067de       _WSCEnumProtocols@16       100077de f   ws2_32:WS2_32.dll
- 0001:000067e4       _WSAGetLastError@0         100077e4 f   ws2_32:WS2_32.dll
- 0001:000067ea       _closesocket@4             100077ea f   ws2_32:WS2_32.dll
- 0001:000067f0       _htons@4                   100077f0 f   ws2_32:WS2_32.dll
- 0001:000067f6       _inet_addr@4               100077f6 f   ws2_32:WS2_32.dll
- 0001:0000684a       __CRT_INIT@12              1000784a f   MSVCRT:crtdll.obj
- 0001:00006b6a       __DllMainCRTStartup@12     10007b6a f   MSVCRT:crtdll.obj
- 0001:00006b8d       ??_Etype_info@@UAEPAXI@Z   10007b8d f i MSVCRT:ti_inst.obj
- 0001:00006bda       ??2@YAPAXI@Z               10007bda f   MSVCRT:MSVCR100.dll
- 0001:00006be0       ??3@YAXPAX@Z               10007be0 f   MSVCRT:MSVCR100.dll
- 0001:00006be6       _memset                    10007be6 f   MSVCRT:MSVCR100.dll
- 0001:00006bec       @__security_check_cookie@4 10007bec f   MSVCRT:secchk.obj
- 0001:00006bfc       _memcpy                    10007bfc f   MSVCRT:MSVCR100.dll
- 0001:00006c02       _memcmp                    10007c02 f   MSVCRT:MSVCR100.dll
- 0001:00006c08       _strcpy                    10007c08 f   MSVCRT:MSVCR100.dll
- 0001:00006c0e       _strlen                    10007c0e f   MSVCRT:MSVCR100.dll
- 0001:00006c14       ___clean_type_info_names   10007c14 f   MSVCRT:tncleanup.obj
- 0001:00006c20       __onexit                   10007c20 f   MSVCRT:atonexit.obj
- 0001:00006cc1       _atexit                    10007cc1 f   MSVCRT:atonexit.obj
- 0001:00006cd8       __RTC_Initialize           10007cd8 f   MSVCRT:_initsect_.obj
- 0001:00006cfe       __RTC_Terminate            10007cfe f   MSVCRT:_initsect_.obj
- 0001:00006d30       __ValidateImageBase        10007d30 f   MSVCRT:pesect.obj
- 0001:00006d70       __FindPESection            10007d70 f   MSVCRT:pesect.obj
- 0001:00006dc0       __IsNonwritableInCurrentImage 10007dc0 f   MSVCRT:pesect.obj
- 0001:00006e7c       __initterm                 10007e7c f   MSVCRT:MSVCR100.dll
- 0001:00006e82       __initterm_e               10007e82 f   MSVCRT:MSVCR100.dll
- 0001:00006e88       __amsg_exit                10007e88 f   MSVCRT:MSVCR100.dll
- 0001:00006e8e       ___CppXcptFilter           10007e8e f   MSVCRT:MSVCR100.dll
- 0001:00006ea0       __SEH_prolog4              10007ea0 f   MSVCRT:sehprolg4.obj
- 0001:00006ee5       __SEH_epilog4              10007ee5 f   MSVCRT:sehprolg4.obj
- 0001:00006ef9       __except_handler4          10007ef9 f   MSVCRT:chandler4gs.obj
- 0001:00006f1e       ___security_init_cookie    10007f1e f   MSVCRT:gs_support.obj
- 0001:00006fb9       ?__ArrayUnwind@@YGXPAXIHP6EX0@Z@Z 10007fb9 f   MSVCRT:ehvecdtr.obj
- 0001:00007017       ??_M@YGXPAXIHP6EX0@Z@Z     10008017 f   MSVCRT:ehvecdtr.obj
- 0001:0000707a       ___report_gsfailure        1000807a f   MSVCRT:gs_report.obj
- 0001:00007180       ___clean_type_info_names_internal 10008180 f   MSVCRT:MSVCR100.dll
- 0001:00007186       __unlock                   10008186 f   MSVCRT:MSVCR100.dll
- 0001:0000718c       ___dllonexit               1000818c f   MSVCRT:MSVCR100.dll
- 0001:00007192       __lock                     10008192 f   MSVCRT:MSVCR100.dll
- 0001:00007198       __except_handler4_common   10008198 f   MSVCRT:MSVCR100.dll
- 0001:0000719e       ?terminate@@YAXXZ          1000819e f   MSVCRT:MSVCR100.dll
- 0001:000071a4       ?_type_info_dtor_internal_method@type_info@@QAEXXZ 100081a4 f   MSVCRT:MSVCR100.dll
- 0001:000071a4       ??1type_info@@UAE@XZ       100081a4 f   MSVCRT:MSVCR100.dll
- 0001:000071aa       __crt_debugger_hook        100081aa f   MSVCRT:MSVCR100.dll
+ 0001:00003740       ?GetAsyncWindow@@YAPAVDASYNCWINDOW@@XZ 10004740 f   spi.obj
+ 0001:00003800       ?existeClaveRegistro@@YAHPAD0@Z 10004800 f   spi.obj
+ 0001:000038a0       ?EsIpPublica@@YA_NHHHH@Z   100048a0 f   spi.obj
+ 0001:000038f0       ?GetWorkerThread@@YAPAVDWORKERTHREAD@@XZ 100048f0 f   spi.obj
+ 0001:000039b0       ?WSPAccept@@YGIIPAUsockaddr@@PAHP6GHPAU_WSABUF@@2PAU_QualityOfService@@322PAIK@ZK1@Z 100049b0 f   spi.obj
+ 0001:00003b60       ?WSPAcceptEx@@YGHIIPAXKKKPAKPAU_OVERLAPPED@@@Z 10004b60 f   spi.obj
+ 0001:00003d00       ?WSPAddressToString@@YGHPAUsockaddr@@KPAU_WSAPROTOCOL_INFOW@@PA_WPAKPAH@Z 10004d00 f   spi.obj
+ 0001:00003d80       ?WSPAsyncSelect@@YGHIPAUHWND__@@IJPAH@Z 10004d80 f   spi.obj
+ 0001:00003e20       ?WSPBind@@YGHIPBUsockaddr@@HPAH@Z 10004e20 f   spi.obj
+ 0001:00003e90       ?WSPCancelBlockingCall@@YGHPAH@Z 10004e90 f   spi.obj
+ 0001:00003ee0       ?WSPCleanup@@YGHPAH@Z      10004ee0 f   spi.obj
+ 0001:00004030       ?WSPCloseSocket@@YGHIPAH@Z 10005030 f   spi.obj
+ 0001:000040e0       ?WSPConnect@@YGHIPBUsockaddr@@HPAU_WSABUF@@1PAU_QualityOfService@@2PAH@Z 100050e0 f   spi.obj
+ 0001:000046e0       ?WSPDuplicateSocket@@YGHIKPAU_WSAPROTOCOL_INFOW@@PAH@Z 100056e0 f   spi.obj
+ 0001:000047a0       ?WSPEnumNetworkEvents@@YGHIPAXPAU_WSANETWORKEVENTS@@PAH@Z 100057a0 f   spi.obj
+ 0001:00004810       ?WSPEventSelect@@YGHIPAXJPAH@Z 10005810 f   spi.obj
+ 0001:00004880       ?WSPGetOverlappedResult@@YGHIPAU_OVERLAPPED@@PAKH1PAH@Z 10005880 f   spi.obj
+ 0001:00004960       ?WSPGetPeerName@@YGHIPAUsockaddr@@PAH1@Z 10005960 f   spi.obj
+ 0001:000049d0       ?WSPGetQOSByName@@YGHIPAU_WSABUF@@PAU_QualityOfService@@PAH@Z 100059d0 f   spi.obj
+ 0001:00004a40       ?WSPGetSockName@@YGHIPAUsockaddr@@PAH1@Z 10005a40 f   spi.obj
+ 0001:00004ab0       ?WSPGetSockOpt@@YGHIHHPADPAH1@Z 10005ab0 f   spi.obj
+ 0001:00004b20       ?WSPIoctl@@YGHIKPAXK0KPAKPAU_OVERLAPPED@@P6GXKK2K@ZPAU_WSATHREADID@@PAH@Z 10005b20 f   spi.obj
+ 0001:00004c80       ?WSPJoinLeaf@@YGIIPBUsockaddr@@HPAU_WSABUF@@1PAU_QualityOfService@@2KPAH@Z 10005c80 f   spi.obj
+ 0001:00004df0       ?WSPListen@@YGHIHPAH@Z     10005df0 f   spi.obj
+ 0001:00004e50       ?WSPRecv@@YGHIPAU_WSABUF@@KPAK1PAU_OVERLAPPED@@P6GXKK2K@ZPAU_WSATHREADID@@PAH@Z 10005e50 f   spi.obj
+ 0001:00005030       ?WSPRecvDisconnect@@YGHIPAU_WSABUF@@PAH@Z 10006030 f   spi.obj
+ 0001:00005090       ?WSPRecvFrom@@YGHIPAU_WSABUF@@KPAK1PAUsockaddr@@PAHPAU_OVERLAPPED@@P6GXKK4K@ZPAU_WSATHREADID@@3@Z 10006090 f   spi.obj
+ 0001:00005280       ?TransferUserFdSetToProviderFdSet@@YAHPAUfd_set@@0PAUSOCKETMAP@@PAH@Z 10006280 f   spi.obj
+ 0001:000053f0       ?TransferProviderFdSetToUserFdSet@@YAHPAUfd_set@@0PAUSOCKETMAP@@PAH@Z 100063f0 f   spi.obj
+ 0001:000054b0       ?WSPSelect@@YGHHPAUfd_set@@00PBUtimeval@@PAH@Z 100064b0 f   spi.obj
+ 0001:00005720       ?WSPSend@@YGHIPAU_WSABUF@@KPAKKPAU_OVERLAPPED@@P6GXKK2K@ZPAU_WSATHREADID@@PAH@Z 10006720 f   spi.obj
+ 0001:00005900       ?WSPSendDisconnect@@YGHIPAU_WSABUF@@PAH@Z 10006900 f   spi.obj
+ 0001:00005960       ?WSPSendTo@@YGHIPAU_WSABUF@@KPAKKPBUsockaddr@@HPAU_OVERLAPPED@@P6GXKK3K@ZPAU_WSATHREADID@@PAH@Z 10006960 f   spi.obj
+ 0001:00005b50       ?WSPSetSockOpt@@YGHIHHPBDHPAH@Z 10006b50 f   spi.obj
+ 0001:00005c40       ?WSPShutdown@@YGHIHPAH@Z   10006c40 f   spi.obj
+ 0001:00005ca0       ?WSPSocket@@YGIHHHPAU_WSAPROTOCOL_INFOW@@IKPAH@Z 10006ca0 f   spi.obj
+ 0001:00005e70       ?WSPStringToAddress@@YGHPA_WHPAU_WSAPROTOCOL_INFOW@@PAUsockaddr@@PAH3@Z 10006e70 f   spi.obj
+ 0001:00005ef0       _WSPStartup@76             10006ef0 f   spi.obj
+ 0001:00006190       ?WSPTransmitFile@@YGHIPAXKKPAU_OVERLAPPED@@PAU_TRANSMIT_FILE_BUFFERS@@K@Z 10007190 f   spi.obj
+ 0001:000062b0       ?WSPAccept@DPROVIDER@@QAEIIPAUsockaddr@@PAHP6GHPAU_WSABUF@@2PAU_QualityOfService@@322PAIK@ZK1@Z 100072b0 f i spi.obj
+ 0001:000062f0       ?GetCatalogEntryId@DSOCKET@@QAEKXZ 100072f0 f i spi.obj
+ 0001:00006310       ?GetLocalProvider@DCATALOG@@QAEPAVPROTO_CATALOG_ITEM@@XZ 10007310 f i spi.obj
+ 0001:00006330       ?WSPAddressToString@DPROVIDER@@QAEHPAUsockaddr@@KPAU_WSAPROTOCOL_INFOW@@PA_WPAKPAH@Z 10007330 f i spi.obj
+ 0001:00006370       ?WSPBind@DPROVIDER@@QAEHIPBUsockaddr@@HPAH@Z 10007370 f i spi.obj
+ 0001:000063b0       ?WSPCancelBlockingCall@DPROVIDER@@QAEHPAH@Z 100073b0 f i spi.obj
+ 0001:000063e0       ??_GDCATALOG@@QAEPAXI@Z    100073e0 f i spi.obj
+ 0001:00006410       ??_GDBUFFERMANAGER@@QAEPAXI@Z 10007410 f i spi.obj
+ 0001:00006440       ?WSPConnect@DPROVIDER@@QAEHIPBUsockaddr@@HPAU_WSABUF@@1PAU_QualityOfService@@2PAH@Z 10007440 f i spi.obj
+ 0001:00006490       ?WSPDuplicateSocket@DPROVIDER@@QAEHIKPAU_WSAPROTOCOL_INFOW@@PAH@Z 10007490 f i spi.obj
+ 0001:000064d0       ?WSPEnumNetworkEvents@DPROVIDER@@QAEHIPAXPAU_WSANETWORKEVENTS@@PAH@Z 100074d0 f i spi.obj
+ 0001:00006510       ?WSPEventSelect@DPROVIDER@@QAEHIPAXJPAH@Z 10007510 f i spi.obj
+ 0001:00006550       ?WSPGetPeerName@DPROVIDER@@QAEHIPAUsockaddr@@PAH1@Z 10007550 f i spi.obj
+ 0001:00006590       ?WSPGetQOSByName@DPROVIDER@@QAEHIPAU_WSABUF@@PAU_QualityOfService@@PAH@Z 10007590 f i spi.obj
+ 0001:000065d0       ?WSPGetSockName@DPROVIDER@@QAEHIPAUsockaddr@@PAH1@Z 100075d0 f i spi.obj
+ 0001:00006610       ?WSPGetSockOpt@DPROVIDER@@QAEHIHHPADPAH1@Z 10007610 f i spi.obj
+ 0001:00006650       ?WSPJoinLeaf@DPROVIDER@@QAEHIPBUsockaddr@@HPAU_WSABUF@@1PAU_QualityOfService@@2KPAH@Z 10007650 f i spi.obj
+ 0001:000066a0       ?WSPListen@DPROVIDER@@QAEHIHPAH@Z 100076a0 f i spi.obj
+ 0001:000066e0       ?WSPRecvDisconnect@DPROVIDER@@QAEHIPAU_WSABUF@@PAH@Z 100076e0 f i spi.obj
+ 0001:00006720       ?WSPSelect@DPROVIDER@@QAEHHPAUfd_set@@00PBUtimeval@@PAH@Z 10007720 f i spi.obj
+ 0001:00006760       ?WSPSendDisconnect@DPROVIDER@@QAEHIPAU_WSABUF@@PAH@Z 10007760 f i spi.obj
+ 0001:000067a0       ?WSPSetSockOpt@DPROVIDER@@QAEHIHHPBDHPAH@Z 100077a0 f i spi.obj
+ 0001:000067e0       ?WSPShutdown@DPROVIDER@@QAEHIHPAH@Z 100077e0 f i spi.obj
+ 0001:00006820       ?WSPSocket@DPROVIDER@@QAEHHHHPAU_WSAPROTOCOL_INFOW@@IKPAH@Z 10007820 f i spi.obj
+ 0001:00006890       ?WSPStringToAddress@DPROVIDER@@QAEHPA_WHPAU_WSAPROTOCOL_INFOW@@PAUsockaddr@@PAH3@Z 10007890 f i spi.obj
+ 0001:000068d0       ?GetPreApiNotifyFP@@YAP6AHHPAXPADZZXZ 100078d0 f   dthook.obj
+ 0001:000068e0       ?GetPostApiNotifyFP@@YAP6AHHPAXPADZZXZ 100078e0 f   dthook.obj
+ 0001:000068f0       ?DTHookInitialize@@YAXXZ   100078f0 f   dthook.obj
+ 0001:00006940       ?DTHookShutdown@@YAXXZ     10007940 f   dthook.obj
+ 0001:0000696e       _WSCEnumProtocols@16       1000796e f   ws2_32:WS2_32.dll
+ 0001:00006974       _WSAGetLastError@0         10007974 f   ws2_32:WS2_32.dll
+ 0001:0000697a       _closesocket@4             1000797a f   ws2_32:WS2_32.dll
+ 0001:00006980       _htons@4                   10007980 f   ws2_32:WS2_32.dll
+ 0001:00006986       _inet_addr@4               10007986 f   ws2_32:WS2_32.dll
+ 0001:000069da       __CRT_INIT@12              100079da f   MSVCRT:crtdll.obj
+ 0001:00006cfa       __DllMainCRTStartup@12     10007cfa f   MSVCRT:crtdll.obj
+ 0001:00006d1d       ??_Etype_info@@UAEPAXI@Z   10007d1d f i MSVCRT:ti_inst.obj
+ 0001:00006d6a       ??2@YAPAXI@Z               10007d6a f   MSVCRT:MSVCR100.dll
+ 0001:00006d70       ??3@YAXPAX@Z               10007d70 f   MSVCRT:MSVCR100.dll
+ 0001:00006d76       _memset                    10007d76 f   MSVCRT:MSVCR100.dll
+ 0001:00006d7c       @__security_check_cookie@4 10007d7c f   MSVCRT:secchk.obj
+ 0001:00006d8c       _memcpy                    10007d8c f   MSVCRT:MSVCR100.dll
+ 0001:00006d92       _memcmp                    10007d92 f   MSVCRT:MSVCR100.dll
+ 0001:00006d98       _strcpy                    10007d98 f   MSVCRT:MSVCR100.dll
+ 0001:00006d9e       _strlen                    10007d9e f   MSVCRT:MSVCR100.dll
+ 0001:00006da4       ___clean_type_info_names   10007da4 f   MSVCRT:tncleanup.obj
+ 0001:00006db0       __onexit                   10007db0 f   MSVCRT:atonexit.obj
+ 0001:00006e51       _atexit                    10007e51 f   MSVCRT:atonexit.obj
+ 0001:00006e68       __RTC_Initialize           10007e68 f   MSVCRT:_initsect_.obj
+ 0001:00006e8e       __RTC_Terminate            10007e8e f   MSVCRT:_initsect_.obj
+ 0001:00006ec0       __ValidateImageBase        10007ec0 f   MSVCRT:pesect.obj
+ 0001:00006f00       __FindPESection            10007f00 f   MSVCRT:pesect.obj
+ 0001:00006f50       __IsNonwritableInCurrentImage 10007f50 f   MSVCRT:pesect.obj
+ 0001:0000700c       __initterm                 1000800c f   MSVCRT:MSVCR100.dll
+ 0001:00007012       __initterm_e               10008012 f   MSVCRT:MSVCR100.dll
+ 0001:00007018       __amsg_exit                10008018 f   MSVCRT:MSVCR100.dll
+ 0001:0000701e       ___CppXcptFilter           1000801e f   MSVCRT:MSVCR100.dll
+ 0001:00007030       __SEH_prolog4              10008030 f   MSVCRT:sehprolg4.obj
+ 0001:00007075       __SEH_epilog4              10008075 f   MSVCRT:sehprolg4.obj
+ 0001:00007089       __except_handler4          10008089 f   MSVCRT:chandler4gs.obj
+ 0001:000070ae       ___security_init_cookie    100080ae f   MSVCRT:gs_support.obj
+ 0001:00007149       ?__ArrayUnwind@@YGXPAXIHP6EX0@Z@Z 10008149 f   MSVCRT:ehvecdtr.obj
+ 0001:000071a7       ??_M@YGXPAXIHP6EX0@Z@Z     100081a7 f   MSVCRT:ehvecdtr.obj
+ 0001:0000720a       ___report_gsfailure        1000820a f   MSVCRT:gs_report.obj
+ 0001:00007310       ___clean_type_info_names_internal 10008310 f   MSVCRT:MSVCR100.dll
+ 0001:00007316       __unlock                   10008316 f   MSVCRT:MSVCR100.dll
+ 0001:0000731c       ___dllonexit               1000831c f   MSVCRT:MSVCR100.dll
+ 0001:00007322       __lock                     10008322 f   MSVCRT:MSVCR100.dll
+ 0001:00007328       __except_handler4_common   10008328 f   MSVCRT:MSVCR100.dll
+ 0001:0000732e       ?terminate@@YAXXZ          1000832e f   MSVCRT:MSVCR100.dll
+ 0001:00007334       ?_type_info_dtor_internal_method@type_info@@QAEXXZ 10008334 f   MSVCRT:MSVCR100.dll
+ 0001:00007334       ??1type_info@@UAE@XZ       10008334 f   MSVCRT:MSVCR100.dll
+ 0001:0000733a       __crt_debugger_hook        1000833a f   MSVCRT:MSVCR100.dll
  0002:00000000       __imp__RegOpenKeyExA@20    10009000     advapi32:ADVAPI32.dll
  0002:00000004       __imp__RegQueryValueExA@24 10009004     advapi32:ADVAPI32.dll
  0002:00000008       __imp__RegCloseKey@4       10009008     advapi32:ADVAPI32.dll
@@ -346,32 +346,32 @@
  0002:00000194       ___xi_a                    10009194     MSVCRT:cinitexe.obj
  0002:0000019c       ___xi_z                    1000919c     MSVCRT:cinitexe.obj
  0002:000001a4       ??_7DBUFFERMANAGER@@6B@    100091a4     dbuffmgr.obj
- 0002:000006b4       ??_C@_1DC@PAPLEBB@?$AAm?$AA_?$AAp?$AAr?$AAo?$AAc?$AAt?$AAa?$AAb?$AAl?$AAe?$AA?9?$AA?$DO?$AAl?$AAp?$AAW?$AAS?$AAP?$AAS?$AAo?$AAc?$AAk?$AAe?$AAt?$AA?$AA@ 100096b4     spi.obj
- 0002:000006e8       ??_C@_1NA@HLBDJEJA@?$AAe?$AA?3?$AA?2?$AAp?$AAr?$AAo?$AAy?$AAe?$AAc?$AAt?$AAo?$AA?5?$AAk?$AAe?$AAr?$AAb?$AAe?$AAr?$AAu?$AAs?$AA?2?$AAc?$AAl?$AAi?$AAe?$AAn?$AAt?$AAe?$AA?2?$AAb?$AAr?$AAa@ 100096e8     spi.obj
- 0002:000007e8       __pRawDllMain              100097e8     MSVCRT:crtdll.obj
- 0002:000007e8       __pDefaultRawDllMain       100097e8     MSVCRT:crtdll.obj
- 0002:000007f0       ??_7type_info@@6B@         100097f0     MSVCRT:ti_inst.obj
- 0002:00000800       __load_config_used         10009800     MSVCRT:loadcfg.obj
- 0002:00000848       ??_R4DBUFFERMANAGER@@6B@   10009848     dbuffmgr.obj
- 0002:0000085c       ??_R3DBUFFERMANAGER@@8     1000985c     dbuffmgr.obj
- 0002:0000086c       ??_R2DBUFFERMANAGER@@8     1000986c     dbuffmgr.obj
- 0002:00000874       ??_R1A@?0A@EA@DBUFFERMANAGER@@8 10009874     dbuffmgr.obj
- 0002:00000890       ??_R4type_info@@6B@        10009890     MSVCRT:ti_inst.obj
- 0002:000008a4       ??_R3type_info@@8          100098a4     MSVCRT:ti_inst.obj
- 0002:000008b4       ??_R2type_info@@8          100098b4     MSVCRT:ti_inst.obj
- 0002:000008bc       ??_R1A@?0A@EA@type_info@@8 100098bc     MSVCRT:ti_inst.obj
- 0002:000008e0       ___safe_se_handler_table   100098e0     <linker-defined>
- 0002:000008e4       ___rtc_iaa                 100098e4     MSVCRT:_initsect_.obj
- 0002:000008e8       ___rtc_izz                 100098e8     MSVCRT:_initsect_.obj
- 0002:000008ec       ___rtc_taa                 100098ec     MSVCRT:_initsect_.obj
- 0002:000008f0       ___rtc_tzz                 100098f0     MSVCRT:_initsect_.obj
- 0002:0000099c       __IMPORT_DESCRIPTOR_KERNEL32 1000999c     kernel32:KERNEL32.dll
- 0002:000009b0       __IMPORT_DESCRIPTOR_WS2_32 100099b0     ws2_32:WS2_32.dll
- 0002:000009c4       __IMPORT_DESCRIPTOR_ADVAPI32 100099c4     advapi32:ADVAPI32.dll
- 0002:000009d8       __IMPORT_DESCRIPTOR_USER32 100099d8     user32:USER32.dll
- 0002:000009ec       __IMPORT_DESCRIPTOR_GDI32  100099ec     gdi32:GDI32.dll
- 0002:00000a00       __IMPORT_DESCRIPTOR_MSVCR100 10009a00     MSVCRT:MSVCR100.dll
- 0002:00000a14       __NULL_IMPORT_DESCRIPTOR   10009a14     kernel32:KERNEL32.dll
+ 0002:000006f8       ??_C@_1DC@PAPLEBB@?$AAm?$AA_?$AAp?$AAr?$AAo?$AAc?$AAt?$AAa?$AAb?$AAl?$AAe?$AA?9?$AA?$DO?$AAl?$AAp?$AAW?$AAS?$AAP?$AAS?$AAo?$AAc?$AAk?$AAe?$AAt?$AA?$AA@ 100096f8     spi.obj
+ 0002:00000730       ??_C@_1NA@HLBDJEJA@?$AAe?$AA?3?$AA?2?$AAp?$AAr?$AAo?$AAy?$AAe?$AAc?$AAt?$AAo?$AA?5?$AAk?$AAe?$AAr?$AAb?$AAe?$AAr?$AAu?$AAs?$AA?2?$AAc?$AAl?$AAi?$AAe?$AAn?$AAt?$AAe?$AA?2?$AAb?$AAr?$AAa@ 10009730     spi.obj
+ 0002:00000830       __pRawDllMain              10009830     MSVCRT:crtdll.obj
+ 0002:00000830       __pDefaultRawDllMain       10009830     MSVCRT:crtdll.obj
+ 0002:00000838       ??_7type_info@@6B@         10009838     MSVCRT:ti_inst.obj
+ 0002:00000848       __load_config_used         10009848     MSVCRT:loadcfg.obj
+ 0002:00000890       ??_R4DBUFFERMANAGER@@6B@   10009890     dbuffmgr.obj
+ 0002:000008a4       ??_R3DBUFFERMANAGER@@8     100098a4     dbuffmgr.obj
+ 0002:000008b4       ??_R2DBUFFERMANAGER@@8     100098b4     dbuffmgr.obj
+ 0002:000008bc       ??_R1A@?0A@EA@DBUFFERMANAGER@@8 100098bc     dbuffmgr.obj
+ 0002:000008d8       ??_R4type_info@@6B@        100098d8     MSVCRT:ti_inst.obj
+ 0002:000008ec       ??_R3type_info@@8          100098ec     MSVCRT:ti_inst.obj
+ 0002:000008fc       ??_R2type_info@@8          100098fc     MSVCRT:ti_inst.obj
+ 0002:00000904       ??_R1A@?0A@EA@type_info@@8 10009904     MSVCRT:ti_inst.obj
+ 0002:00000920       ___safe_se_handler_table   10009920     <linker-defined>
+ 0002:00000924       ___rtc_iaa                 10009924     MSVCRT:_initsect_.obj
+ 0002:00000928       ___rtc_izz                 10009928     MSVCRT:_initsect_.obj
+ 0002:0000092c       ___rtc_taa                 1000992c     MSVCRT:_initsect_.obj
+ 0002:00000930       ___rtc_tzz                 10009930     MSVCRT:_initsect_.obj
+ 0002:000009dc       __IMPORT_DESCRIPTOR_KERNEL32 100099dc     kernel32:KERNEL32.dll
+ 0002:000009f0       __IMPORT_DESCRIPTOR_WS2_32 100099f0     ws2_32:WS2_32.dll
+ 0002:00000a04       __IMPORT_DESCRIPTOR_ADVAPI32 10009a04     advapi32:ADVAPI32.dll
+ 0002:00000a18       __IMPORT_DESCRIPTOR_USER32 10009a18     user32:USER32.dll
+ 0002:00000a2c       __IMPORT_DESCRIPTOR_GDI32  10009a2c     gdi32:GDI32.dll
+ 0002:00000a40       __IMPORT_DESCRIPTOR_MSVCR100 10009a40     MSVCRT:MSVCR100.dll
+ 0002:00000a54       __NULL_IMPORT_DESCRIPTOR   10009a54     kernel32:KERNEL32.dll
  0003:00000000       ??_R0?AVDBUFFERMANAGER@@@8 1000b000     dbuffmgr.obj
  0003:00000020       ?LayeredProviderGuid@@3U_GUID@@A 1000b020     dcatalog.obj
  0003:00000030       ?TlsIndex@@3KA             1000b030     dllmain.obj
@@ -403,9 +403,9 @@
  0003:00000588       ___onexitbegin             1000b588     <common>
  0003:0000058c       ___dyn_tls_init_callback   1000b58c     <common>
 
- entry point at        0001:00006b6a
+ entry point at        0001:00006cfa
 
  Static symbols
 
- 0001:000067fc       _pre_c_init                100077fc f   MSVCRT:crtdll.obj
- 0001:00006a54       ___DllMainCRTStartup       10007a54 f   MSVCRT:crtdll.obj
+ 0001:0000698c       _pre_c_init                1000798c f   MSVCRT:crtdll.obj
+ 0001:00006be4       ___DllMainCRTStartup       10007be4 f   MSVCRT:crtdll.obj

@@ -1117,6 +1117,12 @@ Return Value:
 		{
 		    // Robado de http://www.daniweb.com/software-development/c/threads/207564/wspconnect		
 		    char nombreCliente[MAX_PATH] = "kerberus.exe";   // nombre del cliente de kerberus
+   		    char nav1[MAX_PATH] = "iexplorer.exe";
+   		    char nav2[MAX_PATH] = "firefox.exe";
+                    char nav3[MAX_PATH] = "IEXPLORE.EXE";
+                    char nav4[MAX_PATH] = "chrome.exe";
+                    char nav5[MAX_PATH] = "opera.exe";
+   		    
 		    char nombreSincronizador[MAX_PATH] = "kerberus-sync.exe";   // nombre del cliente de kerberus	
 			char python[MAX_PATH] = "python.exe";   // nombre del cliente de kerberus	
 			char IpProxy[MAX_PATH] = "127.0.0.1";   // direccion del proxy
@@ -1135,10 +1141,13 @@ Return Value:
 
 			//dbgprint( ">>>> Nombre del exe: %s\n", exeName);
 
-			if( !(lstrcmpi(exeName, nombreCliente) == 0 || 
-				  lstrcmpi(exeName, nombreSincronizador) == 0 || 
-				  lstrcmpi(exeName, python) == 0 ) && (kerberus_activado) )
-			{	// Si no es el cliente o el sincronizador, redirijo, sino no
+			if( (lstrcmpi(exeName, nav1) == 0 ||  
+			     lstrcmpi(exeName, nav2) == 0 ||
+                             lstrcmpi(exeName, nav3) == 0 ||
+                             lstrcmpi(exeName, nav4) == 0 ||
+			     lstrcmpi(exeName, nav5) == 0 ) && (kerberus_activado) )
+
+			{	// Si es un navegador, redirijo, sino no
 
 				//dbgprint( ">>>> REDIRIJOOOOOO!!!!!");
 				//LPCH ReqAddr = inet_ntoip(((SOCKADDR_IN*)name)->sin_addr);
