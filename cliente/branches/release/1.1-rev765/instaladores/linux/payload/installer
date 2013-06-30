@@ -13,8 +13,14 @@ if [ -f ${PATH_COMMON}/desinstalador/kerberus-uninstall ]; then
 fi
 
 # Muestro la licencia
-  more licencia.txt
   echo ""
+  echo "Este software es libre y se distribuye bajo los terminos de la licencia GPLv3."
+  echo "Desea ver la licencia? [y/N]"
+  read respuesta
+  if [ "${respuesta}" = "y" ]; then
+	more licencia.txt
+  fi
+
   echo ""
   echo "Acepta los terminos y condiciones de la licencia de uso? [Y/n]"
   read respuesta
@@ -34,7 +40,6 @@ fi
 	fi
 	read respuesta
   done
-
 echo "Instalando Kerberus Control Parental..."
 
 mkdir -p ${PATH_COMMON}
