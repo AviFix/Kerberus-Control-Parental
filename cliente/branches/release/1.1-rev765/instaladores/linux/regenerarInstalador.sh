@@ -11,7 +11,7 @@ else
 	ARQUITECTURA="32bits"
 fi
 
-nombre_inst="kerberus-installer-${VERSION}-${ARQUITECTURA}.sh"
+nombre_inst="kerberus-installer-${VERSION}-${ARQUITECTURA}"
 
 grep "ENTORNO_DE_DESARROLLO = True" ../../conf/config.py > /dev/null
 if [ ${?} -eq 0 ]; then 
