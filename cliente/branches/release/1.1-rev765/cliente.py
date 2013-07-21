@@ -196,8 +196,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         modoDeConexion = self.headers.getheader('Proxy-Connection',
                                                 'Transparente')
         hostDestino = self.headers.getheader('Host')
-
-        if modoDeConexion == 'Transparente':
+        if modoDeConexion == 'Transparente' and hostDestino not in self.path:
             url = "http://" + hostDestino + self.path
             modo = "TRANSPARENTE"
 
@@ -245,6 +244,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                 else:
                     self.pedirPassword()
                     return True
+
 
         # Cambio de password
         if "!CambiarPassword!" in url:
