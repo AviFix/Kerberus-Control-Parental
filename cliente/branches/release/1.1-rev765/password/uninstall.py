@@ -21,8 +21,6 @@ app.exec_()
 desinstalar = myapp.verificado
 
 if desinstalar:
-    reg = registrar.Registradores()
-    reg.eliminarRemotamente()
     if config.PLATAFORMA == 'Linux':
         desinstalador = "%s/uninstaller" % config.PATH_COMMON
         print "Ejecutando %s" % desinstalador
@@ -42,7 +40,8 @@ if desinstalar:
         subprocess.Popen(comando, stdout=subprocess.PIPE, shell=True)
         time.sleep(1)
         subprocess.call(desinstalador)
-
+    reg = registrar.Registradores()
+    reg.eliminarRemotamente()
 
 
 
