@@ -38,7 +38,7 @@ class Servidor:
 
         for i in range(1, 100):
             ip_new = "validador%s.kerberus.com.ar" % i
-            port_new = 80
+            port_new = 443
             server = [ip_new, port_new]
             self.listaDeServidoresDefault.append(server)
 
