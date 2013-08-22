@@ -53,7 +53,7 @@ class Peticion:
             credencial = ''
             return idUsuario, serverId, version, nombretitular, credencial
 
-    def obtenerRespuesta(self, headers):
+    def obtenerRespuesta(self, headers, timeout=120):
         if config.USAR_PROXY:
             if self.servidor.estaOnline(config.PROXY_IP, config.PROXY_PORT):
                 url_proxy = "http://%s:%s" % (config.PROXY_IP,
@@ -87,7 +87,6 @@ class Peticion:
                 if self.servidor.estaOnline(self.server_ip, self.server_port):
                     req = urllib2.Request("https://" + self.server_sync,
                     headers=headers)
-                    timeout = 120
                     respuesta = urllib2.urlopen(req, timeout=timeout).read()
                     modulo_logger.log(logging.DEBUG,
                                         "Respuesta: %s" % respuesta)
@@ -194,7 +193,7 @@ class Peticion:
     def eliminarUsuario(self):
         """Solicita la eliminacion"""
         headers = {"Peticion": "eliminarUsuario"}
-        respuesta = self.obtenerRespuesta(headers)
+        respuesta = self.obtenerRespuesta(headers,timeout=5)
         return respuesta
 
     def usuarioRegistrado(self, id, email):

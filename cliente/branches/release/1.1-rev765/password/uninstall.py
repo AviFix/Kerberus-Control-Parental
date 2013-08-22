@@ -24,7 +24,9 @@ if desinstalar:
     if config.PLATAFORMA == 'Linux':
         desinstalador = "%s/uninstaller" % config.PATH_COMMON
         print "Ejecutando %s" % desinstalador
-        subprocess.call(desinstalador)
+        subprocess.Popen(desinstalador)
+        reg = registrar.Registradores()
+        reg.eliminarRemotamente()
     else:
         import _winreg
         try:
@@ -40,8 +42,8 @@ if desinstalar:
         subprocess.Popen(comando, stdout=subprocess.PIPE, shell=True)
         time.sleep(1)
         subprocess.call(desinstalador)
-    reg = registrar.Registradores()
-    reg.eliminarRemotamente()
+        reg = registrar.Registradores()
+        reg.eliminarRemotamente()
 
 
 
