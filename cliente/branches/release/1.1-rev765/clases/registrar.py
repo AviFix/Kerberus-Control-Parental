@@ -78,8 +78,8 @@ class Registradores:
         modulo_logger.log(logging.INFO, 'ID OBTENIDO: %s, server_id: %s' % \
             (id_obtenido, server_id))
         if (int(id_obtenido) > 0):
-            self.cursor.execute('update instalacion set id =?, serverid =?',
-                (id_obtenido, server_id,))
+            self.cursor.execute('update instalacion set id =?, serverid =?, '
+                'passwordnotificada=1', (id_obtenido, server_id,))
             self.conexion_db.commit()
             modulo_logger.log(logging.INFO, 'Se registro correctamente la '\
             'instalacion')
