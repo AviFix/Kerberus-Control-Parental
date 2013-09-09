@@ -1,9 +1,14 @@
 # -*- coding: utf-8 -*-
 import sys
-import cambiarPassword
-import pedirUsuario
-
 from PyQt4 import QtGui, QtCore
+
+sys.path.append('password')
+sys.path.append('clases')
+sys.path.append('conf')
+
+#import cambiarPassword
+#import pedirUsuario
+import webbrowser
 
 class KerberusSystray(QtGui.QWidget):
 
@@ -18,11 +23,11 @@ class KerberusSystray(QtGui.QWidget):
         #creamos objeto Style para hacer uso de los iconos de Qt
         self.style = self.style()
 
-        #Formulario de cambio de password
-        self.cambiarPassForm = cambiarPassword.formularioPassword()
+        ##Formulario de cambio de password
+        #self.cambiarPassForm = cambiarPassword.formularioPassword()
 
-        #Formulario de pedido de password
-        self.pedirUsuarioForm = pedirUsuario.formularioUsuario()
+        ##Formulario de pedido de password
+        #self.pedirUsuarioForm = pedirUsuario.formularioUsuario()
 
         #Menu
         self.menu = QtGui.QMenu('Kerberus')
@@ -63,14 +68,15 @@ class KerberusSystray(QtGui.QWidget):
         self.hide()
 
     def deshabilitarFiltradoWindow(self):
+        webbrowser.open('http://inicio.kerberus.com.ar/!DeshabilitarFiltrado!')
         self.tray.showMessage(u'Kerberus',u'Protección kerberus deshabilitada',1,3000)
-        self.pedirUsuarioForm.setVisible(True)
 
     def cambiarPasswordWindow(self):
-        self.cambiarPassForm.setVisible(True)
+        webbrowser.open('http://inicio.kerberus.com.ar/!CambiarPassword!')
         self.tray.showMessage(u'Kerberus',u'Cambio de password',1,3000)
 
     def recordarPasswordWindow(self):
+        webbrowser.open('http://inicio.kerberus.com.ar/!RecordarPassword!')
         self.tray.showMessage(u'Kerberus',u'Le hemos enviado un e-mail a su cuenta de correo con la contraseña de Kerberus',1,3000)
 
 
