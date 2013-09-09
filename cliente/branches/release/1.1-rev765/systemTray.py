@@ -1,53 +1,51 @@
-#!/usr/bin/python
-# -*- coding: latin-1 -*-
+# -*- coding: utf-8 -*-
 import sys
 from PyQt4 import QtGui, QtCore
 
-import cliente
+class KerberusSystray(QtGui.QWidget):
 
-class SystemTrayIcon(QtGui.QSystemTrayIcon):
+    def __init__(self):
+        QtGui.QWidget.__init__(self)
+        #cargar imagen para icono
+        pixmap = QtGui.QPixmap('kerby.ico')
+        #setear el nombre de la ventana
+        self.setWindowTitle('Kerberus Control Parental')
+        #colocar el icono cargado a la ventana
+        self.setWindowIcon(QtGui.QIcon(pixmap))
+        #creamos objeto Style para hacer uso de los iconos de Qt
+        self.style = self.style()
 
-    def __init__(self, icon, parent,demonio):
-        QtGui.QSystemTrayIcon.__init__(self, icon, parent)
-        self.parent=parent
-        self.demonio=demonio
-        self.showMessage("Kerberus","Protección kerberus habilitada",1,2000)
-        menu = QtGui.QMenu(self.parent)
-        deshabilitar = menu.addAction("Deshabilitar Filtrado")
-        QtCore.QObject.connect(deshabilitar, QtCore.SIGNAL('triggered()'), self.deshabilitar)
-        self.setContextMenu(menu)
-        self.demonio.habilitarFiltrado()
+        #Menu
+        self.menu = QtGui.QMenu('Kerberus')
+        #accion deshabilitar filtrado
+        deshabilitarFiltrado = self.menu.addAction(self.style.standardIcon(QtGui.QStyle.SP_ArrowRight), 'Deshabilitar Filtrado')
+        #accion salir
+        exit = self.menu.addAction(self.style.standardIcon(QtGui.QStyle.SP_TitleBarCloseButton), 'Salir')
 
-        self.demonio.iniciar()
+        #SIGNAL->SLOT
+        QtCore.QObject.connect(exit, QtCore.SIGNAL("triggered()"), lambda: sys.exit())
+        QtCore.QObject.connect(self.menu, QtCore.SIGNAL("clicked()"), lambda: self.menu.popup(QtGui.QCursor.pos()))
+        QtCore.QObject.connect(deshabilitarFiltrado, QtCore.SIGNAL("triggered()"), self.deshabilitarFiltradoWindow)
+
+        #SystemTray
+        self.tray = QtGui.QSystemTrayIcon(QtGui.QIcon(pixmap), self)
+        self.tray.setToolTip('KerberusSystray')
+        self.tray.setVisible(True)
+        self.tray.setContextMenu(self.menu)
+
+    def closeEvent(self, event):
+        event.ignore()
+        self.hide()
+
+    def deshabilitarFiltradoWindow(self):
+        self.tray.showMessage("Kerberus","Proteccion kerberus deshabilitada",1,3000)
+        self.setVisible(True)
 
 
-    def deshabilitar(self):
-        self.showMessage("Kerberus","Protección kerberus deshabilitada",1,2000)
-        menu = QtGui.QMenu(self.parent)
-        habilitar = menu.addAction("Habilitar Filtrado")
-        QtCore.QObject.connect(habilitar, QtCore.SIGNAL('triggered()'), self.habilitar)
-        self.setContextMenu(menu)
-        self.demonio.deshabilitarFiltrado()
 
-    def habilitar(self):
-        self.showMessage("Kerberus","Protección kerberus habilitada",1,2000)
-        menu = QtGui.QMenu(self.parent)
-        deshabilitar = menu.addAction("Deshabilitar Filtrado")
-        QtCore.QObject.connect(deshabilitar, QtCore.SIGNAL('triggered()'), self.deshabilitar)
-        self.setContextMenu(menu)
-        self.demonio.habilitarFiltrado()
 
-    def salir(self):
-        self.exit()
+app = QtGui.QApplication(sys.argv)
+pytest = KerberusSystray()
+#pytest.show()
 
-def main():
-    app = QtGui.QApplication(sys.argv)
-    w = QtGui.QWidget()
-    cliente2=cliente.client()
-    trayIcon = SystemTrayIcon(QtGui.QIcon("Bomb.xpm"), w,cliente2)
-    trayIcon.show()
-    app.exec_()
-    cliente2.iniciar()
-#
-if __name__ == '__main__':
-    main()
+sys.exit(app.exec_())
