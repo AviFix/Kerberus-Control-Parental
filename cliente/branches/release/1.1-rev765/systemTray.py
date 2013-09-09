@@ -17,45 +17,62 @@ class KerberusSystray(QtGui.QWidget):
         #cargar imagen para icono
         pixmap = QtGui.QPixmap('kerby.ico')
         #setear el nombre de la ventana
-        self.setWindowTitle('Kerberus Control Parental')
+        #self.setWindowTitle('Kerberus Control Parental')
         #colocar el icono cargado a la ventana
-        self.setWindowIcon(QtGui.QIcon(pixmap))
+        #self.setWindowIcon(QtGui.QIcon(pixmap))
         #creamos objeto Style para hacer uso de los iconos de Qt
         self.style = self.style()
-
-        ##Formulario de cambio de password
-        #self.cambiarPassForm = cambiarPassword.formularioPassword()
-
-        ##Formulario de pedido de password
-        #self.pedirUsuarioForm = pedirUsuario.formularioUsuario()
+        self.filtradoHabilitado = True
 
         #Menu
         self.menu = QtGui.QMenu('Kerberus')
 
         #accion deshabilitar filtrado
-        deshabilitarFiltradoAction = self.menu.addAction(self.style.standardIcon(QtGui.QStyle.SP_ArrowRight), 'Deshabilitar Filtrado')
-
+        self.deshabilitarFiltradoAction = self.menu.addAction(
+                            self.style.standardIcon(QtGui.QStyle.SP_ArrowRight),
+                            'Deshabilitar Filtrado'
+                            )
+        #accion habilitar filtrado
+        self.habilitarFiltradoAction = self.menu.addAction(
+                            self.style.standardIcon(QtGui.QStyle.SP_ArrowRight),
+                            'Habilitar Filtrado'
+                            )
+        self.habilitarFiltradoAction.setVisible(False)
         #cambiar password
-        cambiarPasswordAction = self.menu.addAction(
+        self.cambiarPasswordAction = self.menu.addAction(
                 self.style.standardIcon(QtGui.QStyle.SP_ArrowRight),
                 'Cambiar password de administrador'
                 )
-
-        #recordar password
-        recordarPasswordAction = self.menu.addAction(
-                self.style.standardIcon(QtGui.QStyle.SP_ArrowRight),
-                'Recordar password de administrador'
-                )
-
         #accion salir
-        exitAction = self.menu.addAction(self.style.standardIcon(QtGui.QStyle.SP_TitleBarCloseButton), 'Salir')
+        self.exitAction = self.menu.addAction(
+                self.style.standardIcon(QtGui.QStyle.SP_TitleBarCloseButton),
+                'Salir')
 
         #SIGNAL->SLOT
-        QtCore.QObject.connect(exitAction, QtCore.SIGNAL("triggered()"), lambda: sys.exit())
-        QtCore.QObject.connect(self.menu, QtCore.SIGNAL("clicked()"), lambda: self.menu.popup(QtGui.QCursor.pos()))
-        QtCore.QObject.connect(deshabilitarFiltradoAction, QtCore.SIGNAL("triggered()"), self.deshabilitarFiltradoWindow)
-        QtCore.QObject.connect(cambiarPasswordAction, QtCore.SIGNAL("triggered()"), self.cambiarPasswordWindow)
-        QtCore.QObject.connect(recordarPasswordAction, QtCore.SIGNAL("triggered()"), self.recordarPasswordWindow)
+        QtCore.QObject.connect(
+                self.exitAction,
+                QtCore.SIGNAL("triggered()"),
+                lambda: sys.exit()
+                )
+        QtCore.QObject.connect(
+                self.menu, QtCore.SIGNAL("clicked()"),
+                lambda: self.menu.popup(QtGui.QCursor.pos())
+                )
+        QtCore.QObject.connect(
+                self.deshabilitarFiltradoAction,
+                QtCore.SIGNAL("triggered()"),
+                self.deshabilitarFiltradoWindow
+                )
+        QtCore.QObject.connect(
+                self.habilitarFiltradoAction,
+                QtCore.SIGNAL("triggered()"),
+                self.habilitarFiltradoWindow
+                )
+        QtCore.QObject.connect(
+                self.cambiarPasswordAction,
+                QtCore.SIGNAL("triggered()"),
+                self.cambiarPasswordWindow
+                )
 
         #SystemTray
         self.tray = QtGui.QSystemTrayIcon(QtGui.QIcon(pixmap), self)
@@ -68,17 +85,26 @@ class KerberusSystray(QtGui.QWidget):
         self.hide()
 
     def deshabilitarFiltradoWindow(self):
-        webbrowser.open('http://inicio.kerberus.com.ar/!DeshabilitarFiltrado!')
-        self.tray.showMessage(u'Kerberus',u'Protección kerberus deshabilitada',1,3000)
+        webbrowser.open(
+                'http://inicio.kerberus.com.ar/!DeshabilitarFiltrado!',
+                new=2
+                )
+        self.habilitarFiltradoAction.setVisible(True)
+        self.deshabilitarFiltradoAction.setVisible(False)
+
+    def habilitarFiltradoWindow(self):
+        webbrowser.open(
+                'http://inicio.kerberus.com.ar/!HabilitarFiltrado!',
+                new=2
+                )
+        self.habilitarFiltradoAction.setVisible(False)
+        self.deshabilitarFiltradoAction.setVisible(True)
 
     def cambiarPasswordWindow(self):
-        webbrowser.open('http://inicio.kerberus.com.ar/!CambiarPassword!')
-        self.tray.showMessage(u'Kerberus',u'Cambio de password',1,3000)
-
-    def recordarPasswordWindow(self):
-        webbrowser.open('http://inicio.kerberus.com.ar/!RecordarPassword!')
-        self.tray.showMessage(u'Kerberus',u'Le hemos enviado un e-mail a su cuenta de correo con la contraseña de Kerberus',1,3000)
-
+        webbrowser.open(
+                'http://inicio.kerberus.com.ar/!CambiarPassword!',
+                new=2
+                )
 
 app = QtGui.QApplication(sys.argv)
 pytest = KerberusSystray()

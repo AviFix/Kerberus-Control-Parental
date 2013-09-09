@@ -245,6 +245,13 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         # Usuarios del sistema no remotos (para cuando tengamos multi-user)
         usuario, password = "NoBody", "NoBody"
 
+
+        if "!HabilitarFiltrado!" in url:
+            url = url.replace('!HabilitarFiltrado!', '')
+            self.server.verificador.kerberus_activado = True
+            self.redirigirDesbloqueado(url)
+            return True
+
         if "!DeshabilitarFiltrado!" in url:
             url = url.replace('!DeshabilitarFiltrado!', '')
             if self.server.verificador.kerberus_activado:
