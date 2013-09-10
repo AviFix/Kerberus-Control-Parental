@@ -178,22 +178,6 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         return True
 
     def do_CONNECT(self):
-        if self.server.verificador.primerUrl:
-            try:
-                userAgent = self.headers.getheader('User-Agent')
-            except:
-                userAgent = False
-            esbrowser = detectorDeBrowser.esBrowser(userAgent)
-            if esbrowser:
-                self.server.logger.log( logging.DEBUG, "Es Browser! - User-Agent: %s" % userAgent)
-            else:
-                self.server.logger.log( logging.DEBUG, "NO es Browser!")
-
-            self.server.verificador.primerUrl=False
-            if "kerberus.com.ar" not in url and esbrowser:
-                self.mostrarPublicidad(url)
-                return False
-
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
             if self._connect_to(self.path, soc):
@@ -232,11 +216,6 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
             except:
                 userAgent = False
             esbrowser = detectorDeBrowser.esBrowser(userAgent)
-            if esbrowser:
-                self.server.logger.log( logging.DEBUG, "Es Browser! - User-Agent: %s" % userAgent)
-            else:
-                self.server.logger.log( logging.DEBUG, "NO es Browser!")
-
             self.server.verificador.primerUrl=False
             if "kerberus.com.ar" not in url and esbrowser:
                 self.mostrarPublicidad(url)
