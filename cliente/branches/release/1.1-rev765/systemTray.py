@@ -1,13 +1,6 @@
 # -*- coding: utf-8 -*-
-import sys
 from PyQt4 import QtGui, QtCore
-
-sys.path.append('password')
-sys.path.append('clases')
-sys.path.append('conf')
-
-#import cambiarPassword
-#import pedirUsuario
+import sys
 import webbrowser
 
 class KerberusSystray(QtGui.QWidget):
@@ -44,16 +37,16 @@ class KerberusSystray(QtGui.QWidget):
                 'Cambiar password de administrador'
                 )
         #accion salir
-        self.exitAction = self.menu.addAction(
-                self.style.standardIcon(QtGui.QStyle.SP_TitleBarCloseButton),
-                'Salir')
+        #self.exitAction = self.menu.addAction(
+                #self.style.standardIcon(QtGui.QStyle.SP_TitleBarCloseButton),
+                #'Salir')
 
         #SIGNAL->SLOT
-        QtCore.QObject.connect(
-                self.exitAction,
-                QtCore.SIGNAL("triggered()"),
-                lambda: sys.exit()
-                )
+        #QtCore.QObject.connect(
+                #self.exitAction,
+                #QtCore.SIGNAL("triggered()"),
+                #lambda: sys.exit()
+                #)
         QtCore.QObject.connect(
                 self.menu, QtCore.SIGNAL("clicked()"),
                 lambda: self.menu.popup(QtGui.QCursor.pos())
