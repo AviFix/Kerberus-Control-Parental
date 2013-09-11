@@ -185,6 +185,10 @@ File   kerberus-daemon\dist\cliente\*.*
 SetOutPath $INSTDIR\$VERSION\sync
 File   kerberus-sync\dist\sincronizadorCliente\*.*
 
+SetOutPath $INSTDIR\$VERSION\systemtray
+File   kerberus-systemtray\dist\KerberusSystemTray\*.*
+File ArchivosDefault\kerby.ico
+
 SetOutPath $INSTDIR\$VERSION
 File   desinstalador\dist\uninstall\*.*
 
@@ -228,6 +232,9 @@ WriteRegStr HKLM "Software\Kerberus" "kerberus-common" "$INSTDIR\$VERSION"
 
 writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" \
 "Kerberus-client" "$INSTDIR\$VERSION\client\kerberus.exe"
+
+writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" \
+"Kerberus-systemtray" "$INSTDIR\$VERSION\systemtray\kerberus-systemTray.exe"
 
 writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" \
 "Kerberus-sync" "$INSTDIR\$VERSION\sync\kerberus-sync.exe"
@@ -318,6 +325,7 @@ Section "Uninstall"
         DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus"
         DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Run" "Kerberus-client"
         DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Run" "Kerberus-sync"
+        DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Run" "Kerberus-systemtray"
         DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Run" "checkNavs"
         writeRegStr HKLM "Software\Microsoft\Internet Explorer\Main" "Start Page" "http://www.google.com"
         ;DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "MigrateProxy"

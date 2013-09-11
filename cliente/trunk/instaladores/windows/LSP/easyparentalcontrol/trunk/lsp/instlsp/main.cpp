@@ -592,8 +592,8 @@ int _cdecl main(int argc, char *argv[])
     // a new CMD window. The following getchar stops the window from exiting 
     // immediately so you can see what its output was.
     //
-    printf("Press any key to continue...\n");
-    getchar();
+    //printf("Press any key to continue...\n");
+    //getchar();
     return 0;
 }
 

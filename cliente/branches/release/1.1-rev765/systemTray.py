@@ -1,14 +1,18 @@
 # -*- coding: utf-8 -*-
 from PyQt4 import QtGui, QtCore
 import sys
+
+sys.path.append('conf')
+
 import webbrowser
+import config
 
 class KerberusSystray(QtGui.QWidget):
 
     def __init__(self):
         QtGui.QWidget.__init__(self)
         #cargar imagen para icono
-        pixmap = QtGui.QPixmap('kerby.ico')
+        pixmap = QtGui.QPixmap(config.PATH_COMMON + '\kerby.ico')
         #setear el nombre de la ventana
         #self.setWindowTitle('Kerberus Control Parental')
         #colocar el icono cargado a la ventana

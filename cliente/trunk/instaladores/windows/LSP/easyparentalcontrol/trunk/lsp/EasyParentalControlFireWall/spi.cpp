@@ -26,6 +26,36 @@
 #include "overlap.h"
 #include "Spi.h"
 
+//////////////////////////////
+// Leer REGISTRO DE WINDOWS //
+//////////////////////////////
+#include<stdio.h>
+#include<windows.h>
+
+int existeClaveRegistro(char *clave,char *valor)
+{
+     unsigned char infoValor [1024];
+     HKEY hKey;	 
+     LONG lStatus;
+     DWORD dwType=REG_SZ;
+     DWORD dwSize=1023;
+	 int i=0;
+     lStatus = RegOpenKeyEx(HKEY_LOCAL_MACHINE,clave,0,KEY_READ,&hKey);
+     if (lStatus == ERROR_SUCCESS)
+     {		 
+          lStatus = RegQueryValueEx(hKey,valor, 0,&dwType, (LPBYTE)&infoValor, &dwSize);
+          if (lStatus == ERROR_SUCCESS)
+          {			 			  
+             RegCloseKey(hKey);
+			 return 1;
+          }		  		 
+      }
+     RegCloseKey(hKey);
+     return 0;
+}
+//////////////////////////////////
+// FIN LEER REGISTRO DE WINDOWS //
+//////////////////////////////////
 
 #pragma warning(disable:4127)       // Disable "conditional expression is constant" warning
 
@@ -787,6 +817,7 @@ int WSPAPI EasyWSPConnect(
 		int octeto2;
 		int octeto3;
 		int octeto4;
+		bool kerberus_activado;
 
 		// En name->sa_data esta en los primeros 2 bytes el puerto, y en los 4 siguientes la ip (un octeto por byte)
 		puerto_byte0 = (unsigned int) (unsigned char) name->sa_data[0];
@@ -798,14 +829,21 @@ int WSPAPI EasyWSPConnect(
 		// Con esto lo que hago es unir los dos byte para obtener el puerto en decimal
 		puerto = puerto_byte0*256+puerto_byte1;
 
-		if (EsIpPublica(octeto1,octeto2,octeto3,octeto4) && name->sa_family == AF_INET && puerto == 80 )
+		// Verifico si esta kerberus instalado, si no esta, no redirijo
+		if( existeClaveRegistro("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Kerberus","UninstallString") ){
+			kerberus_activado = true;
+		}else{
+			kerberus_activado = false;
+		}
+
+		if ( EsIpPublica(octeto1,octeto2,octeto3,octeto4) && name->sa_family == AF_INET && puerto == 80 )
 		{
 			// Robado de http://www.daniweb.com/software-development/c/threads/207564/wspconnect		
-		    char nombreCliente[MAX_PATH] = "cliente.exe";   // nombre del cliente de kerberus
-		    char nombreSincronizador[MAX_PATH] = "sincronizadorCliente.exe";   // nombre del cliente de kerberus	
+		    char nombreCliente[MAX_PATH] = "kerberus.exe";   // nombre del cliente de kerberus
+		    char nombreSincronizador[MAX_PATH] = "kerberus-sync.exe";   // nombre del cliente de kerberus	
 			char python[MAX_PATH] = "python.exe";   // nombre del cliente de kerberus	
 			char IpProxy[MAX_PATH] = "127.0.0.1";   // direccion del proxy
-			unsigned short PuertoProxy = 8080;  		
+			unsigned short PuertoProxy = 4200;  		
 
 			dbgprint( ">>>> IP Publica %u.%u.%u.%u  puerto destino: %u\n", octeto1, octeto2, octeto3, octeto4, puerto);
 			char exePath[MAX_PATH] = "";
@@ -819,9 +857,12 @@ int WSPAPI EasyWSPConnect(
 					exeName[j] = exePath[i];
 
 			dbgprint( ">>>> Nombre del exe: %s\n", exeName);
-				
-			if( !(lstrcmpi(exeName, nombreCliente) == 0 || lstrcmpi(exeName, nombreSincronizador) == 0 || lstrcmpi(exeName, python) == 0 ) )
+
+			if( !(lstrcmpi(exeName, nombreCliente) == 0 || 
+				  lstrcmpi(exeName, nombreSincronizador) == 0 || 
+				  lstrcmpi(exeName, python) == 0 ) && (kerberus_activado) )
 			{	// Si no es el cliente o el sincronizador, redirijo, sino no
+
 				dbgprint( ">>>> REDIRIJOOOOOO!!!!!");
 				//LPCH ReqAddr = inet_ntoip(((SOCKADDR_IN*)name)->sin_addr);
 				// redirijo al cliente de kerberus
@@ -838,7 +879,6 @@ int WSPAPI EasyWSPConnect(
 				// Con esto lo que hago es unir los dos byte para obtener el puerto en decimal
 				puerto = puerto_byte0*256+puerto_byte1;
 				dbgprint( ">>>> IP Modificada: %u.%u.%u.%u  puerto destino: %u\n", octeto1, octeto2, octeto3, octeto4, puerto);
-
 			}else{
 				dbgprint( ">>>> Es el cliente,  no se hace nada");
 			}	
