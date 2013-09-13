@@ -2,7 +2,9 @@
 from PyQt4 import QtGui, QtCore
 import sys
 
+
 sys.path.append('conf')
+sys.path.append('clases')
 
 import webbrowser
 import config
@@ -12,7 +14,9 @@ class KerberusSystray(QtGui.QWidget):
     def __init__(self):
         QtGui.QWidget.__init__(self)
         #cargar imagen para icono
-        pixmap = QtGui.QPixmap(config.PATH_COMMON + '\kerby.ico')
+	icono = config.PATH_COMMON + '/kerby.ico'
+	print "Seteando icono en %s" % icono
+        pixmap = QtGui.QPixmap(icono)
         #setear el nombre de la ventana
         #self.setWindowTitle('Kerberus Control Parental')
         #colocar el icono cargado a la ventana
@@ -41,16 +45,16 @@ class KerberusSystray(QtGui.QWidget):
                 'Cambiar password de administrador'
                 )
         #accion salir
-        #self.exitAction = self.menu.addAction(
-                #self.style.standardIcon(QtGui.QStyle.SP_TitleBarCloseButton),
-                #'Salir')
+        self.exitAction = self.menu.addAction(
+                self.style.standardIcon(QtGui.QStyle.SP_TitleBarCloseButton),
+                'Salir')
 
         #SIGNAL->SLOT
-        #QtCore.QObject.connect(
-                #self.exitAction,
-                #QtCore.SIGNAL("triggered()"),
-                #lambda: sys.exit()
-                #)
+        QtCore.QObject.connect(
+                self.exitAction,
+                QtCore.SIGNAL("triggered()"),
+                lambda: sys.exit()
+                )
         QtCore.QObject.connect(
                 self.menu, QtCore.SIGNAL("clicked()"),
                 lambda: self.menu.popup(QtGui.QCursor.pos())
