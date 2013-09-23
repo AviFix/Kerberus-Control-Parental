@@ -14,8 +14,8 @@ class KerberusSystray(QtGui.QWidget):
     def __init__(self):
         QtGui.QWidget.__init__(self)
         #cargar imagen para icono
-	icono = config.PATH_COMMON + '/kerby.ico'
-	print "Seteando icono en %s" % icono
+        icono = config.PATH_COMMON + '/kerby.ico'
+        print "Seteando icono en %s" % icono
         pixmap = QtGui.QPixmap(icono)
         #setear el nombre de la ventana
         #self.setWindowTitle('Kerberus Control Parental')
