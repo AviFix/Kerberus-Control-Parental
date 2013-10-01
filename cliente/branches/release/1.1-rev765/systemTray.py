@@ -22,7 +22,7 @@ class KerberusSystray(QtGui.QWidget):
         #colocar el icono cargado a la ventana
         #self.setWindowIcon(QtGui.QIcon(pixmap))
         #creamos objeto Style para hacer uso de los iconos de Qt
-        self.style = self.style()
+        #self.style = self.style()
         self.filtradoHabilitado = True
 
         #Menu
@@ -30,23 +30,23 @@ class KerberusSystray(QtGui.QWidget):
 
         #accion deshabilitar filtrado
         self.deshabilitarFiltradoAction = self.menu.addAction(
-                            self.style.standardIcon(QtGui.QStyle.SP_ArrowRight),
+                            #self.style.standardIcon(QtGui.QStyle.SP_ArrowRight),
                             'Deshabilitar Filtrado'
                             )
         #accion habilitar filtrado
         self.habilitarFiltradoAction = self.menu.addAction(
-                            self.style.standardIcon(QtGui.QStyle.SP_ArrowRight),
+                            #self.style.standardIcon(QtGui.QStyle.SP_ArrowRight),
                             'Habilitar Filtrado'
                             )
         self.habilitarFiltradoAction.setVisible(False)
         #cambiar password
         self.cambiarPasswordAction = self.menu.addAction(
-                self.style.standardIcon(QtGui.QStyle.SP_ArrowRight),
+                #self.style.standardIcon(QtGui.QStyle.SP_ArrowRight),
                 'Cambiar password de administrador'
                 )
         #accion salir
         self.exitAction = self.menu.addAction(
-                self.style.standardIcon(QtGui.QStyle.SP_TitleBarCloseButton),
+                #self.style.standardIcon(QtGui.QStyle.SP_TitleBarCloseButton),
                 'Salir')
 
         #SIGNAL->SLOT
@@ -76,7 +76,8 @@ class KerberusSystray(QtGui.QWidget):
                 )
 
         #SystemTray
-        self.tray = QtGui.QSystemTrayIcon(QtGui.QIcon(pixmap), self)
+        #self.tray = QtGui.QSystemTrayIcon(QtGui.QIcon(pixmap), self)
+        self.tray = QtGui.QSystemTrayIcon(QtGui.QIcon('kerby.ico'), self)
         self.tray.setToolTip('KerberusSystray')
         self.tray.setVisible(True)
         self.tray.setContextMenu(self.menu)
