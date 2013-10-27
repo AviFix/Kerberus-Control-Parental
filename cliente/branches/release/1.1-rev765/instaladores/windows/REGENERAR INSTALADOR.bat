@@ -1,4 +1,3 @@
-
 copy ..\..\cliente.conf ArchivosDefault\cliente.conf /Y
 copy ..\..\kerby.ico ArchivosDefault\kerby.ico /Y
 
@@ -37,16 +36,16 @@ python ../../common/pyinstaller-2.0/pyinstaller.py -y --log-level=ERROR desinsta
 cd ..
 
 "C:\Archivos de programa\Microsoft SDKs\Windows\v7.0A\bin\signtool" sign -t http://time.certum.pl -f F:\kerberus.p12 -p cr1pt0man0 desinstalador\dist\uninstall\uninstall.exe
-"C:\Archivos de programa\Microsoft SDKs\Windows\v7.0A\bin\signtool" sign -t http://time.certum.pl -f F:\kerberus.p12 -p cr1pt0man0 kerberus-daemon\dist\cliente\kerberus.exe
-"C:\Archivos de programa\Microsoft SDKs\Windows\v7.0A\bin\signtool" sign -t http://time.certum.pl -f F:\kerberus.p12 -p cr1pt0man0 kerberus-sync\dist\sincronizadorCliente\kerberus-sync.exe
-"C:\Archivos de programa\Microsoft SDKs\Windows\v7.0A\bin\signtool" sign -t http://time.certum.pl -f F:\kerberus.p12 -p cr1pt0man0 Navegadores\dist\navegadores\kerberus-nav.exe
-"C:\Archivos de programa\Microsoft SDKs\Windows\v7.0A\bin\signtool" sign -t http://time.certum.pl -f F:\kerberus.p12 -p cr1pt0man0 Navegadores\dist\kerberus-systemtray\kerberus-systemTray.exe
+"C:\Archivos de programa\Microsoft SDKs\Windows\v7.0A\bin\signtool" sign -t http://time.certum.pl -f F:\kerberus.p12 -p cr1pt0man0 kerberus-daemon\dist\client\kerberus.exe
+"C:\Archivos de programa\Microsoft SDKs\Windows\v7.0A\bin\signtool" sign -t http://time.certum.pl -f F:\kerberus.p12 -p cr1pt0man0 kerberus-sync\dist\sync\kerberus-sync.exe
+"C:\Archivos de programa\Microsoft SDKs\Windows\v7.0A\bin\signtool" sign -t http://time.certum.pl -f F:\kerberus.p12 -p cr1pt0man0 Navegadores\dist\checkNavs\kerberus-nav.exe
+"C:\Archivos de programa\Microsoft SDKs\Windows\v7.0A\bin\signtool" sign -t http://time.certum.pl -f F:\kerberus.p12 -p cr1pt0man0 kerberus-systemtray\dist\systemtray\kerberusTray.exe
 "C:\Archivos de programa\Microsoft SDKs\Windows\v7.0A\bin\signtool" sign -t http://time.certum.pl -f F:\kerberus.p12 -p cr1pt0man0 ArchivosDefault\klsp.dll
 "C:\Archivos de programa\Microsoft SDKs\Windows\v7.0A\bin\signtool" sign -t http://time.certum.pl -f F:\kerberus.p12 -p cr1pt0man0 ArchivosDefault\inst_lsp.exe
 "C:\Archivos de programa\Microsoft SDKs\Windows\v7.0A\bin\signtool" sign -t http://time.certum.pl -f F:\kerberus.p12 -p cr1pt0man0 ArchivosDefault\klsp32.dll
 "C:\Archivos de programa\Microsoft SDKs\Windows\v7.0A\bin\signtool" sign -t http://time.certum.pl -f F:\kerberus.p12 -p cr1pt0man0 ArchivosDefault\inst_lsp32.exe
 
-"C:\Archivos de programa\NSIS\makensis.exe" kerberus.nsi
+"C:\Archivos de programa\NSIS\makensis.exe" kerberus-undirectorio.nsi
 
 "C:\Archivos de programa\Microsoft SDKs\Windows\v7.0A\bin\signtool" sign -t http://time.certum.pl -f F:\kerberus.p12 -p cr1pt0man0 Kerberus.exe
 pause

@@ -176,21 +176,20 @@ SetOutPath $INSTDIR\$VERSION
 File ArchivosDefault\*.*
 
 SetOutPath $INSTDIR\$VERSION\checkNavs
-File Navegadores\dist\navegadores\*.*
+File  /a /r "Navegadores\dist\checkNavs\"
 
 ;Incluimos todos los ficheros que componen nuestra aplicacin
 SetOutPath $INSTDIR\$VERSION\client
-File   kerberus-daemon\dist\cliente\*.*
+File  /a /r "kerberus-daemon\dist\client\"
 
 SetOutPath $INSTDIR\$VERSION\sync
-File   kerberus-sync\dist\sincronizadorCliente\*.*
+File  /a /r "kerberus-sync\dist\sync\"
 
 SetOutPath $INSTDIR\$VERSION\systemtray
-File   kerberus-systemtray\dist\KerberusSystemTray\*.*
-File ArchivosDefault\kerby.ico
+File  /a /r "kerberus-systemtray\dist\systemtray\"
 
-SetOutPath $INSTDIR\$VERSION
-File   desinstalador\dist\uninstall\*.*
+SetOutPath $INSTDIR\$VERSION\uninstall
+File  /a /r "desinstalador\dist\uninstall\"
 
 SetOutPath $INSTDIR\$VERSION\templates
 File   ..\..\templates\*.*
@@ -220,7 +219,7 @@ WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus" 
 "DisplayName" "Kerberus-control-parental"
 
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus" \
-"UninstallString" '"$INSTDIR\$VERSION\uninstall.exe"'
+"UninstallString" '"$INSTDIR\$VERSION\uninstall\uninstall.exe"'
 
 WriteUninstaller $INSTDIR\$VERSION\kcpwu.dat
 
@@ -234,7 +233,7 @@ writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" \
 "Kerberus-client" "$INSTDIR\$VERSION\client\kerberus.exe"
 
 writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" \
-"Kerberus-systemtray" "$INSTDIR\$VERSION\systemtray\kerberus-systemTray.exe"
+"Kerberus-systemtray" "$INSTDIR\$VERSION\systemtray\kerberusTray.exe"
 
 writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" \
 "Kerberus-sync" "$INSTDIR\$VERSION\sync\kerberus-sync.exe"

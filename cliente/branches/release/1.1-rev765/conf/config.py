@@ -13,9 +13,6 @@ import logging.handlers
 
 sys.path.append('../')
 
-# Modulos propios
-
-
 # FIXME: Deberia estar en loguear en vez de aca
 def logSetup(logfile, loglevel=5, logsize=1, cant_rotaciones=1,
                 cabecera_log=""):
@@ -58,10 +55,9 @@ else:
         archivo_de_configuracion = '/etc/kerberus/cliente.conf'
         archivo_de_spec = PATH_COMMON + '/confspec.ini'
         logger = logSetup(
-            '/var/log/kerberus-cliente-config.log', 2, 1, 1, "Config")
+            '/tmp/kerberus-cliente-config.log', 2, 1, 1, "Config")
     else:
         import _winreg
-#        import subprocess
         try:
             key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r'Software\kerberus')
         except WindowsError:
@@ -77,10 +73,10 @@ else:
         archivo_de_spec = PATH_COMMON + '\confspec.ini'
         logger = logSetup(PATH_COMMON + '\config.log', 2, 1)
 
-logger.log(logging.INFO, "Plataforma detectada %s" % platform.uname()[0])
-logger.log(logging.INFO,
-    "Utiliando el archivo de configuracion: %s" % archivo_de_configuracion)
-logger.log(logging.INFO, "Utiliando el archivo de spec: %s" % archivo_de_spec)
+#logger.log(logging.INFO, "Plataforma detectada %s" % platform.uname()[0])
+#logger.log(logging.INFO,
+    #"Utiliando el archivo de configuracion: %s" % archivo_de_configuracion)
+#logger.log(logging.INFO, "Utiliando el archivo de spec: %s" % archivo_de_spec)
 
 config = ConfigObj(archivo_de_configuracion, configspec=archivo_de_spec)
 validator = Validator()
@@ -98,13 +94,12 @@ if result != True:
             print 'No se encontro la sección:%s ' % ', '.join(section_list)
             logger.log(logging.ERROR,
                 'No se encontro la sección:%s ' % ', '.join(section_list))
-
 else:
     #print "Se leyo la configuración del cliente correctamente"
-    logger.log(
-        logging.DEBUG,
-        'Se leyo la configuracion del cliente correctamente'
-        )
+    #logger.log(
+        #logging.DEBUG,
+        #'Se leyo la configuracion del cliente correctamente'
+        #)
 
     #revisar y arreglar para que quede mejor
     PATH_TEMPLATES = PATH_COMMON + '/templates'
