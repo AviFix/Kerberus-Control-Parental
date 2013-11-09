@@ -176,8 +176,20 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                 self.send_error(404, msg)
             return False
         return True
-
+    # Utilizado en conexiones HTTPS
     def do_CONNECT(self):
+        # Si se van a realizar busquedas en https, las redirige a http
+        if self.path.startswith("www.google.") and self.path.endswith(":443"):
+            self.path = "nosslsearch.google.com:443"
+
+        # Si quieren usar encrypted, no los pelo
+        if self.path.startswith("encrypted.google."):
+            self.denegar("Sitio de busqueda no permitido",self.path)
+
+        self.server.logger.log(
+                logging.DEBUG,
+                "Metodo do_CONNECT, path: %(url)s"
+                % {'url': self.path})
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
             if self._connect_to(self.path, soc):
