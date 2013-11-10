@@ -40,24 +40,33 @@ class navegadores:
 
     def setNavegadores(self):
         try:
-            self.setURLFirefox()
-        except:
-            print "ERROR seteando la URL de firefox"
-        try:
             self.setURLIE()
         except:
             print "ERROR seteando la URL de Internet Explorer"
-
+        try:
+            self.setFirefox()
+        except:
+            print "ERROR seteando firefox"
+        try:
+            self.setIE()
+        except:
+            print "ERROR seteando Internet Explorer"
 
     def unsetNavegadores(self):
-        try:
-            self.unsetURLFirefox()
-        except:
-            print "ERROR desseteando la URL de firefox"
         try:
             self.unsetURLIE()
         except:
             print "ERROR desseteando la URL de Internet Explorer"
+
+        try:
+            self.unsetFirefox()
+        except:
+            print "ERROR desseteando firefox"
+        try:
+            self.unsetIE()
+        except:
+            print "ERROR desseteando Internet Explorer"
+
 
     def estaFirefoxInstalado(self):
         try:
@@ -108,70 +117,23 @@ class navegadores:
             archivo_config="%s\\prefs.js" % perfil
             if os.path.isfile(archivo_config):
                 archivo = open(archivo_config,'r')
-                proxy_ip = 'user_pref(\"network.proxy.http\", \"%s\");' % config.BIND_ADDRESS
-                proxy_port = 'user_pref(\"network.proxy.http_port\", %s);' % config.BIND_PORT
-                proxy_habilitado = 'user_pref(\"network.proxy.type\", 1);'
-                ip_detectada = False
-                puerto_detectado = False
-                proxy_habilitado_detectado = False
+                proxy_no_default = 'network.proxy.type'
+                proxy_no_default_detectado = False
                 for linea in archivo.readlines():
-                    #print "linea: %s" % linea
-                    if proxy_ip in linea:
-                        ip_detectada = True
-                    if proxy_port in linea:
-                        puerto_detectado = True
-                    if proxy_habilitado in linea:
-                        proxy_habilitado_detectado = True
-                if proxy_habilitado_detectado and puerto_detectado and ip_detectada:
-                    print "Esta Seteado Firefox, perfil: %s" % perfil
-                    return True
-                else:
+                    if proxy_no_default in linea:
+                        proxy_no_default_detectado = True
+                if proxy_no_default_detectado:
                     print "No esta Seteado Firefox, perfil: %s" % perfil
                     return False
-
-    def estaSeteadaURLFirefox(self, perfil):
-            archivo_config="%s\\prefs.js" % perfil
-            if os.path.isfile(archivo_config):
-                archivo = open(archivo_config,'r')
-                urlSeteada = False
-                for linea in archivo.readlines():
-                    if "inicio.kerberus.com.ar" in linea:
-                        urlSeteada = True
-                if urlSeteada:
-                    print "Esta Seteada la URL de Firefox, perfil: %s" % perfil
-                    return True
                 else:
-                    print "No esta Seteada la URL de Firefox, perfil: %s" % perfil
-                    return False
+                    print "Esta Seteado Firefox, perfil: %s" % perfil
+                    return True
+
 
     def setFirefox(self):
         if self.estaFirefoxInstalado():
             for perfil in self.getFirefoxProfiles(os.environ['USERNAME']):
                 if not self.estaSeteadoFirefox(perfil):
-                        print "seteando el perfil %s" % perfil
-                        key = _winreg.OpenKey(self.hkey_constante, r'Software\kerberus')
-                        path_common_kerberus = _winreg.QueryValueEx(key,'kerberus-common')[0]
-                        mozilla_config_file="%s\\user.js" % path_common_kerberus
-                        destino = "%s\\user.js" % perfil
-                        archivo_origen = open(mozilla_config_file, 'r')
-                        archivo_destino = open(destino,'w')
-                        for linea in archivo_origen.readlines():
-                            if "network.proxy.http_port" in linea:
-                                linea = 'user_pref(\"network.proxy.http_port\", %s);\n' % config.BIND_PORT
-                                archivo_destino.write(linea)
-                            elif "network.proxy.http" in linea:
-                                linea = 'user_pref(\"network.proxy.http\", \"%s\");\n' % config.BIND_ADDRESS
-                                archivo_destino.write(linea)
-                            else:
-                                archivo_destino.write(linea)
-                        archivo_origen.close()
-                        archivo_destino.close()
-                        print "Se termino de setear firefox para el perfil %s" % perfil
-
-    def setURLFirefox(self):
-        if self.estaFirefoxInstalado():
-            for perfil in self.getFirefoxProfiles(os.environ['USERNAME']):
-                if not self.estaSeteadaURLFirefox(perfil):
                         print "seteando el perfil %s" % perfil
                         key = _winreg.OpenKey(self.hkey_constante, r'Software\kerberus')
                         path_common_kerberus = _winreg.QueryValueEx(key,'kerberus-common')[0]
@@ -190,33 +152,6 @@ class navegadores:
             print "Desconfigurando firefox..."
             for perfil in self.getFirefoxProfiles(os.environ['USERNAME']):
                 if self.estaSeteadoFirefox(perfil):
-                    print "desseteando el perfil %s" % perfil
-                    path_archivo = "%s\\prefs.js" % perfil
-                    archivo = open(path_archivo,'r')
-                    nuevo = []
-                    for linea in archivo.readlines():
-                        if "user_pref(\"network.proxy.type\", 1);" in linea:
-                            nuevo.append("user_pref(\"network.proxy.type\", 0);\r\n")
-                        else:
-                            nuevo.append(linea)
-                    archivo.close()
-                    archivo = open(path_archivo,'w')
-                    for linea in nuevo:
-                        archivo.write(linea)
-                    archivo.close()
-                    archivo_user = "%s\\user.js" % perfil
-                    if os.path.isfile(archivo_user):
-                        os.remove(archivo_user)
-                    print "Se termino de dessetear firefox para el perfil %s" % perfil
-        else:
-            print "No esta instalado firefox"
-
-    def unsetURLFirefox(self):
-        if self.estaFirefoxInstalado():
-            print "Desconfigurando firefox..."
-            for perfil in self.getFirefoxProfiles(os.environ['USERNAME']):
-                if self.estaSeteadoFirefox(perfil):
-                    print "desseteando el perfil %s" % perfil
                     archivo_user = "%s\\user.js" % perfil
                     if os.path.isfile(archivo_user):
                         os.remove(archivo_user)

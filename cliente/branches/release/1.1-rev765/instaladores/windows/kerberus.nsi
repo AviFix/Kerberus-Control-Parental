@@ -243,20 +243,20 @@ WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" \
 
 WriteRegStr HKLM "Software\Microsoft\Internet Explorer\Main" "Start Page" "http://inicio.kerberus.com.ar"
 
-;writeRegDWord HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
-;"MigrateProxy" 1
+writeRegDWord HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
+"MigrateProxy" 1
 
-;writeRegDWord HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
-;"ProxyEnable" 1
+writeRegDWord HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
+"ProxyEnable" 1
 
-;writeRegDWord HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
-;"ProxyHttp1.1" 1
+writeRegDWord HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
+"ProxyHttp1.1" 1
 
-;writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
-;"ProxyServer" "127.0.0.1:4200"
+writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
+"ProxyServer" "127.0.0.1:4200"
 
-;writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
-;"ProxyOverride" "127.0.0.1,localhost"
+writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
+"ProxyOverride" "127.0.0.1,localhost"
 
 ; Seteando google chrome, sacado de http://www.chromium.org/administrators/policy-list-3
 writeRegStr HKLM "Software\Policies\Google\Chrome" "HomepageLocation" "http://inicio.kerberus.com.ar"
@@ -327,11 +327,11 @@ Section "Uninstall"
         DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Run" "Kerberus-systemtray"
         DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Run" "checkNavs"
         writeRegStr HKLM "Software\Microsoft\Internet Explorer\Main" "Start Page" "http://www.google.com"
-        ;DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "MigrateProxy"
-        ;DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyEnable"
-        ;DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyHttp1.1"
-        ;DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyServer"
-        ;DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyOverride"
+        DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "MigrateProxy"
+        DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyEnable"
+        DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyHttp1.1"
+        DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyServer"
+        DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyOverride"
         DeleteRegValue HKLM "Software\Policies\Google\Chrome" "HomepageLocation"
         DeleteRegValue HKLM "Software\Policies\Google\Chrome" "system"
         ;DeleteRegValue HKLM "Software\Policies\Google\Chrome" "DefaultSearchProviderSearchURL"

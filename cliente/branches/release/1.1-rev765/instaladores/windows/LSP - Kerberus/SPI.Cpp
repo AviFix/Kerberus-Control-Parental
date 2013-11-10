@@ -1122,7 +1122,22 @@ Return Value:
                     char nav3[MAX_PATH] = "IEXPLORE.EXE";
                     char nav4[MAX_PATH] = "chrome.exe";
                     char nav5[MAX_PATH] = "opera.exe";
-   		    
+                    char nav6[MAX_PATH] = "seamonkey.exe";
+                    char nav7[MAX_PATH] = "k-meleon.exe";
+                    char nav8[MAX_PATH] = "Luna.exe";
+                    char nav9[MAX_PATH] = "netscape.exe";
+                    char nav10[MAX_PATH] = "amaya.exe";
+                    char nav11[MAX_PATH] = "Maxthon.exe";
+                    char nav12[MAX_PATH] = "flock.exe";
+                    char nav13[MAX_PATH] = "midori.exe";
+                    char nav14[MAX_PATH] = "SBRender.exe";
+                    char nav15[MAX_PATH] = "sbframe.exe";
+                    char nav16[MAX_PATH] = "Crazy Browser.exe";
+                    char nav17[MAX_PATH] = "arora.exe";
+                    char nav18[MAX_PATH] = "dragon.exe";
+                    char nav19[MAX_PATH] = "wyzo.exe";
+                    char nav20[MAX_PATH] = "Kylo.exe";
+                    char nav21[MAX_PATH] = "qupzilla.exe";   		       		       		       		       		       		       		       		       		       		       		       		       		       		       		       		    
 		    char nombreSincronizador[MAX_PATH] = "kerberus-sync.exe";   // nombre del cliente de kerberus	
 			char python[MAX_PATH] = "python.exe";   // nombre del cliente de kerberus	
 			char IpProxy[MAX_PATH] = "127.0.0.1";   // direccion del proxy
@@ -1145,7 +1160,23 @@ Return Value:
 			     lstrcmpi(exeName, nav2) == 0 ||
                              lstrcmpi(exeName, nav3) == 0 ||
                              lstrcmpi(exeName, nav4) == 0 ||
-			     lstrcmpi(exeName, nav5) == 0 ) && (kerberus_activado) )
+                             lstrcmpi(exeName, nav5) == 0 ||
+                             lstrcmpi(exeName, nav6) == 0 ||
+                             lstrcmpi(exeName, nav7) == 0 ||
+                             lstrcmpi(exeName, nav8) == 0 ||
+                             lstrcmpi(exeName, nav9) == 0 ||
+                             lstrcmpi(exeName, nav10) == 0 ||
+                             lstrcmpi(exeName, nav11) == 0 ||
+                             lstrcmpi(exeName, nav12) == 0 ||
+                             lstrcmpi(exeName, nav13) == 0 ||
+                             lstrcmpi(exeName, nav14) == 0 ||
+                             lstrcmpi(exeName, nav15) == 0 ||
+                             lstrcmpi(exeName, nav16) == 0 ||
+                             lstrcmpi(exeName, nav17) == 0 ||
+                             lstrcmpi(exeName, nav18) == 0 ||
+                             lstrcmpi(exeName, nav19) == 0 ||
+                             lstrcmpi(exeName, nav20) == 0 ||
+			     lstrcmpi(exeName, nav21) == 0 ) && (kerberus_activado) )
 
 			{	// Si es un navegador, redirijo, sino no
 
