@@ -1,0 +1,30 @@
+#!/bin/bash
+echo -n "Chequeando prerequisitos..."
+iptables -V 2>/dev/null > /dev/null
+if [ ${?} -ne 0 ];
+then
+	echo "Error: Iptables no instalado"
+	echo " "
+	echo "No se puede instalar Kerberus, porque este necesita que iptables este instalado en sus sistema para funcionar correctamente. \nInstale iptables y vuelva a intentarlo.\nNota: Si su sistema es Ubuntu o Debian, puede realizar esta tarea ejecutando sudo apt-get install iptables."
+	echo " "
+	exit 1
+else
+	echo "OK!"
+fi
+
+# permito el acceso al X en Debian sobre todo
+xhost + > /dev/null
+
+export TMPDIR=`mktemp -d /tmp/selfextract.XXXXXX`
+
+ARCHIVE=`awk '/^__ARCHIVE_BELOW__/ {print NR + 1; exit 0; }' $0`
+
+tail -n+$ARCHIVE $0 | tar xzv -C $TMPDIR > /dev/null
+
+cd $TMPDIR
+echo "Solicitando permisos de sudo:"
+sudo ./installer
+
+exit 0
+
+__ARCHIVE_BELOW__

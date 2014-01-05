@@ -1,0 +1,11 @@
+- Para correr estos test, se debe contar con una version del server instalada localmente (con apache configurado y todo, ver el archivo Instalacion-paso-a-paso-de-un-nodo.txt que esta dentro de la carpeta del servidor), y que este corriendo la base de datos 'base-server-para-correr-tests.sql' que se encuentra dentro de la carpeta del servidor.
+
+- Es recomendable que el nro de nodo sea distinto de los que estan en produccion.
+
+- También debe estar la variable ENTORNO_DE_DESARROLLO = True en el archivo
+config.py del cliente.
+
+- El apache local debe publicar el archivo test-kerberus.html en http://localhost/test-kerberus.html (este archivo se usa para testear la correcta descarga de las actualizaciones).
+
+
+
