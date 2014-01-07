@@ -53,15 +53,10 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
     rbufsize = 0                        # self.rfile Be unbuffered
 
     def mostrarPublicidad(self, url):
-        msg = "<html><head><title>Navegador protegido por Kerberus</title>"\
+        msg = "<html><head><title>Browser Protected by Kerberus</title>"\
         "<meta http-equiv=\"REFRESH\" content=\"0;"\
-        "url=http://inicio.kerberus.com.ar\" ></head> <body ></body> </html>"
+        "url=http://inicio.kerberus.com.ar/en\" ></head> <body ></body> </html>"
         self.server.logger.log(logging.DEBUG, "Primer pagina de acceso.")
-        self.responderAlCliente(msg)
-
-    def mostrarDeshabilitado(self):
-        msg = "<html><head><title>Navegador protegido por Kerberus</title>"\
-        "</head> <body >Navegación Deshabilitada</body> </html> "
         self.responderAlCliente(msg)
 
     def responderAlCliente(self, mensaje):
@@ -96,13 +91,13 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
             mensaje = mensajesHtml.MensajesHtml(config.PATH_TEMPLATES)
 
             if respuesta == 'Recordada':
-                msj = u'Estimado usuario,<br><br>Le hemos enviado un e-mail '\
-                u'a su cuenta de correo %s con la contraseña de administrador '\
-                u'de Kerberus.' % (email)
+                msj = u'Dear customers,<br><br>We have sent you an e-mail '\
+                u'to your e-mail account %s with the kerberus administrator '\
+                u' password' % (email)
             else:
-                msj = u'Estimado usuario,<br><br>Ya hemos enviado un e-mail a'\
-                u' su cuenta de correo %s con la contraseña de administrador '\
-                u'de Kerberus.' % (email)
+                msj = u'Dear customers,<br><br>have already sent an e-mail'\
+                u' to your e-mail account %s with the kerberus administrator'\
+                u' password' % (email)
             msg = mensaje.recordarPassword(msj)
             self.responderAlCliente(msg)
 
@@ -113,24 +108,24 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 
     def passwordErronea(self):
         mensaje = mensajesHtml.MensajesHtml(config.PATH_TEMPLATES)
-        msg = mensaje.pedirPassword(u'Contraseña incorrecta!')
+        msg = mensaje.pedirPassword(u'Wrong password!')
         self.responderAlCliente(msg)
 
     def cambioPassPasswordErronea(self):
         mensaje = mensajesHtml.MensajesHtml(config.PATH_TEMPLATES)
-        msg = mensaje.cambiarPassword(u'Contraseña incorrecta!',
+        msg = mensaje.cambiarPassword(u'Wrong password!',
                                         'password_actual')
         self.responderAlCliente(msg)
 
     def passwordCambiadaCorrectamente(self):
         mensaje = mensajesHtml.MensajesHtml(config.PATH_TEMPLATES)
         msg = mensaje.passwordCambiadaCorrectamente(
-            u'Contraseña cambiada correctamente!')
+            u'Password changed successfully!')
         self.responderAlCliente(msg)
 
     def cambioPassPasswordNoCoinciden(self):
         mensaje = mensajesHtml.MensajesHtml(config.PATH_TEMPLATES)
-        msg = mensaje.cambiarPassword(u'Las contraseñas no coinciden!',
+        msg = mensaje.cambiarPassword(u'Passwords do not match!',
             'password_nueva1')
         self.responderAlCliente(msg)
 
@@ -142,9 +137,9 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
     def denegar(self, motivo, url):
         motivo_b64 = base64.b64encode(motivo)
         url_b64 = base64.b64encode(url)
-        msg = ("<html><head><title>Sitio Denegado</title>"
+        msg = ("<html><head><title>Site Denied</title>"
                 "<meta http-equiv=\"REFRESH\" content=\"0;"
-                "url=http://denegado.kerberus.com.ar/%(url)s/%(motivo)s"
+                "url=http://denegado.kerberus.com.ar/en/%(url)s/%(motivo)s"
                 "\" ></head> <body ></body> </html>"
                 % {'motivo':motivo_b64, 'url':url_b64})
 
@@ -184,7 +179,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 
         # Si quieren usar encrypted, no los pelo
         if self.path.startswith("encrypted.google."):
-            self.denegar("Sitio de busqueda no permitido",self.path)
+            self.denegar("Search site dont allowed",self.path)
 
         self.server.logger.log(
                 logging.DEBUG,
@@ -237,14 +232,14 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         usuario, password = "NoBody", "NoBody"
 
 
-        if "!HabilitarFiltrado!" in url:
-            url = url.replace('!HabilitarFiltrado!', '')
+        if "!EnableKerberus!" in url:
+            url = url.replace('!EnableKerberus!', '')
             self.server.verificador.kerberus_activado = True
             self.redirigirDesbloqueado(url)
             return True
 
-        if "!DeshabilitarFiltrado!" in url:
-            url = url.replace('!DeshabilitarFiltrado!', '')
+        if "!DisableKerberus!" in url:
+            url = url.replace('!DisableKerberus!', '')
             if self.server.verificador.kerberus_activado:
                 if self.command == 'POST':
                     try:
@@ -272,8 +267,8 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 
 
         # Cambio de password
-        if "!CambiarPassword!" in url:
-            url = url.replace('!CambiarPassword!', '')
+        if "!ChangePassword!" in url:
+            url = url.replace('!ChangePassword!', '')
             if self.command == 'POST':
                 try:
                     content_len = int(self.headers.getheader('content-length'))
@@ -309,15 +304,15 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                 self.cambiarPassword()
                 return True
 
-        if "!RecordarPassword!" in url:
-            url = url.replace('!RecordarPassword!', '')
+        if "!RememberPassword!" in url:
+            url = url.replace('!RememberPassword!', '')
             self.recordarPassword()
             return True
 
         #FIXME: Esto deberia ser un header no por url
         if "http://inicio.kerberus.com.ar" in url and \
             self.server.verificador.kerberus_activado:
-            url = url + "?kerberus_activado=1"
+            url = url + "?kerberus_enabled=1"
 
         if self.server.verificador.kerberus_activado:
             permitido, motivo = self.server.verificador.validarUrl(usuario,
@@ -509,7 +504,7 @@ def main():
     httpd = ThreadingHTTPServer(server_address, ProxyHandler, logger)
     sa = httpd.socket.getsockname()
     logger.log(logging.DEBUG,
-        'Kerberus - Cliente Activo, atendiendo en %s puerto %s' % (sa[0], sa[1]))
+        'Kerberus - Client running, listening on %s port %s' % (sa[0], sa[1]))
     req_count = 0
     while not run_event.isSet():
         try:

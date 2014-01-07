@@ -62,13 +62,13 @@ class IntroPage(QWizardPage):
         if len(password1)<1:
             QMessageBox.critical(self,
                 'Kerberus',
-                u'Debe ingresar una contraseña!', QMessageBox.Ok)
+                u'You must enter a password!', QMessageBox.Ok)
             return False
 
         if (password1 <> password2):
             QMessageBox.critical(self,
                 'Kerberus',
-                u'Las contraseñas no coinciden!', QMessageBox.Ok)
+                u'Passwords do not match!', QMessageBox.Ok)
             self.setField("password1","")
             self.setField("password2","")
             return False
@@ -94,14 +94,14 @@ class RegistrationPage(QWizardPage):
         if len(nombre)<1:
             QMessageBox.critical(self,
                 'Kerberus',
-                'Debe ingresar su nombre', QMessageBox.Ok)
+                'You must enter your name', QMessageBox.Ok)
             return False
         elif self.emailValido(email):
             return True
         else:
             QMessageBox.critical(self,
                 'Kerberus',
-                u'Debe ingresar una dirección de correo electrónico válida',
+                u'You must enter a valid email address',
                 QMessageBox.Ok)
             return False
 
@@ -118,11 +118,11 @@ class ConclusionPage(QWizardPage):
         password=unicode(self.field("password1").toString().toUtf8(), 'utf-8')
         registrador=registrar.Registradores()
         registrador.registrarLocalmente(nombre,email,password)
-        titulo=u'Fin de la configuración'
-        mensaje=u'Estimado %s,\n\nHemos registrado su contraseña '\
-            u'correctamente.\nLe enviaremos un correo electrónico con la misma'\
-            u' a %s de modo que la pueda tener presente.\n\n\nGracias por '\
-            u'utilizar Kerberus Control Parental!' % (nombre, email)
+        titulo=u'End of Configuration'
+        mensaje=u'Dear %s,\n\nWe have registered your password correctly '\
+            u'.\nWe will send you an email to the same to %s '\
+            u'so that you can have this.\n\n\nThank you '\
+            u'for using Kerberus Control Parental!' % (nombre, email)
         self.setTitle(titulo)
         self.setField("labelConclusion",mensaje)
 
@@ -138,7 +138,7 @@ class RegistrarUsuario:
         wizard.addPage(self.createIntroPage())
         wizard.addPage(self.createRegistrationPage())
         wizard.addPage(self.createConclusionPage())
-        wizard.setWindowTitle(u'Contraseña de administrador')
+        wizard.setWindowTitle(u'Administrator password')
         wizard.show()
         wizard.exec_()
         self.unlock()
@@ -155,22 +155,21 @@ class RegistrarUsuario:
 
     def createIntroPage(self):
         page = IntroPage()
-        page.setTitle(u'Configure la contraseña de administrador')
+        page.setTitle(u'Configure the administrator password')
 
-        label = QLabel(u'Esta contraseña le permitirá deshabilitar '
-            u'temporalmente la protección de Kerberus y le será requerida '
-            u'para poder desinstalarlo.\n')
+        label = QLabel(u'This password will allow you to temporarily disable '
+            u'Kerberus protection and will be required to uninstall.\n')
         label.setWordWrap(True)
 
-        password1Label = QLabel(u'Contraseña:')
+        password1Label = QLabel(u'Password:')
         password1LineEdit = QLineEdit()
         password1LineEdit.setEchoMode(QLineEdit.Password)
 
-        password2Label = QLabel(u'Reingrese la contraseña:')
+        password2Label = QLabel(u'Re-enter the password:')
         password2LineEdit = QLineEdit()
         password2LineEdit.setEchoMode(QLineEdit.Password)
 
-        mensajeErrorLabel = QLabel("Ingrese")
+        mensajeErrorLabel = QLabel("Enter")
 
         page.registerField("password1*",password1LineEdit)
         page.registerField("password2*",password2LineEdit)
@@ -183,21 +182,21 @@ class RegistrarUsuario:
         layout.addWidget(password2LineEdit, 2, 1)
 
         page.setLayout(layout)
-        page.setButtonText(0,"Volver")
-        page.setButtonText(1,"Siguiente")
-        page.setButtonText(4,"Cancelar")
+        page.setButtonText(0,"Back")
+        page.setButtonText(1,"Next")
+        page.setButtonText(4,"Cancel")
 
         return page
 
 
     def createRegistrationPage(self):
         page = RegistrationPage()
-        page.setTitle("Registro")
-        label = QLabel(u'Ingrese su nombre y dirección de correo electrónico,'
-            u' de modo que \npodamos recordarle la contraseña que ingresó en el'
-            u' paso anterior, \nen caso de que la olvide.\n')
+        page.setTitle("Registration")
+        label = QLabel(u'Enter your name and email address,'
+            u' so that we can remind the password you entered in the previous \n'
+                u' step, \nin case you forget.\n')
 
-        nameLabel = QLabel("Nombre:")
+        nameLabel = QLabel("Name:")
         nameLineEdit = QLineEdit()
 
         emailLabel = QLabel("Email:")
@@ -214,26 +213,26 @@ class RegistrarUsuario:
         layout.addWidget(emailLineEdit, 2, 1)
 
         page.setLayout(layout)
-        page.setButtonText(0,"Volver")
-        page.setButtonText(1,"Siguiente")
-        page.setButtonText(4,"Cancelar")
+        page.setButtonText(0,"Back")
+        page.setButtonText(1,"Next")
+        page.setButtonText(4,"Cancel")
 
         return page
 
 
     def createConclusionPage(self):
         page = ConclusionPage()
-        page.setTitle(u'Fin de la configuración')
+        page.setTitle(u'End of Configuration')
 
-        label = QLabel(u'Hemos registrado sus datos correctamente. \nGracias '
-            u'por utilizar Kerberus Control Parental!')
+        label = QLabel(u'We have register you correctly. \nThank you '
+            u'for using Kerberus Control Parental!')
         label.setWordWrap(True)
         page.registerField("labelConclusion",label,"text")
 
         layout = QVBoxLayout()
         layout.addWidget(label)
         page.setLayout(layout)
-        page.setButtonText(0,"Volver")
-        page.setButtonText(3,"Finalizar")
-        page.setButtonText(4,"Cancelar")
+        page.setButtonText(0,"Back")
+        page.setButtonText(3,"End")
+        page.setButtonText(4,"Cancel")
         return page

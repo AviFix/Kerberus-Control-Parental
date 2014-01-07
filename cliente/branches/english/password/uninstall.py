@@ -13,9 +13,9 @@ import time
 import config
 
 app = QtGui.QApplication(sys.argv)
-myapp = pedirUsuario.formularioUsuario('Desinstalar Kerberus',
-        u'Ingrese la contraseña de administrador de Kerberus \n'
-        u'(la que ingreso al momento de instalarlo)')
+myapp = pedirUsuario.formularioUsuario('Uninstall Kerberus',
+        u'Enter the Kerberus administrator password \n'
+        u'(that income when installing)')
 myapp.show()
 app.exec_()
 desinstalar = myapp.verificado
@@ -23,7 +23,7 @@ desinstalar = myapp.verificado
 if desinstalar:
     if config.PLATAFORMA == 'Linux':
         desinstalador = "%s/uninstaller" % config.PATH_COMMON
-        print "Ejecutando %s" % desinstalador
+        print "Executing %s" % desinstalador
         subprocess.Popen(desinstalador)
         reg = registrar.Registradores()
         reg.eliminarRemotamente()

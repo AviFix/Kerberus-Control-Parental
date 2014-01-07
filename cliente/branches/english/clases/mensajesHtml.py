@@ -41,9 +41,9 @@ class MensajesHtml:
 
     def pedirPassword(self, mensaje=''):
         diccionario = {
-            'titulo': 'Deshabilitar filtrado temporalmente',
-            'subtitulo': u'(El filtrado estará inactivo hasta que reinicie la PC)'.encode('utf-8'),
-            'mensaje': u'Ingrese la contraseña del administrador de Kerberus'.encode('utf-8'),
+            'titulo': 'Temporarily Disable filter',
+            'subtitulo': u'(The filter is inactive until you restart the PC)'.encode('utf-8'),
+            'mensaje': u'Enter the Kerberus administrator password'.encode('utf-8'),
             'mensaje_error': mensaje.encode('utf-8')
             }
         mensaje = self.renderizarMensaje(self.template_pedir_password,
@@ -52,8 +52,8 @@ class MensajesHtml:
 
     def cambiarPassword(self, mensaje='', focus_en=''):
         diccionario = {
-            'titulo': u'Cambiar contraseña'.encode('utf-8'),
-            'subtitulo': u'(Cambio de la contraseña del administrador de Kerberus)'.encode('utf-8'),
+            'titulo': u'Change password'.encode('utf-8'),
+            'subtitulo': u'(Changing the Kerberus administrator password)'.encode('utf-8'),
             'mensaje_error': mensaje.encode('utf-8'),
             'focus': focus_en.encode('utf-8')
             }
@@ -63,7 +63,7 @@ class MensajesHtml:
 
     def passwordCambiadaCorrectamente(self, mensaje=''):
         diccionario = {
-            'titulo': u'Cambiar contraseña'.encode('utf-8'),
+            'titulo': u'Change password'.encode('utf-8'),
             'mensaje': mensaje.encode('utf-8')
             }
         mensaje = self.renderizarMensaje(self.template_mensaje, diccionario)
@@ -71,7 +71,7 @@ class MensajesHtml:
 
     def recordarPassword(self, mensaje=''):
         diccionario = {
-            'titulo': u'Recordar contraseña'.encode('utf-8'),
+            'titulo': u'Remember password'.encode('utf-8'),
             'mensaje': mensaje.encode('utf-8')
             }
         mensaje = self.renderizarMensaje(self.template_mensaje, diccionario)

@@ -133,7 +133,8 @@ class Peticion:
         headers = {"UserID": self.userid,
                     "Peticion": "informarNuevaPassword",
                     "PasswordVieja": self.credencial,
-                    "PasswordNueva": password_quoted}
+                    "PasswordNueva": password_quoted,
+                    "Idioma":"en"}
         respuesta = self.obtenerRespuesta(headers)
         if respuesta == 'Informada':
             # FIXME: Cambiar encriptacion de md5 a algo mejor
@@ -142,7 +143,8 @@ class Peticion:
         return respuesta
 
     def recordarPassword(self):
-        headers = {"Peticion": "recordarPassword"}
+        headers = {"Peticion": "recordarPassword",
+                    "Idioma":"en"}
         respuesta = self.obtenerRespuesta(headers)
         return respuesta
 
@@ -176,14 +178,14 @@ class Peticion:
         respuesta = self.obtenerRespuesta(headers)
         return respuesta
 
-    def registrarUsuario(self, nombre, email, password, version):
+    def registrarUsuario(self, nombre, email, password, version, idioma="en"):
         """Devuelve el id si registra, sino devuelve 0"""
         nombre = urllib2.quote(nombre.encode('utf8'), safe='/')
         email = urllib2.quote(email.encode('utf8'), safe='/')
         password = urllib2.quote(password.encode('utf8'), safe='/')
         version = urllib2.quote(version.encode('utf8'), safe='/')
         headers = {"Peticion": "registrarUsuario", "Email": email,
-                    "Password": password, "ServerID": '0'}
+                    "Password": password, "ServerID": '0', "Idioma": idioma}
         respuesta = self.obtenerRespuesta(headers)
         modulo_logger.log(logging.DEBUG, "Id de usuario y  Id server: %s" %
                             respuesta)
@@ -192,7 +194,8 @@ class Peticion:
 
     def eliminarUsuario(self):
         """Solicita la eliminacion"""
-        headers = {"Peticion": "eliminarUsuario"}
+        headers = {"Peticion": "eliminarUsuario",
+                    "Idioma":"en"}
         respuesta = self.obtenerRespuesta(headers,timeout=5)
         return respuesta
 
