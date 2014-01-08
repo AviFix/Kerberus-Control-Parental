@@ -41,14 +41,14 @@ SetCompressor lzma
 ;--------------------------------
 ;Languages
 
-!insertmacro MUI_LANGUAGE "Spanish"
+!insertmacro MUI_LANGUAGE "English"
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Configuración General ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;Nombre del instalador
-OutFile Kerberus.exe
+OutFile Kerberus-en.exe
 
 ;Aquí comprobamos que en la versión Inglesa se muestra correctamente el mensaje:
 ;Welcome to the $Name Setup Wizard
@@ -74,7 +74,7 @@ InstallDir "$PROGRAMFILES\Kerberus"
 InstallDirRegKey HKLM SOFTWARE\KERBERUS "Install_Dir"
 
 ;Mensaje que mostraremos para indicarle al usuario que seleccione un directorio
-DirText "Elija un directorio donde instalar la aplicación:"
+DirText "Choice a install directory:"
 
 ;Indicamos que cuando la instalación se complete no se cierre el instalador automáticamente
 AutoCloseWindow false
@@ -92,7 +92,7 @@ SetDatablockOptimize on
 SetCompress auto
 
 ;Personalizamos el mensaje de desinstalación
-UninstallText "Desinstalar kerberus CPW."
+UninstallText "Uninstall kerberus CPW."
 
 # default section start
 section
@@ -108,7 +108,7 @@ section
     strCmp $0 "Admin" +3
  
     # if there is not a match, print message and return
-    abort "Debe tener Permisos de Administrador para instalar Kerberus: $0"
+    abort "You must have Administrator permissions to install Kerberus: $0"
     return
     
     
@@ -122,14 +122,14 @@ sectionEnd
 Function .onInit
 
   ${if} ${RunningX64}
-     MessageBox MB_OK|MB_ICONEXCLAMATION "Esta versión de Kerberus solo funciona en sistemas operativos de 32bits"
+     MessageBox MB_OK|MB_ICONEXCLAMATION "This Kerberus version only works on 32bits systems"
      Abort 
   ${endif}
   ;Verifico que sea administrador el usuario
   userInfo::getAccountType  
   pop $0
   strCmp $0 "Admin" +3
-  MessageBox MB_OK|MB_ICONEXCLAMATION "Debe tener permisos de administrador para instalar Kerberus. Pruebe ejecutar el instalador desde una cuenta con privilegios de administrador, o utilizando la opción Ejecutar como..."
+  MessageBox MB_OK|MB_ICONEXCLAMATION "You must have Administrator permissions to install Kerberus. Try running the installer from an account with administrator privileges, or using Run as ..."
   Abort
 
   ;Definimos el valor de la variable VERSION, en caso de no definirse en el script
@@ -143,8 +143,8 @@ Function .onInit
   StrCmp $R0 "" done
 
   MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION \
-  "Kerberus ya esta instalado. $\n$\nDesea desinstalar la \
-  version actualmente instalada, para luego instalar esta nueva?." \
+  "Kerberus already installed. $\n$\nDo you like \
+  uninstall the currently installed version and then install this new one?." \
   IDOK uninst
   Abort
 
@@ -175,20 +175,20 @@ CreateDirectory $INSTDIR\$VERSION
 SetOutPath $INSTDIR\$VERSION
 File ArchivosDefault\*.*
 
-SetOutPath $INSTDIR\$VERSION\checkNavs
+SetOutPath $INSTDIR\$VERSION
 File  /a /r "Navegadores\dist\checkNavs\"
 
 ;Incluimos todos los ficheros que componen nuestra aplicacin
-SetOutPath $INSTDIR\$VERSION\client
+SetOutPath $INSTDIR\$VERSION
 File  /a /r "kerberus-daemon\dist\client\"
 
-SetOutPath $INSTDIR\$VERSION\sync
+SetOutPath $INSTDIR\$VERSION
 File  /a /r "kerberus-sync\dist\sync\"
 
-SetOutPath $INSTDIR\$VERSION\systemtray
+SetOutPath $INSTDIR\$VERSION
 File  /a /r "kerberus-systemtray\build\exe.win32-2.7\"
 
-SetOutPath $INSTDIR\$VERSION\uninstall
+SetOutPath $INSTDIR\$VERSION
 File  /a /r "desinstalador\dist\uninstall\"
 
 SetOutPath $INSTDIR\$VERSION\templates
@@ -219,7 +219,7 @@ WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus" 
 "DisplayName" "Kerberus-control-parental"
 
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus" \
-"UninstallString" '"$INSTDIR\$VERSION\uninstall\uninstall.exe"'
+"UninstallString" '"$INSTDIR\$VERSION\uninstall.exe"'
 
 WriteUninstaller $INSTDIR\$VERSION\kcpwu.dat
 
@@ -230,48 +230,48 @@ WriteRegStr HKLM "Software\Kerberus" "Version" "$VERSION"
 WriteRegStr HKLM "Software\Kerberus" "kerberus-common" "$INSTDIR\$VERSION"
 
 writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" \
-"Kerberus-client" "$INSTDIR\$VERSION\client\kerberus.exe"
+"Kerberus-client" "$INSTDIR\$VERSION\kerberus.exe"
 
 writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" \
-"Kerberus-systemtray" "$INSTDIR\$VERSION\systemtray\kerberusTray.exe"
+"Kerberus-systemtray" "$INSTDIR\$VERSION\kerberusTray.exe"
 
 writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" \
-"Kerberus-sync" "$INSTDIR\$VERSION\sync\kerberus-sync.exe"
+"Kerberus-sync" "$INSTDIR\$VERSION\kerberus-sync.exe"
 
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" \
-"checkNavs" "$INSTDIR\$VERSION\checkNavs\kerberus-nav.exe"
+"checkNavs" "$INSTDIR\$VERSION\kerberus-nav.exe"
 
-WriteRegStr HKLM "Software\Microsoft\Internet Explorer\Main" "Start Page" "http://inicio.kerberus.com.ar"
+WriteRegStr HKLM "Software\Microsoft\Internet Explorer\Main" "Start Page" "http://inicio.kerberus.com.ar/en/"
 
-writeRegDWord HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
-"MigrateProxy" 1
+;writeRegDWord HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
+;"MigrateProxy" 1
 
-writeRegDWord HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
-"ProxyEnable" 1
+;writeRegDWord HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
+;"ProxyEnable" 1
 
-writeRegDWord HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
-"ProxyHttp1.1" 1
+;writeRegDWord HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
+;"ProxyHttp1.1" 1
 
-writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
-"ProxyServer" "127.0.0.1:4200"
+;writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
+;"ProxyServer" "127.0.0.1:4200"
 
-writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
-"ProxyOverride" "127.0.0.1,localhost"
+;writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
+;"ProxyOverride" "127.0.0.1,localhost"
 
 ; Seteando google chrome, sacado de http://www.chromium.org/administrators/policy-list-3
-writeRegStr HKLM "Software\Policies\Google\Chrome" "HomepageLocation" "http://inicio.kerberus.com.ar"
+writeRegStr HKLM "Software\Policies\Google\Chrome" "HomepageLocation" "http://inicio.kerberus.com.ar/en/"
 writeRegStr HKLM "Software\Policies\Google\Chrome" "ProxyMode" "system"
-;writeRegStr HKLM "Software\Policies\Google\Chrome" "DefaultSearchProviderSearchURL" "http://inicio.kerberus.com.ar/buscador.php?cx=partner-pub-5233852436544664%3A0998292818&ie=UTF-8&sa=Search&q={searchTerms}"
+;writeRegStr HKLM "Software\Policies\Google\Chrome" "DefaultSearchProviderSearchURL" "http://inicio.kerberus.com.ar/en/buscador.php?cx=partner-pub-5233852436544664%3A0998292818&ie=UTF-8&sa=Search&q={searchTerms}"
 writeRegDWord HKLM "Software\Policies\Google\Chrome" "HomepageIsNewTabPage" 0
 
 
-ExecWait '"$INSTDIR\$VERSION\sync\kerberus-sync.exe"'
-ExecWait '"$INSTDIR\$VERSION\checkNavs\kerberus-nav.exe" set'
+ExecWait '"$INSTDIR\$VERSION\kerberus-sync.exe"'
+ExecWait '"$INSTDIR\$VERSION\kerberus-nav.exe" set'
 ;ExecWait '"$INSTDIR\$VERSION\instlsp.exe" -i -a -n KLSP -d "$INSTDIR\$VERSION\klsp.dll"'
 
 nsExec::ExecToStack /OEM "$INSTDIR\$VERSION\inst_lsp.exe"
 
-MessageBox MB_YESNO|MB_ICONQUESTION "Es necesario reiniciar para completar la instalacion. Desea reiniciar ahora?" IDNO +2
+MessageBox MB_YESNO|MB_ICONQUESTION "A reboot is required to complete installation. Do you Want to reboot now?" IDNO +2
 	reboot
 
 SectionEnd
@@ -288,7 +288,7 @@ Function un.onInit
   userInfo::getAccountType  
   pop $0
   strCmp $0 "Admin" +3
-  MessageBox MB_OK|MB_ICONEXCLAMATION "Debe tener permisos de administrador para desinstalar Kerberus. Pruebe desinstalarlo desde una cuenta con privilegios de administrador."
+  MessageBox MB_OK|MB_ICONEXCLAMATION "You must have administrator privileges to uninstall Kerberus. Try uninstalling it from an account with administrator privileges."
   Abort
  
   # Me fijo si esta firefox corriendo
@@ -297,7 +297,7 @@ Function un.onInit
 
 firefoxRunning:
   MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION \
-  "Se esta ejecuntando Mozilla Firefox. Es necesario cerrar este programa antes de continuar. Desea cerrarlo y continuar?" \
+  "Mozilla Firefox is still running. You need to close the program before proceeding. Want to close it and continue?" \
   IDOK cerrarFirefox
   Abort
 
@@ -307,7 +307,7 @@ cerrarFirefox:
 
 error:
   MessageBox MB_OK|MB_ICONEXCLAMATION \
-  "Hubo un error al tratar de cerrar Mozilla Firefox. Es necesario que cierre este programa usted mismo, y vuelva a ejecutar el desinstalador." \
+  "There was an error while trying to close Mozilla Firefox. You need to close this program yourself, and run the uninstaller." \
   IDOK salir
 
 salir:
@@ -320,35 +320,22 @@ FunctionEnd
 
 Section "Uninstall"
         SetShellVarContext all
-        ;DeleteRegKey HKLM "Software\Kerberus"
         DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus"
         DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Run" "Kerberus-client"
         DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Run" "Kerberus-sync"
         DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Run" "Kerberus-systemtray"
         DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Run" "checkNavs"
         writeRegStr HKLM "Software\Microsoft\Internet Explorer\Main" "Start Page" "http://www.google.com"
-        DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "MigrateProxy"
-        DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyEnable"
-        DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyHttp1.1"
-        DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyServer"
-        DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyOverride"
         DeleteRegValue HKLM "Software\Policies\Google\Chrome" "HomepageLocation"
         DeleteRegValue HKLM "Software\Policies\Google\Chrome" "system"
-        ;DeleteRegValue HKLM "Software\Policies\Google\Chrome" "DefaultSearchProviderSearchURL"
         DeleteRegValue HKLM "Software\Policies\Google\Chrome" "HomepageIsNewTabPage"
 
-        ExecWait '"$INSTDIR\$VERSION\checkNavs\kerberus-nav.exe" unset'
-        ;ExecWait '"$INSTDIR\$VERSION\instlsp.exe" -f '
+        ExecWait '"$INSTDIR\$VERSION\kerberus-nav.exe" unset'
         nsExec::ExecToStack /OEM "$INSTDIR\$VERSION\inst_lsp.exe"
-        ; No se borra checknavs, porque sino no se desconfiguran los navegadores
-        ;RMDir /r /REBOOTOK $INSTDIR\$VERSION
-        ;RMDir /r /REBOOTOK $INSTDIR\$VERSION\client
-        ;RMDir /r /REBOOTOK $INSTDIR\$VERSION\sync
-        ;RMDir /r /REBOOTOK $INSTDIR\$VERSION\templates
-        ;RMDir /REBOOTOK $INSTDIR\$VERSION\*.*
+        RMDir /r /REBOOTOK $INSTDIR
         Delete /REBOOTOK $SYSDIR\klsp.dll
 
-MessageBox MB_YESNO|MB_ICONQUESTION "Es necesario reiniciar para completar la desinstalacion. Desea reiniciar ahora?" IDNO +2
+MessageBox MB_YESNO|MB_ICONQUESTION "Reboot is required to complete the uninstall. Do you Want to reboot now?" IDNO +2
 	reboot
 SectionEnd
 

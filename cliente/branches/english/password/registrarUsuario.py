@@ -119,9 +119,9 @@ class ConclusionPage(QWizardPage):
         registrador=registrar.Registradores()
         registrador.registrarLocalmente(nombre,email,password)
         titulo=u'End of Configuration'
-        mensaje=u'Dear %s,\n\nWe have registered your password correctly '\
-            u'.\nWe will send you an email to the same to %s '\
-            u'so that you can have this.\n\n\nThank you '\
+        mensaje=u'Dear %s,\n\nWe have registered your password correctly'\
+            u'.\nWe will send you an email to the same to %s \n'\
+            u'so that you can have this.\n\nThank you '\
             u'for using Kerberus Control Parental!' % (nombre, email)
         self.setTitle(titulo)
         self.setField("labelConclusion",mensaje)
@@ -158,7 +158,7 @@ class RegistrarUsuario:
         page.setTitle(u'Configure the administrator password')
 
         label = QLabel(u'This password will allow you to temporarily disable '
-            u'Kerberus protection and will be required to uninstall.\n')
+            u'Kerberus protection\nand will be required to uninstall.\n')
         label.setWordWrap(True)
 
         password1Label = QLabel(u'Password:')
@@ -193,8 +193,8 @@ class RegistrarUsuario:
         page = RegistrationPage()
         page.setTitle("Registration")
         label = QLabel(u'Enter your name and email address,'
-            u' so that we can remind the password you entered in the previous \n'
-                u' step, \nin case you forget.\n')
+            u' so that we can remind the password\n you entered in the previous'
+                u' step, in case you forget.\n')
 
         nameLabel = QLabel("Name:")
         nameLineEdit = QLineEdit()
@@ -224,7 +224,7 @@ class RegistrarUsuario:
         page = ConclusionPage()
         page.setTitle(u'End of Configuration')
 
-        label = QLabel(u'We have register you correctly. \nThank you '
+        label = QLabel(u'We have register you correctly.\nThank you '
             u'for using Kerberus Control Parental!')
         label.setWordWrap(True)
         page.registerField("labelConclusion",label,"text")

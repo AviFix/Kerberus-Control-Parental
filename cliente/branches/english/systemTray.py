@@ -35,18 +35,18 @@ class KerberusSystray(QtGui.QWidget):
         #accion deshabilitar filtrado
         self.deshabilitarFiltradoAction = self.menu.addAction(
                             self.style.standardIcon(QtGui.QStyle.SP_DialogNoButton),
-                            'Deshabilitar Filtrado'
+                            'Disable Kerberus'
                             )
         #accion habilitar filtrado
         self.habilitarFiltradoAction = self.menu.addAction(
                             self.style.standardIcon(QtGui.QStyle.SP_DialogYesButton),
-                            'Habilitar Filtrado'
+                            'Enable Kerberus'
                             )
         self.habilitarFiltradoAction.setVisible(False)
         #cambiar password
         self.cambiarPasswordAction = self.menu.addAction(
                 self.style.standardIcon(QtGui.QStyle.SP_BrowserReload),
-                'Cambiar password de administrador'
+                'Change administrator\'s password'
                 )
         #accion salir
         #self.exitAction = self.menu.addAction(
@@ -82,7 +82,7 @@ class KerberusSystray(QtGui.QWidget):
         #SystemTray
         #self.tray = QtGui.QSystemTrayIcon(QtGui.QIcon(pixmap), self)
         self.tray = QtGui.QSystemTrayIcon(self.style.standardIcon(QtGui.QStyle.SP_DialogYesButton), self)
-        self.tray.setToolTip('Kerberus Control Parental - Activado')
+        self.tray.setToolTip('Kerberus Control Parental - Enabled')
         self.tray.setVisible(True)
         self.tray.setContextMenu(self.menu)
 
@@ -95,7 +95,7 @@ class KerberusSystray(QtGui.QWidget):
         if self.mostrarMensaje:
             self.tray.showMessage(
                     u'Kerberus Control Parental',
-                    u'Filtro de Protección para menores de edad Activado',
+                    u'Kerberus Control Parental Enabled!',
                     2000
                     )
 
@@ -111,7 +111,7 @@ class KerberusSystray(QtGui.QWidget):
 
     def deshabilitarFiltradoWindow(self):
         webbrowser.open(
-                'http://inicio.kerberus.com.ar/!DeshabilitarFiltrado!',
+                'http://inicio.kerberus.com.ar/en/!DisableKerberus!',
                 new=2
                 )
         self.habilitarFiltradoAction.setVisible(True)
@@ -121,7 +121,7 @@ class KerberusSystray(QtGui.QWidget):
 
     def habilitarFiltradoWindow(self):
         webbrowser.open(
-                'http://inicio.kerberus.com.ar/!HabilitarFiltrado!',
+                'http://inicio.kerberus.com.ar/en/!EnableKerberus!',
                 new=2
                 )
         self.habilitarFiltradoAction.setVisible(False)
@@ -131,7 +131,7 @@ class KerberusSystray(QtGui.QWidget):
 
     def cambiarPasswordWindow(self):
         webbrowser.open(
-                'http://inicio.kerberus.com.ar/!CambiarPassword!',
+                'http://inicio.kerberus.com.ar/en/!ChangePassword!',
                 new=2
                 )
 

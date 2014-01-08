@@ -118,11 +118,15 @@ class navegadores:
             if os.path.isfile(archivo_config):
                 archivo = open(archivo_config,'r')
                 proxy_no_default = 'network.proxy.type'
+                homepage_kerberus = 'inicio.kerberus.com.ar'
                 proxy_no_default_detectado = False
+                homepage_kerberus_no_detectada = True
                 for linea in archivo.readlines():
                     if proxy_no_default in linea:
                         proxy_no_default_detectado = True
-                if proxy_no_default_detectado:
+                    if homepage_kerberus in linea:
+                        homepage_kerberus_no_detectada = False
+                if proxy_no_default_detectado or homepage_kerberus_no_detectada:
                     print "No esta Seteado Firefox, perfil: %s" % perfil
                     return False
                 else:
@@ -182,7 +186,7 @@ class navegadores:
                 # Setando a nivel LOCAL_MACHINE
                 # Seteando pagina de inicio
                 key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Internet Explorer\Main',0,_winreg.KEY_SET_VALUE)
-                _winreg.SetValueEx(key,"Start Page",0,_winreg.REG_SZ, r'http://inicio.kerberus.com.ar')
+                _winreg.SetValueEx(key,"Start Page",0,_winreg.REG_SZ, r'http://inicio.kerberus.com.ar/en/')
                 _winreg.CloseKey(key)
 
                 # Seteando proxy
@@ -215,7 +219,7 @@ class navegadores:
     def setURLIE(self):
         print "Seteando URL Internet Explorer"
         key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Internet Explorer\Main',0,_winreg.KEY_SET_VALUE)
-        _winreg.SetValueEx(key,"Start Page",0,_winreg.REG_SZ, r'http://inicio.kerberus.com.ar')
+        _winreg.SetValueEx(key,"Start Page",0,_winreg.REG_SZ, r'http://inicio.kerberus.com.ar/en/')
         _winreg.CloseKey(key)
 
     def unsetURLIE(self):

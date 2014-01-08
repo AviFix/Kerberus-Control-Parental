@@ -25,8 +25,7 @@ cd ..
 
 cd kerberus-systemTray
 rmdir /S /Q build
-rmdir /S /Q dist
-python ../../common/pyinstaller-2.0/pyinstaller.py -y --log-level=ERROR systemtray.spec
+python setup.py build
 cd ..
 
 cd desinstalador
@@ -39,7 +38,7 @@ cd ..
 "C:\Archivos de programa\Microsoft SDKs\Windows\v7.0A\bin\signtool" sign -t http://time.certum.pl -f F:\kerberus.p12 -p cr1pt0man0 kerberus-daemon\dist\client\kerberus.exe
 "C:\Archivos de programa\Microsoft SDKs\Windows\v7.0A\bin\signtool" sign -t http://time.certum.pl -f F:\kerberus.p12 -p cr1pt0man0 kerberus-sync\dist\sync\kerberus-sync.exe
 "C:\Archivos de programa\Microsoft SDKs\Windows\v7.0A\bin\signtool" sign -t http://time.certum.pl -f F:\kerberus.p12 -p cr1pt0man0 Navegadores\dist\checkNavs\kerberus-nav.exe
-"C:\Archivos de programa\Microsoft SDKs\Windows\v7.0A\bin\signtool" sign -t http://time.certum.pl -f F:\kerberus.p12 -p cr1pt0man0 kerberus-systemtray\dist\systemtray\kerberusTray.exe
+"C:\Archivos de programa\Microsoft SDKs\Windows\v7.0A\bin\signtool" sign -t http://time.certum.pl -f F:\kerberus.p12 -p cr1pt0man0 kerberus-systemtray\build\exe.win32-2.7\kerberusTray.exe
 "C:\Archivos de programa\Microsoft SDKs\Windows\v7.0A\bin\signtool" sign -t http://time.certum.pl -f F:\kerberus.p12 -p cr1pt0man0 ArchivosDefault\klsp.dll
 "C:\Archivos de programa\Microsoft SDKs\Windows\v7.0A\bin\signtool" sign -t http://time.certum.pl -f F:\kerberus.p12 -p cr1pt0man0 ArchivosDefault\inst_lsp.exe
 "C:\Archivos de programa\Microsoft SDKs\Windows\v7.0A\bin\signtool" sign -t http://time.certum.pl -f F:\kerberus.p12 -p cr1pt0man0 ArchivosDefault\klsp32.dll
@@ -47,7 +46,7 @@ cd ..
 
 "C:\Archivos de programa\NSIS\makensis.exe" kerberus-undirectorio.nsi
 
-"C:\Archivos de programa\Microsoft SDKs\Windows\v7.0A\bin\signtool" sign -t http://time.certum.pl -f F:\kerberus.p12 -p cr1pt0man0 Kerberus.exe
+"C:\Archivos de programa\Microsoft SDKs\Windows\v7.0A\bin\signtool" sign -t http://time.certum.pl -f F:\kerberus.p12 -p cr1pt0man0 Kerberus-en.exe
 pause
 
 

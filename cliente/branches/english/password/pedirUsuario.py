@@ -34,7 +34,7 @@ class formularioUsuario(QtGui.QMainWindow):
             self.verificado=True
             self.close()
         else:
-            QtGui.QMessageBox.critical(self, 'Kerberus', u'Contraseña incorrecta.', QtGui.QMessageBox.Ok)
+            QtGui.QMessageBox.critical(self, 'Kerberus', u'Wrong password!.', QtGui.QMessageBox.Ok)
             self.ui.password.clear()
             self.ui.password.setFocus()
         return True
