@@ -4,7 +4,7 @@ CONFIG_DIR=/etc/kerberus
 INIT_DIR=/etc/init.d
 
 if [ -f ${PATH_COMMON}/desinstalador/kerberus-uninstall ]; then
-  echo "Kerberus ya se encuentra instalado, desea desinstalarlo? [y/N]"
+  echo "Kerberus is already installed. You must unistall the previous version first. Do you want unistall it? [y/N]"
   read respuesta
   if [ "${respuesta}" = "y" ]; then
     ${PATH_COMMON}/desinstalador/kerberus-uninstall
@@ -14,21 +14,21 @@ fi
 
 # Muestro la licencia
   echo ""
-  echo "Este software es libre y se distribuye bajo los terminos de la licencia GPLv3."
-  echo "Desea ver la licencia? [y/N]"
+  echo "This is a free software, and is distributed under GPLv3 licence."
+  echo "Do you want read the licence? [y/N]"
   read respuesta
   if [ "${respuesta}" = "y" ]; then
 	more licencia.txt
   fi
 
   echo ""
-  echo "Acepta los terminos y condiciones de la licencia de uso? [Y/n]"
+  echo "Are you agree with the licence? [Y/n]"
   read respuesta
   if [ "${respuesta}" = "n" ]; then
 	exit 0
   fi
   while [ "${respuesta}" != "n" ] && [ "${respuesta}" != "y" ] && [ "${respuesta}" != "Y" ]; do 
-	echo "Ingrese y o n"
+	echo "Type y or n"
   	if [ "${respuesta}" == "n" ];then
 		exit 0
 	fi
@@ -40,7 +40,7 @@ fi
 	fi
 	read respuesta
   done
-echo "Instalando Kerberus Control Parental..."
+echo "Installing Kerberus Control Parental..."
 
 mkdir -p ${PATH_COMMON}
 mkdir -p ${CONFIG_DIR}
@@ -58,7 +58,7 @@ cp ./setProxy.sh ${PATH_COMMON}
 cp ./uninstaller ${PATH_COMMON}
 
 # Seteando configuracion a todos los usuarios
-echo "Configurando kerberus para el/los usuarios:"
+echo "Configuring Kerberus for users:"
 for user_home in /home/*;
 do 
   	# seteando sistema
@@ -94,7 +94,7 @@ done
 update-rc.d kerberus-cliented defaults > /dev/null
 update-rc.d kerberus-sincronizadord defaults > /dev/null
 
-echo "Solicitando password de administrador..."
+echo "Asking for Kerberus's administrator password..."
 /etc/init.d/kerberus-sincronizadord start 
 sleep 3 
 if [ -f ${PATH_COMMON}/kerberus.lock ]; then
@@ -110,6 +110,6 @@ chmod 755 ${PATH_COMMON} -R
 #iptables -D OUTPUT -p tcp --dport 443 -j REJECT
 
 /etc/init.d/kerberus-sincronizadord start
-echo "Fin de la instalacion. Gracias por utilizar Kerberus Control Parental."
+echo "Kerberus installed successfully. Thank you for using Kerberus Control Parental."
 exit 0
 

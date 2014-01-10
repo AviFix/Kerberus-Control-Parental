@@ -43,7 +43,7 @@ proxy_environment() {
 }
 
 
-echo "Desinstalando Kerberus Control Parental..."
+echo "Unistalling Kerberus Control Parental..."
 
 /etc/init.d/kerberus-cliented stop 
 /etc/init.d/kerberus-sincronizadord stop 
@@ -113,5 +113,5 @@ if [ -f ${INIT_DIR}/kerberus-sincronizadord ]; then
   rm ${INIT_DIR}/kerberus-sincronizadord
 fi
 
-echo "Se ha desinstalado correctamente Kerberus Control Parental"
+echo "Kerberus has been unistalled successfully."
 

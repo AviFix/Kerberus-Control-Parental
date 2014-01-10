@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="1.1"
+VERSION="1.1-en"
 echo "----------------------------------------------------"
 echo "Regenerando el instalador de kerberus, version ${VERSION} para GNU/Linux"
 echo "----------------------------------------------------"
@@ -11,7 +11,7 @@ else
 	ARQUITECTURA="32bits"
 fi
 
-nombre_inst="kerberus-installer-${VERSION}-${ARQUITECTURA}"
+nombre_inst="kerberus-installer-${VERSION}-${ARQUITECTURA}.run"
 
 grep "ENTORNO_DE_DESARROLLO = True" ../../conf/config.py > /dev/null
 if [ ${?} -eq 0 ]; then 
