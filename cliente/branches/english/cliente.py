@@ -204,6 +204,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         modoDeConexion = self.headers.getheader('Proxy-Connection',
                                                 'Transparente')
         hostDestino = self.headers.getheader('Host')
+        hostDestino = "http://%s" % hostDestino
         if modoDeConexion == 'Transparente' and hostDestino not in self.path:
             url = "http://" + hostDestino + self.path
             modo = "TRANSPARENTE"
@@ -328,6 +329,8 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         # Si llego hasta aca es porque esta permitido
         (scm, netloc, path, params, query, fragment) = urlparse.urlparse(url,
             'http')
+        print "scm:%s , netloc:%s, path:%s, params:%s, query:%s, fragment:%s" %
+        (scm, netloc, path, params, query, fragment)
         if scm not in ('http', 'ftp') or fragment or not netloc:
             self.send_error(400, "Url erronea: %s" % url)
             return False

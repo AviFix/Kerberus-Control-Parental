@@ -165,7 +165,7 @@ class RegistrarUsuario:
         password1LineEdit = QLineEdit()
         password1LineEdit.setEchoMode(QLineEdit.Password)
 
-        password2Label = QLabel(u'Re-enter the password:')
+        password2Label = QLabel(u'Re-type the password:')
         password2LineEdit = QLineEdit()
         password2LineEdit.setEchoMode(QLineEdit.Password)
 
