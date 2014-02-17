@@ -329,8 +329,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         # Si llego hasta aca es porque esta permitido
         (scm, netloc, path, params, query, fragment) = urlparse.urlparse(url,
             'http')
-        print "scm:%s , netloc:%s, path:%s, params:%s, query:%s, fragment:%s" %
-        (scm, netloc, path, params, query, fragment)
+
         if scm not in ('http', 'ftp') or fragment or not netloc:
             self.send_error(400, "Url erronea: %s" % url)
             return False
