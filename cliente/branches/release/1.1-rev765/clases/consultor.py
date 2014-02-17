@@ -41,8 +41,7 @@ class Consultor:
 
     def urlBienFormada(self, url):
         url = url.lower()
-        return True
-        #return re.match(".*\..*/.*", url)
+        return re.match(".*\..*/.*", url)
 
     def validarUrl(self, username, password, url):
         if not self.urlBienFormada(url):
