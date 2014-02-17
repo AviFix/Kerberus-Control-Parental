@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from PyQt4 import QtGui, QtCore
+from PyQt4.QtGui import QWidget, QPixmap, QIcon, QSystemTrayIcon, QMenu, QStyle, QApplication
+from PyQt4.QtCore import QObject, SIGNAL
 import sys
 import os.path
 
@@ -9,18 +10,18 @@ import os.path
 import webbrowser
 #import imagenes_qr
 
-class KerberusSystray(QtGui.QWidget):
+class KerberusSystray(QWidget):
 
     def __init__(self):
-        QtGui.QWidget.__init__(self)
+        QWidget.__init__(self)
         icono = 'kerby-activo.ico'
-        pixmap = QtGui.QPixmap(icono)
+        pixmap = QPixmap(icono)
         ##setear el nombre de la ventana
         self.setWindowTitle('Kerberus Control Parental')
         #colocar el icono cargado a la ventana
-        self.setWindowIcon(QtGui.QIcon(pixmap))
+        self.setWindowIcon(QIcon(pixmap))
         ##creamos objeto Style para hacer uso de los iconos de Qt
-        self.style = self.style()
+	self.style = self.style()
         self.filtradoHabilitado = True
 
         if not os.path.isfile('dontShowMessage'):
@@ -30,65 +31,67 @@ class KerberusSystray(QtGui.QWidget):
             self.mostrarMensaje = False
 
         #Menu
-        self.menu = QtGui.QMenu('Kerberus')
+        self.menu = QMenu('Kerberus')
 
         #accion deshabilitar filtrado
         self.deshabilitarFiltradoAction = self.menu.addAction(
-                            self.style.standardIcon(QtGui.QStyle.SP_DialogNoButton),
+                            self.style.standardIcon(QStyle.SP_DialogNoButton),
                             'Deshabilitar Filtrado'
                             )
         #accion habilitar filtrado
         self.habilitarFiltradoAction = self.menu.addAction(
-                            self.style.standardIcon(QtGui.QStyle.SP_DialogYesButton),
+                            self.style.standardIcon(QStyle.SP_DialogYesButton),
                             'Habilitar Filtrado'
                             )
         self.habilitarFiltradoAction.setVisible(False)
         #cambiar password
         self.cambiarPasswordAction = self.menu.addAction(
-                self.style.standardIcon(QtGui.QStyle.SP_BrowserReload),
+                self.style.standardIcon(QStyle.SP_BrowserReload),
                 'Cambiar password de administrador'
                 )
         #accion salir
-        #self.exitAction = self.menu.addAction(
-                #self.style.standardIcon(QtGui.QStyle.SP_TitleBarCloseButton),
-                #'Salir')
+        self.exitAction = self.menu.addAction(
+                self.style.standardIcon(QStyle.SP_TitleBarCloseButton),
+                'Salir')
 
         #SIGNAL->SLOT
-        #QtCore.QObject.connect(
-                #self.exitAction,
-                #QtCore.SIGNAL("triggered()"),
-                #lambda: sys.exit()
-                #)
-        QtCore.QObject.connect(
-                self.menu, QtCore.SIGNAL("clicked()"),
-                lambda: self.menu.popup(QtGui.QCursor.pos())
+        QObject.connect(
+                self.exitAction,
+                SIGNAL("triggered()"),
+                lambda: sys.exit()
                 )
-        QtCore.QObject.connect(
+        QObject.connect(
+                self.menu, SIGNAL("clicked()"),
+                lambda: self.menu.popup(QCursor.pos())
+                )
+        QObject.connect(
                 self.deshabilitarFiltradoAction,
-                QtCore.SIGNAL("triggered()"),
+                SIGNAL("triggered()"),
                 self.deshabilitarFiltradoWindow
                 )
-        QtCore.QObject.connect(
+        QObject.connect(
                 self.habilitarFiltradoAction,
-                QtCore.SIGNAL("triggered()"),
+                SIGNAL("triggered()"),
                 self.habilitarFiltradoWindow
                 )
-        QtCore.QObject.connect(
+        QObject.connect(
                 self.cambiarPasswordAction,
-                QtCore.SIGNAL("triggered()"),
+                SIGNAL("triggered()"),
                 self.cambiarPasswordWindow
                 )
 
         #SystemTray
-        self.tray = QtGui.QSystemTrayIcon(QtGui.QIcon(pixmap), self)
+        self.tray = QSystemTrayIcon(QIcon(pixmap), self)
         #self.tray = QtGui.QSystemTrayIcon(self.style.standardIcon(QtGui.QStyle.SP_DialogYesButton), self)
         self.tray.setToolTip('Kerberus Control Parental - Activado')
-        self.tray.setVisible(True)
         self.tray.setContextMenu(self.menu)
+        self.tray.setVisible(True)
 
-        QtCore.QObject.connect(
+
+
+        QObject.connect(
                 self.tray,
-                QtCore.SIGNAL("messageClicked()"),
+                SIGNAL("messageClicked()"),
                 self.noMostrarMasMensaje
                 )
 
@@ -135,6 +138,7 @@ class KerberusSystray(QtGui.QWidget):
                 new=2
                 )
 
-app = QtGui.QApplication(sys.argv)
+app = QApplication(sys.argv)
+app.setQuitOnLastWindowClosed(False)
 pytest = KerberusSystray()
 sys.exit(app.exec_())

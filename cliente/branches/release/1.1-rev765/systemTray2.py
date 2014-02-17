@@ -1,45 +1,50 @@
-# -*- coding: utf-8 -*-
-from PyQt4 import QtGui, QtCore
 import sys
 
-class KerberusSystray(QtGui.QWidget):
+from PyQt4.QtGui import QSystemTrayIcon
+from PyQt4.QtGui import QAction
+from PyQt4.QtGui import QMenu
+from PyQt4.QtGui import QIcon
+from PyQt4.QtGui import QApplication
+from PyQt4.QtGui import QMessageBox
+from PyQt4.QtCore import QThread
+from PyQt4.QtCore import SIGNAL
 
-    def __init__(self):
-        QtGui.QWidget.__init__(self)
-        
-	#Menu
-        self.menu = QtGui.QMenu('Kerberus')
-        self.style = self.style()
-        
-	#accion salir
+import recursos
+
+class TrayIconUpdates(QSystemTrayIcon):
+
+    def __init__(self, parent):
+        QSystemTrayIcon.__init__(self, parent)
+        icon = QIcon(recursos.IMAGES['icon'])
+        self.setIcon(icon)
+        self.setup_menu()
+
+    def setup_menu(self, show_downloads=False):
+        self.menu = QMenu()
+
+        #accion deshabilitar filtrado
+        self.deshabilitarFiltradoAction = self.menu.addAction(
+                            #self.style.standardIcon(QStyle.SP_DialogNoButton),
+                            'Deshabilitar Filtrado'
+                            )
+        #accion habilitar filtrado
+        self.habilitarFiltradoAction = self.menu.addAction(
+                            #self.style.standardIcon(QStyle.SP_DialogYesButton),
+                            'Habilitar Filtrado'
+                            )
+        self.habilitarFiltradoAction.setVisible(False)
+        #cambiar password
+        self.cambiarPasswordAction = self.menu.addAction(
+                #self.style.standardIcon(QStyle.SP_BrowserReload),
+                'Cambiar password de administrador'
+                )
+        #accion salir
         self.exitAction = self.menu.addAction(
-                self.style.standardIcon(QtGui.QStyle.SP_TitleBarCloseButton),
+                #self.style.standardIcon(QStyle.SP_TitleBarCloseButton),
                 'Salir')
+        self.setContextMenu(self.menu)
 
-        #SIGNAL->SLOT
-        QtCore.QObject.connect(
-                self.exitAction,
-                QtCore.SIGNAL("triggered()"),
-                lambda: sys.exit()
-                )
-        
-	QtCore.QObject.connect(
-                self.menu, QtCore.SIGNAL("clicked()"),
-                lambda: self.menu.popup(QtGui.QCursor.pos())
-                )
-
-        #SystemTray
-	icono = 'kerby.ico'
-        pixmap = QtGui.QPixmap(icono)
-        self.tray = QtGui.QSystemTrayIcon(QtGui.QIcon(pixmap), self)
-        self.tray.setToolTip('KerberusSystray')
-        self.tray.setVisible(True)
-        self.tray.setContextMenu(self.menu)
-
-    def closeEvent(self, event):
-        event.ignore()
-        self.hide()
-
-app = QtGui.QApplication(sys.argv)
-pytest = KerberusSystray()
+app = QApplication(sys.argv)
+pytest = TrayIconUpdates(app)
+pytest.show()
 sys.exit(app.exec_())

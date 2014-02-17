@@ -5,10 +5,12 @@ determinado"""
 
 #Modulos externos
 from string import Template
+import sys
+sys.path.append('../')
 
 #Modulos propios
-#import config
 import logging
+import language
 
 modulo_logger = logging.getLogger('kerberus.' + __name__)
 
@@ -40,8 +42,9 @@ class MensajesHtml:
         return mensaje_renderizado
 
     def pedirPassword(self, mensaje=''):
+        titulo=_('Temporarily Disable filter')
         diccionario = {
-            'titulo': 'Deshabilitar filtrado temporalmente',
+            'titulo': titulo,
             'subtitulo': u'(El filtrado estará inactivo hasta que reinicie la PC)'.encode('utf-8'),
             'mensaje': u'Ingrese la contraseña del administrador de Kerberus'.encode('utf-8'),
             'mensaje_error': mensaje.encode('utf-8')

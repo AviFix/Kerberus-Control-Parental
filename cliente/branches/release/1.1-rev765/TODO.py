@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 # Para versión 1.1
 # * Hacer actualizador para linux y windows.
 # * Agregar excepciones para todo el acceso a la db

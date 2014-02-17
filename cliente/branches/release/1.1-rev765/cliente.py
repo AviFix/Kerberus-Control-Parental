@@ -59,11 +59,6 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         self.server.logger.log(logging.DEBUG, "Primer pagina de acceso.")
         self.responderAlCliente(msg)
 
-    def mostrarDeshabilitado(self):
-        msg = "<html><head><title>Navegador protegido por Kerberus</title>"\
-        "</head> <body >Navegación Deshabilitada</body> </html> "
-        self.responderAlCliente(msg)
-
     def responderAlCliente(self, mensaje):
         tamano = len(mensaje)
         self.wfile.write(self.protocol_version +
@@ -209,14 +204,18 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         modoDeConexion = self.headers.getheader('Proxy-Connection',
                                                 'Transparente')
         hostDestino = self.headers.getheader('Host')
+        hostDestino = "http://%s" % hostDestino
         if modoDeConexion == 'Transparente' and hostDestino not in self.path:
-            url = "http://" + hostDestino + self.path
+            url = hostDestino + self.path
             modo = "TRANSPARENTE"
-
         else:
             url = self.path
             modo = "PROXY"
 
+        #self.server.logger.log(
+                #logging.DEBUG,
+                #"Metodo: %(meto)s, \n  URL: %(url)s, \n\n  host de destino: %(host)s\n  PATH: %(path)s\n\n"
+                #% {'url': url ,'host': hostDestino,'meto': modo, 'path':self.path})
         self.server.logger.log(
                 logging.DEBUG,
                 "Modo de conexion: %(modo)s , URL: %(url)s"
@@ -333,9 +332,14 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         # Si llego hasta aca es porque esta permitido
         (scm, netloc, path, params, query, fragment) = urlparse.urlparse(url,
             'http')
+        if not netloc:
+            netloc=self.server.ultimo_netloc
+
         if scm not in ('http', 'ftp') or fragment or not netloc:
             self.send_error(400, "Url erronea: %s" % url)
             return False
+        else:
+            self.server.ultimo_netloc=netloc
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
             if scm == 'http':
@@ -490,6 +494,7 @@ class ThreadingHTTPServer(SocketServer.ThreadingMixIn,
                                             RequestHandlerClass)
         self.logger = logger
         self.verificador = consultor.Consultor()
+        self.ultimo_netloc = ""
 
 
 def handler(signo, frame):
