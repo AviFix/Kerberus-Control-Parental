@@ -7,6 +7,8 @@ echo "   - Limpiando directorios..."
 [ -d ../sincronizadorCliente/dist ] && rm -r ../sincronizadorCliente/dist
 [ -d ../desinstalador/build ] && rm -r ../desinstalador/build
 [ -d ../desinstalador/dist ] && rm -r ../desinstalador/dist
+[ -d ../systemtray/build ] && rm -r ../systemtray/build
+[ -d ../systemtray/dist ] && rm -r ../systemtray/dist
 
 grep ENTORNO_DE_DESARROLLO=True ../../conf/config.py > /dev/null
 if [ ${?} -eq 0 ];then
@@ -16,10 +18,14 @@ if [ ${?} -eq 0 ];then
 fi
 echo "   - compilando cliente..."
 python ../common/pyinstaller-2.0/pyinstaller.py -y --log-level=ERROR ./cliente/cliente.spec
+
 echo "   - compilando sincronizador..."
 python ../common/pyinstaller-2.0/pyinstaller.py -y --log-level=ERROR ./sincronizadorCliente/sincronizadorCliente.spec
 echo "   - compilando desinstalador..."
 python ../common/pyinstaller-2.0/pyinstaller.py -y --log-level=ERROR ./desinstalador/desinstalador.spec
+
+echo "   - compilando systemtray..."
+python ../common/pyinstaller-2.0/pyinstaller.py -y --log-level=ERROR ./systemtray/systemtray.spec
 
 if [ ${SETEADO_ENTORNO} ]; then
           echo "   - Volviendo al entorno de desarrollo..."
