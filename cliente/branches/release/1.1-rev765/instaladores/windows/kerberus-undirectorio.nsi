@@ -175,20 +175,20 @@ CreateDirectory $INSTDIR\$VERSION
 SetOutPath $INSTDIR\$VERSION
 File ArchivosDefault\*.*
 
-SetOutPath $INSTDIR\$VERSION\checkNavs
+SetOutPath $INSTDIR\$VERSION
 File  /a /r "Navegadores\dist\checkNavs\"
 
 ;Incluimos todos los ficheros que componen nuestra aplicacin
-SetOutPath $INSTDIR\$VERSION\client
+SetOutPath $INSTDIR\$VERSION
 File  /a /r "kerberus-daemon\dist\client\"
 
-SetOutPath $INSTDIR\$VERSION\sync
+SetOutPath $INSTDIR\$VERSION
 File  /a /r "kerberus-sync\dist\sync\"
 
-SetOutPath $INSTDIR\$VERSION\systemtray
+SetOutPath $INSTDIR\$VERSION
 File  /a /r "kerberus-systemtray\build\exe.win32-2.7\"
 
-SetOutPath $INSTDIR\$VERSION\uninstall
+SetOutPath $INSTDIR\$VERSION
 File  /a /r "desinstalador\dist\uninstall\"
 
 SetOutPath $INSTDIR\$VERSION\templates
@@ -219,7 +219,7 @@ WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus" 
 "DisplayName" "Kerberus-control-parental"
 
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus" \
-"UninstallString" '"$INSTDIR\$VERSION\uninstall\uninstall.exe"'
+"UninstallString" '"$INSTDIR\$VERSION\uninstall.exe"'
 
 WriteUninstaller $INSTDIR\$VERSION\kcpwu.dat
 
@@ -230,33 +230,33 @@ WriteRegStr HKLM "Software\Kerberus" "Version" "$VERSION"
 WriteRegStr HKLM "Software\Kerberus" "kerberus-common" "$INSTDIR\$VERSION"
 
 writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" \
-"Kerberus-client" "$INSTDIR\$VERSION\client\kerberus.exe"
+"Kerberus-client" "$INSTDIR\$VERSION\kerberus.exe"
 
 writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" \
-"Kerberus-systemtray" "$INSTDIR\$VERSION\systemtray\kerberusTray.exe"
+"Kerberus-systemtray" "$INSTDIR\$VERSION\kerberusTray.exe"
 
 writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" \
-"Kerberus-sync" "$INSTDIR\$VERSION\sync\kerberus-sync.exe"
+"Kerberus-sync" "$INSTDIR\$VERSION\kerberus-sync.exe"
 
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" \
-"checkNavs" "$INSTDIR\$VERSION\checkNavs\kerberus-nav.exe"
+"checkNavs" "$INSTDIR\$VERSION\kerberus-nav.exe"
 
 WriteRegStr HKLM "Software\Microsoft\Internet Explorer\Main" "Start Page" "http://inicio.kerberus.com.ar"
 
-writeRegDWord HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
-"MigrateProxy" 1
+;writeRegDWord HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
+;"MigrateProxy" 1
 
-writeRegDWord HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
-"ProxyEnable" 1
+;writeRegDWord HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
+;"ProxyEnable" 1
 
-writeRegDWord HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
-"ProxyHttp1.1" 1
+;writeRegDWord HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
+;"ProxyHttp1.1" 1
 
-writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
-"ProxyServer" "127.0.0.1:4200"
+;writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
+;"ProxyServer" "127.0.0.1:4200"
 
-writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
-"ProxyOverride" "127.0.0.1,localhost"
+;writeRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
+;"ProxyOverride" "127.0.0.1,localhost"
 
 ; Seteando google chrome, sacado de http://www.chromium.org/administrators/policy-list-3
 writeRegStr HKLM "Software\Policies\Google\Chrome" "HomepageLocation" "http://inicio.kerberus.com.ar"
@@ -265,8 +265,8 @@ writeRegStr HKLM "Software\Policies\Google\Chrome" "ProxyMode" "system"
 writeRegDWord HKLM "Software\Policies\Google\Chrome" "HomepageIsNewTabPage" 0
 
 
-ExecWait '"$INSTDIR\$VERSION\sync\kerberus-sync.exe"'
-ExecWait '"$INSTDIR\$VERSION\checkNavs\kerberus-nav.exe" set'
+ExecWait '"$INSTDIR\$VERSION\kerberus-sync.exe"'
+ExecWait '"$INSTDIR\$VERSION\kerberus-nav.exe" set'
 ;ExecWait '"$INSTDIR\$VERSION\instlsp.exe" -i -a -n KLSP -d "$INSTDIR\$VERSION\klsp.dll"'
 
 nsExec::ExecToStack /OEM "$INSTDIR\$VERSION\inst_lsp.exe"
@@ -320,32 +320,19 @@ FunctionEnd
 
 Section "Uninstall"
         SetShellVarContext all
-        ;DeleteRegKey HKLM "Software\Kerberus"
         DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus"
         DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Run" "Kerberus-client"
         DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Run" "Kerberus-sync"
         DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Run" "Kerberus-systemtray"
         DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Run" "checkNavs"
         writeRegStr HKLM "Software\Microsoft\Internet Explorer\Main" "Start Page" "http://www.google.com"
-        DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "MigrateProxy"
-        DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyEnable"
-        DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyHttp1.1"
-        DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyServer"
-        DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyOverride"
         DeleteRegValue HKLM "Software\Policies\Google\Chrome" "HomepageLocation"
         DeleteRegValue HKLM "Software\Policies\Google\Chrome" "system"
-        ;DeleteRegValue HKLM "Software\Policies\Google\Chrome" "DefaultSearchProviderSearchURL"
         DeleteRegValue HKLM "Software\Policies\Google\Chrome" "HomepageIsNewTabPage"
 
-        ExecWait '"$INSTDIR\$VERSION\checkNavs\kerberus-nav.exe" unset'
-        ;ExecWait '"$INSTDIR\$VERSION\instlsp.exe" -f '
+        ExecWait '"$INSTDIR\$VERSION\kerberus-nav.exe" unset'
         nsExec::ExecToStack /OEM "$INSTDIR\$VERSION\inst_lsp.exe"
-        ; No se borra checknavs, porque sino no se desconfiguran los navegadores
-        ;RMDir /r /REBOOTOK $INSTDIR\$VERSION
-        ;RMDir /r /REBOOTOK $INSTDIR\$VERSION\client
-        ;RMDir /r /REBOOTOK $INSTDIR\$VERSION\sync
-        ;RMDir /r /REBOOTOK $INSTDIR\$VERSION\templates
-        ;RMDir /REBOOTOK $INSTDIR\$VERSION\*.*
+        RMDir /r /REBOOTOK $INSTDIR
         Delete /REBOOTOK $SYSDIR\klsp.dll
 
 MessageBox MB_YESNO|MB_ICONQUESTION "Es necesario reiniciar para completar la desinstalacion. Desea reiniciar ahora?" IDNO +2
