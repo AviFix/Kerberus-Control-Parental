@@ -1,0 +1,117 @@
+#!/bin/bash
+PATH_COMMON=/usr/share/kerberus
+CONFIG_DIR=/etc/kerberus
+INIT_DIR=/etc/init.d
+
+borrar_de_archivo() {
+  	opcion=${1}
+	archivo=${2}
+	if [ -f ${archivo} ];then
+		#echo "Borrando ${opcion} del archivo ${archivo}"
+		sed -i "/${opcion}/d" ${archivo}
+	else
+	  	echo "No existe el archivo ${archivo}"
+	fi
+}
+
+agregar_a_archivo() {
+  	linea=${1}
+	archivo=${2}
+	#echo "Agregando ${linea} al archivo ${archivo}"
+        grep "${linea}" ${archivo} > /dev/null
+        if [ ${?} -ne 0 ]; then
+                echo ${linea} >> ${archivo}
+        fi
+}
+
+proxy_environment() {
+        case "$1" in
+        set)
+                agregar_a_archivo "http_proxy=\"http://127.0.0.1:8080/\""
+                agregar_a_archivo "https_proxy=\"http://127.0.0.1:8080/\""
+                agregar_a_archivo "no_proxy=\"localhost,127.0.0.1\""
+        ;;
+        unset)
+                borrar_de_archivo "http_proxy" /etc/environment
+                borrar_de_archivo "https_proxy" /etc/environment
+                borrar_de_archivo "no_proxy" /etc/environment
+        ;;
+        *)
+                echo "Opcion invalida. Deber ser 'set' o 'unset'"
+                exit 1
+        esac
+}
+
+
+echo "Unistalling Kerberus Control Parental..."
+
+/etc/init.d/kerberus-cliented stop 
+/etc/init.d/kerberus-sincronizadord stop 
+
+borrar_de_archivo "http_proxy" /etc/environment
+borrar_de_archivo "https_proxy" /etc/environment
+borrar_de_archivo "no_proxy" /etc/environment
+
+# limpio variables
+unset http_proxy
+unset https_proxy
+unset no_proxy
+
+# Desseteo la config de los usuarios
+for user_home in /home/*;
+do
+	# Desseteando sistema
+        if [ -d $user_home/.gconf ];then
+          usuario=`echo $user_home|cut -f 3 -d "/"`
+          su - ${usuario} -c "sh ${PATH_COMMON}/setProxy.sh unset" > /dev/null 2> /dev/null
+        fi
+	
+	# Desseteando chrome
+        # chromiun
+	if [ -f /etc/chromium-browser/policies/managed/kerberus.json ]; then
+		rm /etc/chromium-browser/policies/managed/kerberus.json
+	fi
+	# chrome
+        if [ -f /etc/opt/chrome/policies/managed/kerberus.json ]; then
+        	rm /etc/opt/chrome/policies/managed/kerberus.json
+	fi
+	
+	# Desseteando firefox
+        dir_firefox_profiles=${user_home}/.mozilla/firefox
+        if [ -f ${dir_firefox_profiles}/profiles.ini ];
+        then
+                dir_profile=`grep "Path=" ${dir_firefox_profiles}/profiles.ini |cut -f 2 -d "="`
+                path_profile=${dir_firefox_profiles}/${dir_profile}
+                if [ -f ${path_profile}/user.js ];
+                then
+                	borrar_de_archivo "inicio.kerberus.com.ar" ${path_profile}/prefs.js 
+                      	borrar_de_archivo "app.update.enabled" ${path_profile}/prefs.js
+                       	borrar_de_archivo "network.proxy." ${path_profile}/prefs.js
+			agregar_a_archivo "user_pref(\"network.proxy.type\", 0);" ${path_profile}/prefs.js
+
+		  	rm ${path_profile}/user.js
+                fi
+        fi
+done
+
+# borrando demonios
+update-rc.d -f kerberus-cliented remove > /dev/null
+update-rc.d -f kerberus-sincronizadord remove > /dev/null
+if [ -d ${PATH_COMMON} ]; then
+  rm -rf ${PATH_COMMON}
+fi
+
+if [ -d ${CONFIG_DIR} ]; then
+  rm -rf ${CONFIG_DIR}
+fi
+
+if [ -f ${INIT_DIR}/kerberus-cliented ]; then
+  rm ${INIT_DIR}/kerberus-cliented
+fi
+
+if [ -f ${INIT_DIR}/kerberus-sincronizadord ]; then
+  rm ${INIT_DIR}/kerberus-sincronizadord
+fi
+
+echo "Kerberus has been unistalled successfully."
+

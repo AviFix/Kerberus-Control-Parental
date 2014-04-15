@@ -1,0 +1,1 @@
+Los archivos validate.py y configObj.py estan aca porque sino py2exe no puede generar el .exe del cliente

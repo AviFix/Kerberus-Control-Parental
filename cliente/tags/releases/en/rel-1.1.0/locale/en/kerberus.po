@@ -1,0 +1,102 @@
+# Kerberus Control Parental Web
+# This file is distributed under GPL v3 Licence.
+# Maximiliano Boscovich <maximiliano@kerberus.com.ar>, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"Report-Msgid-Bugs-To: maximiliano@kerberus.com.ar\n"
+"POT-Creation-Date: 2012-05-02 19:44-0300\n"
+"PO-Revision-Date: 2012-05-02 19:59-0300\n"
+"Last-Translator: Maximiliano Boscovich <maximiliano@kerberus.com.ar>\n"
+"Language-Team: Español; Castellano <traducciones@kerberus.com.ar>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+
+#: cliente.py:55
+msgid "Kerberus - Cliente /"
+msgstr "Kerberus - Client /"
+
+#: cliente.py:60
+msgid ""
+"<html><head><title>Navegador protegido por Kerberus</title>        <meta "
+"http-equiv=\"REFRESH\"         content=\"0;url=http://inicio.kerberus.com.ar"
+"\" >         </head> <body ></body> </html> "
+msgstr ""
+"<html><head><title>>Browser Kerberus protected</title>        <meta http-"
+"equiv=\"REFRESH\"         content=\"0;url=http://inicio.kerberus.com.ar\" "
+">         </head> <body ></body> </html> "
+
+#: cliente.py:64
+msgid "Primer pagina de acceso."
+msgstr "First access page."
+
+#: cliente.py:68
+msgid ""
+"<html><head><title>Navegador protegido por Kerberus</title>        </head> "
+"<body >Navegación Deshabilitada</body> </html> "
+msgstr ""
+"<html><head><title>Browser Kerberus protected</title>        </head> <body > "
+"Disabled navigation</body> </html> "
+
+#: cliente.py:101
+#, python-format
+msgid ""
+"Estimado %(nombre)s,<br><br>Le hemos enviado un e-mail a su cuenta de correo "
+"%(email)s con la password de administrador de kerberus."
+msgstr ""
+"Dear %(nombre)s,<br><br>We have sent an email to %(email)s with kerberus "
+"administrator password."
+
+#: cliente.py:103
+#, python-format
+msgid ""
+"Estimado %(nombre)s,<br><br>Ya hemos enviado un e-mail a su cuenta de correo "
+"%(email)s con la password de administrador de kerberus."
+msgstr ""
+"Dear %(nombre)s, <br><br>We've sent an email to %(email)s with kerberus "
+"administrator password."
+
+#: cliente.py:114 cliente.py:119
+msgid "Password incorrecta!"
+msgstr "Incorrect Password!"
+
+#: cliente.py:124
+msgid "Password cambiada correctamente!"
+msgstr "Password changed successfully!"
+
+#: cliente.py:129
+msgid "Las passwords no coinciden!"
+msgstr "The passwords do not match!"
+
+#: cliente.py:248
+#, python-format
+msgid "La URL %s  soporta SafeSearch. Forzando su uso"
+msgstr "The URL %s supports SafeSearch. Forcing its use"
+
+#: cliente.py:270
+#, python-format
+msgid "Hubo un error en el metodo do_GET. URL: %s"
+msgstr "There was an error in the method do_GET. URL:%s"
+
+#: cliente.py:366
+#, python-format
+msgid "Usando kerberus a traves de proxy %(ip)s:%(puerto)s"
+msgstr "Using kerberus through proxy %(ip)s:%(puerto)s"
+
+#: cliente.py:369
+#, python-format
+msgid "Kerberus - Cliente Activo, atendiendo en %(ip)s puerto %(puerto)s"
+msgstr "Kerberus - Client assets, based on %(ip)s port %(puerto)s"
+
+#: cliente.py:376
+#, python-format
+msgid "Numero de hilos activos: %s"
+msgstr "Number of active threads: %s"
+
+#: cliente.py:383
+msgid "Se ha detenido el cliente de Kerberus satisfactoriamente"
+msgstr "Was stopped successfully Kerberus client"
