@@ -1,0 +1,31 @@
+{
+  "mainFile": "", 
+  "use-tabs": false, 
+  "venv": "", 
+  "relatedProjects": [], 
+  "name": "1.1-rev765", 
+  "license": "", 
+  "url": "", 
+  "pythonPath": "python", 
+  "preExecScript": "", 
+  "programParams": "", 
+  "indentation": 4, 
+  "PYTHONPATH": "", 
+  "supported-extensions": [
+    ".sql", 
+    ".nsi", 
+    ".py", 
+    ".html", 
+    ".jpg", 
+    ".png", 
+    ".ui", 
+    ".css", 
+    ".json", 
+    ".ini", 
+    ".conf", 
+    ".sql"
+  ], 
+  "project-type": "", 
+  "postExecScript": "", 
+  "description": ""
+}
