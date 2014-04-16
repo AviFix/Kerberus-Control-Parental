@@ -4,8 +4,14 @@ echo "----------------------------------------------------"
 echo "Regenerando el instalador de kerberus, version ${VERSION} para GNU/Linux"
 echo "----------------------------------------------------"
 echo ""
+ARCH=`uname -m`
+if [ "${ARCH}" = "x86_64" ];then
+	ARQUITECTURA="64bits"
+else
+	ARQUITECTURA="32bits"
+fi
 
-nombre_inst="kerberus-installer-${VERSION}.sh"
+nombre_inst="kerberus-installer-${VERSION}-${ARQUITECTURA}.run"
 
 grep "ENTORNO_DE_DESARROLLO = True" ../../conf/config.py > /dev/null
 if [ ${?} -eq 0 ]; then 
@@ -14,6 +20,19 @@ if [ ${?} -eq 0 ]; then
 fi
 echo "- Compilando ${nombre_inst}..."
 sh compilar.sh
+
+echo "- Generando archivo payload..."
+cd cliente/dist/
+tar cvfz ../../payload/cliente.tar.gz cliente > /dev/null
+cd ../../
+cd sincronizadorCliente/dist/
+tar cvfz ../../payload/sincronizador.tar.gz sincronizadorCliente > /dev/null
+cd ../../
+cd desinstalador/dist/
+tar cvfz ../../payload/desinstalador.tar.gz desinstalador > /dev/null
+cd ../../
+
+
 #echo "- Copiando DB del instalador de windows..."
 #if [ -f payload/kerberus.db ]; then
 #  rm payload/kerberus.db
@@ -25,10 +44,10 @@ if [ -f payload/kerberus.db ]; then
 fi
 sqlite3  payload/kerberus.db < ../../cliente.sql
 
-if [ -f payload/licencia.txt ]; then
-  rm payload/licencia.txt
-fi
-cp ../windows/ArchivosDefault/licencia.txt payload/licencia.txt
+#if [ -f payload/licencia.txt ]; then
+#  rm payload/licencia.txt
+#fi
+#cp ../windows/ArchivosDefault/licencia.txt payload/licencia.txt
 
 echo "- Copiando templates..."
 cp ../../templates/* payload/templates/

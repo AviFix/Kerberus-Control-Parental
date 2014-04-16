@@ -26,7 +26,7 @@ class Peticion:
         self.servidor = servidores.Servidor()
         self.userid, self.serverid, self.version, self.nombretitular,\
         self.credencial = self.obtenerDatos()
-        self.server_ip, self.server_port = self.servidor.obtenerServidor(\
+        self.server_ip, self.server_port = self.servidor.obtenerServidor(
             config.SYNC_SERVER_IP, config.SYNC_SERVER_PORT, self.userid,
             self.serverid)
         self.server_sync = "%s:%s" % (self.server_ip, self.server_port)
@@ -37,14 +37,14 @@ class Peticion:
             cursor = conexion_db.cursor()
             # FIXME: la pass y el md5 deberia esta en la tabla instalacion
             idUsuario, serverId, version, nombretitular, credencial = \
-                cursor.execute('select id, serverid, version, nombretitular '\
+                cursor.execute('select id, serverid, version, nombretitular '
                 ', credencial from instalacion').fetchone()
             cursor.close()
 
             return idUsuario, serverId, version, nombretitular, credencial
 
         except sqlite3.OperationalError, msg:
-            modulo_logger.log(logging.ERROR, "No se pudo obtener el id de "\
+            modulo_logger.log(logging.ERROR, "No se pudo obtener el id de "
             "instalacion.\nError: %s" % msg)
             idUsuario = 0
             version = 0
@@ -53,18 +53,18 @@ class Peticion:
             credencial = ''
             return idUsuario, serverId, version, nombretitular, credencial
 
-    def obtenerRespuesta(self, headers):
+    def obtenerRespuesta(self, headers, timeout=120):
         if config.USAR_PROXY:
             if self.servidor.estaOnline(config.PROXY_IP, config.PROXY_PORT):
                 url_proxy = "http://%s:%s" % (config.PROXY_IP,
                             config.PROXY_PORT)
-                modulo_logger.log(logging.DEBUG, "Conectando a %s, por medio "\
-                "del proxy %s , para realizar la solicitud: %s" % \
+                modulo_logger.log(logging.DEBUG, "Conectando a %s, por medio "
+                "del proxy %s , para realizar la solicitud: %s" %
                 (self.server_sync, url_proxy, headers['Peticion']))
                 proxy = {'http': url_proxy, 'https': url_proxy}
             else:
-                modulo_logger.log(logging.ERROR, "El proxy no esta escuchando"\
-                " en %s:%s por lo que no se utilizara" % \
+                modulo_logger.log(logging.ERROR, "El proxy no esta escuchando"
+                " en %s:%s por lo que no se utilizara" %
                 (config.PROXY_IP, config.PROXY_PORT,))
                 proxy = {}
         else:
@@ -72,7 +72,7 @@ class Peticion:
         proxy_handler = urllib2.ProxyHandler(proxy)
         opener = urllib2.build_opener(proxy_handler)
         urllib2.install_opener(opener)
-        modulo_logger.log(logging.DEBUG, "Conectando a %s para realizar la "\
+        modulo_logger.log(logging.DEBUG, "Conectando a %s para realizar la "
         "solicitud: %s" % (self.server_sync, headers['Peticion']))
 #        dormir_por = 1
 
@@ -85,27 +85,36 @@ class Peticion:
         while True:
             try:
                 if self.servidor.estaOnline(self.server_ip, self.server_port):
-                    req = urllib2.Request("http://" + self.server_sync, \
+                    req = urllib2.Request("https://" + self.server_sync,
                     headers=headers)
-                    timeout = 120
                     respuesta = urllib2.urlopen(req, timeout=timeout).read()
                     modulo_logger.log(logging.DEBUG,
                                         "Respuesta: %s" % respuesta)
                     return respuesta
+                else:
+                    self.server_ip, self.server_port = \
+                        self.servidor.obtenerServidor(self.server_ip,
+                        self.server_port, self.userid)
+                    self.server_sync = "%s:%s" % (
+                                                    self.server_ip,
+                                                    self.server_port
+                                                    )
+                    modulo_logger.log(logging.INFO, "Se cambia al servidor "
+                    "%(server)s " % self.server_sync)
             except urllib2.URLError as error:
-                modulo_logger.log(logging.ERROR, "Error al conectarse a %s, "\
-                "peticion: %s . ERROR: %s" % (self.server_sync, \
+                modulo_logger.log(logging.ERROR, "Error al conectarse a %s, "
+                "peticion: %s . ERROR: %s" % (self.server_sync,
                 headers['Peticion'], error))
                 self.server_ip, self.server_port = \
-                    self.servidor.obtenerServidor(self.server_ip, \
-                    self.server_ip, self.userid)
+                    self.servidor.obtenerServidor(self.server_ip,
+                    self.server_port, self.userid)
                 self.server_sync = "%s:%s" % (self.server_ip, self.server_port)
-                modulo_logger.log(logging.INFO, "Se cambia al servidor "\
+                modulo_logger.log(logging.INFO, "Se cambia al servidor "
                 "%(server)s " % self.server_sync)
 
     def chequearActualizaciones(self):
-        headers = {"Peticion": "chequearActualizaciones", "Plataforma": \
-        config.PLATAFORMA}
+        headers = {"Peticion": "chequearActualizaciones",
+                    "Plataforma": config.PLATAFORMA}
         respuesta = self.obtenerRespuesta(headers)
         actualizacion, md5sum = respuesta.split(',')
         if actualizacion == 'No':
@@ -114,8 +123,8 @@ class Peticion:
             return actualizacion, md5sum
 
     def obtenerDominiosPermitidos(self, ultima_actualizacion):
-        headers = {"Peticion": "obtenerDominiosPermitidos", "UltimaSync": \
-        str(ultima_actualizacion)}
+        headers = {"Peticion": "obtenerDominiosPermitidos",
+                    "UltimaSync": str(ultima_actualizacion)}
         dominios = self.obtenerRespuesta(headers)
         return dominios
 
@@ -176,7 +185,7 @@ class Peticion:
         headers = {"Peticion": "registrarUsuario", "Email": email,
                     "Password": password, "ServerID": '0'}
         respuesta = self.obtenerRespuesta(headers)
-        modulo_logger.log(logging.DEBUG, "Id de usuario y  Id server: %s" % \
+        modulo_logger.log(logging.DEBUG, "Id de usuario y  Id server: %s" %
                             respuesta)
         idUsuario, server_id = respuesta.split(',')
         return [idUsuario, server_id]
@@ -184,7 +193,7 @@ class Peticion:
     def eliminarUsuario(self):
         """Solicita la eliminacion"""
         headers = {"Peticion": "eliminarUsuario"}
-        respuesta = self.obtenerRespuesta(headers)
+        respuesta = self.obtenerRespuesta(headers,timeout=5)
         return respuesta
 
     def usuarioRegistrado(self, id, email):

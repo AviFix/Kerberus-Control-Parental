@@ -1,0 +1,3 @@
+se debe ejecutar el bat "compilar LSP" y luego dentro escribir nmake.
+
+El archivo que tiene lo importante es SPI.cpp dentro de la carpeta "LSP-Kerberus"

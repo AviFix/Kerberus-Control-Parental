@@ -13,7 +13,7 @@ import sys
 sys.path.append('../conf')
 import usuario
 import config
-#import funciones
+import peticion
 import logging
 
 modulo_logger = logging.getLogger('kerberus.' + __name__)
@@ -54,7 +54,11 @@ class AdministradorDeUsuarios:
             self.usuarios_ya_validados_pass = []
 
         def md5sum(self, t):
-            return hashlib.md5(t.encode('utf-8')).hexdigest()
+            try:
+                return hashlib.md5(t.encode('utf-8')).hexdigest()
+            except:
+                modulo_logger.log(logging.ERROR, 'No se puedo generar el md5'
+                    ' de %s' % t)
 
         def passwordSeteada(self, usuario):
             conexion = sqlite3.connect(config.PATH_DB)
@@ -80,6 +84,32 @@ class AdministradorDeUsuarios:
             conexion.close()
             index = self.usuarios_ya_validados.index('admin')
             self.usuarios_ya_validados_pass[index] = password_nueva_md5
+            self.notificarPassword()
+
+        # OPTIMIZE: Este metodo esta duplicado con el de la clase
+        # sincronizador
+        def notificarPassword(self):
+            try:
+                conexion_db = sqlite3.connect(config.PATH_DB)
+                cursor = conexion_db.cursor()
+                password = cursor.execute(
+                    'select password from instalacion').fetchone()[0]
+                peticionRemota = peticion.Peticion()
+                respuesta = peticionRemota.informarNuevaPassword(
+                    password)
+                if respuesta == 'Informada':
+                    md5_password_nueva = \
+                        hashlib.md5(password.encode('utf-8')).hexdigest()
+                    cursor.execute('update instalacion set passwordnotificada=?, '\
+                    'password=?, credencial=?', (1, '', md5_password_nueva,))
+                cursor.close()
+                conexion_db.commit()
+            except sqlite3.OperationalError, msg:
+                cursor.close()
+                conexion_db.rollback()
+                self.modulo_logger.log(logging.ERROR, "No se pudo obtener la pass"\
+                " para notificarla.\nError: %s" % msg)
+
 
         def setPassword(self, usuario, password):
             password_md5 = self.md5sum(password)
@@ -148,3 +178,11 @@ class AdministradorDeUsuarios:
              usuarios creados"""
             cant = self.cantidadDeUsuarios()
             return (cant == 0)
+
+def main():
+    pass
+
+# Importante: los módulos no deberían ejecutar
+# código al ser importados
+if __name__ == '__main__':
+    main()

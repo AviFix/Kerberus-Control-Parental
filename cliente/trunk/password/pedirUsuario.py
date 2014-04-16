@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 import sys
 from PyQt4 import QtCore, QtGui
 from formUsuario import Ui_Form
@@ -32,7 +34,7 @@ class formularioUsuario(QtGui.QMainWindow):
             self.verificado=True
             self.close()
         else:
-            QtGui.QMessageBox.critical(self, 'Kerberus', 'Password incorrecta.', QtGui.QMessageBox.Ok)
+            QtGui.QMessageBox.critical(self, 'Kerberus', u'Contraseña incorrecta.', QtGui.QMessageBox.Ok)
             self.ui.password.clear()
             self.ui.password.setFocus()
         return True

@@ -97,7 +97,6 @@ done
 # borrando demonios
 update-rc.d -f kerberus-cliented remove > /dev/null
 update-rc.d -f kerberus-sincronizadord remove > /dev/null
-
 if [ -d ${PATH_COMMON} ]; then
   rm -rf ${PATH_COMMON}
 fi

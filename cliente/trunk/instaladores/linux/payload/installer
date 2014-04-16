@@ -3,18 +3,24 @@ PATH_COMMON=/usr/share/kerberus
 CONFIG_DIR=/etc/kerberus
 INIT_DIR=/etc/init.d
 
-if [ -f ${PATH_COMMON}/uninstaller ]; then
+if [ -f ${PATH_COMMON}/desinstalador/kerberus-uninstall ]; then
   echo "Kerberus ya se encuentra instalado, desea desinstalarlo? [y/N]"
   read respuesta
   if [ "${respuesta}" = "y" ]; then
-    sh ${PATH_COMMON}/uninstaller
+    ${PATH_COMMON}/desinstalador/kerberus-uninstall
   fi
   exit 0
 fi
 
 # Muestro la licencia
-  more licencia.txt
   echo ""
+  echo "Este software es libre y se distribuye bajo los terminos de la licencia GPLv3."
+  echo "Desea ver la licencia? [y/N]"
+  read respuesta
+  if [ "${respuesta}" = "y" ]; then
+	more licencia.txt
+  fi
+
   echo ""
   echo "Acepta los terminos y condiciones de la licencia de uso? [Y/n]"
   read respuesta
@@ -34,7 +40,6 @@ fi
 	fi
 	read respuesta
   done
-
 echo "Instalando Kerberus Control Parental..."
 
 mkdir -p ${PATH_COMMON}
@@ -42,6 +47,7 @@ mkdir -p ${CONFIG_DIR}
 
 tar xvfz ./cliente.tar.gz -C ${PATH_COMMON} > /dev/null
 tar xvfz ./sincronizador.tar.gz -C ${PATH_COMMON} > /dev/null
+tar xvfz ./desinstalador.tar.gz -C ${PATH_COMMON} > /dev/null
 cp ./confspec.ini ${PATH_COMMON}
 cp ./cliente.conf ${CONFIG_DIR}
 cp ./kerberus-cliented ${INIT_DIR}/
@@ -56,11 +62,11 @@ echo "Configurando kerberus para el/los usuarios:"
 for user_home in /home/*;
 do 
   	# seteando sistema
-  	if [ -d ${user_home} ] && [ -d ${user_home}/.gconf ];then
-	  usuario=`echo $user_home|cut -f 3 -d "/"`
-	  echo " - ${usuario}"
-	  su - ${usuario} -c "sh ${PATH_COMMON}/setProxy.sh set localhost 8080" > /dev/null 2> /dev/null
-	fi
+  	#if [ -d ${user_home} ] && [ -d ${user_home}/.gconf ];then
+	#  usuario=`echo $user_home|cut -f 3 -d "/"`
+	#  echo " - ${usuario}"
+	#  su - ${usuario} -c "sh ${PATH_COMMON}/setProxy.sh set localhost 8080" > /dev/null 2> /dev/null
+	#fi
 
 	# seteando Google Chrome
 	# chromiun

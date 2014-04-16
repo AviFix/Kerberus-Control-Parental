@@ -1,0 +1,22 @@
+# Kerberus Control Parental
+# Copyright (C) 2010 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Maximiliano Boscovich <maximiliano@boscovich.com.ar>, 2010, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"Report-Msgid-Bugs-To: maximiliano@kerberus.com.ar\n"
+"POT-Creation-Date: 2014-01-05 13:28-0300\n"
+"PO-Revision-Date: 2014-01-05 13:30-0300\n"
+"Last-Translator: Maximiliano Boscovich <maximiliano@boscovich.com.ar>\n"
+"Language-Team: Spanish <maximiliano@kerberus.com.ar>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Gtranslator 2.91.5\n"
+
+#: clases/mensajesHtml.py:45
+msgid "Temporarily Disable filter"
+msgstr "Deshabilitar temporalmente el filtrado"

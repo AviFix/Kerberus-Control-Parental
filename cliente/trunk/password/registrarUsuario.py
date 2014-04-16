@@ -60,11 +60,15 @@ class IntroPage(QWizardPage):
         password1=unicode(self.field("password1").toString().toUtf8(), 'utf-8')
         password2=unicode(self.field("password2").toString().toUtf8(), 'utf-8')
         if len(password1)<1:
-            QMessageBox.critical(self, 'Kerberus', 'Debe ingresar una password!', QMessageBox.Ok)
+            QMessageBox.critical(self,
+                'Kerberus',
+                u'Debe ingresar una contraseña!', QMessageBox.Ok)
             return False
 
         if (password1 <> password2):
-            QMessageBox.critical(self, 'Kerberus', 'Las password no coinciden!', QMessageBox.Ok)
+            QMessageBox.critical(self,
+                'Kerberus',
+                u'Las contraseñas no coinciden!', QMessageBox.Ok)
             self.setField("password1","")
             self.setField("password2","")
             return False
@@ -80,19 +84,25 @@ class RegistrationPage(QWizardPage):
         QWizardPage.__init__(self)
 
     def emailValido(self, email):
-        return re.match('^[(a-z0-9\_\-\.)]+@[(a-z0-9\_\-\.)]+\.[(a-z)]{2,4}$',email.lower())
+        return re.match('^[(a-z0-9\_\-\.)]+@[(a-z0-9\_\-\.)]+\.[(a-z)]{2,4}$',
+            email.lower())
 
     def validatePage(self):
         nombre=unicode(self.field("nombre").toString().toUtf8(), 'utf-8')
         email=unicode(self.field("email").toString().toUtf8(), 'utf-8')
 
         if len(nombre)<1:
-            QMessageBox.critical(self, 'Kerberus', 'Debe ingresar su nombre', QMessageBox.Ok)
+            QMessageBox.critical(self,
+                'Kerberus',
+                'Debe ingresar su nombre', QMessageBox.Ok)
             return False
         elif self.emailValido(email):
             return True
         else:
-            QMessageBox.critical(self, 'Kerberus', 'Debe ingresar una direccion de email valida', QMessageBox.Ok)
+            QMessageBox.critical(self,
+                'Kerberus',
+                u'Debe ingresar una dirección de correo electrónico válida',
+                QMessageBox.Ok)
             return False
 
 
@@ -108,8 +118,11 @@ class ConclusionPage(QWizardPage):
         password=unicode(self.field("password1").toString().toUtf8(), 'utf-8')
         registrador=registrar.Registradores()
         registrador.registrarLocalmente(nombre,email,password)
-        titulo="Fin de la configuracion"
-        mensaje="Estimado %s,\n\nHemos registrado sus password correctamente.\nLe enviaremos un e-mail con la misma a %s de modo que la pueda tener presente.\n\n\nGracias por utilizar Kerberus Control Parental!" % (nombre, email)
+        titulo=u'Fin de la configuración'
+        mensaje=u'Estimado %s,\n\nHemos registrado su contraseña '\
+            u'correctamente.\nLe enviaremos un correo electrónico con la misma'\
+            u' a %s de modo que la pueda tener presente.\n\n\nGracias por '\
+            u'utilizar Kerberus Control Parental!' % (nombre, email)
         self.setTitle(titulo)
         self.setField("labelConclusion",mensaje)
 
@@ -125,7 +138,7 @@ class RegistrarUsuario:
         wizard.addPage(self.createIntroPage())
         wizard.addPage(self.createRegistrationPage())
         wizard.addPage(self.createConclusionPage())
-        wizard.setWindowTitle("Password de administrador")
+        wizard.setWindowTitle(u'Contraseña de administrador')
         wizard.show()
         wizard.exec_()
         self.unlock()
@@ -142,18 +155,20 @@ class RegistrarUsuario:
 
     def createIntroPage(self):
         page = IntroPage()
-        page.setTitle("Configure la password de administrador")
+        page.setTitle(u'Configure la contraseña de administrador')
 
-        label = QLabel("Esta password le permitira deshabilitar temporalmente la proteccion de kerberus y le sera requerida para poder desinstalarlo.\n")
+        label = QLabel(u'Esta contraseña le permitirá deshabilitar '
+            u'temporalmente la protección de Kerberus y le será requerida '
+            u'para poder desinstalarlo.\n')
         label.setWordWrap(True)
 
-        password1Label = QLabel("Password:")
+        password1Label = QLabel(u'Contraseña:')
         password1LineEdit = QLineEdit()
-        password1LineEdit.setEchoMode(QLineEdit.PasswordEchoOnEdit)
+        password1LineEdit.setEchoMode(QLineEdit.Password)
 
-        password2Label = QLabel("Reingrese la password:")
+        password2Label = QLabel(u'Reingrese la contraseña:')
         password2LineEdit = QLineEdit()
-        password2LineEdit.setEchoMode(QLineEdit.PasswordEchoOnEdit)
+        password2LineEdit.setEchoMode(QLineEdit.Password)
 
         mensajeErrorLabel = QLabel("Ingrese")
 
@@ -178,7 +193,9 @@ class RegistrarUsuario:
     def createRegistrationPage(self):
         page = RegistrationPage()
         page.setTitle("Registro")
-        label = QLabel("Ingrese su nombre y direccion de correo electronico, de modo que \npodamos recordarle la password que ingreso en el paso anterior, \nen caso de que la olvide.\n")
+        label = QLabel(u'Ingrese su nombre y dirección de correo electrónico,'
+            u' de modo que \npodamos recordarle la contraseña que ingresó en el'
+            u' paso anterior, \nen caso de que la olvide.\n')
 
         nameLabel = QLabel("Nombre:")
         nameLineEdit = QLineEdit()
@@ -206,9 +223,10 @@ class RegistrarUsuario:
 
     def createConclusionPage(self):
         page = ConclusionPage()
-        page.setTitle("Fin de la configuracion")
+        page.setTitle(u'Fin de la configuración')
 
-        label = QLabel("Hemos registrado sus datos correctamente. \nGracias por utilizar Kerberus Control Parental!")
+        label = QLabel(u'Hemos registrado sus datos correctamente. \nGracias '
+            u'por utilizar Kerberus Control Parental!')
         label.setWordWrap(True)
         page.registerField("labelConclusion",label,"text")
 

@@ -92,5 +92,5 @@ class Ui_Form(object):
         self.titulo.setText(QtGui.QApplication.translate("Form", "Deshabilitar Filtrado de Kerberus", None, QtGui.QApplication.UnicodeUTF8))
         self.boton.setText(QtGui.QApplication.translate("Form", "Aceptar", None, QtGui.QApplication.UnicodeUTF8))
         self.botoncancelar.setText(QtGui.QApplication.translate("Form", "Cancelar", None, QtGui.QApplication.UnicodeUTF8))
-        self.Descripcion_2.setText(QtGui.QApplication.translate("Form", "<html><head/><body><p><a href=\"http://images.kerberus.com.ar/!RecordarPassword!\"><span style=\" text-decoration: underline; color:#0000ff;\">¿Olvido su contraseña?</span></a></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
+        self.Descripcion_2.setText(QtGui.QApplication.translate("Form", "<html><head/><body><p><a href=\"http://inicio.kerberus.com.ar/!RecordarPassword!\"><span style=\" text-decoration: underline; color:#0000ff;\">¿Olvido su contraseña?</span></a></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
 

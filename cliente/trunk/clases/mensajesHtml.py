@@ -5,10 +5,12 @@ determinado"""
 
 #Modulos externos
 from string import Template
+import sys
+sys.path.append('../')
 
 #Modulos propios
-#import config
 import logging
+import language
 
 modulo_logger = logging.getLogger('kerberus.' + __name__)
 
@@ -40,46 +42,49 @@ class MensajesHtml:
         return mensaje_renderizado
 
     def pedirPassword(self, mensaje=''):
-        diccionario = dict(titulo='Deshabilitar filtrado temporalmente',
-            subtitulo='(El filtrado estara inactivo por el resto de la sesión)',
-            mensaje='Ingrese la password del administrador de kerberus',
-            mensaje_error=mensaje
-            )
+        titulo=_('Temporarily Disable filter')
+        diccionario = {
+            'titulo': titulo,
+            'subtitulo': u'(El filtrado estará inactivo hasta que reinicie la PC)'.encode('utf-8'),
+            'mensaje': u'Ingrese la contraseña del administrador de Kerberus'.encode('utf-8'),
+            'mensaje_error': mensaje.encode('utf-8')
+            }
         mensaje = self.renderizarMensaje(self.template_pedir_password,
                                         diccionario)
         return mensaje
 
     def cambiarPassword(self, mensaje='', focus_en=''):
-        diccionario = dict(titulo='Cambiar password',
-            subtitulo='(Cambio de la password del administrador de kerberus)',
-            mensaje_error=mensaje,
-            focus=focus_en
-            )
+        diccionario = {
+            'titulo': u'Cambiar contraseña'.encode('utf-8'),
+            'subtitulo': u'(Cambio de la contraseña del administrador de Kerberus)'.encode('utf-8'),
+            'mensaje_error': mensaje.encode('utf-8'),
+            'focus': focus_en.encode('utf-8')
+            }
         mensaje = self.renderizarMensaje(self.template_cambiar_password,
                                             diccionario)
         return mensaje
 
     def passwordCambiadaCorrectamente(self, mensaje=''):
-        diccionario = dict(
-            titulo='Cambiar password',
-            mensaje=mensaje
-            )
+        diccionario = {
+            'titulo': u'Cambiar contraseña'.encode('utf-8'),
+            'mensaje': mensaje.encode('utf-8')
+            }
         mensaje = self.renderizarMensaje(self.template_mensaje, diccionario)
         return mensaje
 
     def recordarPassword(self, mensaje=''):
-        diccionario = dict(
-            titulo='Recordar password',
-            mensaje=mensaje
-            )
+        diccionario = {
+            'titulo': u'Recordar contraseña'.encode('utf-8'),
+            'mensaje': mensaje.encode('utf-8')
+            }
         mensaje = self.renderizarMensaje(self.template_mensaje, diccionario)
         return mensaje
 
     def denegarSitio(self, sitio=''):
-        diccionario = dict(
-            sitio=sitio,
-            path_templates=self.path_templates
-            )
+        diccionario = {
+            'sitio': sitio.encode('utf-8'),
+            'path_templates': self.path_templates
+            }
         mensaje = self.renderizarMensaje(self.template_sitio_denegado,
                                             diccionario)
         return mensaje

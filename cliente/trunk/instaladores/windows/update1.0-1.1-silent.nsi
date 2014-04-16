@@ -1,7 +1,8 @@
 ;--------------------------------
 ;Include Modern UI
+!include "nsProcess.nsh"
+!include "MUI.nsh"
 
-  !include "MUI.nsh"
 ;Seleccionamos el algoritmo de compresin utilizado para comprimir nuestra aplicacin
 SetCompressor lzma
 
@@ -12,7 +13,7 @@ SetCompressor lzma
   !define mui_abortwarning
 
 
-  
+
 
 ;--------------------------------
 ;Pages
@@ -46,7 +47,7 @@ SetCompressor lzma
 ; Configuracin General ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Nombre del instalador
-OutFile update1.0-1.1.exe
+OutFile update.exe
 
 ;Aqu comprobamos que en la versin Inglesa se muestra correctamente el mensaje:
 ;Welcome to the $Name Setup Wizard
@@ -100,38 +101,7 @@ Function .onInit
   ;podria ser definida en el compilador
   Var /GLOBAL VERSION
   StrCpy $VERSION "1.1"
-  
 FunctionEnd
-
-##########################
-
-# default section start
-;section
-
-; Check to see if already installed
-;  ReadRegStr $R0 HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus" "UninstallString"
-;  strCmp $R0 "Kerberus-control-parental" +1
-;  Abort "Kerberus ya se encuentra instalado. Desinstale la version previa."
-;  return
-
-
-    # call userInfo plugin to get user info.  The plugin puts the result in the stack
-;    userInfo::getAccountType
-
-    # pop the result from the stack into $0
-;    pop $0
-
-    # compare the result with the string "Admin" to see if the user is admin.
-    # If match, jump 3 lines down.
-;    strCmp $0 "Admin" +3
-
-    # if there is not a match, print message and return
-;    messageBox MB_OK "Debe tener Permisos de Administrador para instalar Kerberus: $0"
-;    return
-
-# default section end
-;sectionEnd
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Install settings                                                    ;
@@ -160,13 +130,14 @@ File   kerberus-daemon\dist\cliente\*.*
 SetOutPath $INSTDIR\$VERSION\sync
 File   kerberus-sync\dist\sincronizadorCliente\*.*
 
-SetOutPath $INSTDIR\$VERSION\extradata
+SetOutPath $INSTDIR\$VERSION
 File   desinstalador\dist\uninstall\*.*
 
 SetOutPath $INSTDIR\$VERSION\templates
 File   ..\..\templates\*.*
 
-
+SetOutPath $INSTDIR\$VERSION	
+File   migrador\dist\migrador\*.*
 
 ; Doy permisos
 AccessControl::GrantOnFile \
@@ -191,11 +162,8 @@ SetShellVarContext current
 WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus" \
 "DisplayName" "Kerberus-control-parental"
 
+WriteUninstaller $INSTDIR\$VERSION\kcpwu.dat
 
-WriteUninstaller $INSTDIR\$VERSION\extradata\kcpwu.dat
-
-;writeRegDword HKCU "SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" \
-;"ProxySettingsPerUser" 0
 
 writeRegDWord HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
 "MigrateProxy" 1
@@ -209,7 +177,6 @@ writeRegDWord HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings"
 writeRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
 "ProxyServer" "127.0.0.1:8080"
 
-
 writeRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" \
 "ProxyOverride" "127.0.0.1,localhost"
 
@@ -220,20 +187,14 @@ writeRegStr HKCU "Software\Policies\Google\Chrome" "DefaultSearchProviderSearchU
 writeRegDWord HKCU "Software\Policies\Google\Chrome" "HomepageIsNewTabPage" 0
 
 
-; Make the directory "$INSTDIR\$VERSION\database" read write accessible by all users
-;AccessControl::GrantOnFile \
-;"$COMMONFILES\kerberus" "(BU)" "GenericRead + GenericWrite + AddFile"
-
-;SimpleSC::InstallService "kerberus-daemon" "kerberus Daemon Service" "16" "2" "$INSTDIR\$VERSION\client\cliente.exe" "" "" ""
-;SimpleSC::InstallService "kerberus-sync" "kerberus sync Service" "16" "2" "$INSTDIR\$VERSION\sync\sincronizadorCliente.exe" "" "" ""
-
-; Ejecuto el script, o ejecuto las tareas típicas de la actualizacion que copia los datos del usuario de la version anterior a la nueva
-;ExecWait '"$INSTDIR\$VERSION\sync\sincronizadorCliente.exe"'
-
 CopyFiles /SILENT $ANTERIOR_INSTALLDIR\kerberus.db $INSTDIR\$VERSION\kerberus.db
-CopyFiles /SILENT $ANTERIOR_INSTALLDIR\cliente.conf $INSTDIR\$VERSION\cliente.conf
 
-; Modifico las variables, porque en teoria ya se copio todo
+ExecWait '"$INSTDIR\$VERSION\migrador.exe"' $R0
+StrCmp $R0 0 +3 0
+MessageBox MB_OK|MB_ICONEXCLAMATION "Hubo un error en el cliente de kerberus. Por favor reinicie su PC."
+Abort
+
+; Modifico las variables, porque en teoria ya se copio todo y se hizo ok la migracion
 
 WriteRegStr HKCU "Software\Kerberus" "InstallDir" $INSTDIR\$VERSION
 
@@ -251,18 +212,30 @@ WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Run" \
 "checkNavs" "$INSTDIR\$VERSION\checkNavs\navegadores.exe"
 
 WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus" \
-"UninstallString" '"$INSTDIR\$VERSION\extradata\uninstall.exe"'
+"UninstallString" '"$INSTDIR\$VERSION\uninstall.exe"'
+
+; cierro el cliente y el sincronizador de la version anterior y lanzo los nuevos
+
+${nsProcess::KillProcess} "sincronizadorCliente.exe" $R0
+StrCmp $R0 0 +3 0
+MessageBox MB_OK|MB_ICONEXCLAMATION "Hubo un error. Por favor reinicie su PC."
+Abort
+Exec '"$INSTDIR\$VERSION\sync\sincronizadorCliente.exe"'
+
+${nsProcess::KillProcess} "cliente.exe" $R0
+StrCmp $R0 0 +3 0
+MessageBox MB_OK|MB_ICONEXCLAMATION "Hubo un error. Por favor reinicie su PC."
+Abort
+Exec '"$INSTDIR\$VERSION\client\cliente.exe"'
 
 SectionEnd
-
-
 
 ;;;;;;;;;;;;;;;;;;;;;;
 ; Uninstall settings ;
 ;;;;;;;;;;;;;;;;;;;;;;
 
 
-!include "nsProcess.nsh"
+
 
 Function un.onInit
 
@@ -311,17 +284,6 @@ Section "Uninstall"
         DeleteRegValue HKCU "Software\Policies\Google\Chrome" "DefaultSearchProviderSearchURL"
         DeleteRegValue HKCU "Software\Policies\Google\Chrome" "HomepageIsNewTabPage"
         RMDir /r /REBOOTOK $INSTDIR\$VERSION
-
-;	writeRegDword HKCU "SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxySettingsPerUser" 1
-
-;        DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "MigrateProxy"
-;        DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyEnable"
-;        DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyHttp1.1"
-;        DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyServer"
-;        DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Internet Settings" "ProxyOverride"
-
-;SimpleSC::RemoveService "kerberus-daemon"
-;SimpleSC::RemoveService "kerberus-sync"
 
 MessageBox MB_YESNO|MB_ICONQUESTION "Es necesario reiniciar para completar la desinstalacion. Desea reiniciar ahora?" IDNO +2
 	reboot

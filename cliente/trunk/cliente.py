@@ -13,12 +13,9 @@ import signal
 import threading
 from types import FrameType, CodeType
 import ftplib
-#import base64
-#import platform
+import base64
 import os
-#import time
 import logging
-#from PyQt4 import QtGui
 
 sys.path.append('clases')
 sys.path.append('conf')
@@ -35,6 +32,7 @@ import administradorDeUsuarios
 import mensajesHtml
 import loguear
 import urllib2
+import detectorDeBrowser
 
 # Logging
 logger = loguear.logSetup(config.LOG_FILENAME, config.LOGLEVEL,
@@ -61,14 +59,9 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         self.server.logger.log(logging.DEBUG, "Primer pagina de acceso.")
         self.responderAlCliente(msg)
 
-    def mostrarDeshabilitado(self):
-        msg = "<html><head><title>Navegador protegido por Kerberus</title>"\
-        "</head> <body >Navegación Deshabilitada</body> </html> "
-        self.responderAlCliente(msg)
-
     def responderAlCliente(self, mensaje):
         tamano = len(mensaje)
-        self.wfile.write(self.protocol_version + \
+        self.wfile.write(self.protocol_version +
             " 200 Connection established\r\n")
         self.wfile.write("Content-Type: text/html\r\n")
         self.wfile.write(" Content-Length: %s\r\n" % tamano)
@@ -99,45 +92,61 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 
             if respuesta == 'Recordada':
                 msj = u'Estimado usuario,<br><br>Le hemos enviado un e-mail '\
-                'a su cuenta de correo %s con la password de administrador de '\
-                'kerberus.' % (email)
+                u'a su cuenta de correo %s con la contraseña de administrador '\
+                u'de Kerberus.' % (email)
             else:
-                msj = u'Estimado usuario,<br><br>Ya hemos enviado un e-mail a '\
-                'su cuenta de correo %s con la password de administrador de '\
-                'kerberus.' % (email)
+                msj = u'Estimado usuario,<br><br>Ya hemos enviado un e-mail a'\
+                u' su cuenta de correo %s con la contraseña de administrador '\
+                u'de Kerberus.' % (email)
             msg = mensaje.recordarPassword(msj)
             self.responderAlCliente(msg)
 
     def redirigirDesbloqueado(self, url):
-        msg = "<html><head><meta HTTP-EQUIV=\"REFRESH\" content=\"0; url=%s\">"\
-        "</head></html>" % url
+        msg = "<html><head><meta HTTP-EQUIV=\"REFRESH\" content=\"0; url=%s\""\
+        "></head></html>" % url
         self.responderAlCliente(msg)
 
     def passwordErronea(self):
         mensaje = mensajesHtml.MensajesHtml(config.PATH_TEMPLATES)
-        msg = mensaje.pedirPassword('Password incorrecta!')
+        msg = mensaje.pedirPassword(u'Contraseña incorrecta!')
         self.responderAlCliente(msg)
 
     def cambioPassPasswordErronea(self):
         mensaje = mensajesHtml.MensajesHtml(config.PATH_TEMPLATES)
-        msg = mensaje.cambiarPassword('Password incorrecta!', 'password_actual')
+        msg = mensaje.cambiarPassword(u'Contraseña incorrecta!',
+                                        'password_actual')
         self.responderAlCliente(msg)
 
     def passwordCambiadaCorrectamente(self):
         mensaje = mensajesHtml.MensajesHtml(config.PATH_TEMPLATES)
         msg = mensaje.passwordCambiadaCorrectamente(
-            'Password cambiada correctamente!')
+            u'Contraseña cambiada correctamente!')
         self.responderAlCliente(msg)
 
     def cambioPassPasswordNoCoinciden(self):
         mensaje = mensajesHtml.MensajesHtml(config.PATH_TEMPLATES)
-        msg = mensaje.cambiarPassword('Las passwords no coinciden!',
+        msg = mensaje.cambiarPassword(u'Las contraseñas no coinciden!',
             'password_nueva1')
         self.responderAlCliente(msg)
 
+    #def denegar(self, motivo, url):
+        #mensaje = mensajesHtml.MensajesHtml(config.PATH_TEMPLATES)
+        #msg = mensaje.denegarSitio(url)
+        #self.responderAlCliente(msg)
+
     def denegar(self, motivo, url):
-        mensaje = mensajesHtml.MensajesHtml(config.PATH_TEMPLATES)
-        msg = mensaje.denegarSitio(url)
+        motivo_b64 = base64.b64encode(motivo)
+        url_b64 = base64.b64encode(url)
+        msg = ("<html><head><title>Sitio Denegado</title>"
+                "<meta http-equiv=\"REFRESH\" content=\"0;"
+                "url=http://denegado.kerberus.com.ar/%(url)s/%(motivo)s"
+                "\" ></head> <body ></body> </html>"
+                % {'motivo':motivo_b64, 'url':url_b64})
+
+        self.server.logger.log(
+                logging.DEBUG,
+                "Sitio %(url)s DENEGADO, motivo: %(motivo)s"
+                % {'motivo': motivo,'url': url})
         self.responderAlCliente(msg)
 
     def handle(self):
@@ -162,12 +171,24 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                 self.send_error(404, msg)
             return False
         return True
-
+    # Utilizado en conexiones HTTPS
     def do_CONNECT(self):
+        # Si se van a realizar busquedas en https, las redirige a http
+        if self.path.startswith("www.google.") and self.path.endswith(":443"):
+            self.path = "nosslsearch.google.com:443"
+
+        # Si quieren usar encrypted, no los pelo
+        if self.path.startswith("encrypted.google."):
+            self.denegar("Sitio de busqueda no permitido",self.path)
+
+        self.server.logger.log(
+                logging.DEBUG,
+                "Metodo do_CONNECT, path: %(url)s"
+                % {'url': self.path})
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
             if self._connect_to(self.path, soc):
-                self.wfile.write(self.protocol_version + \
+                self.wfile.write(self.protocol_version +
                     " 200 Connection established\r\n")
                 self.wfile.write("Proxy-agent: %s\r\n" % self.version_string())
                 self.wfile.write("\r\n")
@@ -180,24 +201,62 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         return adminUsers.usuario_valido('admin', password)
 
     def do_GET(self):
-        url = self.path
-#        if self.server.verificador.primerUrl:
-#            self.server.verificador.primerUrl=False
-#            if "kerberus.com.ar" not in url:
-#                self.mostrarPublicidad(url)
-#                return False
+        modoDeConexion = self.headers.getheader('Proxy-Connection',
+                                                'Transparente')
+        hostDestino = self.headers.getheader('Host')
+        hostDestino = "http://%s" % hostDestino
+        if modoDeConexion == 'Transparente' and hostDestino not in self.path:
+            url = hostDestino + self.path
+            modo = "TRANSPARENTE"
+        else:
+            url = self.path
+            modo = "PROXY"
+
+        #self.server.logger.log(
+                #logging.DEBUG,
+                #"Metodo: %(meto)s, \n  URL: %(url)s, \n\n  host de destino: %(host)s\n  PATH: %(path)s\n\n"
+                #% {'url': url ,'host': hostDestino,'meto': modo, 'path':self.path})
+        self.server.logger.log(
+                logging.DEBUG,
+                "Modo de conexion: %(modo)s , URL: %(url)s"
+                % {'modo': modo ,'url': url})
+
+        if self.server.verificador.primerUrl:
+            try:
+                userAgent = self.headers.getheader('User-Agent')
+            except:
+                userAgent = False
+            esbrowser = detectorDeBrowser.esBrowser(userAgent)
+            self.server.verificador.primerUrl=False
+            if "kerberus.com.ar" not in url and esbrowser:
+                self.mostrarPublicidad(url)
+                return False
 
         # Usuarios del sistema no remotos (para cuando tengamos multi-user)
         usuario, password = "NoBody", "NoBody"
+
+
+        if "!HabilitarFiltrado!" in url:
+            url = url.replace('!HabilitarFiltrado!', '')
+            self.server.verificador.kerberus_activado = True
+            self.redirigirDesbloqueado(url)
+            return True
 
         if "!DeshabilitarFiltrado!" in url:
             url = url.replace('!DeshabilitarFiltrado!', '')
             if self.server.verificador.kerberus_activado:
                 if self.command == 'POST':
-                    content_len = int(self.headers.getheader('content-length'))
-                    post_body = self.rfile.read(content_len)
-                    password = post_body.split("=")[1]
-                    password = unicode(urllib2.unquote(password), 'utf-8')
+                    try:
+                        content_len = int(self.headers.getheader('content-length'))
+                        post_body = self.rfile.read(content_len)
+                        password = post_body.split("=")[1]
+                        password = unicode(urllib2.unquote(password), 'utf-8')
+                    except:
+                        self.server.logger.log(logging.ERROR,
+                            'Hubo un error al obtener la password de '
+                            'administrador de kerberus!')
+                        password = ''
+
                     usuario_admin = self.validarPassword(password)
                     if usuario_admin:
                         self.server.verificador.kerberus_activado = False
@@ -210,21 +269,29 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                     self.pedirPassword()
                     return True
 
+
         # Cambio de password
         if "!CambiarPassword!" in url:
             url = url.replace('!CambiarPassword!', '')
             if self.command == 'POST':
-                content_len = int(self.headers.getheader('content-length'))
-                post_body = self.rfile.read(content_len)
-                password_actual = post_body.split("&")[0].split("=")[1]
-                password_nueva1 = post_body.split("&")[1].split("=")[1]
-                password_nueva2 = post_body.split("&")[2].split("=")[1]
-                password_actual = unicode(urllib2.unquote(password_actual),
-                                            'utf-8')
-                password_nueva1 = unicode(urllib2.unquote(password_nueva1),
-                                            'utf-8')
-                password_nueva2 = unicode(urllib2.unquote(password_nueva2),
-                                            'utf-8')
+                try:
+                    content_len = int(self.headers.getheader('content-length'))
+                    post_body = self.rfile.read(content_len)
+                    password_actual = post_body.split("&")[0].split("=")[1]
+                    password_nueva1 = post_body.split("&")[1].split("=")[1]
+                    password_nueva2 = post_body.split("&")[2].split("=")[1]
+                    password_actual = unicode(urllib2.unquote(password_actual),
+                                                'utf-8')
+                    password_nueva1 = unicode(urllib2.unquote(password_nueva1),
+                                                'utf-8')
+                    password_nueva2 = unicode(urllib2.unquote(password_nueva2),
+                                                'utf-8')
+                except:
+                    self.server.logger.log(logging.ERROR,
+                        'Hubo un error al obtener los datos para hacer '
+                        'el cambio de password de administrador de kerberus!')
+                    password_actual = ''
+
                 usuario_admin = self.validarPassword(password_actual)
                 if usuario_admin:
                     if password_nueva1 != password_nueva2:
@@ -248,8 +315,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 
         #FIXME: Esto deberia ser un header no por url
         if "http://inicio.kerberus.com.ar" in url and \
-            self.server.verificador.kerberus_activado and \
-            "denegado.php" not in url:
+            self.server.verificador.kerberus_activado:
             url = url + "?kerberus_activado=1"
 
         if self.server.verificador.kerberus_activado:
@@ -266,14 +332,19 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         # Si llego hasta aca es porque esta permitido
         (scm, netloc, path, params, query, fragment) = urlparse.urlparse(url,
             'http')
+        if not netloc:
+            netloc=self.server.ultimo_netloc
+
         if scm not in ('http', 'ftp') or fragment or not netloc:
             self.send_error(400, "Url erronea: %s" % url)
             return False
+        else:
+            self.server.ultimo_netloc=netloc
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
             if scm == 'http':
                 if self._connect_to(netloc, soc):
-                    self.log_request()
+                    #self.log_request()
                     try:
                         self.server.logger.log(logging.DEBUG,
                             "Enviando: %s %s %s\r\n" % (self.command,
@@ -303,7 +374,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                         user, passwd = "anonymous", None
                 else:
                     user, passwd = "anonymous", None
-                self.log_request()
+                #self.log_request()
                 try:
                     ftp = ftplib.FTP(netloc)
                     ftp.login(user, passwd)
@@ -323,13 +394,20 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         local_data = ""
         ow = []
         count = 0
+        timeout = 3
         while 1:
             count += 1
-            (ins, _, exs) = select.select(iw, ow, iw, 3)
+            # ins: sockets legibles.
+            # exs: se produjo una excepcion en algun socket
+            # iw: sockets desde donde se leerean datos.
+            # ow: sockets donde se escribirán datos.
+            (ins, _, exs) = select.select(iw, ow, iw, timeout)
             if exs:
                 break
             if ins:
                 for i in ins:
+                    # soc: destino de la conexion.
+                    # self.connection: cliente
                     if i is soc:
                         out = self.connection
                     else:
@@ -351,10 +429,54 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
             return local_data
         return None
 
+    # Estos son todos los metodos http que encontre (estandares o no)
     do_HEAD = do_GET
     do_POST = do_GET
     do_PUT = do_GET
     do_DELETE = do_GET
+    do_OPTIONS = do_GET
+    do_TRACE = do_GET
+    do_PATCH=do_GET
+    do_LINK=do_GET
+    do_UNLINK=do_GET
+    do_PROPFIND=do_GET
+    do_PROPPATCH=do_GET
+    do_MKCOL=do_GET
+    do_COPY=do_GET
+    do_MOVE=do_GET
+    do_LOCK=do_GET
+    do_UNLOCK=do_GET
+    do_VERSION_CONTROL=do_GET
+    do_REPORT=do_GET
+    do_CHECKOUT=do_GET
+    do_CHECKIN=do_GET
+    do_UNCHECKOUT=do_GET
+    do_MKWORKSPACE=do_GET
+    do_UPDATE=do_GET
+    do_LABEL=do_GET
+    do_MERGE=do_GET
+    do_BASELINE_CONTROL=do_GET
+    do_MKACTIVITY=do_GET
+    do_ORDERPATCH=do_GET
+    do_ACL=do_GET
+    do_MKREDIRECTREF=do_GET
+    do_UPDATEREDIRECTREF=do_GET
+    do_MKCALENDAR=do_GET
+    do_SEARCH=do_GET
+    do_BIND=do_GET
+    do_UNBIND=do_GET
+    do_REBIND=do_GET
+    do_BCOPY=do_GET
+    do_BDELETE=do_GET
+    do_BMOVE=do_GET
+    do_BPROPFIND=do_GET
+    do_BPROPPATCH=do_GET
+    do_NOTIFY=do_GET
+    do_POLL=do_GET
+    do_SUBSCRIBE=do_GET
+    do_UNSUBSCRIBE=do_GET
+    do_X_MS_ENUMATTS=do_GET
+
 
     def log_message(self, format, *args):
         self.server.logger.log(logging.DEBUG, "%s %s", self.address_string(),
@@ -372,6 +494,7 @@ class ThreadingHTTPServer(SocketServer.ThreadingMixIn,
                                             RequestHandlerClass)
         self.logger = logger
         self.verificador = consultor.Consultor()
+        self.ultimo_netloc = ""
 
 
 def handler(signo, frame):
@@ -390,8 +513,8 @@ def main():
     ProxyHandler.protocol = "HTTP/1.1"
     httpd = ThreadingHTTPServer(server_address, ProxyHandler, logger)
     sa = httpd.socket.getsockname()
-    print 'Kerberus - Cliente Activo, atendiendo en %s puerto %s' % (sa[0],
-        sa[1])
+    logger.log(logging.DEBUG,
+        'Kerberus - Cliente Activo, atendiendo en %s puerto %s' % (sa[0], sa[1]))
     req_count = 0
     while not run_event.isSet():
         try:
