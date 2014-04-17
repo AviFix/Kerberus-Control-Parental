@@ -102,7 +102,11 @@ class Servidor:
 
         for ip, puerto in self.listaDeServidoresDefault:
             if self.estaOnline(ip, puerto):
-                servidor = "https://%s:%s" % (ip, puerto)
+                if int(puerto) == 443:
+                    protocolo = "https"
+                else:
+                    protocolo = "http"
+                servidor = "%s://%s:%s" % (protocolo, ip, puerto)
                 try:
                     req = urllib2.Request(servidor, headers=headers)
                     timeout = 40
@@ -135,8 +139,13 @@ class Servidor:
         if not userid and serverid:
             userid, serverid, version, nombretitular, credencial = \
             self.obtenerDatosUsuario()
-
-        server = "https://%s:%s" % (ip, port)
+        if int(port) == 443:
+            protocolo = "https"
+        else:
+            protocolo = "http"
+        server = "%s://%s:%s" % (protocolo, ip, port)
+        modulo_logger.log(logging.DEBUG, "Verificando si esta respondiendo %s"
+        % (server))
         headers = {"UserID": userid, "ServerID": serverid,
         "Peticion": "estaRespondiendo"}
 

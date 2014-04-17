@@ -7,7 +7,6 @@ import sys
 import urllib2
 import sqlite3
 import hashlib
-
 # Modulos propios
 sys.path.append('../conf')
 sys.path.append('../')
@@ -85,11 +84,18 @@ class Peticion:
         while True:
             try:
                 if self.servidor.estaOnline(self.server_ip, self.server_port):
-                    req = urllib2.Request("https://" + self.server_sync,
-                    headers=headers)
+                    if int(self.server_port) == 443:
+                        protocolo = "https"
+                    else:
+                        protocolo = "http"
+                    servidor = protocolo + "://" + self.server_sync
+                    modulo_logger.log(logging.DEBUG,
+                        "Realizando peticion %s a %s" % (headers['Peticion'], servidor))
+                    req = urllib2.Request(servidor, headers=headers)
                     respuesta = urllib2.urlopen(req, timeout=timeout).read()
                     modulo_logger.log(logging.DEBUG,
-                                        "Respuesta: %s" % respuesta)
+                        "Respuesta a la peticion %s: %s" %
+                        (headers['Peticion'], respuesta))
                     return respuesta
                 else:
                     self.server_ip, self.server_port = \

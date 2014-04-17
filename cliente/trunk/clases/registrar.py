@@ -15,7 +15,7 @@ import administradorDeUsuarios
 import peticion
 import logging
 
-modulo_logger = logging.getLogger('Kerberus.' + __name__)
+modulo_logger = logging.getLogger('kerberus')
 
 
 # Clase
@@ -33,7 +33,7 @@ class Registradores:
         if id > 0:
             peticionRemota = peticion.Peticion()
             registrado = peticionRemota.usuarioRegistrado(id, email)
-            return (registrado != None)
+            return (registrado != 'False')
         else:
             return False
 
