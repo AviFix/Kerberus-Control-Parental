@@ -10,10 +10,12 @@ import sqlite3
 
 #Modulos propios
 sys.path.append('../conf')
+sys.path.append('../')
+
 import config
 import logging
 
-modulo_logger = logging.getLogger('kerberus')
+modulo_logger = logging.getLogger('kerberus.' + __name__)
 
 
 #Excepciones
@@ -67,73 +69,124 @@ class Servidor:
             return idUsuario, serverId, version, nombretitular, credencial
 
     def obtenerRankingServidores(self):
-        headers = {}
-        headers['Peticion'] = "obtenerServidores"
-
-        if config.USAR_PROXY:
-            if self.estaOnline(config.PROXY_IP, config.PROXY_PORT):
-                url_proxy = "http://%s:%s" % (config.PROXY_IP,
-                    config.PROXY_PORT)
-                proxy = {'http': url_proxy, 'https': url_proxy}
-            else:
-                modulo_logger.log(logging.ERROR, "El proxy no esta escuchando"
-                " en %s:%s por lo que no se utilizara" %
-                (config.PROXY_IP, config.PROXY_PORT,))
-                proxy = {}
-        else:
-            proxy = {}
-        proxy_handler = urllib2.ProxyHandler(proxy)
-        opener = urllib2.build_opener(proxy_handler)
-        urllib2.install_opener(opener)
-
-        # Agrego los datos particulares del cliente
+        # Obtengo los datos del usuario
         userid, serverid, version, nombretitular, credencial = \
             self.obtenerDatosUsuario()
-        headers['UserID'] = userid
-        headers['ServerID'] = serverid
-        headers['Version'] = version
-        headers['Credencial'] = credencial
-        headers['Nombre'] = urllib2.quote(nombretitular.encode('utf-8'))
+        try:
+            conexion_db = sqlite3.connect(config.PATH_DB)
+            cursor = conexion_db.cursor()
+            servidores = cursor.execute(
+                'select ip, puerto from servidores order by ranking'
+                ).fetchall()
+            cursor.close()
 
-        # Esto es para que en el caso de que no pueda descargar la lista de
-        # servidores, utilice los servidores default (por ejemplo antes de
-        # registrarse).
-        self.listaDeServidores = self.listaDeServidoresDefault
-
-        for ip, puerto in self.listaDeServidoresDefault:
-            if self.estaOnline(ip, puerto):
-                if int(puerto) == 443:
-                    protocolo = "https"
+            self.listaDeServidores = []
+            for servidor in servidores:
+                ip, puerto = servidor
+                if self.estaOnline(ip, puerto) \
+                and self.estaRespondiendo(ip, puerto, userid, serverid):
+                    self.listaDeServidores.append([ip, puerto])
                 else:
-                    protocolo = "http"
-                servidor = "%s://%s:%s" % (protocolo, ip, puerto)
-                try:
-                    req = urllib2.Request(servidor, headers=headers)
-                    timeout = 40
-                    respuesta = urllib2.urlopen(req, timeout=timeout).read()
-                    modulo_logger.log(logging.DEBUG,
-                                        "Respuesta: %s" % respuesta)
-                    if respuesta:
-                        # Respuesta es una lista separada por retorno de carro
-                        # de la forma IP:PUERTO
-                        self.listaDeServidores = []
-                        for servidor in respuesta.split('\n'):
-                            if ":" in servidor:
-                                ip, puerto = servidor.split(":")
-                                self.listaDeServidores.append([ip, puerto])
-                        modulo_logger.log(logging.DEBUG, "Se obtuvo "
-                        "correctamente la lista de servidores disponibles.\n"
-                        "Lista de Servidores:\n"
-                        "%s" % respuesta)
-                        break
-                    else:
-                        modulo_logger.log(logging.DEBUG, "No se obtuvo "
-                        "la lista de servidores disponibles!!!.\n")
+                    modulo_logger.log(logging.ERROR, "El servidor %s:%s, "
+                        "registrado en la DB, no esta online." % (ip, puerto))
 
-                except urllib2.URLError as error:
-                    modulo_logger.log(logging.ERROR, "Error al conectarse a %s"
-                    ", peticion: %s . ERROR: %s" % (servidor,
-                    headers['Peticion'], error))
+        except sqlite3.OperationalError, msg:
+            modulo_logger.log(logging.ERROR, "No se pudo obtener la lista "
+            "de servidores desde la base de datos.\nError: %s" % msg)
+
+        if len(self.listaDeServidores) == 0:
+            headers = {}
+            modulo_logger.info('Iniciando solicitud de servidores online')
+            headers['Peticion'] = "obtenerServidores"
+
+            if config.USAR_PROXY:
+                if self.estaOnline(config.PROXY_IP, config.PROXY_PORT):
+                    url_proxy = "http://%s:%s" % (config.PROXY_IP,
+                        config.PROXY_PORT)
+                    proxy = {'http': url_proxy, 'https': url_proxy}
+                else:
+                    modulo_logger.log(logging.ERROR,
+                    "El proxy no esta escuchando en %s:%s por lo que no se "
+                    "utilizara" % (config.PROXY_IP, config.PROXY_PORT,))
+                    proxy = {}
+            else:
+                proxy = {}
+            proxy_handler = urllib2.ProxyHandler(proxy)
+            opener = urllib2.build_opener(proxy_handler)
+            urllib2.install_opener(opener)
+
+            # Agrego los datos particulares del cliente
+            headers['UserID'] = userid
+            headers['ServerID'] = serverid
+            headers['Version'] = version
+            headers['Credencial'] = credencial
+            headers['Nombre'] = urllib2.quote(nombretitular.encode('utf-8'))
+
+            # Esto es para que en el caso de que no pueda descargar la lista de
+            # servidores, utilice los servidores default (por ejemplo antes de
+            # registrarse).
+            self.listaDeServidores = self.listaDeServidoresDefault
+
+            for ip, puerto in self.listaDeServidoresDefault:
+                if self.estaOnline(ip, puerto):
+                    if int(puerto) == 443:
+                        protocolo = "https"
+                    else:
+                        protocolo = "http"
+                    servidor = "%s://%s:%s" % (protocolo, ip, puerto)
+                    try:
+                        req = urllib2.Request(servidor, headers=headers)
+                        timeout = 40
+                        respuesta = urllib2.urlopen(req, timeout=timeout).read()
+
+                        if respuesta:
+                            # Respuesta es una lista separada por retorno de
+                            # carro de la forma IP:PUERTO
+                            self.listaDeServidores = []
+                            for servidor in respuesta.split('\n'):
+                                if ":" in servidor:
+                                    ip, puerto = servidor.split(":")
+                                    self.listaDeServidores.append([ip, puerto])
+
+                            # lo guardo en la base
+                            try:
+                                conexion_db = sqlite3.connect(config.PATH_DB)
+                                cursor = conexion_db.cursor()
+                                ranking = 0
+
+                                cursor.execute('delete from servidores')
+                                conexion_db.commit()
+
+                                for servidor in self.listaDeServidores:
+                                    ranking += 1
+                                    cursor.execute(
+                                        'insert into servidores values (?,?,?)',
+                                        (ranking, servidor[0], servidor[1], ))
+                                conexion_db.commit()
+                                conexion_db.close()
+                            except sqlite3.OperationalError, msg:
+                                modulo_logger.log(logging.ERROR,
+                                "No se pudieron guardar los servidores en la "
+                                "base de datos\nError: %s" % msg)
+
+                            modulo_logger.log(logging.DEBUG,
+                                "Se obtuvo correctamente la lista de servidores"
+                                " disponibles.\nLista de Servidores:\n"
+                                "%s" % respuesta)
+                            # Salgo del for sobre dominios default
+                            break
+                        else:
+                            modulo_logger.log(logging.ERROR,
+                                "No se obtuvo se pudo obtener la lista de "
+                                "servidores kerberus disponibles.")
+
+                    except urllib2.URLError as error:
+                        modulo_logger.log(logging.ERROR,
+                        "Error al conectarse a %s, peticion: %s . ERROR: %s"
+                        % (servidor, headers['Peticion'], error))
+        else:
+            modulo_logger.log(logging.DEBUG,
+                "Utilizando un servidor registrado en la DB")
 
     def estaRespondiendo(self, ip, port, userid, serverid):
         if not userid and serverid:
@@ -169,7 +222,7 @@ class Servidor:
         urllib2.install_opener(opener)
         try:
             req = urllib2.Request(server, headers=headers)
-            respuesta = urllib2.urlopen(req, timeout=5).read()
+            respuesta = urllib2.urlopen(req, timeout=15).read()
             modulo_logger.log(logging.DEBUG, "Respuesta: %s" % respuesta)
             return (respuesta == 'Online')
         except urllib2.URLError as error:
@@ -195,6 +248,14 @@ class Servidor:
     serverID=False):
         dormir_por = 5
         while True:
+
+            servidores_str = ''
+            for ip, puerto in self.listaDeServidores:
+                servidores_str += '\n - %s:%s ' % (ip, puerto)
+
+            modulo_logger.log(logging.DEBUG,
+                "Lista de servidores a utilizar: %s" % servidores_str)
+
             for ip, port in self.listaDeServidores:
                 if self.estaRespondiendo(ip, port, userID, serverID):
                     modulo_logger.log(logging.INFO, "Utilizando el servidor "
@@ -206,6 +267,10 @@ class Servidor:
 
             modulo_logger.log(logging.CRITICAL, "No se pudo obtener ningun"
             " servidor de validacion!, durmiendo por: %s" % dormir_por)
+
+            # Obtengo la lista de servidores remotamente
+            self.obtenerRankingServidores()
+
             time.sleep(dormir_por)
             dormir_por = dormir_por + 5
             if dormir_por > 30:

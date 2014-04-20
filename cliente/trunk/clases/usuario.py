@@ -18,6 +18,7 @@ import peticion
 
 modulo_logger = logging.getLogger('kerberus.' + __name__)
 
+peticionRemota = peticion.Peticion()
 
 # Clase
 class Usuario:
@@ -39,6 +40,7 @@ class Usuario:
         #del(self.cursor)
         self.buffer_denegadas = []
         self.buffer_aceptadas = []
+        self.peticionRemota = peticionRemota
 
     def __str__(self):
         return self.nombre
@@ -68,7 +70,7 @@ class Usuario:
     def recargarCacheDenegadas(self):
         """Recarga la cache de urls denegadas, con lo que esta en la
         base de datos"""
-        modulo_logger.log(logging.INFO, "Recargando cache de URLs denegadas")
+        modulo_logger.log(logging.DEBUG, "Recargando cache de URLs denegadas")
         self.cache_urls_denegadas = []
         respuesta = self.cursor.execute(
             'select url from cache_urls_denegadas'
@@ -79,7 +81,7 @@ class Usuario:
     def recargarCacheAceptadas(self):
         """Recarga la cache de urls aceptadas, con lo que esta en la
         base de datos"""
-        modulo_logger.log(logging.INFO, "Recargando cache de URLs aceptadas")
+        modulo_logger.log(logging.DEBUG, "Recargando cache de URLs aceptadas")
         self.cache_urls_aceptadas = []
         respuesta = self.cursor.execute(
             'select url from cache_urls_aceptadas'
@@ -89,7 +91,7 @@ class Usuario:
 
     def recargarDominiosDenegados(self):
         """Carga desde la base de datos a memoria los dominios denegados"""
-        modulo_logger.log(logging.INFO, "Recargando dominios denegados")
+        modulo_logger.log(logging.DEBUG, "Recargando dominios denegados")
         self.dominios_denegados = []
         respuesta = self.cursor.execute(
             'select url from dominios_denegados where usuario=?', (self.id, )
@@ -99,7 +101,7 @@ class Usuario:
 
     def recargarDominiosPermitidos(self):
         """Carga desde la base de datos a memoria los dominios permitidos"""
-        modulo_logger.log(logging.INFO, "Recargando dominios permitidos")
+        modulo_logger.log(logging.DEBUG, "Recargando dominios permitidos")
         self.dominios_permitidos = []
         respuesta = self.cursor.execute(
             'select url from dominios_permitidos where usuario=?', (self.id, )
@@ -110,7 +112,7 @@ class Usuario:
     def recargarDominiosPublicamentePermitidos(self):
         """Carga desde la base de datos a memoria los dominios
         Publicamente permitidos"""
-        modulo_logger.log(logging.INFO, "Recargando dominios publicamente "\
+        modulo_logger.log(logging.DEBUG, "Recargando dominios publicamente "\
         "permitidos")
         conexion = sqlite3.connect(config.PATH_DB)
         cursor = conexion.cursor()
@@ -125,7 +127,7 @@ class Usuario:
     def recargarDominiosPublicamenteDenegados(self):
         """Carga desde la base de datos a memoria los dominios
         Publicamente denegados"""
-        modulo_logger.log(logging.INFO,
+        modulo_logger.log(logging.DEBUG,
                             "Recargando dominios publicamente denegados")
         conexion = sqlite3.connect(config.PATH_DB)
         cursor = conexion.cursor()
@@ -218,10 +220,9 @@ class Usuario:
             self.buffer_denegadas = []
 
     def recargarPeriodoDeActualizacion(self):
-        peticionRemota = peticion.Peticion()
         self.periodoDeActualizacionDB = \
                 peticionRemota.obtenerPeriodoDeActualizacion()
-        modulo_logger.log(logging.INFO,
+        modulo_logger.log(logging.DEBUG,
             "Periodo de actualizacion de la DB obtenido: %s" % \
             self.periodoDeActualizacionDB)
 
@@ -245,6 +246,5 @@ class Usuario:
         self.chequearEdadCaches()
         #
         modulo_logger.log(logging.INFO, "Validando remotamente: %s" % url)
-        peticionRemota = peticion.Peticion()
-        permitido, mensaje = peticionRemota.validarUrl(url)
+        permitido, mensaje = self.peticionRemota.validarUrl(url)
         return permitido, mensaje

@@ -18,6 +18,12 @@ CREATE TABLE instalacion(
     passwordnotificada boolean
 );
 
+CREATE TABLE servidores(
+    ranking    INTEGER,
+    ip    TEXT,
+    puerto INTEGER
+);
+
 CREATE TABLE dominios_permitidos(
     url               TEXT,
     usuario         INTEGER,

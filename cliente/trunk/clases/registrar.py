@@ -15,14 +15,15 @@ import administradorDeUsuarios
 import peticion
 import logging
 
-modulo_logger = logging.getLogger('kerberus')
+modulo_logger = logging.getLogger('kerberus.' + __name__)
 
 
 # Clase
 class Registradores:
-    def __init__(self):
+    def __init__(self, peticion=peticion.Peticion()):
         self.conexion_db = sqlite3.connect(config.PATH_DB)
         self.cursor = self.conexion_db.cursor()
+        self.peticionRemota = peticion
 
     def __del__(self):
         self.cursor.close()
@@ -31,8 +32,7 @@ class Registradores:
         """Verifica si esta registrado remotamente"""
         id, nombre, email, version, password = self.obtenerDatosRegistrados()
         if id > 0:
-            peticionRemota = peticion.Peticion()
-            registrado = peticionRemota.usuarioRegistrado(id, email)
+            registrado = self.peticionRemota.usuarioRegistrado(id, email)
             return (registrado != 'False')
         else:
             return False
@@ -72,8 +72,7 @@ class Registradores:
         """Registra remotamente los datos solicitados al momento de la
         instalacion"""
         id, nombre, email, version, password = self.obtenerDatosRegistrados()
-        peticionRemota = peticion.Peticion()
-        id_obtenido, server_id = peticionRemota.registrarUsuario(nombre,
+        id_obtenido, server_id = self.peticionRemota.registrarUsuario(nombre,
             email, password, version)
         modulo_logger.log(logging.INFO, 'ID OBTENIDO: %s, server_id: %s' % \
             (id_obtenido, server_id))
@@ -90,8 +89,7 @@ class Registradores:
     def eliminarRemotamente(self):
         """Ejecutado cuando un usuario desinstala el soft"""
         id, nombre, email, version, password = self.obtenerDatosRegistrados()
-        peticionRemota = peticion.Peticion()
-        id_obtenido = peticionRemota.eliminarUsuario()
+        id_obtenido = self.peticionRemota.eliminarUsuario()
 
     def obtenerDatosRegistrados(self):
         """Devuelve id, nombre, email y version"""

@@ -7,27 +7,29 @@ import sys
 import urllib2
 import sqlite3
 import hashlib
+import logging
+
 # Modulos propios
 sys.path.append('../conf')
 sys.path.append('../')
 import servidores
 import config
 
-#import registrar
-import logging
-
-modulo_logger = logging.getLogger('kerberus')
+modulo_logger = logging.getLogger('kerberus.' + __name__)
 
 
 # Clase
 class Peticion:
-    def __init__(self):
-        self.servidor = servidores.Servidor()
+    def __init__(self, servers=servidores.Servidor()):
+        modulo_logger.info('creando objeto server 2')
+        self.servidor = servers
+        modulo_logger.info('Fin creacion objeto server 2')
         self.userid, self.serverid, self.version, self.nombretitular,\
         self.credencial = self.obtenerDatos()
         self.server_ip, self.server_port = self.servidor.obtenerServidor(
             config.SYNC_SERVER_IP, config.SYNC_SERVER_PORT, self.userid,
             self.serverid)
+
         self.server_sync = "%s:%s" % (self.server_ip, self.server_port)
 
     def obtenerDatos(self):
@@ -71,9 +73,7 @@ class Peticion:
         proxy_handler = urllib2.ProxyHandler(proxy)
         opener = urllib2.build_opener(proxy_handler)
         urllib2.install_opener(opener)
-        modulo_logger.log(logging.DEBUG, "Conectando a %s para realizar la "
-        "solicitud: %s" % (self.server_sync, headers['Peticion']))
-#        dormir_por = 1
+
 
         # Agrego los datos particulares del cliente
         headers['UserID'] = self.userid
@@ -81,42 +81,50 @@ class Peticion:
         headers['Version'] = self.version
         headers['Credencial'] = self.credencial
         headers['Nombre'] = urllib2.quote(self.nombretitular.encode('utf-8'))
+
         while True:
+            error = ''
             try:
-                if self.servidor.estaOnline(self.server_ip, self.server_port):
-                    if int(self.server_port) == 443:
-                        protocolo = "https"
-                    else:
-                        protocolo = "http"
-                    servidor = protocolo + "://" + self.server_sync
-                    modulo_logger.log(logging.DEBUG,
-                        "Realizando peticion %s a %s" % (headers['Peticion'], servidor))
-                    req = urllib2.Request(servidor, headers=headers)
-                    respuesta = urllib2.urlopen(req, timeout=timeout).read()
-                    modulo_logger.log(logging.DEBUG,
-                        "Respuesta a la peticion %s: %s" %
-                        (headers['Peticion'], respuesta))
-                    return respuesta
+                if int(self.server_port) == 443:
+                    protocolo = "https"
                 else:
-                    self.server_ip, self.server_port = \
-                        self.servidor.obtenerServidor(self.server_ip,
-                        self.server_port, self.userid)
-                    self.server_sync = "%s:%s" % (
-                                                    self.server_ip,
-                                                    self.server_port
-                                                    )
-                    modulo_logger.log(logging.INFO, "Se cambia al servidor "
-                    "%(server)s " % self.server_sync)
-            except urllib2.URLError as error:
-                modulo_logger.log(logging.ERROR, "Error al conectarse a %s, "
-                "peticion: %s . ERROR: %s" % (self.server_sync,
-                headers['Peticion'], error))
+                    protocolo = "http"
+                servidor = protocolo + "://" + self.server_sync
+                modulo_logger.log(logging.INFO,
+                    "- Enviando peticion %s a %s" % (headers['Peticion'],
+                    servidor))
+
+                req = urllib2.Request(servidor, headers=headers)
+                respuesta = urllib2.urlopen(req, timeout=timeout).read()
+
+                modulo_logger.log(logging.INFO,
+                    "- Respuesta de %s a %s: %s" %
+                    (servidor, headers['Peticion'], respuesta))
+
+                return respuesta
+
+            except urllib2.HTTPError, e:
+                error = 'HTTPError = ' + str(e.code)
+
+            except urllib2.URLError, e:
+                error = 'URLError = ' + str(e.reason)
+
+            except Exception:
+                import traceback
+                error = 'generic exception: ' + traceback.format_exc()
+
+            if error != '':
+                modulo_logger.log(logging.WARNING,
+                "Error mientras se hacia la peticion %s a %s . ERROR: %s" %
+                (headers['Peticion'], self.server_sync, error)
+                )
                 self.server_ip, self.server_port = \
                     self.servidor.obtenerServidor(self.server_ip,
                     self.server_port, self.userid)
+
                 self.server_sync = "%s:%s" % (self.server_ip, self.server_port)
-                modulo_logger.log(logging.INFO, "Se cambia al servidor "
-                "%(server)s " % self.server_sync)
+                modulo_logger.log(logging.WARNING,
+                "Se cambia al servidor %(server)s " % self.server_sync)
 
     def chequearActualizaciones(self):
         headers = {"Peticion": "chequearActualizaciones",
