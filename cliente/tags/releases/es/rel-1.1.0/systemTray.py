@@ -82,7 +82,7 @@ class KerberusSystray(QWidget):
 
         #SystemTray
         #self.tray = QSystemTrayIcon(QIcon(pixmap), self)
-        self.tray = QtGui.QSystemTrayIcon(self.style.standardIcon(QtGui.QStyle.SP_DialogYesButton), self)
+        self.tray = QSystemTrayIcon(self.style.standardIcon(QStyle.SP_DialogYesButton), self)
         self.tray.setToolTip('Kerberus Control Parental - Activado')
         self.tray.setContextMenu(self.menu)
         self.tray.setVisible(True)
@@ -119,7 +119,7 @@ class KerberusSystray(QWidget):
                 )
         self.habilitarFiltradoAction.setVisible(True)
         self.deshabilitarFiltradoAction.setVisible(False)
-        self.tray.setIcon(self.style.standardIcon(QtGui.QStyle.SP_DialogNoButton))
+        self.tray.setIcon(self.style.standardIcon(QStyle.SP_DialogNoButton))
         self.tray.setToolTip('Kerberus Control Parental')
 
     def habilitarFiltradoWindow(self):
@@ -129,7 +129,7 @@ class KerberusSystray(QWidget):
                 )
         self.habilitarFiltradoAction.setVisible(False)
         self.deshabilitarFiltradoAction.setVisible(True)
-        self.tray.setIcon(self.style.standardIcon(QtGui.QStyle.SP_DialogYesButton))
+        self.tray.setIcon(self.style.standardIcon(QStyle.SP_DialogYesButton))
         self.tray.setToolTip('Kerberus Control Parental - Activado')
 
     def cambiarPasswordWindow(self):
