@@ -9,21 +9,22 @@ import sqlite3
 import hashlib
 import logging
 
-# Modulos propios
+modulo_logger = logging.getLogger('kerberus.' + __name__)
+
 sys.path.append('../conf')
 sys.path.append('../')
-import servidores
-import config
 
-modulo_logger = logging.getLogger('kerberus.' + __name__)
+# Modulos propios
+import config
 
 
 # Clase
 class Peticion:
-    def __init__(self, servers=servidores.Servidor()):
-        modulo_logger.info('creando objeto server 2')
+    def __init__(self, servers=None):
+        if servers is None:
+            import servidores
+            servers = servidores.Servidor()
         self.servidor = servers
-        modulo_logger.info('Fin creacion objeto server 2')
         self.userid, self.serverid, self.version, self.nombretitular,\
         self.credencial = self.obtenerDatos()
         self.server_ip, self.server_port = self.servidor.obtenerServidor(
@@ -123,8 +124,8 @@ class Peticion:
                     self.server_port, self.userid)
 
                 self.server_sync = "%s:%s" % (self.server_ip, self.server_port)
-                modulo_logger.log(logging.WARNING,
-                "Se cambia al servidor %(server)s " % self.server_sync)
+                modulo_logger.warning(
+                "Se cambia al servidor %s " % self.server_sync)
 
     def chequearActualizaciones(self):
         headers = {"Peticion": "chequearActualizaciones",

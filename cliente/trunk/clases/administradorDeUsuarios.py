@@ -9,14 +9,16 @@ import sqlite3
 import hashlib
 import os
 import sys
-#Modulos propios
-sys.path.append('../conf')
-import usuario
-import config
-import peticion
 import logging
 
 modulo_logger = logging.getLogger('kerberus.' + __name__)
+
+sys.path.append('../conf')
+
+#Modulos propios
+import usuario
+import config
+import peticion
 
 
 #Excepciones

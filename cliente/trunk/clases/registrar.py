@@ -5,17 +5,17 @@
 # Modulos externos
 import sqlite3
 import sys
-
-# Modulos propios
-sys.path.append('../conf')
-sys.path.append('../')
-
-import config
-import administradorDeUsuarios
-import peticion
 import logging
 
 modulo_logger = logging.getLogger('kerberus.' + __name__)
+
+sys.path.append('../conf')
+sys.path.append('../')
+
+# Modulos propios
+import config
+import administradorDeUsuarios
+import peticion
 
 
 # Clase
@@ -40,11 +40,11 @@ class Registradores:
     def checkRegistradoLocalmente(self):
         """Verifica si estan registrado los datos del usuario"""
         try:
-            registrado = self.cursor.execute('select count(*) from instalacion'\
+            registrado = self.cursor.execute('select count(*) from instalacion'
             ' where nombretitular <> ""').fetchone()[0]
         except sqlite3.OperationalError, msg:
-            modulo_logger.log(logging.ERROR, "No se pudieron verificar los "\
-            "datos de instalacion. Tal vez no esta la base de datos instalada."\
+            modulo_logger.log(logging.ERROR, "No se pudieron verificar los "
+            "datos de instalacion. Tal vez no esta la base de datos instalada."
             "\nERROR: %s" % msg)
             registrado = False
         if registrado >= 1:
@@ -57,15 +57,15 @@ class Registradores:
         instalacion"""
         try:
             #TODO: despues de que envie la contrasena se deberia borrar
-            self.cursor.execute('update instalacion set nombretitular=?, '\
+            self.cursor.execute('update instalacion set nombretitular=?, '
             'email=?, password=?', (nombre, email, password))
             self.conexion_db.commit()
             admUser = administradorDeUsuarios.AdministradorDeUsuarios()
             admUser.setPassword('admin', password)
             modulo_logger.log(logging.INFO, "Password seteada correctamente")
         except sqlite3.OperationalError, msg:
-            modulo_logger.log(logging.ERROR, "No se pudo registrar la "\
-            "instalacion localmente. Tal vez no esta la base de datos "\
+            modulo_logger.log(logging.ERROR, "No se pudo registrar la "
+            "instalacion localmente. Tal vez no esta la base de datos "
             "instalada.\nERROR: %s" % msg)
 
     def registrarRemotamente(self):
@@ -74,36 +74,36 @@ class Registradores:
         id, nombre, email, version, password = self.obtenerDatosRegistrados()
         id_obtenido, server_id = self.peticionRemota.registrarUsuario(nombre,
             email, password, version)
-        modulo_logger.log(logging.INFO, 'ID OBTENIDO: %s, server_id: %s' % \
+        modulo_logger.log(logging.INFO, 'ID OBTENIDO: %s, server_id: %s' %
             (id_obtenido, server_id))
         if (int(id_obtenido) > 0):
             self.cursor.execute('update instalacion set id =?, serverid =?, '
                 'passwordnotificada=1', (id_obtenido, server_id,))
             self.conexion_db.commit()
-            modulo_logger.log(logging.INFO, 'Se registro correctamente la '\
+            modulo_logger.log(logging.INFO, 'Se registro correctamente la '
             'instalacion')
         else:
-            modulo_logger.log(logging.ERROR, 'Hubo un error al tratar de '\
+            modulo_logger.log(logging.ERROR, 'Hubo un error al tratar de '
             'registrarse remotamente')
 
     def eliminarRemotamente(self):
         """Ejecutado cuando un usuario desinstala el soft"""
-        id, nombre, email, version, password = self.obtenerDatosRegistrados()
-        id_obtenido = self.peticionRemota.eliminarUsuario()
+        self.peticionRemota.eliminarUsuario()
 
     def obtenerDatosRegistrados(self):
         """Devuelve id, nombre, email y version"""
         try:
-            id, nombre, email, version, password = self.cursor.execute('select'\
-            ' id, nombretitular, email, version, password from '\
-            'instalacion').fetchone()
+            userid, nombre, email, version, password = self.cursor.execute(
+                'select id, nombretitular, email, version, password from '
+                'instalacion'
+                ).fetchone()
         except sqlite3.OperationalError, msg:
-            modulo_logger.log(logging.ERROR, "No se pudieron obtener los datos"\
-            " locales de la instalacion. Tal vez no esta la base de datos "\
+            modulo_logger.log(logging.ERROR, "No se pudieron obtener los datos"
+            " locales de la instalacion. Tal vez no esta la base de datos "
             "instalada.\nError: %s" % msg)
-            id = 0
+            userid = 0
             nombre = ""
             email = ""
             version = ""
             password = ""
-        return id, nombre, email, version, password
+        return userid, nombre, email, version, password

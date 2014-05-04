@@ -64,8 +64,9 @@ class ManejadorUrls:
 
     def identificarBuscador(self, url):
         """Identifica que navegador de los que soportan safeSearch es"""
-        if re.match("(?!^http:\/\/suggestqueries.).*google\..*/(custom|search"\
-                    "|images)\?", url):
+        if re.match(
+            "(?!^http:\/\/suggestqueries.).*google\..*/(custom|search|"
+            "images)\?", url):
             return "Google"
         elif re.match(".*\.yahoo\..*/search", url):
             return "Yahoo"

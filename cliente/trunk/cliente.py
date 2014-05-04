@@ -216,10 +216,10 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                 #logging.DEBUG,
                 #"Metodo: %(meto)s, \n  URL: %(url)s, \n\n  host de destino: %(host)s\n  PATH: %(path)s\n\n"
                 #% {'url': url ,'host': hostDestino,'meto': modo, 'path':self.path})
-        self.server.logger.log(
-                logging.DEBUG,
-                "Modo de conexion: %(modo)s , URL: %(url)s"
-                % {'modo': modo ,'url': url})
+        #self.server.logger.log(
+                #logging.DEBUG,
+                #"Modo de conexion: %(modo)s , URL: %(url)s"
+                #% {'modo': modo ,'url': url})
 
         if self.server.verificador.primerUrl:
             try:

@@ -7,18 +7,19 @@ import re
 import sqlite3
 import time
 import sys
-#import urllib2
-#import httplib
 import logging
 
-# Modulos propios
 sys.path.append('../conf')
-import config
-import peticion
 
 modulo_logger = logging.getLogger('kerberus.' + __name__)
 
+# Modulos propios
+import config
+import peticion
+
+
 peticionRemota = peticion.Peticion()
+
 
 # Clase
 class Usuario:
@@ -53,17 +54,13 @@ class Usuario:
     def __getattribute__(self, attr):
         return object.__getattribute__(self, attr)
 
-#    def __del__(self):
-#        self.conexion.commit()
-#        self.conexion.close()
-
     def getUserIdAndAdmin(self, usuario):
         """Devuelve el id del usuario, y si este es admin"""
         if usuario == "NoBody":
             id_usuario = 1
             es_admin = 0
             return id_usuario, es_admin
-        respuesta = self.cursor.execute('select id,admin from usuarios where '\
+        respuesta = self.cursor.execute('select id,admin from usuarios where '
         'username=? ', (usuario, ))
         return respuesta.fetchone()
 
@@ -112,7 +109,7 @@ class Usuario:
     def recargarDominiosPublicamentePermitidos(self):
         """Carga desde la base de datos a memoria los dominios
         Publicamente permitidos"""
-        modulo_logger.log(logging.DEBUG, "Recargando dominios publicamente "\
+        modulo_logger.log(logging.DEBUG, "Recargando dominios publicamente "
         "permitidos")
         conexion = sqlite3.connect(config.PATH_DB)
         cursor = conexion.cursor()
@@ -223,7 +220,7 @@ class Usuario:
         self.periodoDeActualizacionDB = \
                 peticionRemota.obtenerPeriodoDeActualizacion()
         modulo_logger.log(logging.DEBUG,
-            "Periodo de actualizacion de la DB obtenido: %s" % \
+            "Periodo de actualizacion de la DB obtenido: %s" %
             self.periodoDeActualizacionDB)
 
     def chequearEdadCaches(self):
@@ -237,7 +234,7 @@ class Usuario:
             if len(self.dominios_publicamente_permitidos) == 0:
                 self.periodoDeActualizacionDB = 5
             modulo_logger.log(logging.INFO,
-                "Dominios recargados, se volveran a sincronizar en %s" % \
+                "Dominios recargados, se volveran a sincronizar en %s" %
                 self.periodoDeActualizacionDB)
 
     def validarRemotamente(self, url):

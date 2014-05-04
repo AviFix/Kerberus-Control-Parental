@@ -10,17 +10,17 @@ import sqlite3
 import urllib2
 import hashlib
 import subprocess
-
-# Modulos propios
-sys.path.append('../conf')
-sys.path.append('../password')
-
-import config
-import registrar
-import registrarUsuario
 import logging
 
 modulo_logger = logging.getLogger('kerberus.' + __name__)
+
+sys.path.append('../conf')
+sys.path.append('../password')
+
+# Modulos propios
+import config
+import registrar
+import registrarUsuario
 
 
 class Sincronizador:
@@ -61,10 +61,12 @@ class Sincronizador:
             cursor = conexion_db.cursor()
 
             self.ultima_actualizacion = cursor.execute(
-                'select ultima_actualizacion from sincronizador').fetchone()[0]
+                'select ultima_actualizacion from sincronizador'
+                ).fetchone()[0]
 
             self.ultima_recarga_completa = cursor.execute(
-                'select ultima_recarga_completa from sincronizador').fetchone()[0]
+                'select ultima_recarga_completa from sincronizador'
+                ).fetchone()[0]
             conexion_db.close()
         except:
             modulo_logger.error('Hubo un problema mientras se obtenida desde la'
