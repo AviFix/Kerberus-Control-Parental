@@ -1,0 +1,4 @@
+LIBRARY    EasyParentalControlFireWall
+EXPORTS   
+    WSPStartup
+    GetLspGuid

@@ -1,0 +1,61 @@
+#!/bin/sh
+# Starts and stops securedfamilyd daemon (server side)
+#
+### BEGIN INIT INFO
+# Provides:          kerberus-cliente
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Kerberus Control Parental
+# Description:       Filtro de contenido web.
+### END INIT INFO
+
+DAEMON_NAME="kerberus"
+PATH_DAEMON=/usr/share/kerberus/cliente
+DAEMON=${PATH_DAEMON}/${DAEMON_NAME}
+PID=`ps ax|grep ${DAEMON}|grep -v "grep"|tail -n 1|awk '{ print $1 }'`
+case "$1" in
+start)
+	if [ ! ${PID} ];then
+	  	echo "Iniciando ${DAEMON_NAME}..."
+		${DAEMON} &
+		iptables -A OUTPUT -t nat -m owner --uid-owner root -j ACCEPT
+		iptables -A OUTPUT -t nat -p tcp --dport 80 ! -d 127.0.0.1  -j DNAT --to 127.0.0.1:4200
+	else
+	  	echo "El demonio ya esta en ejecución"
+	fi
+;;
+
+stop)
+	if [ ${PID} ]; then
+	  	echo "Deteniendo ${DAEMON_NAME}..."
+		iptables -D OUTPUT -t nat -m owner --uid-owner root -j ACCEPT
+		iptables -D OUTPUT -t nat -p tcp --dport 80 ! -d 127.0.0.1  -j DNAT --to 127.0.0.1:4200
+		kill ${PID} &> /dev/null
+	fi
+;;
+
+restart)
+  	$0 stop
+  	$0 start
+;;
+
+status)
+             if [ ${PID} ]; then
+                     echo "En ejecución..."
+		     echo "Consumos del proceso:"
+		     echo "--------------------"
+		     ps -p ${PID} -o pcpu,pmem
+		     echo ""
+                     exit 0
+             else
+                     echo "No esta corriendo"
+                     exit 1
+             fi
+;;
+
+*)
+        echo "Usage: $0 {start|stop|restart|status}"
+        exit 1
+esac 	
