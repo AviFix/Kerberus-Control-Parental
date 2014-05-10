@@ -1,4 +1,4 @@
-    # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 #
 """Modulo que carga la configuracion particular del usuario ingresado"""
 
@@ -29,18 +29,10 @@ class Usuario:
         conexion = sqlite3.connect(config.PATH_DB)
         self.cursor = conexion.cursor()
         self.id, self.es_admin = self.getUserIdAndAdmin(usuario)
-        self.recargarDominiosDenegados()
-        self.recargarDominiosPermitidos()
-        self.recargarDominiosPublicamentePermitidos()
-        self.recargarDominiosPublicamenteDenegados()
-        self.recargarCacheAceptadas()
-        self.recargarCacheDenegadas()
-        self.ultimaRecargaDeDominios = 0
-        self.recargarPeriodoDeActualizacion()
-        #conexion.close()
-        #del(self.cursor)
-        self.buffer_denegadas = []
-        self.buffer_aceptadas = []
+        self.cargarDominiosDenegados()
+        self.cargarDominiosPermitidos()
+        self.cargarDominiosPublicamentePermitidos()
+        self.cargarDominiosPublicamenteDenegados()
         self.peticionRemota = peticionRemota
 
     def __str__(self):
@@ -64,29 +56,7 @@ class Usuario:
         'username=? ', (usuario, ))
         return respuesta.fetchone()
 
-    def recargarCacheDenegadas(self):
-        """Recarga la cache de urls denegadas, con lo que esta en la
-        base de datos"""
-        modulo_logger.log(logging.DEBUG, "Recargando cache de URLs denegadas")
-        self.cache_urls_denegadas = []
-        respuesta = self.cursor.execute(
-            'select url from cache_urls_denegadas'
-            ).fetchall()
-        for fila in respuesta:
-            self.cache_urls_denegadas.append(fila[0])
-
-    def recargarCacheAceptadas(self):
-        """Recarga la cache de urls aceptadas, con lo que esta en la
-        base de datos"""
-        modulo_logger.log(logging.DEBUG, "Recargando cache de URLs aceptadas")
-        self.cache_urls_aceptadas = []
-        respuesta = self.cursor.execute(
-            'select url from cache_urls_aceptadas'
-            ).fetchall()
-        for fila in respuesta:
-            self.cache_urls_aceptadas.append(fila[0])
-
-    def recargarDominiosDenegados(self):
+    def cargarDominiosDenegados(self):
         """Carga desde la base de datos a memoria los dominios denegados"""
         modulo_logger.log(logging.DEBUG, "Recargando dominios denegados")
         self.dominios_denegados = []
@@ -96,7 +66,7 @@ class Usuario:
         for fila in respuesta:
             self.dominios_denegados.append(fila[0])
 
-    def recargarDominiosPermitidos(self):
+    def cargarDominiosPermitidos(self):
         """Carga desde la base de datos a memoria los dominios permitidos"""
         modulo_logger.log(logging.DEBUG, "Recargando dominios permitidos")
         self.dominios_permitidos = []
@@ -106,7 +76,7 @@ class Usuario:
         for fila in respuesta:
             self.dominios_permitidos.append(fila[0])
 
-    def recargarDominiosPublicamentePermitidos(self):
+    def cargarDominiosPublicamentePermitidos(self):
         """Carga desde la base de datos a memoria los dominios
         Publicamente permitidos"""
         modulo_logger.log(logging.DEBUG, "Recargando dominios publicamente "
@@ -121,7 +91,7 @@ class Usuario:
             self.dominios_publicamente_permitidos.append(fila[0])
         conexion.close()
 
-    def recargarDominiosPublicamenteDenegados(self):
+    def cargarDominiosPublicamenteDenegados(self):
         """Carga desde la base de datos a memoria los dominios
         Publicamente denegados"""
         modulo_logger.log(logging.DEBUG,
@@ -172,76 +142,40 @@ class Usuario:
                 "Error al tratar de obtener el dominio desde la url: %s" % url)
             return False
 
-    def cacheAceptadas(self, url):
-        """Verifica si la url esta en la cache de aceptadas"""
-        return url in self.cache_urls_aceptadas
-
-    def cacheDenegadas(self, url):
-        """Verifica si la url esta en la cache de denegadas"""
-        return url in self.cache_urls_denegadas
-
-    def persistirACacheAceptadas(self, url):
-        """Baja de la cache en memoria, a la base de datos las
-        urls aceptadas"""
-        hora_url = time.time()
-        self.buffer_aceptadas.append([url, hora_url])
-        if len(self.buffer_aceptadas) > (config.MAX_CACHE_URLS_ACEPTADAS):
-            conexion = sqlite3.connect(config.PATH_DB)
-            cursor = conexion.cursor()
-            for item in self.buffer_aceptadas:
-                cursor.execute(
-                    'insert into cache_urls_aceptadas values (?,?)',
-                    (item[0], item[1], ))
-                modulo_logger.log(logging.INFO,
-                    "Agregando en la cache de urls aceptadas a: %s" % item[0])
-            conexion.commit()
-            conexion.close()
-            self.buffer_aceptadas = []
-
-    def persistirACacheDenegadas(self, url):
-        """Baja de la cache en memoria, a la base de datos las
-        urls denegadas"""
-        hora_url = time.time()
-        self.buffer_denegadas.append([url, hora_url])
-        if len(self.buffer_denegadas) > (config.MAX_CACHE_URLS_DENEGADAS):
-            conexion = sqlite3.connect(config.PATH_DB)
-            cursor = conexion.cursor()
-            for item in self.buffer_denegadas:
-                cursor.execute(
-                    'insert into cache_urls_denegadas values (?,?)',
-                    (item[0], item[1], ))
-                modulo_logger.log(logging.INFO,
-                    "Agregando en la cache de urls denegadas a: %s" % item[0])
-            conexion.commit()
-            conexion.close()
-            self.buffer_denegadas = []
-
-    def recargarPeriodoDeActualizacion(self):
-        self.periodoDeActualizacionDB = \
-                peticionRemota.obtenerPeriodoDeActualizacion()
-        modulo_logger.log(logging.DEBUG,
-            "Periodo de actualizacion de la DB obtenido: %s" %
-            self.periodoDeActualizacionDB)
-
-    def chequearEdadCaches(self):
-        tiempo_actual = time.time()
-        tiempo_transcurrido = tiempo_actual - self.ultimaRecargaDeDominios
-        if (tiempo_transcurrido > self.periodoDeActualizacionDB):
-            self.recargarDominiosPublicamentePermitidos()
-            self.recargarDominiosPublicamenteDenegados()
-            self.recargarPeriodoDeActualizacion()
-            self.ultimaRecargaDeDominios = tiempo_actual
-            if len(self.dominios_publicamente_permitidos) == 0:
-                self.periodoDeActualizacionDB = 5
-            modulo_logger.log(logging.INFO,
-                "Dominios recargados, se volveran a sincronizar en %s" %
-                self.periodoDeActualizacionDB)
-
     def validarRemotamente(self, url):
         """Consulta al servidor por la url, porque no pudo determinar
         su aptitud"""
-        self.chequearEdadCaches()
-        #
+
         modulo_logger.log(logging.INFO, "Validando remotamente: %s" % url)
         permitido, mensaje = self.peticionRemota.validarUrl(url)
+
+        if permitido:
+            try:
+                dominio = url.split('/')[2]
+                if dominio not in self.dominios_permitidos:
+                    self.dominios_permitidos.append(dominio)
+                    modulo_logger.info("Se agrega el dominio %s a la cache de"
+                        " dominios locales permitidos" % dominio)
+            except:
+                modulo_logger.error("No se pudo agrega el dominio %s a la "
+                    "cache de dominios locales permitidos" % dominio)
+        else:
+            try:
+                dominio = url.split('/')[2]
+                if dominio not in self.dominios_denegados:
+                    self.dominios_denegados.append(dominio)
+                    modulo_logger.info("Se agrega el dominio %s a la cache de"
+                        " dominios locales denegados" % dominio)
+            except:
+                modulo_logger.error("No se pudo agrega el dominio %s a la "
+                    "cache de dominios locales denegados" % dominio)
         return permitido, mensaje
+
+
+def main():
+    pass
+
+# Importante: los módulos no deberían ejecutar
+# código al ser importados
+if __name__ == '__main__':
+    main()

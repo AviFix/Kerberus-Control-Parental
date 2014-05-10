@@ -3,11 +3,11 @@
 # Modulos externos
 import sys
 
-# Modulos propios
 sys.path.append('clases')
 sys.path.append('conf')
 sys.path.append('password')
 
+# Modulos propios
 import config
 import loguear
 

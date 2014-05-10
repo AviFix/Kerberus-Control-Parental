@@ -191,7 +191,6 @@ class Servidor:
             credencial = ''
             return idUsuario, serverId, version, nombretitular, credencial
 
-
     def estaRespondiendo(self, ip, port, userid, serverid):
         if not userid and serverid:
             userid, serverid, version, nombretitular, credencial = \
@@ -286,3 +285,12 @@ class Servidor:
             if dormir_por > 30:
                 dormir_por = 30
         return False, False
+
+
+def main():
+    pass
+
+# Importante: los módulos no deberían ejecutar
+# código al ser importados
+if __name__ == '__main__':
+    main()

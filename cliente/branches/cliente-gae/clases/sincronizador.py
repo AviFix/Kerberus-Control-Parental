@@ -335,3 +335,12 @@ class Sincronizador:
                 (nueva_version, error))
 
         modulo_logger.info("Fin de la actualizacion")
+
+
+def main():
+    pass
+
+# Importante: los módulos no deberían ejecutar
+# código al ser importados
+if __name__ == '__main__':
+    main()

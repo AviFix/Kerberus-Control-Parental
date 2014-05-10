@@ -1,6 +1,9 @@
+# -*- coding: utf-8 -*-
+
 """
 Extract client information from http user agent
-The module does not try to detect all capabilities of browser in current form (it can easily be extended though).
+The module does not try to detect all capabilities of browser in current form
+(it can easily be extended though).
 Tries to
     * be fast
     * very easy to extend
@@ -8,6 +11,7 @@ Tries to
     * assist python web apps to detect clients.
 """
 import sys
+
 
 class DetectorsHub(dict):
     _known_types = ['os', 'dist', 'flavor', 'browser']
@@ -385,3 +389,12 @@ def esBrowser(agente):
             return True
         else:
             return False
+
+
+def main():
+    pass
+
+# Importante: los módulos no deberían ejecutar
+# código al ser importados
+if __name__ == '__main__':
+    main()

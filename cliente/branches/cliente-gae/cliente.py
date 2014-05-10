@@ -28,7 +28,6 @@ import manejadorUrls
 import config
 import funciones
 import administradorDeUsuarios
-#import pedirUsuario
 import mensajesHtml
 import loguear
 import urllib2
@@ -129,11 +128,6 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
             'password_nueva1')
         self.responderAlCliente(msg)
 
-    #def denegar(self, motivo, url):
-        #mensaje = mensajesHtml.MensajesHtml(config.PATH_TEMPLATES)
-        #msg = mensaje.denegarSitio(url)
-        #self.responderAlCliente(msg)
-
     def denegar(self, motivo, url):
         motivo_b64 = base64.b64encode(motivo)
         url_b64 = base64.b64encode(url)
@@ -207,19 +201,8 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         hostDestino = "http://%s" % hostDestino
         if modoDeConexion == 'Transparente' and hostDestino not in self.path:
             url = hostDestino + self.path
-            modo = "TRANSPARENTE"
         else:
             url = self.path
-            modo = "PROXY"
-
-        #self.server.logger.log(
-                #logging.DEBUG,
-                #"Metodo: %(meto)s, \n  URL: %(url)s, \n\n  host de destino: %(host)s\n  PATH: %(path)s\n\n"
-                #% {'url': url ,'host': hostDestino,'meto': modo, 'path':self.path})
-        #self.server.logger.log(
-                #logging.DEBUG,
-                #"Modo de conexion: %(modo)s , URL: %(url)s"
-                #% {'modo': modo ,'url': url})
 
         if self.server.verificador.primerUrl:
             try:
@@ -227,14 +210,13 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
             except:
                 userAgent = False
             esbrowser = detectorDeBrowser.esBrowser(userAgent)
-            self.server.verificador.primerUrl=False
+            self.server.verificador.primerUrl = False
             if "kerberus.com.ar" not in url and esbrowser:
                 self.mostrarPublicidad(url)
                 return False
 
         # Usuarios del sistema no remotos (para cuando tengamos multi-user)
         usuario, password = "NoBody", "NoBody"
-
 
         if "!HabilitarFiltrado!" in url:
             url = url.replace('!HabilitarFiltrado!', '')
@@ -247,7 +229,9 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
             if self.server.verificador.kerberus_activado:
                 if self.command == 'POST':
                     try:
-                        content_len = int(self.headers.getheader('content-length'))
+                        content_len = int(
+                                    self.headers.getheader('content-length')
+                                    )
                         post_body = self.rfile.read(content_len)
                         password = post_body.split("=")[1]
                         password = unicode(urllib2.unquote(password), 'utf-8')
@@ -268,7 +252,6 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                 else:
                     self.pedirPassword()
                     return True
-
 
         # Cambio de password
         if "!CambiarPassword!" in url:
@@ -333,35 +316,52 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         (scm, netloc, path, params, query, fragment) = urlparse.urlparse(url,
             'http')
         if not netloc:
-            netloc=self.server.ultimo_netloc
+            netloc = self.server.ultimo_netloc
 
         if scm not in ('http', 'ftp') or fragment or not netloc:
             self.send_error(400, "Url erronea: %s" % url)
             return False
         else:
-            self.server.ultimo_netloc=netloc
+            self.server.ultimo_netloc = netloc
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
             if scm == 'http':
                 if self._connect_to(netloc, soc):
-                    #self.log_request()
                     try:
-                        self.server.logger.log(logging.DEBUG,
-                            "Enviando: %s %s %s\r\n" % (self.command,
-                            urlparse.urlunparse(('', '', path, params,
-                            query, '')), self.request_version))
-                        soc.send("%s %s %s\r\n" % (self.command,
-                        urlparse.urlunparse(('', '', path, params, query, '')),
-                        self.request_version))
+                        # Ejemplo de request http:
+                        #
+                        # GET /index.php?param1=value1&param2=value2 HTTP/1.1
+                        #
+                        # metodo_http = GET
+                        # recurso_http = /index.php?param1=value1&param2=value2
+                        # version_http = HTTP/1.1
+
+                        metodo_http = self.command
+                        recurso_http = urlparse.urlunparse(
+                                        ('', '', path, params, query, '')
+                                    )
+                        version_http = self.request_version
+
+                        self.server.logger.debug("Enviando: %s %s %s\r\n" %
+                                (metodo_http, recurso_http, version_http)
+                            )
+                        soc.send(
+                            "%s %s %s\r\n" %
+                                (metodo_http, recurso_http, version_http)
+                            )
                         self.headers['Connection'] = 'close'
+
                         del self.headers['Proxy-Connection']
+
                         for key_val in self.headers.items():
                             soc.send("%s: %s\r\n" % key_val)
+
                         soc.send("\r\n")
                         self._read_write(soc)
                     except:
-                        self.server.logger.log(logging.ERROR,
-                        "Hubo un error en el metodo do_GET. URL: %s", url)
+                        self.server.logger.error(
+                            "Hubo un error en el metodo do_GET. URL: %s", url
+                            )
 
             elif scm == 'ftp':
                 # fish out user and password information
@@ -374,7 +374,6 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                         user, passwd = "anonymous", None
                 else:
                     user, passwd = "anonymous", None
-                #self.log_request()
                 try:
                     ftp = ftplib.FTP(netloc)
                     ftp.login(user, passwd)
@@ -436,55 +435,46 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
     do_DELETE = do_GET
     do_OPTIONS = do_GET
     do_TRACE = do_GET
-    do_PATCH=do_GET
-    do_LINK=do_GET
-    do_UNLINK=do_GET
-    do_PROPFIND=do_GET
-    do_PROPPATCH=do_GET
-    do_MKCOL=do_GET
-    do_COPY=do_GET
-    do_MOVE=do_GET
-    do_LOCK=do_GET
-    do_UNLOCK=do_GET
-    do_VERSION_CONTROL=do_GET
-    do_REPORT=do_GET
-    do_CHECKOUT=do_GET
-    do_CHECKIN=do_GET
-    do_UNCHECKOUT=do_GET
-    do_MKWORKSPACE=do_GET
-    do_UPDATE=do_GET
-    do_LABEL=do_GET
-    do_MERGE=do_GET
-    do_BASELINE_CONTROL=do_GET
-    do_MKACTIVITY=do_GET
-    do_ORDERPATCH=do_GET
-    do_ACL=do_GET
-    do_MKREDIRECTREF=do_GET
-    do_UPDATEREDIRECTREF=do_GET
-    do_MKCALENDAR=do_GET
-    do_SEARCH=do_GET
-    do_BIND=do_GET
-    do_UNBIND=do_GET
-    do_REBIND=do_GET
-    do_BCOPY=do_GET
-    do_BDELETE=do_GET
-    do_BMOVE=do_GET
-    do_BPROPFIND=do_GET
-    do_BPROPPATCH=do_GET
-    do_NOTIFY=do_GET
-    do_POLL=do_GET
-    do_SUBSCRIBE=do_GET
-    do_UNSUBSCRIBE=do_GET
-    do_X_MS_ENUMATTS=do_GET
-
-
-    def log_message(self, format, *args):
-        self.server.logger.log(logging.DEBUG, "%s %s", self.address_string(),
-                                format % args)
-
-    def log_error(self, format, *args):
-        self.server.logger.log(logging.ERROR, "%s %s", self.address_string(),
-                                format % args)
+    do_PATCH = do_GET
+    do_LINK = do_GET
+    do_UNLINK = do_GET
+    do_PROPFIND = do_GET
+    do_PROPPATCH = do_GET
+    do_MKCOL = do_GET
+    do_COPY = do_GET
+    do_MOVE = do_GET
+    do_LOCK = do_GET
+    do_UNLOCK = do_GET
+    do_VERSION_CONTROL = do_GET
+    do_REPORT = do_GET
+    do_CHECKOUT = do_GET
+    do_CHECKIN = do_GET
+    do_UNCHECKOUT = do_GET
+    do_MKWORKSPACE = do_GET
+    do_UPDATE = do_GET
+    do_LABEL = do_GET
+    do_MERGE = do_GET
+    do_BASELINE_CONTROL = do_GET
+    do_MKACTIVITY = do_GET
+    do_ORDERPATCH = do_GET
+    do_ACL = do_GET
+    do_MKREDIRECTREF = do_GET
+    do_UPDATEREDIRECTREF = do_GET
+    do_MKCALENDAR = do_GET
+    do_SEARCH = do_GET
+    do_BIND = do_GET
+    do_UNBIND = do_GET
+    do_REBIND = do_GET
+    do_BCOPY = do_GET
+    do_BDELETE = do_GET
+    do_BMOVE = do_GET
+    do_BPROPFIND = do_GET
+    do_BPROPPATCH = do_GET
+    do_NOTIFY = do_GET
+    do_POLL = do_GET
+    do_SUBSCRIBE = do_GET
+    do_UNSUBSCRIBE = do_GET
+    do_X_MS_ENUMATTS = do_GET
 
 
 class ThreadingHTTPServer(SocketServer.ThreadingMixIn,
@@ -513,22 +503,21 @@ def main():
     ProxyHandler.protocol = "HTTP/1.1"
     httpd = ThreadingHTTPServer(server_address, ProxyHandler, logger)
     sa = httpd.socket.getsockname()
-    logger.log(logging.DEBUG,
-        'Kerberus - Cliente Activo, atendiendo en %s puerto %s' % (sa[0], sa[1]))
+    logger.debug('Kerberus - Cliente atendiendo en %s:%s' % (sa[0], sa[1]))
     req_count = 0
     while not run_event.isSet():
         try:
             httpd.handle_request()
             req_count += 1
             if req_count == 1000:
-                logger.log(logging.INFO, "Number of active threads: %s",
+                logger.info("Number of active threads: %s",
                             threading.activeCount())
                 req_count = 0
         except select.error, e:
             if e[0] == 4 and run_event.isSet():
                 pass
             else:
-                logger.log(logging.CRITICAL, "Errno: %d - %s", e[0], e[1])
+                logger.critical("Errno: %d - %s", e[0], e[1])
     return 0
 
 if __name__ == '__main__':

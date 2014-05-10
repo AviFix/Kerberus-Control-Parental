@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
-from PyQt4.QtGui import QWidget, QPixmap, QIcon, QSystemTrayIcon, QMenu, QStyle, QApplication
+
+# Modulos externos
+from PyQt4.QtGui import QWidget, QPixmap, QIcon, QSystemTrayIcon, QMenu
+from PyQt4.QtGui import QStyle, QApplication, QCursor
 from PyQt4.QtCore import QObject, SIGNAL
 import sys
 import os.path
 
-#sys.path.append('conf')
-#sys.path.append('clases')
-
+# Modulos propios
 import webbrowser
-#import imagenes_qr
+
 
 class KerberusSystray(QWidget):
 
@@ -21,7 +22,7 @@ class KerberusSystray(QWidget):
         #colocar el icono cargado a la ventana
         self.setWindowIcon(QIcon(pixmap))
         ##creamos objeto Style para hacer uso de los iconos de Qt
-	self.style = self.style()
+        self.style = self.style()
         self.filtradoHabilitado = True
 
         if not os.path.isfile('dontShowMessage'):
@@ -82,12 +83,12 @@ class KerberusSystray(QWidget):
 
         #SystemTray
         self.tray = QSystemTrayIcon(QIcon(pixmap), self)
-        #self.tray = QtGui.QSystemTrayIcon(self.style.standardIcon(QtGui.QStyle.SP_DialogYesButton), self)
+        #self.tray = QtGui.QSystemTrayIcon(self.style.standardIcon(
+            #QtGui.QStyle.SP_DialogYesButton), self
+            #)
         self.tray.setToolTip('Kerberus Control Parental - Activado')
         self.tray.setContextMenu(self.menu)
         self.tray.setVisible(True)
-
-
 
         QObject.connect(
                 self.tray,
@@ -102,13 +103,9 @@ class KerberusSystray(QWidget):
                     2000
                     )
 
-    #def closeEvent(self, event):
-        #event.ignore()
-        #self.hide()
-
     def noMostrarMasMensaje(self):
         try:
-            open('dontShowMessage','a').close()
+            open('dontShowMessage', 'a').close()
         except IOError:
             print 'No se pudo crear el archivo dontShowMessage'
 
@@ -119,7 +116,7 @@ class KerberusSystray(QWidget):
                 )
         self.habilitarFiltradoAction.setVisible(True)
         self.deshabilitarFiltradoAction.setVisible(False)
-        self.tray.setIcon(QtGui.QIcon('kerby-inactivo.ico'))
+        self.tray.setIcon(QIcon('kerby-inactivo.ico'))
         self.tray.setToolTip('Kerberus Control Parental')
 
     def habilitarFiltradoWindow(self):
@@ -129,7 +126,7 @@ class KerberusSystray(QWidget):
                 )
         self.habilitarFiltradoAction.setVisible(False)
         self.deshabilitarFiltradoAction.setVisible(True)
-        self.tray.setIcon(QtGui.QIcon('kerby-activo.ico'))
+        self.tray.setIcon(QIcon('kerby-activo.ico'))
         self.tray.setToolTip('Kerberus Control Parental - Activado')
 
     def cambiarPasswordWindow(self):

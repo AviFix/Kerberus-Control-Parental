@@ -76,3 +76,12 @@ class ManejadorUrls:
             return "Youtube"
         else:
             return ""
+
+
+def main():
+    pass
+
+# Importante: los módulos no deberían ejecutar
+# código al ser importados
+if __name__ == '__main__':
+    main()

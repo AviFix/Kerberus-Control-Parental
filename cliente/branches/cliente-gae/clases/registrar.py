@@ -107,3 +107,12 @@ class Registradores:
             version = ""
             password = ""
         return userid, nombre, email, version, password
+
+
+def main():
+    pass
+
+# Importante: los módulos no deberían ejecutar
+# código al ser importados
+if __name__ == '__main__':
+    main()

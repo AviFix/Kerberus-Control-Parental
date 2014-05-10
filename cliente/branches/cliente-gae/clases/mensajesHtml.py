@@ -88,3 +88,12 @@ class MensajesHtml:
         mensaje = self.renderizarMensaje(self.template_sitio_denegado,
                                             diccionario)
         return mensaje
+
+
+def main():
+    pass
+
+# Importante: los módulos no deberían ejecutar
+# código al ser importados
+if __name__ == '__main__':
+    main()

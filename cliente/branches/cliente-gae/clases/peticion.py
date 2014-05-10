@@ -232,3 +232,12 @@ class Peticion:
                                 "URL denegada remotamente: %s" % url)
             modulo_logger.log(logging.INFO, "Motivo: %s" % respuesta)
             return False, respuesta
+
+
+def main():
+    pass
+
+# Importante: los módulos no deberían ejecutar
+# código al ser importados
+if __name__ == '__main__':
+    main()

@@ -1,4 +1,5 @@
-#import sqlite3
+# -*- coding: utf-8 -*-
+
 import logging
 import logging.handlers
 import sys
@@ -32,3 +33,12 @@ CRITICAL = logging.CRITICAL
 DEBUG = logging.DEBUG
 INFO = logging.INFO
 WARNING = logging.WARNING
+
+
+def main():
+    pass
+
+# Importante: los módulos no deberían ejecutar
+# código al ser importados
+if __name__ == '__main__':
+    main()

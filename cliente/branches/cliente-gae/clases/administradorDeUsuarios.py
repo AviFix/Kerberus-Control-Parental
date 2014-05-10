@@ -5,12 +5,12 @@ valido"""
 
 #Modulos externos
 import sqlite3
-#import time
 import hashlib
 import os
 import sys
 import logging
 
+# Logging
 modulo_logger = logging.getLogger('kerberus.' + __name__)
 
 sys.path.append('../conf')
@@ -47,9 +47,9 @@ class UsuarioNoValido(AdministradorDeUsuariosError):
 class AdministradorDeUsuarios:
         def __init__(self):
             if not os.path.exists(config.PATH_DB):
-                modulo_logger.log(logging.ERROR, "La base de datos no existe, "\
+                modulo_logger.log(logging.ERROR, "La base de datos no existe, "
                 "o usted no posee permisos para accederla")
-                raise DatabaseError("La base de datos no existe, o usted no "\
+                raise DatabaseError("La base de datos no existe, o usted no "
                 "posee permisos para accederla")
             self.usuarios = []
             self.usuarios_ya_validados = []
@@ -65,7 +65,7 @@ class AdministradorDeUsuarios:
         def passwordSeteada(self, usuario):
             conexion = sqlite3.connect(config.PATH_DB)
             cursor = conexion.cursor()
-            cursor.execute('select passwordseteada from usuarios where '\
+            cursor.execute('select passwordseteada from usuarios where '
             'username = ?', (usuario,))
             password_seteada = cursor.fetchone()[0]
             return password_seteada
@@ -75,11 +75,11 @@ class AdministradorDeUsuarios:
             password_nueva_md5 = self.md5sum(password_nueva)
             conexion = sqlite3.connect(config.PATH_DB)
             cursor = conexion.cursor()
-            cursor.execute('update usuarios set password=? where username=? '\
-            'and password=? and passwordseteada=1', (password_nueva_md5, \
+            cursor.execute('update usuarios set password=? where username=? '
+            'and password=? and passwordseteada=1', (password_nueva_md5,
             usuario, password_vieja_md5, ))
             conexion.commit()
-            cursor.execute('update instalacion set password=?, '\
+            cursor.execute('update instalacion set password=?, '
             'passwordnotificada=?', (password_nueva, 0,))
             conexion.commit()
             conexion.commit()
@@ -102,27 +102,31 @@ class AdministradorDeUsuarios:
                 if respuesta == 'Informada':
                     md5_password_nueva = \
                         hashlib.md5(password.encode('utf-8')).hexdigest()
-                    cursor.execute('update instalacion set passwordnotificada=?, '\
-                    'password=?, credencial=?', (1, '', md5_password_nueva,))
+                    cursor.execute('update instalacion set '
+                            'passwordnotificada=?, password=?, credencial=?',
+                            (1, '', md5_password_nueva)
+                        )
                 cursor.close()
                 conexion_db.commit()
             except sqlite3.OperationalError, msg:
                 cursor.close()
                 conexion_db.rollback()
-                self.modulo_logger.log(logging.ERROR, "No se pudo obtener la pass"\
-                " para notificarla.\nError: %s" % msg)
-
+                self.modulo_logger.error("No se pudo obtener la pass para "
+                    "notificarla.\nError: %s" % msg
+                    )
 
         def setPassword(self, usuario, password):
             password_md5 = self.md5sum(password)
             conexion = sqlite3.connect(config.PATH_DB)
             cursor = conexion.cursor()
-            cursor.execute('update usuarios set password=? ,passwordseteada=? '\
-            'where username=? and passwordseteada=?',
-            (password_md5, 1, usuario, 0))
+            cursor.execute('update usuarios set password=? ,passwordseteada=? '
+                'where username=? and passwordseteada=?',
+                (password_md5, 1, usuario, 0)
+                )
             # esta nofificada, porque le llega el mail del registro con la pass
-            cursor.execute('update instalacion set ' \
-            'passwordnotificada=?, credencial=?', (1, password_md5,))
+            cursor.execute('update instalacion set '
+                'passwordnotificada=?, credencial=?', (1, password_md5,)
+                )
             conexion.commit()
             conexion.close()
 
@@ -133,7 +137,7 @@ class AdministradorDeUsuarios:
                 if user != "NoBody":
                     conexion = sqlite3.connect(config.PATH_DB)
                     cursor = conexion.cursor()
-                    cursor.execute('select id from usuarios where username=? '\
+                    cursor.execute('select id from usuarios where username=? '
                     'and password =?', (user, pwd))
                     salida = len(cursor.fetchall())
                     conexion.close()
@@ -143,9 +147,9 @@ class AdministradorDeUsuarios:
                 self.usuarios_ya_validados_pass.append(pwd)
                 return True
             else:
-                if (self.md5sum(pwd) == \
-                self.usuarios_ya_validados_pass[\
-                self.usuarios_ya_validados.index(user)]):
+                if (self.md5sum(pwd) == self.usuarios_ya_validados_pass[
+                            self.usuarios_ya_validados.index(user)
+                        ]):
                     return True
                 else:
                     return False
@@ -170,7 +174,7 @@ class AdministradorDeUsuarios:
             sin contar el usuario admin"""
             conexion = sqlite3.connect(config.PATH_DB)
             cursor = conexion.cursor()
-            salida = cursor.execute('select count(id) from usuarios where '\
+            salida = cursor.execute('select count(id) from usuarios where '
             'username <> ? ', ('admin', )).fetchone()
             conexion.close()
             return salida
@@ -180,6 +184,7 @@ class AdministradorDeUsuarios:
              usuarios creados"""
             cant = self.cantidadDeUsuarios()
             return (cant == 0)
+
 
 def main():
     pass

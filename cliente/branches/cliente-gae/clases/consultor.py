@@ -96,17 +96,6 @@ class Consultor:
                 modulo_logger.log(logging.INFO, mensaje)
             return True, mensaje
 
-        elif usuario.cacheAceptadas(url):
-            mensaje = "CACHEADA, Autorizada: " + url
-            if config.DEBUG_CACHEADA_PERM:
-                modulo_logger.log(logging.INFO, mensaje)
-            return True, mensaje
-
-        elif usuario.cacheDenegadas(url):
-            mensaje = "CACHEADA, Denegada: " + url
-            if config.DEBUG_CACHEADA_PERM:
-                modulo_logger.log(logging.INFO, mensaje)
-            return False, mensaje
         else:
             valido, razon = usuario.validarRemotamente(url)
             if valido:
@@ -119,3 +108,12 @@ class Consultor:
                 if config.DEBUG_NO_VALIDA_REM:
                     modulo_logger.log(logging.INFO, mensaje)
                 return False, mensaje
+
+
+def main():
+    pass
+
+# Importante: los módulos no deberían ejecutar
+# codigo al ser importados
+if __name__ == '__main__':
+    main()
