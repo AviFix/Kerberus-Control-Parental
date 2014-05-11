@@ -10,7 +10,7 @@ import re
 #Modulos propios
 import administradorDeUsuarios
 #import manejadorUrls
-#import usuario
+import usuario
 import config
 #import servidores
 import logging
@@ -32,7 +32,7 @@ class Consultor:
     def __init__(self):
         self.primerUrl = True
         self.kerberus_activado = True
-        self.usuarios = administradorDeUsuarios.AdministradorDeUsuarios()
+        self.usuario = usuario.Usuario('usuario')
 
     def extensionValida(self, url):
         url = url.lower()
@@ -43,7 +43,7 @@ class Consultor:
         url = url.lower()
         return re.match(".*\..*/.*", url)
 
-    def validarUrl(self, username, password, url):
+    def validarUrl(self, url):
         if not self.urlBienFormada(url):
             mensaje = "URL mal formada"
             modulo_logger.log(logging.DEBUG, mensaje)
@@ -55,36 +55,26 @@ class Consultor:
             modulo_logger.log(logging.DEBUG, mensaje)
             return True, mensaje
 
-        if not self.usuarios.usuario_valido(username, password):
-            return False, "Usuario no valido"
-
-        usuario = self.usuarios.obtenerUsuario(username)
         self.inicio = time.time()
-        if usuario.es_admin:
-            mensaje = "Usuario administrador"
-            return True, mensaje
-            if config.DEBUG_IS_ADMIN:
-                modulo_logger.log(logging.INFO, mensaje)
-
-        elif usuario.dominioDenegado(url):
+        if self.usuario.dominioDenegado(url):
             mensaje = "Dominio no permitido."
             if config.DEBUG_DOM_DENG:
                 modulo_logger.log(logging.INFO, mensaje)
             return False, mensaje
 
-        elif usuario.dominioPermitido(url):
+        elif self.usuario.dominioPermitido(url):
             mensaje = "Dominio permitido"
             if config.DEBUG_DOM_PERM:
                 modulo_logger.log(logging.INFO, mensaje)
             return True, mensaje
 
-        elif usuario.dominioPublicamentePermitido(url):
+        elif self.usuario.dominioPublicamentePermitido(url):
             mensaje = "Dominio permitido"
             if config.DEBUG_DOM_PUB_PERM:
                 modulo_logger.log(logging.INFO, mensaje)
             return True, mensaje
 
-        elif usuario.dominioPublicamenteDenegado(url):
+        elif self.usuario.dominioPublicamenteDenegado(url):
             mensaje = "Dominio denegado"
             if config.DEBUG_DOM_PUB_DENG:
                 modulo_logger.log(logging.INFO, mensaje)
@@ -97,7 +87,7 @@ class Consultor:
             return True, mensaje
 
         else:
-            valido, razon = usuario.validarRemotamente(url)
+            valido, razon = self.usuario.validarRemotamente(url)
             if valido:
                 mensaje = "Url validada remotamente : " + url
                 if config.DEBUG_VALIDA_REM:

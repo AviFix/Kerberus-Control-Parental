@@ -78,6 +78,21 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         msg = mensaje.cambiarPassword('', 'password_actual')
         self.responderAlCliente(msg)
 
+    def recargarDominios(self):
+        import sincronizador
+        import peticion
+        peticionRemota = peticion.Peticion()
+        sync = sincronizador.Sincronizador(peticionRemota)
+        sync.sincronizarDominiosConServer()
+        self.server.verificador.usuario.cargarDominiosPublicamentePermitidos()
+        self.server.verificador.usuario.cargarDominiosPublicamenteDenegados()
+
+        msg = "<html><head><title>Kerberus Control Parental</title>"\
+        "<meta http-equiv=\"REFRESH\" content=\"0;"\
+        "url=http://inicio.kerberus.com.ar\" ></head> <body >Recargando</body> </html>"
+        self.server.logger.log(logging.DEBUG, "Primer pagina de acceso.")
+        self.responderAlCliente(msg)
+
     def recordarPassword(self):
         import registrar
         registrador = registrar.Registradores()
@@ -296,14 +311,18 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
             self.recordarPassword()
             return True
 
+        if "!RecargarDominios!" in url:
+            url = url.replace('!RecargarDominios!', '')
+            self.recargarDominios()
+            return True
+
         #FIXME: Esto deberia ser un header no por url
         if "http://inicio.kerberus.com.ar" in url and \
             self.server.verificador.kerberus_activado:
             url = url + "?kerberus_activado=1"
 
         if self.server.verificador.kerberus_activado:
-            permitido, motivo = self.server.verificador.validarUrl(usuario,
-            password, url)
+            permitido, motivo = self.server.verificador.validarUrl(url)
             if not permitido:
                 self.denegar(motivo, url)
                 return False
