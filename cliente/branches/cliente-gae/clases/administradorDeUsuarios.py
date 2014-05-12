@@ -47,8 +47,8 @@ class UsuarioNoValido(AdministradorDeUsuariosError):
 class AdministradorDeUsuarios:
         def __init__(self):
             if not os.path.exists(config.PATH_DB):
-                modulo_logger.log(logging.ERROR, "La base de datos no existe, "
-                "o usted no posee permisos para accederla")
+                modulo_logger.error("La base de datos no existe, o usted no "
+                    "posee permisos para accederla")
                 raise DatabaseError("La base de datos no existe, o usted no "
                 "posee permisos para accederla")
             self.usuarios = []
