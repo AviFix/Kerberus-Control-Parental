@@ -17,7 +17,7 @@ import config
 
 
 # Clase
-class AdministradorDeDominios:
+class Handler:
     def __init__(self, peticionRemota=None, usuario='NoBody'):
         if peticionRemota is None:
             import peticion
@@ -31,13 +31,16 @@ class AdministradorDeDominios:
         self.cargarDominiosPublicamentePermitidos()
         self.cargarDominiosPublicamenteDenegados()
 
+    #def agregarDominio(self, url, estado):
+
     def cargarDominiosDenegados(self):
         """Carga desde la base de datos a memoria los dominios denegados"""
         modulo_logger.debug("Recargando dominios denegados")
         self.dominios_denegados = []
         respuesta = self.cursor.execute(
-            'select url from dominios_denegados where usuario=?',
-            (self.usuario, )
+            'select url from dominios_usuario du, estado e where '
+            'du.estado = e.id and '
+            'du.usuario=? and e.estado=?', (self.usuario, 'Denegado')
             ).fetchall()
         for fila in respuesta:
             self.dominios_denegados.append(fila[0])
@@ -47,8 +50,9 @@ class AdministradorDeDominios:
         modulo_logger.debug("Recargando dominios permitidos")
         self.dominios_permitidos = []
         respuesta = self.cursor.execute(
-            'select url from dominios_permitidos where usuario=?',
-            (self.usuario, )
+            'select url from dominios_usuario du, estado e where '
+            'du.estado=e.id and '
+            'du.usuario=? and e.estado=?', (self.usuario, 'Permitido')
             ).fetchall()
         for fila in respuesta:
             self.dominios_permitidos.append(fila[0])
@@ -62,7 +66,8 @@ class AdministradorDeDominios:
         cursor = conexion.cursor()
         self.dominios_publicamente_permitidos = []
         respuesta = cursor.execute(
-            'select url from dominios_publicamente_permitidos'
+            'select url from dominios_kerberus dk, estado e where '
+            'dk.estado=e.id and e.estado=?', ('Permitido',)
             ).fetchall()
         for fila in respuesta:
             self.dominios_publicamente_permitidos.append(fila[0])
@@ -76,7 +81,8 @@ class AdministradorDeDominios:
         cursor = conexion.cursor()
         self.dominios_publicamente_denegados = []
         respuesta = cursor.execute(
-            'select url from dominios_publicamente_denegados'
+            'select url from dominios_kerberus dk, estado e where '
+            'dk.estado=e.id and e.estado=?', ('Denegado',)
             ).fetchall()
         for fila in respuesta:
             self.dominios_publicamente_denegados.append(fila[0])

@@ -196,12 +196,12 @@ class Sincronizador:
                 try:
                     if self.recargar_todos_los_dominios:
                         cursor.execute(
-                            'delete from dominios_publicamente_permitidos')
+                            'delete from dominios_kerberus')
                     for fila in array_dominios:
                         if fila != "":
                             cursor.execute('insert into '
-                            'dominios_publicamente_permitidos(url) values(?)',
-                            (fila, ))
+                            'dominios_kerberus(url, estado) values(?,?)',
+                            (fila, 1))
                     conexion_db.commit()
 
                 except sqlite3.OperationalError, msg:
@@ -231,13 +231,13 @@ class Sincronizador:
                 try:
                     if self.recargar_todos_los_dominios:
                         cursor.execute(
-                            'delete from dominios_publicamente_denegados')
+                            'delete from dominios_kerberus')
 
                     for fila in array_dominios:
                         if fila != "":
                             cursor.execute(
-                            'insert into dominios_publicamente_denegados(url)'
-                            ' values(?)', (fila, ))
+                            'insert into dominios_kerberus(url, estado)'
+                            ' values(?,?)', (fila, 2))
 
                     conexion_db.commit()
 

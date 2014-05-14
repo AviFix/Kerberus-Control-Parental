@@ -32,6 +32,7 @@ import mensajesHtml
 import loguear
 import urllib2
 import detectorDeBrowser
+import peticion
 
 # Logging
 logger = loguear.logSetup(config.LOG_FILENAME, config.LOGLEVEL,
@@ -80,9 +81,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 
     def recargarDominios(self):
         import sincronizador
-        import peticion
-        peticionRemota = peticion.Peticion()
-        sync = sincronizador.Sincronizador(peticionRemota)
+        sync = sincronizador.Sincronizador(self.peticionRemota)
         sync.sincronizarDominiosConServer()
         self.server.verificador.usuario.cargarDominiosPublicamentePermitidos()
         self.server.verificador.usuario.cargarDominiosPublicamenteDenegados()
@@ -502,7 +501,8 @@ class ThreadingHTTPServer(SocketServer.ThreadingMixIn,
         BaseHTTPServer.HTTPServer.__init__(self, server_address,
                                             RequestHandlerClass)
         self.logger = logger
-        self.verificador = consultor.Consultor()
+        self.peticionRemota = peticion.Peticion()
+        self.verificador = consultor.Consultor(self.peticionRemota)
         self.ultimo_netloc = ""
 
 
