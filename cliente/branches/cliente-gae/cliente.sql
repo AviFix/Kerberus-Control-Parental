@@ -43,8 +43,8 @@ CREATE TABLE dominios_kerberus(
   FOREIGN KEY(estado) REFERENCES estado(id)
 );
 
-CREATE TABLE cache_urls(
-    url              TEXT,
+CREATE TABLE cache_dominios(
+    dominio          TEXT,
     hora             time,
     estado           INTEGER,
     FOREIGN KEY(estado) REFERENCES estado(id)

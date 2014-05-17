@@ -176,6 +176,8 @@ else:
     LOG_SIZE_MB = config['client']['log_size_mb']
     LOG_CANT_ROTACIONES = config['client']['log_cantidad_de_rotaciones']
     LOGLEVEL = config['client']['loglevel']
+    EDAD_CACHE = config['client']['edad_cache']
+
 
     logger.log(logging.DEBUG,
         "Cliente escuchando en: %s:%s" % (BIND_ADDRESS, BIND_PORT,))

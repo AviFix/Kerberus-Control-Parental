@@ -522,7 +522,10 @@ def main():
     ProxyHandler.protocol = "HTTP/1.1"
     httpd = ThreadingHTTPServer(server_address, ProxyHandler, logger)
     sa = httpd.socket.getsockname()
-    logger.debug('Kerberus - Cliente atendiendo en %s:%s' % (sa[0], sa[1]))
+    pid = os.getpid()
+    logger.debug('Kerberus - Cliente atendiendo en %s:%s, pid:%s' %
+                    (sa[0], sa[1], pid))
+
     req_count = 0
     while not run_event.isSet():
         try:

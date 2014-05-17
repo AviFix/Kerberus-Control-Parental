@@ -7,6 +7,7 @@ import re
 import sqlite3
 import sys
 import logging
+import time
 
 sys.path.append('../conf')
 
@@ -30,8 +31,8 @@ class Handler:
         self.cargarDominiosPermitidos()
         self.cargarDominiosPublicamentePermitidos()
         self.cargarDominiosPublicamenteDenegados()
-
-    #def agregarDominio(self, url, estado):
+        self.borrarDominiosViejosCache()
+        self.cargarDominiosCacheados()
 
     def cargarDominiosDenegados(self):
         """Carga desde la base de datos a memoria los dominios denegados"""
@@ -88,6 +89,51 @@ class Handler:
             self.dominios_publicamente_denegados.append(fila[0])
         conexion.close()
 
+    def cargarDominiosCacheados(self):
+        """Carga desde la base de datos a memoria los dominios
+        cacheados"""
+        modulo_logger.debug("Recargando dominios cacheados")
+        try:
+            conexion = sqlite3.connect(config.PATH_DB)
+            cursor = conexion.cursor()
+            # Dominios permitidos
+            respuesta = cursor.execute(
+                'select dominio from cache_dominios cd, estado e where '
+                'cd.estado=e.id and e.estado=?', ('Permitido',)
+                ).fetchall()
+            for fila in respuesta:
+                self.dominios_publicamente_permitidos.append(fila[0])
+            # Dominios denegados
+            respuesta = cursor.execute(
+                'select dominio from cache_dominios cd, estado e where '
+                'cd.estado=e.id and e.estado=?', ('Denegado',)
+                ).fetchall()
+            for fila in respuesta:
+                self.dominios_publicamente_denegados.append(fila[0])
+        except:
+            modulo_logger.error('Error mientras se recargaban los dominios'
+                                ' desde la cache')
+        conexion.close()
+
+    def borrarDominiosViejosCache(self):
+        """Elimina los dominios cacheados viejos"""
+        modulo_logger.debug("Eliminando dominios cacheados viejos")
+        try:
+            conexion = sqlite3.connect(config.PATH_DB)
+            cursor = conexion.cursor()
+            # Dominios permitidos
+            hora_actual = time.time()
+            # edad_cache esta en segundos
+            limite = hora_actual - config.EDAD_CACHE
+            cursor.execute('delete from cache_dominios where hora < ?', (limite,))
+            conexion.commit()
+        except sqlite3.OperationalError, msg:
+            modulo_logger.error('Error mientras se borraban los dominios'
+                                ' viejos de la cache. Error: %s', msg)
+            conexion.rollback()
+        conexion.close()
+
+
     def dominioPermitido(self, url):
         """Verifica si el dominio esta en la lista de dominios permitidos"""
         for dominio in self.dominios_permitidos:
@@ -124,6 +170,22 @@ class Handler:
                 "la url: %s" % url)
             return False
 
+    def cachearDominio(self, dominio, estado):
+        conexion_db = sqlite3.connect(config.PATH_DB)
+        cursor = conexion_db.cursor()
+        if estado == 'Permitido':
+            estado_num = 1
+        else:
+            estado_num = 2
+        hora = time.time()
+        try:
+            cursor.execute('insert into cache_dominios(dominio, hora, estado) '
+                            'values(?,?,?)', (dominio, hora, estado_num))
+            conexion_db.commit()
+        except:
+            conexion_db.rollback()
+        conexion_db.close()
+
     def validarRemotamente(self, url):
         """Consulta al servidor por la url, porque no pudo determinar
         su aptitud"""
@@ -138,6 +200,8 @@ class Handler:
                     self.dominios_permitidos.append(dominio)
                     modulo_logger.info("Se agrega el dominio %s a la cache de"
                         " dominios locales permitidos" % dominio)
+                    self.cachearDominio(dominio, 'Permitido')
+
             except:
                 modulo_logger.error("No se pudo agrega el dominio %s a la "
                     "cache de dominios locales permitidos" % dominio)
@@ -148,6 +212,7 @@ class Handler:
                     self.dominios_denegados.append(dominio)
                     modulo_logger.info("Se agrega el dominio %s a la cache de"
                         " dominios locales denegados" % dominio)
+                    self.cachearDominio(dominio, 'Denegado')
             except:
                 modulo_logger.error("No se pudo agrega el dominio %s a la "
                     "cache de dominios locales denegados" % dominio)
