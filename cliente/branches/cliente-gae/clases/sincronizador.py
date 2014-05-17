@@ -21,16 +21,20 @@ sys.path.append('../password')
 import config
 import registrar
 import registrarUsuario
+import peticion
 
 
 class Sincronizador:
 
-    def __init__(self, peticionRemota):
+    def __init__(self, peticionRemota=None):
+        if peticionRemota is None:
+            peticionRemota = peticion.Peticion()
         self.peticionRemota = peticionRemota
-        registrador = registrar.Registradores(self.peticionRemota)
         self.recienRegistrado = False
         self.recargar_todos_los_dominios = False
 
+    def checkRegistro(self):
+        registrador = registrar.Registradores(self.peticionRemota)
         registradoLocalmente = registrador.checkRegistradoLocalmente()
         if not registradoLocalmente:
             modulo_logger.info("Iniciando proceso de solicitud de datos")
@@ -52,10 +56,12 @@ class Sincronizador:
         self.id, self.nombre, self.email, self.version, self.password = \
                 registrador.obtenerDatosRegistrados()
 
+    def checkPasswordNotificada(self):
         # Verifico si se informo una nueva password
         if not self.passwordNotificada():
             self.notificarPassword()
 
+    def obtenerDatosDeActualizacion(self):
         try:
             conexion_db = sqlite3.connect(config.PATH_DB)
             cursor = conexion_db.cursor()
@@ -253,6 +259,7 @@ class Sincronizador:
     def sincronizarDominiosConServer(self):
             self.sincronizarDominiosPermitidos()
             self.sincronizarDominiosDenegados()
+            self.tiempo_actual = time.time()
             self.ultima_actualizacion = self.tiempo_actual
             modulo_logger.debug("Se terminaron de sincronizar los dominios")
 

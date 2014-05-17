@@ -29,5 +29,7 @@ peticionRemota = peticion.Peticion(servers)
 
 # Lanza el sincronizador
 syncd = sincronizador.Sincronizador(peticionRemota)
-
+syncd.checkRegistro()
+syncd.checkPasswordNotificada()
+syncd.obtenerDatosDeActualizacion()
 syncd.run()

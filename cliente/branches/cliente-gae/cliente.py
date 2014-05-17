@@ -80,16 +80,17 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         self.responderAlCliente(msg)
 
     def recargarDominios(self):
+        self.server.logger.info("Recargando dominios")
         import sincronizador
-        sync = sincronizador.Sincronizador(self.peticionRemota)
+        sync = sincronizador.Sincronizador(self.server.verificador.peticionRemota)
+        sync.recargar_todos_los_dominios = True
         sync.sincronizarDominiosConServer()
-        self.server.verificador.usuario.cargarDominiosPublicamentePermitidos()
-        self.server.verificador.usuario.cargarDominiosPublicamenteDenegados()
+        self.server.verificador.admDominios.recargarDominios()
 
         msg = "<html><head><title>Kerberus Control Parental</title>"\
         "<meta http-equiv=\"REFRESH\" content=\"0;"\
         "url=http://inicio.kerberus.com.ar\" ></head> <body >Recargando</body> </html>"
-        self.server.logger.log(logging.DEBUG, "Primer pagina de acceso.")
+
         self.responderAlCliente(msg)
 
     def recordarPassword(self):
@@ -523,7 +524,7 @@ def main():
     httpd = ThreadingHTTPServer(server_address, ProxyHandler, logger)
     sa = httpd.socket.getsockname()
     pid = os.getpid()
-    logger.debug('Kerberus - Cliente atendiendo en %s:%s, pid:%s' %
+    logger.info('Kerberus - Cliente atendiendo en %s:%s, pid:%s' %
                     (sa[0], sa[1], pid))
 
     req_count = 0

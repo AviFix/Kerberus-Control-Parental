@@ -27,6 +27,9 @@ class Handler:
         self.usuario = usuario
         conexion = sqlite3.connect(config.PATH_DB)
         self.cursor = conexion.cursor()
+        self.recargarDominios()
+
+    def recargarDominios(self):
         self.cargarDominiosDenegados()
         self.cargarDominiosPermitidos()
         self.cargarDominiosPublicamentePermitidos()
