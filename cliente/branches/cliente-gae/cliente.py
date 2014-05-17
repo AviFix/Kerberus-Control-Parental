@@ -79,19 +79,18 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         msg = mensaje.cambiarPassword('', 'password_actual')
         self.responderAlCliente(msg)
 
-    def recargarDominios(self):
-        self.server.logger.info("Recargando dominios")
-        import sincronizador
-        sync = sincronizador.Sincronizador(self.server.verificador.peticionRemota)
-        sync.recargar_todos_los_dominios = True
-        sync.sincronizarDominiosConServer()
-        self.server.verificador.admDominios.recargarDominios()
-
-        msg = "<html><head><title>Kerberus Control Parental</title>"\
+    def recargarDominios(self, url):
+        redirect = "<html><head><title>K</title>"\
         "<meta http-equiv=\"REFRESH\" content=\"0;"\
-        "url=http://inicio.kerberus.com.ar\" ></head> <body >Recargando</body> </html>"
-
-        self.responderAlCliente(msg)
+        "url=%s\" ></head> <body ></body> </html>" % url
+        self.server.logger.info("Recargando dominios del usuario")
+        import sincronizador
+        sync = sincronizador.Sincronizador(
+                self.server.verificador.peticionRemota)
+        sync.recargar_todos_los_dominios = True
+        sync.sincronizarDominiosUsuario()
+        self.server.verificador.admDominios.recargarDominiosUsuario()
+        self.responderAlCliente(redirect)
 
     def recordarPassword(self):
         import registrar
@@ -311,9 +310,9 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
             self.recordarPassword()
             return True
 
-        if "!RecargarDominios!" in url:
-            url = url.replace('!RecargarDominios!', '')
-            self.recargarDominios()
+        if "!RecargarDominiosKerberus!" in url:
+            url = url.replace('!RecargarDominiosKerberus!', '')
+            self.recargarDominios(url)
             return True
 
         #FIXME: Esto deberia ser un header no por url

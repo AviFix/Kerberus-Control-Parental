@@ -137,6 +137,15 @@ class Peticion:
         else:
             return actualizacion, md5sum
 
+    def obtenerDominiosUsuario(self):
+        #headers = {"Peticion": "obtenerDominiosUsuario"}
+        #dominios = self.obtenerRespuesta(headers)
+        dominios = 'http://www.dominiopermitido1.com,Permitido\n' \
+                    'http://www.dominiopermitido2.com,Permitido\n' \
+                    'http://www.dominiodenegado1.com,Denegado\n' \
+                    'http://www.dominiodenegado2.com,Denegado\n'
+        return dominios
+
     def obtenerDominiosPermitidos(self, ultima_actualizacion):
         headers = {"Peticion": "obtenerDominiosPermitidos",
                     "UltimaSync": str(ultima_actualizacion)}

@@ -35,9 +35,13 @@ class Handler:
         self.borrarDominiosViejosCache()
         self.cargarDominiosCacheados()
 
+    def recargarDominiosUsuario(self):
+        self.cargarDominiosDenegados()
+        self.cargarDominiosPermitidos()
+
     def cargarDominiosDenegados(self):
         """Carga desde la base de datos a memoria los dominios denegados"""
-        modulo_logger.debug("Recargando dominios denegados")
+        modulo_logger.info("Recargando dominios denegados por el usuario")
         self.dominios_denegados = []
         try:
             conexion = sqlite3.connect(config.PATH_DB)
@@ -56,7 +60,7 @@ class Handler:
 
     def cargarDominiosPermitidos(self):
         """Carga desde la base de datos a memoria los dominios permitidos"""
-        modulo_logger.debug("Recargando dominios permitidos")
+        modulo_logger.info("Recargando dominios permitidos por el usuario")
         self.dominios_permitidos = []
         try:
             conexion = sqlite3.connect(config.PATH_DB)

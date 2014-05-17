@@ -256,6 +256,41 @@ class Sincronizador:
                 modulo_logger.debug("No hay dominios denegados para actualizar")
             conexion_db.close()
 
+    def sincronizarDominiosUsuario(self):
+        dominios = self.peticionRemota.obtenerDominiosUsuario()
+        if len(dominios):
+            if dominios[-1] == "":
+                array_dominios = dominios.rsplit("\n")[0:-1]
+            else:
+                array_dominios = dominios.rsplit("\n")
+            try:
+                conexion_db = sqlite3.connect(config.PATH_DB)
+                cursor = conexion_db.cursor()
+                cursor.execute('delete from dominios_usuario')
+                conexion_db.commit()
+                for fila in array_dominios:
+                    if fila != "":
+                        dominio, estado = fila.rsplit(',')
+                        if estado == 'Permitido':
+                            estado_num = 1
+                        else:
+                            estado_num = 2
+                        # usuario 2 es el usuario default, no admin
+                        usuario = 2
+                        cursor.execute('insert into '
+                        'dominios_usuario(url, usuario, estado) values(?,?,?)',
+                        (dominio, usuario, estado_num))
+                conexion_db.commit()
+
+            except sqlite3.OperationalError, msg:
+                conexion_db.rollback()
+                modulo_logger.error("Error al cargar los dominios "
+                "permitidos a la base de datos.\nError: %s" % msg)
+        else:
+            modulo_logger.debug(
+                "No hay dominios permitidos para actualizar")
+        conexion_db.close()
+
     def sincronizarDominiosConServer(self):
             self.sincronizarDominiosPermitidos()
             self.sincronizarDominiosDenegados()
