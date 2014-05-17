@@ -25,8 +25,6 @@ class Handler:
             peticionRemota = peticion.Peticion()
         self.peticionRemota = peticionRemota
         self.usuario = usuario
-        conexion = sqlite3.connect(config.PATH_DB)
-        self.cursor = conexion.cursor()
         self.recargarDominios()
 
     def recargarDominios(self):
@@ -41,65 +39,89 @@ class Handler:
         """Carga desde la base de datos a memoria los dominios denegados"""
         modulo_logger.debug("Recargando dominios denegados")
         self.dominios_denegados = []
-        respuesta = self.cursor.execute(
-            'select url from dominios_usuario du, estado e where '
-            'du.estado = e.id and '
-            'du.usuario=? and e.estado=?', (self.usuario, 'Denegado')
+        try:
+            conexion = sqlite3.connect(config.PATH_DB)
+            cursor = conexion.cursor()
+            respuesta = cursor.execute(
+                'select url from dominios_usuario du, estado e where '
+                'du.estado = e.id and '
+                'du.usuario=? and e.estado=?', (self.usuario, 'Denegado')
             ).fetchall()
-        for fila in respuesta:
-            self.dominios_denegados.append(fila[0])
+            for fila in respuesta:
+                self.dominios_denegados.append(fila[0])
+            conexion.close()
+        except sqlite3.OperationalError, msg:
+            modulo_logger.error('Error cargando dominios denegados: %s', msg)
+            conexion.close()
 
     def cargarDominiosPermitidos(self):
         """Carga desde la base de datos a memoria los dominios permitidos"""
         modulo_logger.debug("Recargando dominios permitidos")
         self.dominios_permitidos = []
-        respuesta = self.cursor.execute(
-            'select url from dominios_usuario du, estado e where '
-            'du.estado=e.id and '
-            'du.usuario=? and e.estado=?', (self.usuario, 'Permitido')
+        try:
+            conexion = sqlite3.connect(config.PATH_DB)
+            cursor = conexion.cursor()
+            respuesta = cursor.execute(
+                'select url from dominios_usuario du, estado e where '
+                'du.estado=e.id and '
+                'du.usuario=? and e.estado=?', (self.usuario, 'Permitido')
             ).fetchall()
-        for fila in respuesta:
-            self.dominios_permitidos.append(fila[0])
+            for fila in respuesta:
+                self.dominios_permitidos.append(fila[0])
+            conexion.close()
+        except sqlite3.OperationalError, msg:
+            modulo_logger.error('Error cargando dominios permitidos: %s', msg)
+            conexion.close()
 
     def cargarDominiosPublicamentePermitidos(self):
         """Carga desde la base de datos a memoria los dominios
         Publicamente permitidos"""
         modulo_logger.debug("Recargando dominios publicamente "
         "permitidos")
-        conexion = sqlite3.connect(config.PATH_DB)
-        cursor = conexion.cursor()
         self.dominios_publicamente_permitidos = []
-        respuesta = cursor.execute(
+        try:
+            conexion = sqlite3.connect(config.PATH_DB)
+            cursor = conexion.cursor()
+            respuesta = cursor.execute(
             'select url from dominios_kerberus dk, estado e where '
             'dk.estado=e.id and e.estado=?', ('Permitido',)
             ).fetchall()
-        for fila in respuesta:
-            self.dominios_publicamente_permitidos.append(fila[0])
-        conexion.close()
+            for fila in respuesta:
+                self.dominios_publicamente_permitidos.append(fila[0])
+            conexion.close()
+        except sqlite3.OperationalError, msg:
+            modulo_logger.error('Error cargando dominios publicamente '
+                                    'permitidos: %s', msg)
+            conexion.close()
 
     def cargarDominiosPublicamenteDenegados(self):
         """Carga desde la base de datos a memoria los dominios
         Publicamente denegados"""
         modulo_logger.debug("Recargando dominios publicamente denegados")
-        conexion = sqlite3.connect(config.PATH_DB)
-        cursor = conexion.cursor()
         self.dominios_publicamente_denegados = []
-        respuesta = cursor.execute(
-            'select url from dominios_kerberus dk, estado e where '
-            'dk.estado=e.id and e.estado=?', ('Denegado',)
-            ).fetchall()
-        for fila in respuesta:
-            self.dominios_publicamente_denegados.append(fila[0])
-        conexion.close()
+        try:
+            conexion = sqlite3.connect(config.PATH_DB)
+            cursor = conexion.cursor()
+            respuesta = cursor.execute(
+                'select url from dominios_kerberus dk, estado e where '
+                'dk.estado=e.id and e.estado=?', ('Denegado',)
+                ).fetchall()
+            for fila in respuesta:
+                self.dominios_publicamente_denegados.append(fila[0])
+            conexion.close()
+        except sqlite3.OperationalError, msg:
+            modulo_logger.error('Error cargando dominios publicamente '
+                                    'denegados: %s', msg)
+            conexion.close()
 
     def cargarDominiosCacheados(self):
         """Carga desde la base de datos a memoria los dominios
         cacheados"""
         modulo_logger.debug("Recargando dominios cacheados")
         try:
+            # Dominios permitidos
             conexion = sqlite3.connect(config.PATH_DB)
             cursor = conexion.cursor()
-            # Dominios permitidos
             respuesta = cursor.execute(
                 'select dominio from cache_dominios cd, estado e where '
                 'cd.estado=e.id and e.estado=?', ('Permitido',)
@@ -113,29 +135,30 @@ class Handler:
                 ).fetchall()
             for fila in respuesta:
                 self.dominios_publicamente_denegados.append(fila[0])
-        except:
-            modulo_logger.error('Error mientras se recargaban los dominios'
-                                ' desde la cache')
-        conexion.close()
+            conexion.close()
+        except sqlite3.OperationalError, msg:
+            modulo_logger.error('Error cargando dominios cacheados:', msg)
+            conexion.close()
 
     def borrarDominiosViejosCache(self):
         """Elimina los dominios cacheados viejos"""
         modulo_logger.debug("Eliminando dominios cacheados viejos")
         try:
-            conexion = sqlite3.connect(config.PATH_DB)
-            cursor = conexion.cursor()
             # Dominios permitidos
             hora_actual = time.time()
             # edad_cache esta en segundos
             limite = hora_actual - config.EDAD_CACHE
-            cursor.execute('delete from cache_dominios where hora < ?', (limite,))
+            conexion = sqlite3.connect(config.PATH_DB)
+            cursor = conexion.cursor()
+            cursor.execute('delete from cache_dominios where hora < ?',
+                                (limite,))
             conexion.commit()
+            conexion.close()
         except sqlite3.OperationalError, msg:
             modulo_logger.error('Error mientras se borraban los dominios'
                                 ' viejos de la cache. Error: %s', msg)
             conexion.rollback()
-        conexion.close()
-
+            conexion.close()
 
     def dominioPermitido(self, url):
         """Verifica si el dominio esta en la lista de dominios permitidos"""
@@ -174,20 +197,21 @@ class Handler:
             return False
 
     def cachearDominio(self, dominio, estado):
-        conexion_db = sqlite3.connect(config.PATH_DB)
-        cursor = conexion_db.cursor()
         if estado == 'Permitido':
             estado_num = 1
         else:
             estado_num = 2
         hora = time.time()
         try:
+            conexion = sqlite3.connect(config.PATH_DB)
+            cursor = conexion.cursor()
             cursor.execute('insert into cache_dominios(dominio, hora, estado) '
                             'values(?,?,?)', (dominio, hora, estado_num))
-            conexion_db.commit()
+            conexion.commit()
+            conexion.close()
         except:
-            conexion_db.rollback()
-        conexion_db.close()
+            conexion.rollback()
+            conexion.close()
 
     def validarRemotamente(self, url):
         """Consulta al servidor por la url, porque no pudo determinar
