@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import sys
-from PyQt4 import QtGui, QtSql
+from PyQt4 import QtGui, QtSql, QtCore
 from AdminPanelUI import Ui_MainWindow
 
 def createConnection():
@@ -19,7 +19,6 @@ class adminPanel:
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self.MainWindow)
         self.ui.botonCancelar.clicked.connect(self.salir)
-        self.ui.botonGuardar.clicked.connect(self.guardar)
         self.ui.pushButtonPermitir.clicked.connect(self.agregarPermitido)
         self.ui.pushButtonDenegar.clicked.connect(self.agregarDenegado)
         self.db = QtSql.QSqlDatabase.addDatabase('QSQLITE')
@@ -61,18 +60,25 @@ class adminPanel:
 
     def agregarPermitido(self):
         dominio = self.ui.lineEditPermitidos.text()
-        registro = QtSql.QSqlRecord()
-        registro.setValue('url','prueba')
-        registro.setValue('usuario',2)
-        registro.setValue('estado',1)
-        if self.modelPermitidos.insertRecord(1, registro):
-            print "anda"
-        else:
-            print "nooo"
+        consulta = QtSql.QSqlQuery()
+        consulta.prepare("Insert into dominios_usuario (url,usuario,estado)"
+                            "values (:url, :usuario, :estado)")
+        consulta.bindValue(":url", dominio)
+        consulta.bindValue(":usuario", 2)
+        consulta.bindValue(":estado", 1)
+        consulta.exec_()
         self.modelPermitidos.submitAll()
 
     def agregarDenegado(self):
-        pass
+        dominio = self.ui.lineEditDenegados.text()
+        consulta = QtSql.QSqlQuery()
+        consulta.prepare("Insert into dominios_usuario (url,usuario,estado)"
+                            "values (:url, :usuario, :estado)")
+        consulta.bindValue(":url", dominio)
+        consulta.bindValue(":usuario", 2)
+        consulta.bindValue(":estado", 2)
+        consulta.exec_()
+        self.modelDenegados.submitAll()
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

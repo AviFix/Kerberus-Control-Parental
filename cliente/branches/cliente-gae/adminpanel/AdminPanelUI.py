@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'AdminPanelUI.ui'
 #
-# Created: Sun May 18 12:35:44 2014
+# Created: Wed May 21 21:20:36 2014
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -102,15 +102,12 @@ class Ui_MainWindow(object):
         self.gridLayout_2.addWidget(self.tableViewDenegados, 2, 0, 1, 2)
         self.gridLayout_3.addWidget(self.groupBox, 0, 0, 1, 1)
         self.tabWidgetPermitidos.addTab(self.tab_2, _fromUtf8(""))
-        self.gridLayout_4.addWidget(self.tabWidgetPermitidos, 0, 0, 1, 3)
+        self.gridLayout_4.addWidget(self.tabWidgetPermitidos, 0, 0, 1, 2)
         spacerItem = QtGui.QSpacerItem(601, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.gridLayout_4.addItem(spacerItem, 1, 0, 1, 1)
-        self.botonGuardar = QtGui.QPushButton(self.centralwidget)
-        self.botonGuardar.setObjectName(_fromUtf8("botonGuardar"))
-        self.gridLayout_4.addWidget(self.botonGuardar, 1, 1, 1, 1)
         self.botonCancelar = QtGui.QPushButton(self.centralwidget)
         self.botonCancelar.setObjectName(_fromUtf8("botonCancelar"))
-        self.gridLayout_4.addWidget(self.botonCancelar, 1, 2, 1, 1)
+        self.gridLayout_4.addWidget(self.botonCancelar, 1, 1, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtGui.QStatusBar(MainWindow)
         self.statusbar.setObjectName(_fromUtf8("statusbar"))
@@ -121,7 +118,7 @@ class Ui_MainWindow(object):
         self.actionListar_Dominios_Permtidos_Denegados.setObjectName(_fromUtf8("actionListar_Dominios_Permtidos_Denegados"))
 
         self.retranslateUi(MainWindow)
-        self.tabWidgetPermitidos.setCurrentIndex(1)
+        self.tabWidgetPermitidos.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -134,8 +131,7 @@ class Ui_MainWindow(object):
         self.label_2.setText(_translate("MainWindow", "Dominio (ejemplo: www.midominio.com)", None))
         self.pushButtonDenegar.setText(_translate("MainWindow", "Denegar", None))
         self.tabWidgetPermitidos.setTabText(self.tabWidgetPermitidos.indexOf(self.tab_2), _translate("MainWindow", "Dominios Denegados", None))
-        self.botonGuardar.setText(_translate("MainWindow", "Guardar", None))
-        self.botonCancelar.setText(_translate("MainWindow", "Cancelar", None))
+        self.botonCancelar.setText(_translate("MainWindow", "Salir", None))
         self.actionAgregar_Dominios_Permtidos_Denegados.setText(_translate("MainWindow", "Agregar Dominios Permtidos/Denegados", None))
         self.actionListar_Dominios_Permtidos_Denegados.setText(_translate("MainWindow", "Listar Dominios Permtidos/Denegados", None))
 
