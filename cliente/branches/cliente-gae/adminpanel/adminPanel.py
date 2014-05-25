@@ -4,6 +4,11 @@ import sys
 import re
 from PyQt4 import QtGui, QtSql, QtCore
 from AdminPanelUI import Ui_MainWindow
+import urllib2
+
+sys.path.append('../conf')
+import config
+
 
 def createConnection():
     db = QtSql.QSqlDatabase.addDatabase('QSQLITE')
@@ -26,6 +31,7 @@ class adminPanel:
         self.ui.pushButtonDenegar.clicked.connect(self.agregarDenegado)
         self.ui.botonEliminarPermitido.clicked.connect(self.eliminarPermitido)
         self.ui.botonEliminarDenegado.clicked.connect(self.eliminarDenegado)
+        self.ui.botonGuardar.clicked.connect(self.refrezcarDominios)
         self.db = QtSql.QSqlDatabase.addDatabase('QSQLITE')
         self.db.setDatabaseName('kerberus.db')
         self.db.open()
@@ -77,13 +83,18 @@ class adminPanel:
             self.ui.tableViewPermitidos.model().removeRow(row.row())
         self.modelPermitidos.submitAll()
 
-
     def eliminarDenegado(self):
         rows = self.ui.tableViewDenegados.selectedIndexes()
         for row in rows:
             self.ui.tableViewDenegados.model().removeRow(row.row())
         self.modelDenegados.submitAll()
 
+    def refrezcarDominios(self):
+        url = 'http://%s:%s/!RecargarDominiosKerberus!' % (config.BIND_ADDRESS,
+                                                            config.BIND_PORT)
+        req = urllib2.Request(url)
+        respuesta = urllib2.urlopen(req).read()
+        print respuesta
 
     def agregarPermitido(self):
         self.ui.labelErrorPermitidos.setVisible(False)

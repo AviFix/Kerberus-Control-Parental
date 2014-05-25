@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'AdminPanelUI.ui'
 #
-# Created: Sun May 25 12:21:41 2014
+# Created: Sun May 25 13:07:19 2014
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -133,12 +133,15 @@ class Ui_MainWindow(object):
         self.gridLayout_2.addWidget(self.labelErrorDenegados, 5, 0, 1, 1)
         self.gridLayout_3.addWidget(self.groupBox, 0, 0, 1, 1)
         self.tabWidgetPermitidos.addTab(self.tab_2, _fromUtf8(""))
-        self.gridLayout_4.addWidget(self.tabWidgetPermitidos, 0, 0, 1, 2)
+        self.gridLayout_4.addWidget(self.tabWidgetPermitidos, 0, 0, 1, 3)
         self.botonCancelar = QtGui.QPushButton(self.centralwidget)
         self.botonCancelar.setObjectName(_fromUtf8("botonCancelar"))
-        self.gridLayout_4.addWidget(self.botonCancelar, 2, 1, 1, 1)
+        self.gridLayout_4.addWidget(self.botonCancelar, 2, 2, 1, 1)
         spacerItem2 = QtGui.QSpacerItem(601, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.gridLayout_4.addItem(spacerItem2, 2, 0, 1, 1)
+        self.botonGuardar = QtGui.QPushButton(self.centralwidget)
+        self.botonGuardar.setObjectName(_fromUtf8("botonGuardar"))
+        self.gridLayout_4.addWidget(self.botonGuardar, 2, 1, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtGui.QStatusBar(MainWindow)
         self.statusbar.setObjectName(_fromUtf8("statusbar"))
@@ -169,6 +172,7 @@ class Ui_MainWindow(object):
         self.labelErrorDenegados.setText(_translate("MainWindow", "El dominio debe ser de la forma: www.dominio.com", None))
         self.tabWidgetPermitidos.setTabText(self.tabWidgetPermitidos.indexOf(self.tab_2), _translate("MainWindow", "Dominios Denegados", None))
         self.botonCancelar.setText(_translate("MainWindow", "Salir", None))
+        self.botonGuardar.setText(_translate("MainWindow", "Aplicar", None))
         self.actionAgregar_Dominios_Permtidos_Denegados.setText(_translate("MainWindow", "Agregar Dominios Permtidos/Denegados", None))
         self.actionListar_Dominios_Permtidos_Denegados.setText(_translate("MainWindow", "Listar Dominios Permtidos/Denegados", None))
 

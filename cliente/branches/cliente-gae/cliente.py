@@ -80,9 +80,6 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         self.responderAlCliente(msg)
 
     def recargarDominios(self, url):
-        redirect = "<html><head><title>K</title>"\
-        "<meta http-equiv=\"REFRESH\" content=\"0;"\
-        "url=%s\" ></head> <body ></body> </html>" % url
         self.server.logger.info("Recargando dominios del usuario")
         import sincronizador
         sync = sincronizador.Sincronizador(
@@ -90,7 +87,6 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         sync.recargar_todos_los_dominios = True
         sync.sincronizarDominiosUsuario()
         self.server.verificador.admDominios.recargarDominiosUsuario()
-        self.responderAlCliente(redirect)
 
     def recordarPassword(self):
         import registrar
