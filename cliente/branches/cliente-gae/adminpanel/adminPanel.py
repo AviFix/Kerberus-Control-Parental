@@ -4,20 +4,10 @@ import sys
 import re
 from PyQt4 import QtGui, QtSql, QtCore
 from AdminPanelUI import Ui_MainWindow
-import urllib2
+import httplib
 
 sys.path.append('../conf')
 import config
-
-
-def createConnection():
-    db = QtSql.QSqlDatabase.addDatabase('QSQLITE')
-    db.setDatabaseName('kerberus.db')
-    if db.open():
-        return True
-    else:
-        print db.lastError().text()
-        return False
 
 class adminPanel:
     def __init__(self, parent=None):
@@ -33,7 +23,7 @@ class adminPanel:
         self.ui.botonEliminarDenegado.clicked.connect(self.eliminarDenegado)
         self.ui.botonGuardar.clicked.connect(self.refrezcarDominios)
         self.db = QtSql.QSqlDatabase.addDatabase('QSQLITE')
-        self.db.setDatabaseName('kerberus.db')
+        self.db.setDatabaseName(config.PATH_COMMON + '/kerberus.db')
         self.db.open()
         # Listo los dominios denegados
         self.modelPermitidos = QtSql.QSqlTableModel(None, self.db)
@@ -91,9 +81,9 @@ class adminPanel:
 
     def refrezcarDominios(self):
         url = 'http://%s:%s/!RecargarDominiosKerberus!' % (config.BIND_ADDRESS,
-                                                            config.BIND_PORT)
-        req = urllib2.Request(url)
-        respuesta = urllib2.urlopen(req).read()
+                                                           config.BIND_PORT)
+        con = httplib.HTTPConnection(config.BIND_ADDRESS,config.BIND_PORT)
+        respuesta = con.request(method='KERBERUSREFRESH', url=url)
         print respuesta
 
     def agregarPermitido(self):

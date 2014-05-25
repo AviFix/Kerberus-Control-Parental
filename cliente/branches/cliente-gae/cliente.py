@@ -79,13 +79,13 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         msg = mensaje.cambiarPassword('', 'password_actual')
         self.responderAlCliente(msg)
 
-    def recargarDominios(self, url):
+    def recargarDominios(self):
         self.server.logger.info("Recargando dominios del usuario")
-        import sincronizador
-        sync = sincronizador.Sincronizador(
-                self.server.verificador.peticionRemota)
-        sync.recargar_todos_los_dominios = True
-        sync.sincronizarDominiosUsuario()
+        #import sincronizador
+        #sync = sincronizador.Sincronizador(
+                #self.server.verificador.peticionRemota)
+        #sync.recargar_todos_los_dominios = True
+        #sync.sincronizarDominiosUsuario()
         self.server.verificador.admDominios.recargarDominiosUsuario()
 
     def recordarPassword(self):
@@ -204,6 +204,9 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
     def validarPassword(self, password):
         return adminUsers.usuario_valido('admin', password)
 
+    def do_KERBERUSREFRESH(self):
+        self.recargarDominios()
+
     def do_GET(self):
         modoDeConexion = self.headers.getheader('Proxy-Connection',
                                                 'Transparente')
@@ -304,11 +307,6 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         if "!RecordarPassword!" in url:
             url = url.replace('!RecordarPassword!', '')
             self.recordarPassword()
-            return True
-
-        if "!RecargarDominiosKerberus!" in url:
-            url = url.replace('!RecargarDominiosKerberus!', '')
-            self.recargarDominios(url)
             return True
 
         #FIXME: Esto deberia ser un header no por url
