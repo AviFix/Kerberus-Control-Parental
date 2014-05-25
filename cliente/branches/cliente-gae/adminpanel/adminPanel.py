@@ -74,7 +74,6 @@ class adminPanel:
     def eliminarPermitido(self):
         rows = self.ui.tableViewPermitidos.selectedIndexes()
         for row in rows:
-            print('Borrando fila %d : %s' % (row.row()+1,row.data().toString()))
             self.ui.tableViewPermitidos.model().removeRow(row.row())
         self.modelPermitidos.submitAll()
 
