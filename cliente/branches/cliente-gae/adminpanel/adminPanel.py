@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import sys
+import re
 from PyQt4 import QtGui, QtSql, QtCore
 from AdminPanelUI import Ui_MainWindow
 
@@ -18,9 +19,13 @@ class adminPanel:
         self.MainWindow = QtGui.QMainWindow()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self.MainWindow)
+        self.ui.labelErrorPermitidos.setVisible(False)
+        self.ui.labelErrorDenegados.setVisible(False)
         self.ui.botonCancelar.clicked.connect(self.salir)
         self.ui.pushButtonPermitir.clicked.connect(self.agregarPermitido)
         self.ui.pushButtonDenegar.clicked.connect(self.agregarDenegado)
+        self.ui.botonEliminarPermitido.clicked.connect(self.eliminarPermitido)
+        self.ui.botonEliminarDenegado.clicked.connect(self.eliminarDenegado)
         self.db = QtSql.QSqlDatabase.addDatabase('QSQLITE')
         self.db.setDatabaseName('kerberus.db')
         self.db.open()
@@ -35,6 +40,7 @@ class adminPanel:
         self.ui.tableViewPermitidos.setModel(self.modelPermitidos)
         self.ui.tableViewPermitidos.hideColumn(1)
         self.ui.tableViewPermitidos.hideColumn(2)
+        self.ui.tableViewPermitidos.resizeRowsToContents()
         self.ui.tableViewPermitidos.show()
         # Listo los dominios denegados
         self.modelDenegados = QtSql.QSqlTableModel(None, self.db)
@@ -47,6 +53,7 @@ class adminPanel:
         self.ui.tableViewDenegados.setModel(self.modelDenegados)
         self.ui.tableViewDenegados.hideColumn(1)
         self.ui.tableViewDenegados.hideColumn(2)
+        self.ui.tableViewDenegados.resizeRowsToContents()
         self.ui.tableViewDenegados.show()
 
         self.MainWindow.show()
@@ -58,27 +65,58 @@ class adminPanel:
         self.modelPermitidos.submitAll()
         self.modelDenegados.submitAll()
 
-    def agregarPermitido(self):
-        dominio = self.ui.lineEditPermitidos.text()
-        consulta = QtSql.QSqlQuery()
-        consulta.prepare("Insert into dominios_usuario (url,usuario,estado)"
-                            "values (:url, :usuario, :estado)")
-        consulta.bindValue(":url", dominio)
-        consulta.bindValue(":usuario", 2)
-        consulta.bindValue(":estado", 1)
-        consulta.exec_()
+    def verificarDominio(self, dominio):
+        domvalido = re.match(
+            '^(?:[a-zA-Z0-9]+(?:\-*[a-zA-Z0-9])*\.)+[a-zA-Z]{2,6}$', dominio
+            )
+        return domvalido
+
+    def eliminarPermitido(self):
+        rows = self.ui.tableViewPermitidos.selectedIndexes()
+        for row in rows:
+            print('Borrando fila %d : %s' % (row.row()+1,row.data().toString()))
+            self.ui.tableViewPermitidos.model().removeRow(row.row())
         self.modelPermitidos.submitAll()
 
-    def agregarDenegado(self):
-        dominio = self.ui.lineEditDenegados.text()
-        consulta = QtSql.QSqlQuery()
-        consulta.prepare("Insert into dominios_usuario (url,usuario,estado)"
-                            "values (:url, :usuario, :estado)")
-        consulta.bindValue(":url", dominio)
-        consulta.bindValue(":usuario", 2)
-        consulta.bindValue(":estado", 2)
-        consulta.exec_()
+
+    def eliminarDenegado(self):
+        rows = self.ui.tableViewDenegados.selectedIndexes()
+        for row in rows:
+            self.ui.tableViewDenegados.model().removeRow(row.row())
         self.modelDenegados.submitAll()
+
+
+    def agregarPermitido(self):
+        self.ui.labelErrorPermitidos.setVisible(False)
+        dominio = self.ui.lineEditPermitidos.text()
+        valido = self.verificarDominio(dominio)
+        if valido:
+            consulta = QtSql.QSqlQuery()
+            consulta.prepare("Insert into dominios_usuario (url,usuario,estado)"
+                                "values (:url, :usuario, :estado)")
+            consulta.bindValue(":url", dominio)
+            consulta.bindValue(":usuario", 2)
+            consulta.bindValue(":estado", 1)
+            consulta.exec_()
+            self.modelPermitidos.submitAll()
+        else:
+            self.ui.labelErrorPermitidos.setVisible(True)
+
+    def agregarDenegado(self):
+        self.ui.labelErrorDenegados.setVisible(False)
+        dominio = self.ui.lineEditDenegados.text()
+        valido = self.verificarDominio(dominio)
+        if valido:
+            consulta = QtSql.QSqlQuery()
+            consulta.prepare("Insert into dominios_usuario (url,usuario,estado)"
+                                "values (:url, :usuario, :estado)")
+            consulta.bindValue(":url", dominio)
+            consulta.bindValue(":usuario", 2)
+            consulta.bindValue(":estado", 2)
+            consulta.exec_()
+            self.modelDenegados.submitAll()
+        else:
+            self.ui.labelErrorDenegados.setVisible(True)
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
