@@ -38,6 +38,8 @@ class Handler:
     def recargarDominiosUsuario(self):
         self.cargarDominiosDenegados()
         self.cargarDominiosPermitidos()
+        modulo_logger.info("Dominios Permitidos: %s", self.dominios_permitidos)
+        modulo_logger.info("Dominios Denegados: %s", self.dominios_denegados)
 
     def cargarDominiosDenegados(self):
         """Carga desde la base de datos a memoria los dominios denegados"""
@@ -46,11 +48,13 @@ class Handler:
         try:
             conexion = sqlite3.connect(config.PATH_DB)
             cursor = conexion.cursor()
+            usuario_nobody = 2
             respuesta = cursor.execute(
                 'select url from dominios_usuario du, estado e where '
                 'du.estado = e.id and '
-                'du.usuario=? and e.estado=?', (self.usuario, 'Denegado')
+                'du.usuario=? and e.estado=?', (usuario_nobody, 'Denegado')
             ).fetchall()
+            modulo_logger.info(respuesta)
             for fila in respuesta:
                 self.dominios_denegados.append(fila[0])
             conexion.close()
@@ -65,10 +69,11 @@ class Handler:
         try:
             conexion = sqlite3.connect(config.PATH_DB)
             cursor = conexion.cursor()
+            usuario_nobody = 2
             respuesta = cursor.execute(
                 'select url from dominios_usuario du, estado e where '
                 'du.estado=e.id and '
-                'du.usuario=? and e.estado=?', (self.usuario, 'Permitido')
+                'du.usuario=? and e.estado=?', (usuario_nobody, 'Permitido')
             ).fetchall()
             for fila in respuesta:
                 self.dominios_permitidos.append(fila[0])
