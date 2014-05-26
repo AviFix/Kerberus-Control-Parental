@@ -189,6 +189,15 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                 logging.DEBUG,
                 "Metodo do_CONNECT, path: %(url)s"
                 % {'url': self.path})
+
+        # Valido
+        self.server.logger.info(self.path)
+        if self.server.verificador.kerberus_activado:
+            permitido, motivo = self.server.verificador.validarUrl(self.path)
+            if not permitido:
+                self.denegar(motivo, url)
+                return False
+
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
             if self._connect_to(self.path, soc):

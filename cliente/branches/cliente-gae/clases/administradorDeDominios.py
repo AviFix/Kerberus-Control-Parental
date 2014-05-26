@@ -38,8 +38,6 @@ class Handler:
     def recargarDominiosUsuario(self):
         self.cargarDominiosDenegados()
         self.cargarDominiosPermitidos()
-        modulo_logger.info("Dominios Permitidos: %s", self.dominios_permitidos)
-        modulo_logger.info("Dominios Denegados: %s", self.dominios_denegados)
 
     def cargarDominiosDenegados(self):
         """Carga desde la base de datos a memoria los dominios denegados"""
@@ -54,7 +52,6 @@ class Handler:
                 'du.estado = e.id and '
                 'du.usuario=? and e.estado=?', (usuario_nobody, 'Denegado')
             ).fetchall()
-            modulo_logger.info(respuesta)
             for fila in respuesta:
                 self.dominios_denegados.append(fila[0])
             conexion.close()
@@ -179,6 +176,7 @@ class Handler:
     def dominioDenegado(self, url):
         """Verifica si el dominio esta en la lista de dominios denegados"""
         for dominio in self.dominios_denegados:
+            modulo_logger.error("Dominio:%s , URL: %s", (dominio, url))
             if re.search(str(dominio), url):
                 return True
         return False

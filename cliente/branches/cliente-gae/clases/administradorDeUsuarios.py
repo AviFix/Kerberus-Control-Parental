@@ -16,7 +16,6 @@ modulo_logger = logging.getLogger('kerberus.' + __name__)
 sys.path.append('../conf')
 
 #Modulos propios
-import usuario
 import config
 import peticion
 
