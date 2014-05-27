@@ -191,9 +191,11 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                 % {'url': self.path})
 
         # Valido
-        self.server.logger.info(self.path)
+        url = 'https://' + self.path
+        self.server.logger.info(url)
         if self.server.verificador.kerberus_activado:
-            permitido, motivo = self.server.verificador.validarUrl(self.path)
+
+            permitido, motivo = self.server.verificador.validarUrl(url)
             if not permitido:
                 self.denegar(motivo, url)
                 return False
