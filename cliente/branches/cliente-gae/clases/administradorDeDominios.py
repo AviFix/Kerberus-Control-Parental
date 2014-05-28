@@ -176,7 +176,6 @@ class Handler:
     def dominioDenegado(self, url):
         """Verifica si el dominio esta en la lista de dominios denegados"""
         for dominio in self.dominios_denegados:
-            modulo_logger.error("Dominio:%s , URL: %s" % (dominio, url))
             if re.search(str(dominio), url):
                 return True
         return False

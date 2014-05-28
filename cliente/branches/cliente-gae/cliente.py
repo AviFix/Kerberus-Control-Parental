@@ -152,6 +152,16 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                 "Sitio %(url)s DENEGADO, motivo: %(motivo)s"
                 % {'motivo': motivo,'url': url})
         self.responderAlCliente(msg)
+    def denegar2(self, motivo, url):
+        motivo_b64 = base64.b64encode(motivo)
+        url_b64 = base64.b64encode(url)
+        msg = ("Denegado")
+
+        self.server.logger.log(
+                logging.DEBUG,
+                "Sitio %(url)s DENEGADO, motivo: %(motivo)s"
+                % {'motivo': motivo,'url': url})
+        self.responderAlCliente(msg)
 
     def handle(self):
         self.__base_handle()
@@ -195,9 +205,9 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         self.server.logger.info(url)
         if self.server.verificador.kerberus_activado:
 
-            permitido, motivo = self.server.verificador.validarUrl(url)
+            permitido, motivo = self.server.verificador.validarDominio(url)
             if not permitido:
-                self.denegar(motivo, url)
+                self.denegar2(motivo, url)
                 return False
 
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
