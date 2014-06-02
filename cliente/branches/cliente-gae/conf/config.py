@@ -36,7 +36,7 @@ def logSetup(logfile, loglevel=5, logsize=1, cant_rotaciones=1,
 VERSION = 1.1
 #
 # Poner en false esta variable a la hora de pasar a produccion
-ENTORNO_DE_DESARROLLO = False
+ENTORNO_DE_DESARROLLO = True
 
 if platform.uname()[0] == 'Linux':
     PLATAFORMA = 'Linux'
@@ -44,7 +44,7 @@ else:
     PLATAFORMA = 'Windows'
 
 if ENTORNO_DE_DESARROLLO:
-    PATH_COMMON = '/home/mboscovich/cliente/entorno_prueba'
+    PATH_COMMON = '/home/mboscovich/proyectos/control_parental/cliente/branches/cliente-gae/entorno_prueba'
     archivo_de_configuracion = PATH_COMMON + '/cliente.conf'
     archivo_de_spec = PATH_COMMON + '/confspec.ini'
     logger = logSetup(

@@ -152,6 +152,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                 "Sitio %(url)s DENEGADO, motivo: %(motivo)s"
                 % {'motivo': motivo,'url': url})
         self.responderAlCliente(msg)
+
     def denegar2(self, motivo, url):
         motivo_b64 = base64.b64encode(motivo)
         url_b64 = base64.b64encode(url)
