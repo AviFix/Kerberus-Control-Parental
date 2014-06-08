@@ -8,6 +8,7 @@ from PyQt4 import QtGui, QtSql, QtCore
 
 # Modulos propios
 sys.path.append('conf')
+sys.path.append('adminpanel')
 
 from AdminPanelUI import Ui_MainWindow
 import config
@@ -54,7 +55,6 @@ class adminPanel:
         self.ui.tableViewDenegados.hideColumn(2)
         self.ui.tableViewDenegados.resizeRowsToContents()
         self.ui.tableViewDenegados.show()
-
         self.MainWindow.show()
 
     def salir(self):
@@ -88,7 +88,6 @@ class adminPanel:
                                                            config.BIND_PORT)
         con = httplib.HTTPConnection(config.BIND_ADDRESS,config.BIND_PORT)
         respuesta = con.request(method='KERBERUSREFRESH', url=url)
-        print respuesta
 
     def agregarPermitido(self):
         self.ui.labelErrorPermitidos.setVisible(False)

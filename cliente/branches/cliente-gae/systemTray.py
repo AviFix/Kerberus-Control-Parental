@@ -6,11 +6,14 @@ from PyQt4.QtGui import QStyle, QApplication, QCursor, QMainWindow
 from PyQt4.QtCore import QObject, SIGNAL
 import sys
 import os.path
+import time
+import httplib
 
 sys.path.append('adminpanel')
 # Modulos propios
 import webbrowser
 import adminPanel
+import config
 
 class KerberusSystray(QWidget):
 
@@ -115,11 +118,9 @@ class KerberusSystray(QWidget):
                     )
 
     def configurarDominios(self):
-        app = QApplication(sys.argv)
-        MainWindow = QMainWindow()
+        #MainWindow = QMainWindow()
         admin = adminPanel.adminPanel()
         admin.show()
-        #sys.exit(app.exec_())
 
     def noMostrarMasMensaje(self):
         try:
@@ -132,10 +133,24 @@ class KerberusSystray(QWidget):
                 'http://inicio.kerberus.com.ar/!DeshabilitarFiltrado!',
                 new=2
                 )
-        self.habilitarFiltradoAction.setVisible(True)
-        self.deshabilitarFiltradoAction.setVisible(False)
-        self.tray.setIcon(QIcon('kerby-inactivo.ico'))
-        self.tray.setToolTip('Kerberus Control Parental')
+        kerberusActivo = self.checkKerberusStatus()
+        contador = 0
+        while kerberusActivo or contador > 10:
+            contador = contador + 1
+            time.sleep(1)
+        if not kerberusActivo:
+            self.habilitarFiltradoAction.setVisible(True)
+            self.deshabilitarFiltradoAction.setVisible(False)
+            self.tray.setIcon(QIcon('kerby-inactivo.ico'))
+            self.tray.setToolTip('Kerberus Control Parental')
+
+
+    def checkKerberusStatus(self):
+        url = 'http://%s:%s/' % (config.BIND_ADDRESS,
+                                                           config.BIND_PORT)
+        con = httplib.HTTPConnection(config.BIND_ADDRESS,config.BIND_PORT)
+        respuesta = con.request(method='KERBERUSESTADO', url=url)
+        return respuesta == 'Activo'
 
     def habilitarFiltradoWindow(self):
         webbrowser.open(

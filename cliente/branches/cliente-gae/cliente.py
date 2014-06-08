@@ -229,6 +229,12 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
     def do_KERBERUSREFRESH(self):
         self.recargarDominios()
 
+    def do_KERBERUSESTADO(self):
+        if self.server.verificador.kerberus_activado:
+            return "Activo"
+        else:
+            return "Inactivo"
+
     def do_GET(self):
         modoDeConexion = self.headers.getheader('Proxy-Connection',
                                                 'Transparente')
