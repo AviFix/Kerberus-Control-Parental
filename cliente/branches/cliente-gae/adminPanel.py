@@ -1,12 +1,15 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+# Modulos externos
 import sys
 import re
-from PyQt4 import QtGui, QtSql, QtCore
-from AdminPanelUI import Ui_MainWindow
 import httplib
+from PyQt4 import QtGui, QtSql, QtCore
 
-sys.path.append('../conf')
+# Modulos propios
+sys.path.append('conf')
+
+from AdminPanelUI import Ui_MainWindow
 import config
 
 class adminPanel:
@@ -55,6 +58,7 @@ class adminPanel:
         self.MainWindow.show()
 
     def salir(self):
+        self.db.close()
         self.MainWindow.close()
 
     def guardar(self):

@@ -2,14 +2,15 @@
 
 # Modulos externos
 from PyQt4.QtGui import QWidget, QPixmap, QIcon, QSystemTrayIcon, QMenu
-from PyQt4.QtGui import QStyle, QApplication, QCursor
+from PyQt4.QtGui import QStyle, QApplication, QCursor, QMainWindow
 from PyQt4.QtCore import QObject, SIGNAL
 import sys
 import os.path
 
+sys.path.append('adminpanel')
 # Modulos propios
 import webbrowser
-
+import adminPanel
 
 class KerberusSystray(QWidget):
 
@@ -34,6 +35,11 @@ class KerberusSystray(QWidget):
         #Menu
         self.menu = QMenu('Kerberus')
 
+        #accion configurar Dominios
+        self.configurarDominiosAction = self.menu.addAction(
+                            self.style.standardIcon(QStyle.SP_DialogNoButton),
+                            'Permitir/Denegar dominios'
+                            )
         #accion deshabilitar filtrado
         self.deshabilitarFiltradoAction = self.menu.addAction(
                             self.style.standardIcon(QStyle.SP_DialogNoButton),
@@ -80,6 +86,11 @@ class KerberusSystray(QWidget):
                 SIGNAL("triggered()"),
                 self.cambiarPasswordWindow
                 )
+        QObject.connect(
+                self.configurarDominiosAction,
+                SIGNAL("triggered()"),
+                self.configurarDominios
+                )
 
         #SystemTray
         self.tray = QSystemTrayIcon(QIcon(pixmap), self)
@@ -102,6 +113,13 @@ class KerberusSystray(QWidget):
                     u'Filtro de Protección para menores de edad Activado',
                     2000
                     )
+
+    def configurarDominios(self):
+        app = QApplication(sys.argv)
+        MainWindow = QMainWindow()
+        admin = adminPanel.adminPanel()
+        admin.show()
+        #sys.exit(app.exec_())
 
     def noMostrarMasMensaje(self):
         try:
