@@ -2,7 +2,7 @@
 
 # Modulos externos
 from PyQt4.QtGui import QWidget, QPixmap, QIcon, QSystemTrayIcon, QMenu
-from PyQt4.QtGui import QStyle, QApplication, QCursor, QMainWindow
+from PyQt4.QtGui import QStyle, QApplication, QCursor
 from PyQt4.QtCore import QObject, SIGNAL
 import sys
 import os.path
@@ -21,12 +21,14 @@ class KerberusSystray(QWidget):
         QWidget.__init__(self)
         icono = 'kerby-activo.ico'
         pixmap = QPixmap(icono)
+        self.style = self.style()
         ##setear el nombre de la ventana
         self.setWindowTitle('Kerberus Control Parental')
         #colocar el icono cargado a la ventana
-        self.setWindowIcon(QIcon(pixmap))
+        self.setWindowIcon(self.style.standardIcon(
+            QStyle.SP_DialogYesButton))
         ##creamos objeto Style para hacer uso de los iconos de Qt
-        self.style = self.style()
+
         self.filtradoHabilitado = True
 
         if not os.path.isfile('dontShowMessage'):
@@ -40,7 +42,7 @@ class KerberusSystray(QWidget):
 
         #accion configurar Dominios
         self.configurarDominiosAction = self.menu.addAction(
-                            self.style.standardIcon(QStyle.SP_DialogNoButton),
+                            self.style.standardIcon(QStyle.SP_ArrowRight),
                             'Permitir/Denegar dominios'
                             )
         #accion deshabilitar filtrado
@@ -96,10 +98,10 @@ class KerberusSystray(QWidget):
                 )
 
         #SystemTray
-        self.tray = QSystemTrayIcon(QIcon(pixmap), self)
-        #self.tray = QtGui.QSystemTrayIcon(self.style.standardIcon(
-            #QtGui.QStyle.SP_DialogYesButton), self
-            #)
+        #self.tray = QSystemTrayIcon(QIcon(pixmap), self)
+        self.tray = QSystemTrayIcon(self.style.standardIcon(
+            QStyle.SP_DialogYesButton), self
+            )
         self.tray.setToolTip('Kerberus Control Parental - Activado')
         self.tray.setContextMenu(self.menu)
         self.tray.setVisible(True)
@@ -118,7 +120,6 @@ class KerberusSystray(QWidget):
                     )
 
     def configurarDominios(self):
-        #MainWindow = QMainWindow()
         admin = adminPanel.adminPanel()
         admin.show()
 
@@ -129,20 +130,16 @@ class KerberusSystray(QWidget):
             print 'No se pudo crear el archivo dontShowMessage'
 
     def deshabilitarFiltradoWindow(self):
+        url = 'http://%s:%s/!DeshabilitarFiltrado!' % ('inicio.kerberus.com.ar','80')
         webbrowser.open(
-                'http://inicio.kerberus.com.ar/!DeshabilitarFiltrado!',
+                url,
                 new=2
                 )
-        kerberusActivo = self.checkKerberusStatus()
-        contador = 0
-        while kerberusActivo or contador > 10:
-            contador = contador + 1
-            time.sleep(1)
-        if not kerberusActivo:
-            self.habilitarFiltradoAction.setVisible(True)
-            self.deshabilitarFiltradoAction.setVisible(False)
-            self.tray.setIcon(QIcon('kerby-inactivo.ico'))
-            self.tray.setToolTip('Kerberus Control Parental')
+        self.habilitarFiltradoAction.setVisible(True)
+        self.deshabilitarFiltradoAction.setVisible(False)
+        self.tray.setIcon(self.style.standardIcon(
+            QStyle.SP_DialogYesButton))
+        self.tray.setToolTip('Kerberus Control Parental')
 
 
     def checkKerberusStatus(self):
@@ -150,21 +147,25 @@ class KerberusSystray(QWidget):
                                                            config.BIND_PORT)
         con = httplib.HTTPConnection(config.BIND_ADDRESS,config.BIND_PORT)
         respuesta = con.request(method='KERBERUSESTADO', url=url)
+        print respuesta
         return respuesta == 'Activo'
 
     def habilitarFiltradoWindow(self):
+        url = "http://%s:%s/!HabilitarFiltrado!" % ('inicio.kerberus.com.ar','80')
         webbrowser.open(
-                'http://inicio.kerberus.com.ar/!HabilitarFiltrado!',
+                url,
                 new=2
                 )
         self.habilitarFiltradoAction.setVisible(False)
         self.deshabilitarFiltradoAction.setVisible(True)
-        self.tray.setIcon(QIcon('kerby-activo.ico'))
+        self.tray.setIcon(self.style.standardIcon(
+            QStyle.SP_DialogYesButton))
         self.tray.setToolTip('Kerberus Control Parental - Activado')
 
     def cambiarPasswordWindow(self):
+        url = "http:/%s:%s/!CambiarPassword!" % ('inicio.kerberus.com.ar','80')
         webbrowser.open(
-                'http://inicio.kerberus.com.ar/!CambiarPassword!',
+                url,
                 new=2
                 )
 
