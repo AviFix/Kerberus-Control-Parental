@@ -19,7 +19,7 @@ class formularioUsuario(QtGui.QMainWindow):
         # Conexiones
         QtCore.QObject.connect(self.ui.boton,QtCore.SIGNAL("clicked()"), self.checkPassword)
         QtCore.QObject.connect(self.ui.botoncancelar,QtCore.SIGNAL("clicked()"), self.cancelar)
-        self.verificado=False
+        self.verificado=None
 
     def center(self):
         screen = QtGui.QDesktopWidget().screenGeometry()

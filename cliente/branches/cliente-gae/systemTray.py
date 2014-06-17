@@ -10,10 +10,16 @@ import time
 import httplib
 
 sys.path.append('adminpanel')
+sys.path.append('password')
+sys.path.append('clases')
+
+
 # Modulos propios
 import webbrowser
 import adminPanel
 import config
+import pedirUsuario
+
 
 class KerberusSystray(QWidget):
 
@@ -42,28 +48,23 @@ class KerberusSystray(QWidget):
 
         #accion configurar Dominios
         self.configurarDominiosAction = self.menu.addAction(
-                            self.style.standardIcon(QStyle.SP_ArrowRight),
                             'Permitir/Denegar dominios'
                             )
         #accion deshabilitar filtrado
         self.deshabilitarFiltradoAction = self.menu.addAction(
-                            self.style.standardIcon(QStyle.SP_DialogNoButton),
                             'Deshabilitar Filtrado'
                             )
         #accion habilitar filtrado
         self.habilitarFiltradoAction = self.menu.addAction(
-                            self.style.standardIcon(QStyle.SP_DialogYesButton),
                             'Habilitar Filtrado'
                             )
         self.habilitarFiltradoAction.setVisible(False)
         #cambiar password
         self.cambiarPasswordAction = self.menu.addAction(
-                self.style.standardIcon(QStyle.SP_BrowserReload),
                 'Cambiar password de administrador'
                 )
         #accion salir
         self.exitAction = self.menu.addAction(
-                self.style.standardIcon(QStyle.SP_TitleBarCloseButton),
                 'Salir')
 
         #SIGNAL->SLOT

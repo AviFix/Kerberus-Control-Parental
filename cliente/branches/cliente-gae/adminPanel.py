@@ -10,12 +10,42 @@ from PyQt4 import QtGui, QtSql, QtCore
 sys.path.append('conf')
 sys.path.append('adminpanel')
 
+import administradorDeUsuarios
+
 from AdminPanelUI import Ui_MainWindow
 import config
+
+class Login(QtGui.QDialog):
+    def __init__(self):
+        QtGui.QDialog.__init__(self)
+        self.texto = QtGui.QLabel(self)
+        self.texto.setText('Ingrese la password del administrador de Kerberus')
+        self.textPass = QtGui.QLineEdit(self)
+        self.textPass.setEchoMode(2)
+        self.buttonLogin = QtGui.QPushButton('Login', self)
+        self.buttonLogin.clicked.connect(self.handleLogin)
+        layout = QtGui.QVBoxLayout(self)
+        layout.addWidget(self.texto)
+        layout.addWidget(self.textPass)
+        layout.addWidget(self.buttonLogin)
+
+    def handleLogin(self):
+        admUser=administradorDeUsuarios.AdministradorDeUsuarios()
+        password=unicode(self.textPass.text().toUtf8(), 'utf-8')
+        valido=admUser.usuario_valido('admin', password)
+        if valido:
+            self.accept()
+        else:
+            QtGui.QMessageBox.warning(
+                self, 'Error', u'Password incorrecta')
 
 class adminPanel:
     def __init__(self, parent=None):
         self.MainWindow = QtGui.QMainWindow()
+        if Login().exec_() == QtGui.QDialog.Accepted:
+            self.panel()
+
+    def panel(self):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self.MainWindow)
         self.ui.labelErrorPermitidos.setVisible(False)
@@ -56,6 +86,7 @@ class adminPanel:
         self.ui.tableViewDenegados.resizeRowsToContents()
         self.ui.tableViewDenegados.show()
         self.MainWindow.show()
+
 
     def salir(self):
         self.db.close()
