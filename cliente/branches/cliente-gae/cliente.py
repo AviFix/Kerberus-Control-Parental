@@ -145,12 +145,12 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                 "<meta http-equiv=\"REFRESH\" content=\"0;"
                 "url=http://denegado.kerberus.com.ar/%(url)s/%(motivo)s"
                 "\" ></head> <body ></body> </html>"
-                % {'motivo':motivo_b64, 'url':url_b64})
+                % {'motivo': motivo_b64, 'url': url_b64})
 
         self.server.logger.log(
                 logging.DEBUG,
                 "Sitio %(url)s DENEGADO, motivo: %(motivo)s"
-                % {'motivo': motivo,'url': url})
+                % {'motivo': motivo, 'url': url})
         self.responderAlCliente(msg)
 
     def denegar2(self, motivo, url):
@@ -161,7 +161,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
         self.server.logger.log(
                 logging.DEBUG,
                 "Sitio %(url)s DENEGADO, motivo: %(motivo)s"
-                % {'motivo': motivo,'url': url})
+                % {'motivo': motivo, 'url': url})
         self.responderAlCliente(msg)
 
     def handle(self):
@@ -186,6 +186,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
                 self.send_error(404, msg)
             return False
         return True
+
     # Utilizado en conexiones HTTPS
     def do_CONNECT(self):
         # Si se van a realizar busquedas en https, las redirige a http
@@ -194,7 +195,7 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 
         # Si quieren usar encrypted, no los pelo
         if self.path.startswith("encrypted.google."):
-            self.denegar("Sitio de busqueda no permitido",self.path)
+            self.denegar("Sitio de busqueda no permitido", self.path)
 
         self.server.logger.log(
                 logging.DEBUG,
@@ -231,9 +232,11 @@ class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):
 
     def do_KERBERUSESTADO(self):
         if self.server.verificador.kerberus_activado:
-            return "Activo"
+            respuesta = "Activo"
         else:
-            return "Inactivo"
+            respuesta = "Inactivo"
+        self.wfile.write(respuesta)
+        self.connection.close()
 
     def do_GET(self):
         modoDeConexion = self.headers.getheader('Proxy-Connection',

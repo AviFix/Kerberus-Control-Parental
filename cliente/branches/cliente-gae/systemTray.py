@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 # Modulos externos
-from PyQt4.QtGui import QWidget, QPixmap, QIcon, QSystemTrayIcon, QMenu
+#from PyQt4.QtGui import QWidget, QPixmap, QIcon, QSystemTrayIcon, QMenu
+from PyQt4.QtGui import QWidget, QSystemTrayIcon, QMenu
 from PyQt4.QtGui import QStyle, QApplication, QCursor
-from PyQt4.QtCore import QObject, SIGNAL, pyqtSignal
-
+from PyQt4.QtCore import QObject, SIGNAL
 import sys
 import os.path
 import threading
@@ -26,9 +26,8 @@ class KerberusSystray(QWidget):
     def __init__(self):
         self.chequeos_activos = True
         self.ultimo_estado_kerberus = True
-        self.simpleSig = pyqtSignal()
         QWidget.__init__(self)
-        icono = 'kerby-activo.ico'
+        #icono = 'kerby-activo.ico'
         #pixmap = QPixmap(icono)
         self.style = self.style()
         ##setear el nombre de la ventana
@@ -36,7 +35,6 @@ class KerberusSystray(QWidget):
         #colocar el icono cargado a la ventana
         self.setWindowIcon(self.style.standardIcon(
             QStyle.SP_DialogYesButton))
-        ##creamos objeto Style para hacer uso de los iconos de Qt
 
         self.filtradoHabilitado = True
 
@@ -77,6 +75,15 @@ class KerberusSystray(QWidget):
                 #lambda: sys.exit()
                 self.salir
                 )
+        # esta conexion es utilizada para refrezcar el icono en caso de
+        # que se desactive/active kerberus
+        QObject.connect(
+                self,
+                SIGNAL("update()"),
+                #lambda: sys.exit()
+                self.setIconStatus
+                )
+
         QObject.connect(
                 self.menu, SIGNAL("clicked()"),
                 lambda: self.menu.popup(QCursor.pos())
@@ -105,8 +112,7 @@ class KerberusSystray(QWidget):
         #SystemTray
         #self.tray = QSystemTrayIcon(QIcon(pixmap), self)
         self.tray = QSystemTrayIcon(self.style.standardIcon(
-            QStyle.SP_DialogYesButton), self
-            )
+            QStyle.SP_DialogYesButton), self)
         self.tray.setToolTip('Kerberus Control Parental - Activado')
         self.tray.setContextMenu(self.menu)
         self.tray.setVisible(True)
@@ -115,13 +121,6 @@ class KerberusSystray(QWidget):
                 self.tray,
                 SIGNAL("messageClicked()"),
                 self.noMostrarMasMensaje
-                )
-
-        #self.simpleSig.connect(self.setIconStatus)
-        QObject.connect(
-                self,
-                SIGNAL("triggered()"),
-                self.setIconStatus
                 )
 
         if self.mostrarMensaje:
@@ -135,31 +134,37 @@ class KerberusSystray(QWidget):
         self.t = threading.Thread(target=self.chequeosPeriodicos)
         self.t.start()
 
-
     def chequeosPeriodicos(self):
         while self.chequeos_activos:
             time.sleep(3)
             status = self.checkKerberusStatus()
             if status != self.ultimo_estado_kerberus:
-                print "Cambio el status:", status
                 self.ultimo_estado_kerberus = status
-                self.simpleSig.emit()
-            print status
+                self.emit(SIGNAL('update()'))
 
     def setIconStatus(self):
-        print "se lanzo"
         if self.ultimo_estado_kerberus:
             self.habilitarFiltradoAction.setVisible(False)
             self.deshabilitarFiltradoAction.setVisible(True)
             self.tray.setIcon(self.style.standardIcon(
                 QStyle.SP_DialogYesButton))
             self.tray.setToolTip('Kerberus Control Parental - Activado')
+            self.tray.showMessage(
+                    u'Kerberus Control Parental',
+                    u'Filtro de Protección para menores de edad Activado',
+                    2000
+                    )
         else:
             self.habilitarFiltradoAction.setVisible(True)
             self.deshabilitarFiltradoAction.setVisible(False)
             self.tray.setIcon(self.style.standardIcon(
-                QStyle.SP_DialogYesButton))
-            self.tray.setToolTip('Kerberus Control Parental')
+                QStyle.SP_DialogNoButton))
+            self.tray.setToolTip('Kerberus Control Parental - Inactivo')
+            self.tray.showMessage(
+                    u'Kerberus Control Parental',
+                    u'Filtro de Protección para menores de edad Desactivado',
+                    2000
+                    )
 
     def salir(self):
         self.chequeos_activos = False
@@ -176,7 +181,8 @@ class KerberusSystray(QWidget):
             print 'No se pudo crear el archivo dontShowMessage'
 
     def deshabilitarFiltradoWindow(self):
-        url = 'http://%s:%s/!DeshabilitarFiltrado!' % ('inicio.kerberus.com.ar','80')
+        url = 'http://%s:%s/!DeshabilitarFiltrado!' % ('inicio.kerberus.com.ar',
+                                                        '80')
         webbrowser.open(
                 url,
                 new=2
@@ -186,22 +192,23 @@ class KerberusSystray(QWidget):
         try:
             url = 'http://%s:%s/' % (config.BIND_ADDRESS, config.BIND_PORT)
             con = httplib.HTTPConnection(config.BIND_ADDRESS, config.BIND_PORT)
-            respuesta = con.request(method='KERBERUSESTADO', url=url)
-            print respuesta
+            con.request(method='KERBERUSESTADO', url=url)
+            respuesta = con.getresponse().read()
             return respuesta == 'Activo'
         except:
-            print "error: ", url
             return False
 
     def habilitarFiltradoWindow(self):
-        url = "http://%s:%s/!HabilitarFiltrado!" % ('inicio.kerberus.com.ar','80')
+        url = "http://%s:%s/!HabilitarFiltrado!" % ('inicio.kerberus.com.ar',
+                                                    '80')
         webbrowser.open(
                 url,
                 new=2
                 )
 
     def cambiarPasswordWindow(self):
-        url = "http:/%s:%s/!CambiarPassword!" % ('inicio.kerberus.com.ar','80')
+        url = "http:/%s:%s/!CambiarPassword!" % ('inicio.kerberus.com.ar',
+                                                 '80')
         webbrowser.open(
                 url,
                 new=2
