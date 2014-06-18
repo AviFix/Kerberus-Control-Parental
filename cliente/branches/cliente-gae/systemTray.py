@@ -3,9 +3,11 @@
 # Modulos externos
 from PyQt4.QtGui import QWidget, QPixmap, QIcon, QSystemTrayIcon, QMenu
 from PyQt4.QtGui import QStyle, QApplication, QCursor
-from PyQt4.QtCore import QObject, SIGNAL
+from PyQt4.QtCore import QObject, SIGNAL, pyqtSignal
+
 import sys
 import os.path
+import threading
 import time
 import httplib
 
@@ -18,15 +20,16 @@ sys.path.append('clases')
 import webbrowser
 import adminPanel
 import config
-import pedirUsuario
 
 
 class KerberusSystray(QWidget):
-
     def __init__(self):
+        self.chequeos_activos = True
+        self.ultimo_estado_kerberus = True
+        self.simpleSig = pyqtSignal()
         QWidget.__init__(self)
         icono = 'kerby-activo.ico'
-        pixmap = QPixmap(icono)
+        #pixmap = QPixmap(icono)
         self.style = self.style()
         ##setear el nombre de la ventana
         self.setWindowTitle('Kerberus Control Parental')
@@ -71,7 +74,8 @@ class KerberusSystray(QWidget):
         QObject.connect(
                 self.exitAction,
                 SIGNAL("triggered()"),
-                lambda: sys.exit()
+                #lambda: sys.exit()
+                self.salir
                 )
         QObject.connect(
                 self.menu, SIGNAL("clicked()"),
@@ -113,12 +117,53 @@ class KerberusSystray(QWidget):
                 self.noMostrarMasMensaje
                 )
 
+        #self.simpleSig.connect(self.setIconStatus)
+        QObject.connect(
+                self,
+                SIGNAL("triggered()"),
+                self.setIconStatus
+                )
+
         if self.mostrarMensaje:
             self.tray.showMessage(
                     u'Kerberus Control Parental',
                     u'Filtro de Protección para menores de edad Activado',
                     2000
                     )
+
+        # Lanzo el thead que verifica si esta activo o no kerberus
+        self.t = threading.Thread(target=self.chequeosPeriodicos)
+        self.t.start()
+
+
+    def chequeosPeriodicos(self):
+        while self.chequeos_activos:
+            time.sleep(3)
+            status = self.checkKerberusStatus()
+            if status != self.ultimo_estado_kerberus:
+                print "Cambio el status:", status
+                self.ultimo_estado_kerberus = status
+                self.simpleSig.emit()
+            print status
+
+    def setIconStatus(self):
+        print "se lanzo"
+        if self.ultimo_estado_kerberus:
+            self.habilitarFiltradoAction.setVisible(False)
+            self.deshabilitarFiltradoAction.setVisible(True)
+            self.tray.setIcon(self.style.standardIcon(
+                QStyle.SP_DialogYesButton))
+            self.tray.setToolTip('Kerberus Control Parental - Activado')
+        else:
+            self.habilitarFiltradoAction.setVisible(True)
+            self.deshabilitarFiltradoAction.setVisible(False)
+            self.tray.setIcon(self.style.standardIcon(
+                QStyle.SP_DialogYesButton))
+            self.tray.setToolTip('Kerberus Control Parental')
+
+    def salir(self):
+        self.chequeos_activos = False
+        sys.exit()
 
     def configurarDominios(self):
         admin = adminPanel.adminPanel()
@@ -136,20 +181,17 @@ class KerberusSystray(QWidget):
                 url,
                 new=2
                 )
-        self.habilitarFiltradoAction.setVisible(True)
-        self.deshabilitarFiltradoAction.setVisible(False)
-        self.tray.setIcon(self.style.standardIcon(
-            QStyle.SP_DialogYesButton))
-        self.tray.setToolTip('Kerberus Control Parental')
-
 
     def checkKerberusStatus(self):
-        url = 'http://%s:%s/' % (config.BIND_ADDRESS,
-                                                           config.BIND_PORT)
-        con = httplib.HTTPConnection(config.BIND_ADDRESS,config.BIND_PORT)
-        respuesta = con.request(method='KERBERUSESTADO', url=url)
-        print respuesta
-        return respuesta == 'Activo'
+        try:
+            url = 'http://%s:%s/' % (config.BIND_ADDRESS, config.BIND_PORT)
+            con = httplib.HTTPConnection(config.BIND_ADDRESS, config.BIND_PORT)
+            respuesta = con.request(method='KERBERUSESTADO', url=url)
+            print respuesta
+            return respuesta == 'Activo'
+        except:
+            print "error: ", url
+            return False
 
     def habilitarFiltradoWindow(self):
         url = "http://%s:%s/!HabilitarFiltrado!" % ('inicio.kerberus.com.ar','80')
@@ -157,11 +199,6 @@ class KerberusSystray(QWidget):
                 url,
                 new=2
                 )
-        self.habilitarFiltradoAction.setVisible(False)
-        self.deshabilitarFiltradoAction.setVisible(True)
-        self.tray.setIcon(self.style.standardIcon(
-            QStyle.SP_DialogYesButton))
-        self.tray.setToolTip('Kerberus Control Parental - Activado')
 
     def cambiarPasswordWindow(self):
         url = "http:/%s:%s/!CambiarPassword!" % ('inicio.kerberus.com.ar','80')
@@ -172,5 +209,5 @@ class KerberusSystray(QWidget):
 
 app = QApplication(sys.argv)
 app.setQuitOnLastWindowClosed(False)
-pytest = KerberusSystray()
+kerberusTray = KerberusSystray()
 sys.exit(app.exec_())
