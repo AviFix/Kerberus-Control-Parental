@@ -1,11 +1,12 @@
 # -*- mode: python -*-
-a = Analysis([os.path.join(HOMEPATH,'support/_mountzlib.py'), os.path.join(HOMEPATH,'support/useUnicode.py'), '../../systemTray.py'],)
+a = Analysis([os.path.join(HOMEPATH,'support/_mountzlib.py'), os.path.join(HOMEPATH,'support/useUnicode.py'), '../../systemTray.py'], 
+	pathex=['../../../clases','../../../','../../../conf','../../../adminpanel'])
 pyz = PYZ(a.pure)
 exe = EXE(pyz,
           a.scripts,
           exclude_binaries=1,
           name=os.path.join('build/pyi.linux2/cliente', 'Kerberus-Tray'),
-          debug=True,
+          debug=False,
           strip=True,
           upx=False,
           console=0 )
