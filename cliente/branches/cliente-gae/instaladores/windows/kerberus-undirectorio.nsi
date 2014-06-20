@@ -186,7 +186,7 @@ SetOutPath $INSTDIR\$VERSION
 File  /a /r "kerberus-sync\dist\sync\"
 
 SetOutPath $INSTDIR\$VERSION
-File  /a /r "kerberus-systemtray\build\exe.win32-2.7\"
+File  /a /r "kerberus-systemtray\dist\systemtray\"
 
 SetOutPath $INSTDIR\$VERSION
 File  /a /r "desinstalador\dist\uninstall\"
