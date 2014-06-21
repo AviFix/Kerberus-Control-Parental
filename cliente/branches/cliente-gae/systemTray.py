@@ -23,6 +23,14 @@ sys.path.append('conf')
 import administradorDeUsuarios
 from AdminPanelUI import Ui_MainWindow
 import config
+import loguear
+
+modulo_logger = loguear.logSetup(
+    config.SYSTRAY_LOGFILE,
+    config.LOGLEVEL, config.LOG_SIZE_MB,
+    config.LOG_CANT_ROTACIONES, 'kerberus'
+    )
+
 
 class Login(QDialog):
     def __init__(self):
@@ -56,6 +64,7 @@ class adminPanel:
             self.panel()
 
     def panel(self):
+        modulo_logger.debug('Creando panel de admin...')
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self.MainWindow)
         self.ui.labelErrorPermitidos.setVisible(False)
@@ -96,12 +105,14 @@ class adminPanel:
         self.ui.tableViewDenegados.resizeRowsToContents()
         self.ui.tableViewDenegados.show()
         self.MainWindow.show()
+        modulo_logger.debug('Fin de la creacion del panel de admin...')
 
     def salir(self):
         self.db.close()
         self.MainWindow.close()
 
     def guardar(self):
+        modulo_logger.debug('Guardando dominios')
         self.modelPermitidos.submitAll()
         self.modelDenegados.submitAll()
 
@@ -354,7 +365,11 @@ class KerberusSystray(QWidget):
                 new=2
                 )
 
+modulo_logger.info('Iniciando SystemTray...')
 app = QApplication(sys.argv)
 app.setQuitOnLastWindowClosed(False)
 kerberusTray = KerberusSystray()
+modulo_logger.info('Se lanzo el SystemTray')
 sys.exit(app.exec_())
+modulo_logger.info('Se cerro el SystemTray...')
+

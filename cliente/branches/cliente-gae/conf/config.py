@@ -120,6 +120,7 @@ else:
             SYNC_LOG_FILENAME = config['sync']['log_filename']
         else:
             SYNC_LOG_FILENAME = '/var/log/kerberus-cliente.log'
+        SYSTRAY_LOGFILE = '/var/log/kerberus-systray.log'
     else:
         # Si estan vacio estos campos pongo default para windows
         if config['client']['path_db']:
@@ -135,6 +136,8 @@ else:
             SYNC_LOG_FILENAME = config['sync']['log_filename']
         else:
             SYNC_LOG_FILENAME = PATH_COMMON + '\kerberus-syncd-cliente.log'
+        SYSTRAY_LOGFILE = PATH_COMMON + '\kerberus-systray.log'
+
     #######
     # Asignaciones desde archivo de conf
     ########
