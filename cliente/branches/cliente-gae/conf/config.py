@@ -44,11 +44,19 @@ else:
     PLATAFORMA = 'Windows'
 
 if ENTORNO_DE_DESARROLLO:
-    PATH_COMMON = '/home/mboscovich/proyectos/control_parental/cliente/branches/cliente-gae/entorno_prueba'
-    archivo_de_configuracion = PATH_COMMON + '/cliente.conf'
-    archivo_de_spec = PATH_COMMON + '/confspec.ini'
-    logger = logSetup(
-        PATH_COMMON + '/kerberus-cliente-config.log', 1, 1, 1, "Config")
+    if PLATAFORMA == 'Linux':
+        PATH_COMMON = '/home/mboscovich/proyectos/control_parental/cliente/branches/cliente-gae/entorno_prueba'
+        archivo_de_configuracion = PATH_COMMON + '/cliente.conf'
+        archivo_de_spec = PATH_COMMON + '/confspec.ini'
+        logger = logSetup(
+            PATH_COMMON + '/kerberus-cliente-config.log', 1, 1, 1, "Config")
+    else:
+        PATH_COMMON = 'entorno_prueba'
+        archivo_de_configuracion = PATH_COMMON + '/cliente.conf'
+        archivo_de_spec = PATH_COMMON + '/confspec.ini'
+        logger = logSetup(
+            PATH_COMMON + '/kerberus-cliente-config.log', 1, 1, 1, "Config")
+        
 else:
     if PLATAFORMA == 'Linux':
         PATH_COMMON = '/usr/share/kerberus'

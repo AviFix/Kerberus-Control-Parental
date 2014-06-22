@@ -1,6 +1,6 @@
 # -*- mode: python -*-
 a = Analysis(['../../../systemTray.py'],
-        pathex=['../../../clases','../../../','../../../conf'])
+        pathex=['../../../clases','../../../','../../../conf','../../../adminpanel'])
 pyz = PYZ(a.pure)
 exe = EXE(pyz,
           a.scripts,

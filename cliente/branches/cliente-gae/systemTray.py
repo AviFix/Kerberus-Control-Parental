@@ -22,6 +22,7 @@ sys.path.append('conf')
 # Modulos propios
 import administradorDeUsuarios
 from AdminPanelUI import Ui_MainWindow
+
 import config
 import loguear
 
@@ -75,10 +76,9 @@ class adminPanel:
         self.ui.botonEliminarPermitido.clicked.connect(self.eliminarPermitido)
         self.ui.botonEliminarDenegado.clicked.connect(self.eliminarDenegado)
         self.ui.botonGuardar.clicked.connect(self.refrezcarDominios)
-        baseDeDatos = config.PATH_COMMON + '/kerberus.db'
-        modulo_logger.debug('Utilizando la db: %s' % baseDeDatos)
+        modulo_logger.debug('Utilizando la db: %s' % config.PATH_DB)
         self.db = QtSql.QSqlDatabase.addDatabase('QSQLITE')
-        self.db.setDatabaseName(baseDeDatos)
+        self.db.setDatabaseName(config.PATH_DB)
         self.db.open()
         # Listo los dominios denegados
         self.modelPermitidos = QtSql.QSqlTableModel(None, self.db)
