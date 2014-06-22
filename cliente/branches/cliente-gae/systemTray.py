@@ -75,11 +75,14 @@ class adminPanel:
         self.ui.botonEliminarPermitido.clicked.connect(self.eliminarPermitido)
         self.ui.botonEliminarDenegado.clicked.connect(self.eliminarDenegado)
         self.ui.botonGuardar.clicked.connect(self.refrezcarDominios)
+        baseDeDatos = config.PATH_COMMON + '/kerberus.db'
+        modulo_logger.debug('Utilizando la db: %s' % baseDeDatos)
         self.db = QtSql.QSqlDatabase.addDatabase('QSQLITE')
-        self.db.setDatabaseName(config.PATH_COMMON + '/kerberus.db')
+        self.db.setDatabaseName(baseDeDatos)
         self.db.open()
         # Listo los dominios denegados
         self.modelPermitidos = QtSql.QSqlTableModel(None, self.db)
+        modulo_logger.debug('Listando dominios permitidos')
         self.modelPermitidos.setTable("dominios_usuario")
         # requiere de un submit para que se apliquen los cambios
         self.modelPermitidos.setEditStrategy(2)
@@ -92,6 +95,7 @@ class adminPanel:
         self.ui.tableViewPermitidos.resizeRowsToContents()
         self.ui.tableViewPermitidos.show()
         # Listo los dominios denegados
+        modulo_logger.debug('Listando dominios denegados')
         self.modelDenegados = QtSql.QSqlTableModel(None, self.db)
         self.modelDenegados.setTable("dominios_usuario")
         # requiere de un submit para que se apliquen los cambios
@@ -117,24 +121,29 @@ class adminPanel:
         self.modelDenegados.submitAll()
 
     def verificarDominio(self, dominio):
+        modulo_logger.debug('Verificando dominio: %s' % dominio)
         domvalido = re.match(
             '^(?:[a-zA-Z0-9]+(?:\-*[a-zA-Z0-9])*\.)+[a-zA-Z]{2,6}$', dominio
             )
+        modulo_logger.debug('Dominio %s - valido: %s' % (dominio, domvalido))
         return domvalido
 
     def eliminarPermitido(self):
+        modulo_logger.debug('Eliminando dominios permitidos seleccionados')
         rows = self.ui.tableViewPermitidos.selectedIndexes()
         for row in rows:
             self.ui.tableViewPermitidos.model().removeRow(row.row())
         self.modelPermitidos.submitAll()
 
     def eliminarDenegado(self):
+        modulo_logger.debug('Eliminando dominios denegados seleccionados')
         rows = self.ui.tableViewDenegados.selectedIndexes()
         for row in rows:
             self.ui.tableViewDenegados.model().removeRow(row.row())
         self.modelDenegados.submitAll()
 
     def refrezcarDominios(self):
+        modulo_logger.debug('Recargando dominios permitidos/denegados')
         url = 'http://%s:%s/!RecargarDominiosKerberus!' % (config.BIND_ADDRESS,
                                                            config.BIND_PORT)
         con = httplib.HTTPConnection(config.BIND_ADDRESS, config.BIND_PORT)
@@ -143,8 +152,11 @@ class adminPanel:
     def agregarPermitido(self):
         self.ui.labelErrorPermitidos.setVisible(False)
         dominio = self.ui.lineEditPermitidos.text()
+        modulo_logger.debug('Agregando dominio permitido: %s' % dominio)
         valido = self.verificarDominio(dominio)
         if valido:
+            modulo_logger.debug('Agregando a la db el dominio permitido: %s'
+                                    % dominio)
             consulta = QtSql.QSqlQuery()
             consulta.prepare("Insert into dominios_usuario (url,usuario,estado)"
                                 "values (:url, :usuario, :estado)")
@@ -159,8 +171,11 @@ class adminPanel:
     def agregarDenegado(self):
         self.ui.labelErrorDenegados.setVisible(False)
         dominio = self.ui.lineEditDenegados.text()
+        modulo_logger.debug('Agregando dominio denegado: %s' % dominio)
         valido = self.verificarDominio(dominio)
         if valido:
+            modulo_logger.debug('Agregando a la db el dominio denegado: %s'
+                                    % dominio)
             consulta = QtSql.QSqlQuery()
             consulta.prepare("Insert into dominios_usuario (url,usuario,estado)"
                                 "values (:url, :usuario, :estado)")
