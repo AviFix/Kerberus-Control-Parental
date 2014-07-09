@@ -135,7 +135,7 @@ Function .onInit
   ;Definimos el valor de la variable VERSION, en caso de no definirse en el script
   ;podria ser definida en el compilador
   Var /GLOBAL VERSION
-  StrCpy $VERSION "1.1"
+  StrCpy $VERSION "1.2"
 
   ReadRegStr $R0 HKLM \
   "Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberus" \
