@@ -230,6 +230,11 @@ class KerberusSystray(QWidget):
         self.cambiarPasswordAction = self.menu.addAction(
                 'Cambiar password de administrador'
                 )
+        #recordar password
+        self.recordarPasswordAction = self.menu.addAction(
+                'Recordar password del administrador'
+                )
+
         #accion salir
         self.exitAction = self.menu.addAction(
                 'Salir')
@@ -274,7 +279,12 @@ class KerberusSystray(QWidget):
                 SIGNAL("triggered()"),
                 self.configurarDominios
                 )
-
+        QObject.connect(
+                self.recordarPasswordAction,
+                SIGNAL("triggered()"),
+                self.recordarPasswordWindow
+                )
+        
         #SystemTray
         #self.tray = QSystemTrayIcon(QIcon(pixmap), self)
         self.tray = QSystemTrayIcon(self.style.standardIcon(
@@ -373,13 +383,21 @@ class KerberusSystray(QWidget):
                 )
 
     def cambiarPasswordWindow(self):
-        url = "http:/%s:%s/!CambiarPassword!" % ('inicio.kerberus.com.ar',
+        url = "http://%s:%s/!CambiarPassword!" % ('inicio.kerberus.com.ar',
                                                  '80')
         webbrowser.open(
                 url,
                 new=2
                 )
 
+    def recordarPasswordWindow(self):
+        url = "http://%s:%s/!RecordarPassword!" % ('inicio.kerberus.com.ar',
+                                                 '80')
+        webbrowser.open(
+                url,
+                new=2
+                )
+        
 modulo_logger.info('Iniciando SystemTray...')
 app = QApplication(sys.argv)
 app.setQuitOnLastWindowClosed(False)
