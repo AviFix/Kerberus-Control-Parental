@@ -1,4 +1,4 @@
-Kerberus-Control-Parental-
+Kerberus-Control-Parental
 ==========================
 
 Kerberus Control Parental Client
