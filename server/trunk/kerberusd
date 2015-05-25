@@ -1,0 +1,63 @@
+#!/bin/sh
+# Starts and stops kerberus server daemon (server side)
+#
+### BEGIN INIT INFO
+# Provides:          kerberus-server
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Kerberus Server.
+# Description:       Kerberus Server.
+### END INIT INFO
+
+DAEMON_NAME="Demonio.py"
+PATH_DAEMON=/srv/kerberus
+DAEMON=${PATH_DAEMON}/${DAEMON_NAME}
+PID=`ps ax|grep ${DAEMON_NAME}|grep -v "grep"|awk '{ print $1 }'`
+
+case "$1" in
+start)
+	if [ ! ${PID} ];then
+	  	echo "Iniciando ${DAEMON_NAME}..."
+		cd ${PATH_DAEMON}
+		/usr/bin/python ${DAEMON}
+	else
+	  	echo "El demonio ya esta en ejecucion"
+	fi
+;;
+
+stop)
+	echo "Deteniendo ${DAEMON_NAME}..."
+	kill -9 ${PID} &> /dev/null
+;;
+
+reload)
+	echo "Recargando configuracion de ${DAEMON_NAME}..."
+	kill -1 ${PID} &> /dev/null  
+;;
+
+restart)
+  	$0 stop
+	sleep 2
+  	$0 start
+;;
+
+status)
+             if [ ${PID} ]; then
+                     echo "En ejecucion..."
+		     echo "Consumos del proceso:"
+		     echo "--------------------"
+		     ps -p ${PID} -o pcpu,pmem
+		     echo ""
+                     exit 0
+             else
+                     echo "No esta corriendo"
+                     exit 1
+             fi
+;;
+
+*)
+        echo "Usage: $0 {start|stop|restart|status}"
+        exit 1
+esac 	

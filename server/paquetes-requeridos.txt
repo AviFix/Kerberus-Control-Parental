@@ -1,0 +1,16 @@
+#!/bin/bash
+# en el server
+echo "========================="
+echo " * Instalando paquetes..."
+sudo apt-get install subversion sysstat ifstat vim htop ccze python mysql-server python-daemon python-mysqldb python-configobj dansguardian python-mysqldb python-dnspython
+echo ""
+echo "========================="
+echo "Descargando server..."
+if [ -d /srv/kerberus ]; then
+  sudo rm -r /srv/kerberus
+fi
+sudo svn export http://www.kerberus.com.ar/proyecto_control_parental/server/trunk /srv/kerberus
+cp /srv/kerberus/kerberusd /etc/init.d/kerberus-server
+update-rc.d /srv/kerberus/kerberus-server defaults > /dev/null
+sudo /etc/init.d/kerberus-server restart
+

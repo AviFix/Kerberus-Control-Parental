@@ -1,0 +1,28 @@
+{
+  "mainFile": "", 
+  "venv": "", 
+  "name": "server-trunk", 
+  "license": "", 
+  "url": "", 
+  "pythonPath": "python", 
+  "preExecScript": "", 
+  "programParams": "", 
+  "supported-extensions": [
+    ".conf", 
+    ".sql,.ini", 
+    ".spec", 
+    ".py", 
+    ".html", 
+    ".jpg", 
+    ".png", 
+    ".ui", 
+    ".css", 
+    ".json", 
+    ".ini", 
+    ".conf", 
+    ".spec"
+  ], 
+  "project-type": "", 
+  "postExecScript": "", 
+  "description": ""
+}

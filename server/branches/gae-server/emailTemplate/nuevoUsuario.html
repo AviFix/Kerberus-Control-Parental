@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+{% autoescape true %}
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Kerberus Control Parental</title>
+<style type="text/css" media="screen">
+ .texto {
+  font-family: Tahoma, sans-serif;
+  background-color: #FFFFFF;
+  border: 20px solid #FFFFFF;
+}
+</style>
+</head>
+<body>
+<div class="texto">
+Nuevo usuario Kerberus.<br><br>
+Cantidad de usuarios registrados: {{cant_users_reg}}<br>
+Nombre: {{nombre}}<br>
+Email: {{email}}<br>
+IP: {{ip}}<br>
+Pais: {{country}}<br>
+Region: {{region}}<br>
+ciudad: {{ciudad}}<br>
+<a href="http://maps.google.com/?q={{latitud_longitud}}" >mapa</a>
+</div>
+</body>
+</html>
+{% endautoescape %}

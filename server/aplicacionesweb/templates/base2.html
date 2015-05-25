@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+{% block titulo %}
+<title> Kerberus Control Parental </title>
+{% endblock %}
+</head>
+<body>
+<div id="base" class="base">
+
+<table width="100%" border=1>
+<tr align="center">
+<td>
+<h2> Sitios populares</h2>
+<a href="http://www.facebook.com"> <img width=100 src="http://blogs.peru21.pe/tuasesorlegal/Facebook.png" ></a>
+<a href="http://www.twitter.com"><img width=100 src="http://bitelia.com/files/2011/06/Logo-twitter1.png" ></a>
+<a href="http://www.hotmail.com"><img width=100 src="http://www.accesobit.com/wp-content/uploads/2006/11/msn_hotmail.jpg" ></a>
+<div id="parte_superior" class="parte_superior">
+
+
+
+{% block sitiosPopulares %}
+
+
+{% endblock %}
+{# cierra div_parte_superior #}
+</div>
+</td>
+<td>
+
+{% block estado %}
+
+<h1> texto default estado </h1>
+
+{% endblock %}
+
+</td>
+</tr>
+
+<tr align="center">
+<td  width="30%">
+</td>
+<td width="40%">
+<div id="parte_media" class="parte_media">
+
+
+{% block buscador %}
+
+<input ></input>
+<input type="button" value="buscar" ></input>
+{% endblock %}
+
+{# cierra div_parte_media #}
+</div>
+</td>
+<td width="30%" height=150>
+</td>
+</tr>
+
+<tr align="center">
+<td colspan=3>
+<div id="parte_baja" class="parte_baja">
+
+{% block publicidad %}
+
+<h1> texto default publicidad </h1>
+
+{% endblock %}
+
+{# cierra div_parte_baja #}
+</div>
+</td>
+</tr>
+</table>
+
+{# cierra div_base #}
+</div>
+</body>
+</html>

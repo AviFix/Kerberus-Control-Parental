@@ -1,0 +1,31 @@
+application: kerberuscontrolparental
+version: 4
+runtime: python27
+api_version: 1
+threadsafe: true
+# Poner en false solo para carga masiva!
+# threadsafe: false
+libraries:
+- name: webapp2
+  version: latest
+- name: jinja2
+  version: latest
+
+builtins:
+- remote_api: on
+
+handlers:
+# Descomentar para carga masiva
+# - url: /load
+#   script: loader.py
+#  #   login: admin
+
+# - url: /administrar.*
+#   script: main.application
+# #  login: admin
+
+- url: /.*
+  script: main.application
+  secure: optional
+
+

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>Navegador protegido</title>
+<script type="text/javascript">
+//<![CDATA[
+function focus_search() {
+    sbi = document.getElementById('sbi');
+    sbi.focus();
+    search_select(sbi);
+}
+function search_select(e) {
+    if(e.value.length > 0) {
+        e.select();
+    }
+    e.select();
+}
+//]]>
+</script>
+
+<!-- google analitycs -->
+<script src='http://www.google-analytics.com/ga.js' type='text/javascript'>
+</script>
+<!-- Fin google analitycs -->
+
+<style type="text/css">
+body {
+    background: white;
+    font-family: ubuntu, ubuntubeta, 'Bitstream Vera Sans', 'DejaVu Sans', Tahoma, sans-serif;
+    font-size: 12px;
+    line-height: 14px;
+    margin: 0 auto;
+    }
+
+ul#top-nav {
+    margin-top: 5px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #eaeaea;
+    }
+
+ul#top-nav li {
+    display: inline;
+    font-weight: bold;
+    margin-right: 5px;
+    }
+
+ul#top-nav li a {
+    font-weight: normal;
+    }
+
+#search-box {
+    width: 595px;
+    margin: 0 auto;
+    margin-top: 63px;
+    }
+#search-box #ubuntu-branding {
+    <!--background: url(http://start.ubuntu.com/10.04/sprite.png) no-repeat;
+    background-position: 0px -251px;-->
+    background-color: #aea79f;
+    height: 60px;
+    -moz-border-radius: 0 0 5px 5px;
+    -webkit-border-radius: 0 0 5px 5px;
+}
+#search-box .top {
+    width: 593px;
+    height: 65px;
+    background: url(http://start.ubuntu.com/10.04/sprite.png) no-repeat;
+    background-position: -10px -10px;
+    margin: 0;
+    padding: 0;
+    }
+
+#search-box .center {
+    width: 595px;
+    margin: 0;
+    padding: 0;
+    margin-right: -2px;
+    background: url(http://start.ubuntu.com/10.04/middle.png) repeat-y;
+    }
+
+#search-box .center h1 {
+    margin: 0;
+    padding: 0;
+    }
+
+#search-box .center .padding {
+    padding-right: 44px;
+    padding-left: 44px;
+    }
+
+#search-box .center h1.logo a {
+    font-size: 1px;
+    display: block;
+    text-indent: -9999px;
+    background: url(http://start.ubuntu.com/10.04/sprite.png) no-repeat;
+    background-position: -10px -310px;
+    margin: 0;
+    padding: 0;
+    height: 37px;
+    width: 101px;
+    margin-bottom: 15px;
+    position: relative;
+    }
+
+#search-box .center input {
+    width: 500px;
+    height: 32px;
+    font-size: 20px;
+    }
+
+#search-box .center button {
+    font-size: 14px;
+    width: 100px;
+    height: 35px;
+    margin-left:405px;
+    margin-top:4px;
+    }
+
+#search-box .bottom {
+    width: 593px;
+    height: 98px;
+    background: url(http://start.ubuntu.com/10.04/sprite.png) no-repeat;
+    background-position: -10px -133px;
+    }
+#external-links {
+    overflow: auto;
+    width: 593px;
+    text-align: center;
+    padding-top: 20px;
+
+}
+.bottom-links {
+    height: 30px;
+    text-align: left;
+    padding-top: 8px;
+    display: inline-block;
+    background: blue;
+    margin-right: 20px;
+}
+.bottom-links a {
+    text-decoration: none;
+    color: gray;
+}
+.bottom-links a:hover {
+    color: #fe9900;
+    font-size: 13px;
+}
+#help-link {
+    background-color: white;
+}
+#shop-link {
+    background-color: white;
+}
+</style>
+</head>
+<body>
+    <div id="search-box">
+        <div id="ubuntu-branding">
+        <img src="logosuperior.png">
+        </div>
+        <div class="top"></div>
+
+        <div class="center">
+            <div class="padding">
+               <h1 class="logo"><a href="http://www.google.com">&nbsp;</a></h1>
+                <form action="http://www.google.com.ar/cse" id="cse-search-box">
+                <input type="hidden" name="cx" value="partner-pub-5233852436544664:0998292818" />
+
+                <input type="hidden" name="ie" value="UTF-8" />
+                <input type="hidden" name="sa" value="Search" />
+                <input name="q" value="" id="sbi" />
+                <input title="search" type="hidden" name="hl" value="en" />
+
+                <button>Buscar</button>
+                </form>
+            </div>
+        </div>
+        <div class="bottom"></div>
+        <div id="external-links">
+            <div id="help-link" class="bottom-links"><a href="!DeshabilitarFiltrado!">Deshabilitar Filtrado</a></div>
+            <div id="shop-link" class="bottom-links"><a href="http://www.kerberus.com.ar">Acerca de Kerberus</a></div>
+        </div>
+    </div><!-- close search-box -->
+<script type="text/javascript">
+//<![CDATA[
+focus_search();
+//]]>
+</script>
+
+<!-- google analitycs -->
+<script type="text/javascript">
+try{
+var pageTracker = _gat._getTracker("UA-25098891-1");
+pageTracker._trackPageview();
+} catch(err) {}
+</script>
+<!-- Fin google analitycs -->
+
+</body>
+</html>
+
+
+
+<script type="text/javascript" src="http://www.google.com/cse/query_renderer.js"></script>
+<div id="queries"></div>
+<script src="http://www.google.com/cse/api/partner-pub-5233852436544664/cse/0998292818/queries/js?oe=UTF-8&amp;callback=(new+PopularQueryRenderer(document.getElementById(%22queries%22))).render"></script>

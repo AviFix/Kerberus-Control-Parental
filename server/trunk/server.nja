@@ -1,0 +1,32 @@
+{
+  "mainFile": "", 
+  "use-tabs": false, 
+  "venv": "", 
+  "relatedProjects": [], 
+  "name": "Server", 
+  "license": "", 
+  "url": "", 
+  "pythonPath": "python", 
+  "preExecScript": "", 
+  "programParams": "", 
+  "indentation": 4, 
+  "PYTHONPATH": "", 
+  "supported-extensions": [
+    ".conf", 
+    ".sql,.ini", 
+    ".spec", 
+    ".py", 
+    ".html", 
+    ".jpg", 
+    ".png", 
+    ".ui", 
+    ".css", 
+    ".json", 
+    ".ini", 
+    ".conf", 
+    ".spec"
+  ], 
+  "project-type": "", 
+  "postExecScript": "", 
+  "description": ""
+}

@@ -1,0 +1,26 @@
+{% extends "base2.html" %}
+
+{% block titulo %}
+
+<title> {{ texto}} </title>
+
+{% endblock %}
+
+{% block estado %}
+{% if protegido %}
+    <div id="kerberus" style="display:block;">
+        <img src="http://www.kerberus.com.ar/protegido.gif" width="20%" align="center" alt="Haga click aqui para deshabilitar">Navegación protegida por<a href="http://www.kerberus.com.ar"> Kerberus</a><a href="!DeshabilitarFiltrado!"> (Deshabilitar)</a>
+    </div>
+{% endif %}
+{% endblock %}
+
+{% block publicidad %}
+
+{% for anuncio in anuncios %}
+
+{{anuncio}}
+
+{% endfor %}
+
+{% endblock %}
+

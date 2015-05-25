@@ -1,0 +1,59 @@
+Detalles del Sistema Operativo
+===============================
+* Distribución: Debian squezze 6.0.5.
+* Plataforma: 64 bits.
+* Mínimo de memoria requerida: 256Mb.
+* Espacio en disco rígido: 5 Gb.
+
+
+Instalando los paquetes necesarios
+==================================
+apt-get install subversion sysstat ifstat vim htop ccze python mysql-server python-daemon python-mysqldb python-configobj dansguardian python-mysqldb python-dnspython phpmyadmin
+
+Configuración de apache
+=======================
+
+* Descargo la configuración de los sites y los guardo en site-available
+
+for sitio in sincronizador.kerberus.com.ar validador.kerberus.com.ar; do svn export --username mboscovich http://www.goodgnus.com.ar/proyecto_control_parental/server/apache/sites-available/${sitio} /etc/apache2/sites-available/${archivo}; a2ensite ${sitio};done
+
+* Deshabilito del sitio default
+
+a2dissite default
+
+* Habilito el modulo proxy de apache
+
+a2enmod proxy proxy_http
+
+* Reinicio apache
+
+/etc/init.d/apache2 restart
+
+
+Descargo kerberus-server
+========================
+
+svn export --username mboscovich http://www.goodgnus.com.ar/proyecto_control_parental/server/trunk /srv/kerberus
+cp /srv/kerberus/kerberusd /etc/init.d/kerberus-server
+cp /srv/kerberus/sincronizadord /etc/init.d/kerberus-sincronizadorNodos
+update-rc.d kerberus-server defaults > /dev/null
+update-rc.d kerberus-sincronizadorNodos defaults > /dev/null
+
+* Descargo el script de actualización del codigo del server
+svn export --username mboscovich http://www.goodgnus.com.ar/proyecto_control_parental/server/actualizar_server.sh /srv/actualizar_server.sh
+
+* Descargo la DB y la instalo
+svn export --username mboscovich http://www.goodgnus.com.ar/proyecto_control_parental/server/kerberus-server.sql 
+mysql -u root -p < kerberus-server.sql 
+echo "GRANT SELECT ON kerberus_db.* TO kerberus@'localhost' IDENTIFIED BY 'p3r1c0';"| mysql -u root -p kerberus_db
+
+Configuro el server
+===================
+* seteo el server_id modificando el archivo /srv/kerberus/server.conf y poniendo el id en la variable correspondiente.
+* Configuro la tabla servidores con la info de todos los nodos del cluster.
+* Me conecto al resto de los nodos, y agrego el nodo nuevo en la tabla servidores
+
+* Reinicio el server /etc/init.d/kerberus-server restart.
+* Reinicio el sincronizdor de nodos /etc/init.d/kerberus-sincronizadorNodos
+Listo!!!
+
